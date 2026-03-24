@@ -1,0 +1,562 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Provable Optimal Algorithms for Generalized Linear Contextual Bandits
+Paper Content: 1703.00048.pdf META Provable Optimal Algorithms for Generalized Linear Contextual Bandits Lihong Li Yu Lu Dengyong Zhou   ar X
+iv :1
+70 3.
+00 04
+8v 1
+[ cs
+.L G
+] 2
+8 Fe
+b 20
+17
+services from news recommendation to advertising. Generalized linear models (logistical regression in particular) have demonstrated stronger performance than linear models in many applications. However, most theoretical analyses on contextual bandits so far are on linear bandits. In this work, we propose an upper confidence bound based algorithm for generalized linear contex-
+tual bandits, which achieves an Õ( √ dT ) regret over T rounds with d dimensional feature vectors. This regret matches the minimax lower bound, up to logarithmic terms, and improves on
+the best previous result by a √ d factor, assuming the number of arms is fixed. A key component in our analysis is to establish a new, sharp finite-sample confidence bound for maximumlikelihood estimates in generalized linear models, which may be of independent interest. We also analyze a simpler upper confidence bound algorithm, which is useful in practice, and prove it to have optimal regret for the certain cases. 1. Introduction Contextual bandit problems are originally motivated by applications in clinical trials (Woodroofe, 1979). When a standard treatment and a new treatment are available for a certain disease, the doctor needs to decide, in a sequetial manner, which of them to use based on the patient’s profiles such as age, general physical status or medicine history. With the development of modern technologies, contextual bandit problems have more applications, especially in web-based recommendation, advertising and search (Agarwal et al., 2009; Li et al., 2010; 2012). In the problem of personalized news recommendation, the website must recommend news articles that are most interesting to users that visit the website. The problem is especially challenging for breaking news, as little data are available
+1Microsoft Research, Redmond, WA 98052 2Department of Statistics, Yale University, New Haven, CT, USA.
+to make good prediction about user interest. A trade-off naturally occurs in this kind of sequential decision making problems. One needs to balance exploitation—choosing actions that performed well in the past—and exploration— choosing actions that may potentially give better outcomes.
+In this paper, we study the following stochastic, Karmed contextual bandit problem. Suppose at each of the T rounds, an agent is presented with a set of K actions, each of which is associated with a context (a d-dimensional feature vector). By choosing an action based on the rewards obtained from previous rounds and on the contexts, the agent will receive a stochastic reward generated from some unknown distribution conditioned on the context and the chosen action. The goal of the agent is to maximize the expected cumulative rewards over T rounds. The most studied model in contextual bandits literature is the linear model (Auer, 2003; Dani et al., 2008; Rusmevichientong & Tsitsiklis, 2010; Chu et al., 2011; Abbasi-Yadkori et al., 2011), in which the expected rewards at each round is a linear combination of features in the context vector. The linear model is theoretically convenient to work on. However, in practice, we usually have binary rewards (click or not, treatment working or not). Logistic regression model based algorithms have been shown to have substantial improvements over linear models (Li et al., 2012). Hence, we consider generalized linear models (GLM) in the contextual bandit setting, in which linear, logistic and probit regression serve as three important special cases.
+The celebrated work of Lai & Robbins (1985) first introduces the upper confidence bound (UCB) approach to efficient exploration. Later, the idea of confidence bound has been successfully applied to many stochastic bandits problems, from K-arm bandits problems (Auer et al., 2002a; Bubeck & Cesa-Bianchi, 2012) to linear bandits (Auer, 2003; Abbasi-Yadkori et al., 2011). UCB-type algorithms are both efficient and provable optimal in K-arm bandits andK-armed linear bandits. However, most study are limited to the linear case. While some UCB-type algorithms using GLMs perform well empirically (Li et al., 2012), there is little theoretical study of them. A natural question arises: can we find an efficient algorithm to achieve the optimal convergence rate for generalized linear bandits?
+Our Contributions In this paper, we propose a GLM version of the UCB algorithm called SupCB-GLM that
+achieves a regret overT rounds of order Õ( √ dT ). This rate improves the state-of-the-art results of Filippi et al. (2010)
+by a √ d factor, assuming the number of arms is fixed. Moreover, it matches the GLM bandits problem’s minimax lower bound indicated by the linear bandits problem and thus is optimal. SupCB-GLM is inspired by the seminal work of Auer (2003), which introduced a technique to construct independence samples in linear contextual bandits. A key observation in proving this result is that the ℓ2 confidence ball of the unknown parameter is insufficient to calculate a sharp upper confidence bound, yet what we need is the confidence interval in all directions. Thus, we prove a finite sample normality type confidence bound for the maximum likelihood estimator of GLM. To our best knowledge, this is the first non-asymptotic normality type result for the GLM and might be of its own theoretical value. We also analyze a simple version of UCB algorithm called UCB-GLM that is widely used in practice. We prove it also achieves the optimal regret bound under a reasonable assumption. These results shed light on explaining the good empirical performance of GLM bandits in practice.
+Related Work The study of GLM bandits problem goes back at least to Sarkar (1991), who considered discounted regrets rather than cumulative regerts. They prove that a myopic rule without exploration is asymptotically optimal. Recently, Filippi et al. (2010) study the same stochastic GLM bandit problem considered here. They propose the GLM-UCB algorithm, similar to our Algorithm 1, which
+achieves a regret of Õ(d √ T ) after T rounds. However, as we believe the optimal regret for stochastic GLM bandits should be the same as linear case when the number of arms
+is small, their rates misses a √ d term than the optimal rates.
+Another line of research focuses on using EXP-type algorithms, which can be applied to almost any model classes (Auer et al., 2002b). These algorithms, which choose actions using a carefully randomized policy, use importance sampling to reduce a bandit problem to its fullinformation analogue. Later variants of the EXP4 algorithm (Beygelzimer et al., 2010; Agarwal et al., 2014) give
+an Õ( √ dKT ) regret that is near-optimal with respect to
+T . However, these regret bounds have a √ K dependence. Moreover, these algorithms can be expensive to run: they either have a computational complexity exponential in d for our GLM case, or need to make a large number of calls to a nontrivial optimization oracle.
+Organization The rest of this paper is organized as follows. Section 2 introduceS the generalized linear bandit problem. Section 3 gives a brief review of the statistical properties of generalized linear model, and gives a sharp
+non-asymptotic normality-type result for GLM parameter estimation which can be of independent value. With this tool, Section 4 presents our algorithms and the main theoretical results. Section 5 concludes the paper with further discussions, including several open problems. All proofs are given in the supplementary materials.
+Notations For a vector x ∈ Rd, we use ‖x‖ to denote its ℓ2- norm and x
+′ its transpose. Denote the d-dimensional unit ball centered at the origin byBd := {x ∈ Rd : ‖x‖ ≤ 1}. The weighted ℓ2-norm associated with a positivedefinite matrix A is defined by ‖x‖A := √ x′Ax. The minimum and maximum singular values of a matrix A are written as λmin(A) and ‖A‖, respectively. The trace of a matrixA is tr (A). For two symmetric matricesA andB of the same dimensions, A B means that A−B is positive semi-definite. For a real-valued function f , we use ḟ and f̈ to denote its first and second derivatives. Finally, the set {1, 2, . . . , n} is abbreviated as [n]. 2. Problem Setting We considered the stochastic K-armed contextual bandit problem. Let T be the number of total rounds. At round t, the agent observes a context consisting of a set of K feature vectors, {xt,a | a ∈ [K]} ⊂ Rd, which is drawn IID from an unknown distribution ν, with ‖xt,a‖ ≤ 1. Each feature vector xt,a is associated with an unknown stochastic reward yt,a ∈ [0, 1]. The agent selects one action, denoted at, and observes the corresponding reward yt,at . Finally, we make a regularity assumption about the distribution ν: there exists a constant σ0 > 0 such that λmin(E[ 1 K ∑ a∈[K] xt,ax ′ t,a]) ≥ σ20 for all t.
+In this paper, we consider the generalized linear model, or GLM, in which there is an unknown parameter θ∗ ∈ Rd and a fixed, strictly increasing link function µ : R → R such that E[Y | X ] = µ(X ′θ∗), where X is the chosen action’s feature and Y the corresponding reward. One can verify that linear and logistic models are special cases of GLMwith µ(x) = x and µ(x) = 1/(1+e−x), respectively.
+The agent’s goal is to maximize the cumulative expected rewards over T rounds. Suppose the agent takes action at at round t. Then the agent’s strategy can be evaluated by comparing its expected reward to the best expected reward. To do so, define the optimal action at round t by a∗t = argmaxa∈[K] µ(x ′ t,aθ
+∗). Then, the agent’s total regret of following strategy π can be expressed as follows
+RT (π) :=
+T ∑
+t=1
+(
+µ(x′t,a∗t θ ∗)− µ(x′t,atθ∗)
+)
+.
+Note that RT (π) is in general a random variable due to the possible randomness in π. Denote by Xt = xt,at , Yt =
+yt,at , and our model can be written as
+Yt = µ(X ′ tθ ∗) + ǫt , (1)
+where {ǫt, t ∈ [T ]} are independent zero-mean noise. Here, Xt is a random variable because the agent chooses current action based on previous rewards. Formally, we assume there is an increasing sequence of sigma fields {Fn} such that ǫt is Ft-measurable with E [ ǫt | Ft−1 ] = 0. An example of Fn will be the sigma-field generated by {X1, Y1, . . . , Xn, Yn}. Also, we assume the noise ǫt is sub-Gaussian with parameter σ, where σ is some positive, universal constant; that is, for all t,
+E [ eλǫt | Ft−1 ] ≤ eλ2σ2/2. (2)
+In practice, when we have bounded reward Yt ∈ [0, 1], the noise ǫt is also bounded and hence satisfies (2) with some appropriate σ value. In addition to the boundedness assumption on the rewards and feature vectors, we also need the following assumption on the link function µ.
+Assumption 1. κ := inf{‖x‖≤1, ‖θ−θ∗‖≤1} µ̇(x ′θ) > 0.
+As we shall see in Section 3, the asymptotic normality of maximum-likelihood estimates implies the necessity of this assumption. Note that this assumption is weaker than Assumption 1 in Filippi et al. (2010), as it only requires to control the local behavior of µ̇(x′θ) near θ∗.
+Assumption 2. µ is twice differentiable. Its first and second order derivatives are upper-bounded by Lµ and Mµ, respectively.
+It can be verified that Assumption 2 holds for the logistic link function, where we may choose Lµ = Mµ = 1/4. 3. Generalized Linear Models To motivate the algorithms proposed in this paper, we first briefly review the classical likelihood theory of generalized linear models. In the canonical generalized linear model (McCullagh & Nelder, 1989), the conditional distribution of Y given X is from the exponential family, and its density, parameterized by θ ∈ Θ, can be written as
+P(Y | X ) = exp
+{
+Y X ′θ∗ −m(X ′θ∗)
+g(η) + h(Y, η)
+}
+. (3)
+Here, η ∈ R+ is a known scale parameter; m, g and h are three normalization functions mapping from R to R. The exponential family (3) is a very broad family of distributions including the Gaussian, binomial, Poisson, gamma and inverse-Gaussian distributions. It follows from standard properties of exponential families (Brown, 1986) that m is infinitely differentiable satisfying ṁ(X ′θ∗) = E[Y | X ] = µ(X ′θ∗) and m̈(X ′θ∗) = V(Y | X). It can be checked that the data generated from (3) automatically satisfies the sub-Gaussian condition (2).
+Suppose we have independent samples of Y1, Y2, . . . , Yn condition onX1, X2, . . . , Xn. The log-likelihood function of θ under model (3) is
+log ℓ(θ) =
+n ∑
+t=1
+[ YtX ′ tθ −m(X ′tθ) v(η) + c(Yt, η) ]
+= 1
+v(η)
+n ∑
+t=1
+[YtX ′ tθ −m(X ′tθ)] + constant .
+Consequently, the maximum likelihood estimate (MLE) may be defined by
+θ̂n ∈ argmax θ∈Θ
+n ∑
+t=1
+[YtX ′ tθ −m(X ′tθ)] .
+From classical likelihood theory (Lehmann & Casella, 1998), we know that when the sample size n goes to infinity, theMLE θ̂n is asymptotically normal, that is, θ̂n−θ∗ → N (0, I−1θ∗ ), where Iθ = ∑n t=1 µ̇(X ′ tθ)XtX ′ t is the Fisher InformationMatrix. Note that if µ̇(X ′tθ ∗) → 0, the asymptotic variance of x′θ̂ can go to infinity for some x. This suggests the necessity of Assumption 1.
+As we will see later, the normality result is crucial in our regret analysis of GLM bandits. However, to the best of our knowledge, there is no non-asymptotic normality results of the MLE for GLM. In the following, we present a finite-sample version of the classical asymptotic normality results, which can be of independent interest. Theorem 1. Define Vn = ∑n t=1 XtX ′ t, and let δ > 0 be given. Furthermore, assume that
+λmin(Vn) ≥ 512M2µσ 2
+κ4
+(
+d2 + log 1
+δ
+)
+. (4)
+Then, with probability at least 1 − 3δ, the maximumlikelihood estimator satisfies, for any x ∈ Rd, that
+|x′(θ̂n − θ∗)| ≤ 3σ
+κ
+√
+log(1/δ) ‖x‖V −1n . (5)
+This theorem characterizes the behavior of MLE on every direction. It implies that x′(θ̂n − θ∗) has a sub-Gaussian tail bound for any x ∈ Rd. It also provides a rigorous justification of the asymptotic upper confidence bound derived heuristically by Filippi et al. (2010, Section 4.2).
+The proof of the theorem is given in the appendix. It consists of two main steps, as is typical for proving normalitytype results of MLEs (Van der Vaart, 2000). We first show the n−1/2-consistency of θ̂ to θ∗. Then, by using a secondorder Taylor expansion or Newton-step, we can prove the desired normality of θ̂.
+The condition (4) on λmin(Vn) is necessary for the consistency of estimating linear models (Lai & Wei,
+1982; Bickel et al., 2009) and generalized linear models (Fahrmeir & Kaufmann, 1985; Chen et al., 1999). It can be satisfied under mild conditions such as the proposition below, which will be useful for our analysis.
+Proposition 1. Define Vn = ∑n t=1 XtX ′ t, where Xt is drawn iid from some distribution ν with support in the unit ball, Bd. Furthermore, let Σ := E[XtX ′ t] be the second moment matrix, and B and δ > 0 be two positive constants. Then, there exist positive, universal constants C1 and C2 such that λmin(Vn) ≥ B with probability at least 1− δ, as long as
+n ≥ (
+C1 √ d+ C2 √ log(1/δ)
+λmin(Σ)
+)2
++ 2B
+λmin(Σ) .
+Proof Sketch. We give a proof sketch here, and the full proof is found in the appendix. In the following, for simplicity, we will drop the subscript n when there is no ambiguity. Therefore,Vn is denotedV and so on. We will need a technical lemma, which is an existing result in randommatrix theory. The version we presented here is adapted from Equation (5.23) of Theorem 5.39 from Vershynin (2012).
+Lemma 1. Let A ∈ Rn×d be a matrix whose rows Ai are independent sub-Gaussian isotropic random vectors in R d with parameter σ, namely, E exp(x′(Ai − EAi)) ≤ exp(σ2 ‖x‖2 /2) for any x ∈ Rd. Then, there exist positive, universal constants C1 and C2 such that, for every t ≥ 0, the following holds with probability at least 1 − 2 exp(−C2t2), where ε = σ2(C1 √ d/n + t/ √ n): ∥ ∥
+1 nA ′A− Id ∥ ∥ ≤ max{ε, ε2}.
+Let X be a random vector drawn from the distribution ν. Define Z := Σ−1/2X . Then Z is isotropic, namely, E[ZZ ′] = Id. Define U = ∑n t=1 ZtZ ′ t = Σ
+−1/2V Σ−1/2. From Lemma 1, we have that, for any t, with probability at least 1 − 2 exp(−C2t2), λmin(U) ≥ n − C1σ2 √ nd −
+σ2t √ n, where σ is the sub-Gaussian parameter ofZ , which is upper-bounded by ∥ ∥Σ−1/2 ∥
+∥ = λ −1/2 min (Σ) (see, e.g.,
+Vershynin (2012)). We thus can rewrite the above inequality (which holds with probability 1− δ as
+λmin(U) ≥ n− λ−1min(Σ) ( C1σ 2 √ nd+ t √ n ) .
+This implies the following lower bound:
+λmin(V ) ≥ λmin(Σ)n− C1 √ nd− C2 √ n log(1/δ) .
+Finally, simple calculations show that the last expression above is no less than B as long as n is no smaller than the expression stated in the proposition, finishing the proof. 4. Algorithms and Main Results In this section, we are going to present two algorithms. While the first algorithm is computationally more efficient, the second algorithm has a provable optimal regret bound. 4.1. Algorithm UCB-GLM The idea of upper confidence bounds (UCB) is highly effective in dealing with the exploration and exploitation trade-off in many parametric bandit problems, including K-arm bandits (Auer et al., 2002a) and linear bandits (Abbasi-Yadkori et al., 2011; Auer, 2003; Chu et al., 2011; Dani et al., 2008). For the generalized linear model considered here, since µ is a strictly increasing function, our goal is equivalent to choosing a ∈ [K] to maximize x′t,aθ ∗ at round t. Suppose θ̂t is our current estimator of θ ∗ after round t. An exploitation action is to take the action that maximizes the estimated mean value, while an exploration action is to choose the one that has the largest variance. Thus, to balance exploitation and exploration, we can simply choose the action that maximizes the sum of estimated mean and variance, which can be interpreted as an upper confidence bound of x′t,aθ̂t. This leads to the algorithm UCB-GLM (Algorithm 1).
+Algorithm 1 UCB-GLM
+Input: the total rounds T , tuning parameter τ and α. Initialization: randomly choose at ∈ [K] for t ∈ [τ ], set Vτ+1 = ∑τ i=1 XtX ′ t
+For t = τ + 1, τ + 2, . . . , T do
+1. Calculate the maximum-likelihood estimator θ̂t by solving the equation
+t−1 ∑
+i=1
+(Yi − µ(X ′iθ))Xi = 0 (6)
+2. Choose at = argmaxa∈[K]
+( X ′t,aθ̂t + α ‖Xt,a‖V −1t )
+3. Observe Yt, let Xt ← Xt,at , Vt+1 ← Vt +XtX ′t End For
+UCB-GLM take two parameters. At the initialization stage, we randomly choose actions to ensure a unique solution of (6). The choice of τ in the theorem statement follows from Proposition 1 with B = 1. It should be noted that the IID assumption about contextual (i.e., the distribution ν) is only needed to ensure Vτ+1 is invertable (similar to the first phase in the algorithm of Filippi et al. (2010)); the rest of our analysis does not depend on this stochastic assumption. The same may be achieved by using regularization (see, e.g., Abbasi-Yadkori et al. (2011)). Another tuning parameter α is used to control the amount of exploration. The larger the α is, the more exploration will be used.
+As mentioned earlier, the feature vectors Xt depend
+on the previous rewards. Consequently, the rewards {Yi, i ∈ [t]} may not be independent given {Xi, i ∈ [t]}. We instead use results on self-normalized martingales (Abbasi-Yadkori et al., 2011), together with a finitetime normality result like Theorem 1, to prove the next theorem.
+Theorem 2. Fix any δ > 0. There exists a universal constant C > 0, such that if we run UCB-GLM with
+α = σκ
+√
+d 2 log(1 + 2T/d) + log(1/δ) and τ = Cσ −2 0 (d+
+log(1/δ)), then, with probability at least 1 − 2δ, the regret of the algorithm is upper bounded by
+RT ≤ τ + 2Lµσd
+κ log
+(
+T
+dδ
+)√ T .
+The theorem shows an Õ(d √ T ) regret bound that is independent of K . Indeed, this rate matches the minimax lower bound up to logarithm factor for the infinite actions contextual bandit problems (Dani et al., 2008). By choosing δ = 1/T and using the fact that RT ≤ T , this highprobability result implies a bound on the expected regret:
+E[RT ] = Õ(d √ T ). Our result improves the previous
+regret bound of Filippi et al. (2010) by a √ logT factor. Moreover, the algorithm proposed in Filippi et al. (2010) involves a projection step, which is computationally more expensive comparing to UCB-GLM. Finally, this algorithm works well in practice. We give a heuristic argument for its strong performance in Section 5, under a specific condition that sometimes are satisfied.
+Proof of Theorem 2. We first bound the one-step regret. To do so, fix t and let X∗t = xt,a∗t and ∆t = θ̂t − θ∗, where a∗t ∈ argmaxa∈[K] µ(x′t,aθ∗) is an optimal action at round t. The selection of at in UCB-GLM implies
+〈X∗t , θ̂t〉+ α ‖X∗t ‖V −1t ≤ 〈Xt, θ̂t〉+ α ‖Xt‖V −1t . (7) Then, we have
+〈X∗t , θ∗〉 − 〈Xt, θ∗〉 = 〈X∗t −Xt, θ̂t〉 − 〈X∗t −Xt, θ̂t − θ∗〉 ≤ α ‖Xt‖V −1t − α ‖X ∗ t ‖V −1t − 〈X ∗ t −Xt,∆t〉
+≤ α ( ‖Xt‖V −1t − ‖X ∗ t ‖V −1t ) + ‖X∗t −Xt‖V −1t ‖∆t‖Vt , where the last inequality is due to Cauchy-Schwartz inequality. We have the following two lemmas to bound ‖∆t‖Vt and ‖Xt‖V −1t , respectively. Their proofs are deferred to the appendix.
+Lemma 2. Let {Xt}∞t=1 be a sequence in Rd satisfying ‖Xt‖ ≤ 1. Define X0 = 0 and Vt = ∑t−1 s=0 XsX ′ s. Suppose there is an integerm such that λmin(Vm+1) ≥ 1, then for all n > 0,
+m+n ∑
+t=m+1
+‖Xt‖V −1t ≤ √ 2nd log ( n+m
+d
+)
+.
+Lemma 3. Suppose λmin(Vτ+1) ≥ 1. For any δ ∈ [1/T, 1), define event
+E∆ := { ‖∆t‖Vt ≤ σ
+κ
+√
+d 2 log(1 + 2t/d) + log(1/δ)
+}
+.
+Then, event E∆ holds for all t ≥ τ with probability at least 1− δ.
+We now choose α = σκ
+√
+d 2 log(1 + 2T/d) + log(1/δ). If
+event E∆ holds for all t ≥ τ , then,
+〈X∗t , θ∗〉 − 〈Xt, θ∗〉 ≤ α (
+‖Xt‖V −1t − ‖X ∗ t ‖V −1t + ‖X ∗ t −Xt‖V −1t
+)
+≤ 2α ‖Xt‖V −1t .
+Combining the above with Lemma 2 yields
+T ∑
+t=τ+1
+( 〈X∗t , θ∗〉 − 〈Xt, θ∗〉 )
+≤ 2α √ 2Td log ( T
+d
+)
+≤ 2dσ κ log
+(
+T
+dδ
+)√ T . (8)
+Note that µ is an increasing Lipschitz function with Lipschitz constant Lµ and the µ function is bounded between 0 and 1. The regret of algorithm UCB-GLM can be upper bounded as
+RT =
+τ ∑
+t=1
+( µ (〈X∗t , θ∗〉)− µ (〈Xt, θ∗〉) )
++ T ∑
+t=τ+1
+( µ (〈X∗t , θ∗〉)− µ (〈Xt, θ∗〉) )
+≤ τ + Lµ T ∑
+t=τ+1
+( 〈X∗t , θ∗〉 − 〈Xt, θ∗〉 ) .
+The proof can be finished by applying (8) and the specified value of τ to the bound above. 4.2. Algorithm SupCB-GLM While the algorithm UCB-GLM performs sufficiently well in practice (Li et al., 2012), it is unclear whether it can achieve the optimal rates of O( √ dT logK), when K is small. As mentioned in Section 4.1, the key technical difficulty in analyzing UCB-GLM is the dependence between samples. Inspired by a technique developed by Auer (2003) to create independent samples for linear contextual bandits, we propose another algorithm SupCB-GLM (Algorithm 3), which uses algorithm CB-GLM (Algorithm 2) as a subroutine.
+Algorithm 2 CB-GLM
+Input: parameter α, index set Ψ(t), and candidate set A.
+1. Let θ̂t be the solution of ∑ i∈Ψ(t) [Yi − µ(X ′iθ)]Xi = 0
+2. Vt = ∑ i∈Ψ(t) XiX ′ i
+3. For a ∈ A, do
+wt,a = α ‖xt,a‖V −1t , mt,a = 〈xt,a, θ̂t〉
+End For
+This algorithm also relies on the idea of confidence bound to do exploration. At round t, the algorithm screens the candidate actions based on the value of w (s) t,a through S stages until an action is chosen. At stage s, we set the confidence level at stage s to be 2−s. If w (s) t,a > 2 −s for some a, we need to do more exploration on xt,a and thus we choose this action. Otherwise, the actions are filtered in step 2d such that the actions passed to the next stage are close enough to the optimal action. Since all the widths are smaller than 2−s, if m (s) t,a < m (s) t,j − 2 · 2−s for some j ∈ As, the action a can not be the optimal action. The filter process terminates when we have already got accurate estimate of all x′t,aθ ∗ up to the 1/ √ T level and we do not need to do exploration. Thus in step 2c we just choose the action that maximizes the estimated mean value.
+Our algorithm is different from the algorithm SupLinRel in Auer (2003) that we directly maximize the mean, rather than the upper confidence bound, in steps c and d. This modification leads to a simpler algorithm and a cleaner regret analysis. Also, we would like to point out that, unlike SpectralEliminator (Valko et al., 2014), the algorithm can easily handle a changing action set.
+The following result, adapted fromAuer (2003, lemma 14), shows how the algorithm SupCB-GLM will give us independent samples. For the sake of completeness, we also present its proof here.
+Lemma 4. For all s ∈ [S] and t ∈ [T ], given {xi,ai , i ∈ Ψs(t)}, the rewards {yi,ai , i ∈ Ψs(t)} are independent random variables.
+Proof of Lemma 4. Since a trial t can only be added to Ψs(t) in step 2b of algorithm SupCB-GLM, the event {t ∈ Ψs} only depends on the results of trials τ ∈ ∪σ<sΨσ(t) and on w
+(s) t,a . From the definition of w (s) t,a , we know it only
+depends on the feature vectors xi,ai , i ∈ Ψs(t) and on xt,i. This implies the lemma.
+With Lemma 4, we are able to apply the non-asymptotic
+Algorithm 3 SupCB-GLM
+Input: tuning parameter α, τ , the number of trials T .
+Initialization:
+for t ∈ [τ ], randomly choose at ∈ [K]. Set S = ⌊log2 T ⌋, F = {a1, · · · , aτ} and Ψ0 = Ψ1 =
+· · · = ΨS = ∅. For t = τ + 1, τ + 2, · · · , T do
+1. Initialize A1 = [K] and s = 1.
+2. While at =Null
+a. Run CB-GLM with α and Ψs ∪ F to calculate m
+(s) t,a and w (s) t,a for all a ∈ As.
+b. If w (s) t,a > 2 −s for some a ∈ As,
+set at = a, updateΨs = Ψs ∪ {t}
+c. Else if w (s) t,a ≤ 1/ √ T for all a ∈ As,
+set at = argmax a∈As
+m (s) t,a, updateΨ0 = Ψ0 ∪ {t}
+d. Else if w (s) t,a ≤ 2−s for all a ∈ As,
+As+1 = {a ∈ As,m(s)t,a ≥ max j∈As m (s) t,j − 2 · 2−s},
+s ← s+ 1 . End For normality result (5) and thus to prove our regret bound of Algorithm SupCB-GLM.
+Theorem 3. For any 0 < δ < 1, if we run the SupCB-GLM algorithm with τ = √ dT and α = 3σκ √
+2 log(TK/δ) for T ≥ T0 rounds, where T0 = Ω
+(
+σ2 κ4 max
+{
+d3, log(TK/δ)
+d
+})
+, (9)
+the regret of the algorithm is bounded as
+RT ≤ 45(σLµ/κ) √ logT log(TK/δ) log(T/d) √ dT ,
+with probability at least 1− δ. With δ = 1/T , we obtain
+E[RT ] = O ( (log T )1.5 √ dT logK ) .
+The theorem demonstrates an Õ( √ dT logK) regret bound for the algorithm SupCB-GLM. It has been proved in
+Chu et al. (2011, Theorem 2) that √ dT is the minimax lower bound of the expected regret forK-armed linear bandits, a special of the GLM bandits considered here. Therefore, the regret of our SupCB-GLM algorithm is optimal up
+to logarithm terms of T and K . To the best of our knowledge, this is the first algorithm which achieves the (near)optimal rate of GLM bandits.
+It is worthwhile to compare Theorem 3 with the result in Theorem 2. When K = o(2d) is small, the rate of SupCBGLM is faster, and we improve the previous rates by a√ d factor. Here, we give a briefly illustration of how we
+get rid of the extra √ d factor. Both in Theorem 2 and in Filippi et al. (2010), |x′(θ̂n − θ∗)| is upper bounded by using the Cauchy-Schwartz inequality,
+|x′(θ̂n − θ∗)| ≤ ‖x‖V −1n ∥ ∥ ∥ θ̂n − θ∗ ∥ ∥ ∥
+Vn . (10)
+Lemma 3 in the supplementary material establishes that
+∥ ∥ ∥ θ̂n − θ∗ ∥ ∥ ∥
+Vn ≤ C2
+√
+d log(T/δ).
+This will lead to an extra √ d factor compared to (5). By using Cauchy-Schwartz (10), we only make use of the fact that θ̂n is close to θ ∗ in the ℓ2 sense. However, (5) tells us that actually θ̂n is close to θ ∗ in every direction. This is
+the reason why we are able to remove the extra √ d factor to achieve a near-optimal regret. It also explains why the bound in Theorem 2 is tight when K is large. As K goes large, it is likely there is a direction x for which (10) is tight.
+Proof of Theorem 3. To facilitate our proof, we first present two technical lemmas. Lemma 4, Theorem 1, Theorem 5.39 of Vershynin (2012) together with a union bound yield Lemma 5. The proof of Lemma 6 is deferred to the appendix. Lemma 5. Fix δ > 0. Choose in SupCB-GLM τ = √ dT and α = 3σκ √
+2 log(TK/δ). Suppose T satisfies condition (9). Define the following event:
+EX := {|m(s)t,a−x′t,aθ∗| ≤ w(s)t,a , ∀t ∈ [τ+1, T ], s ∈ [S], a ∈ [K]} . (11) Then, event EX holds with probability at least 1− δ.
+Proof of Lemma 5. By Lemma 4, we have independent samples now. Then to apply Theorem 1, the key is to lower bound the minimum eigenvalue of Vt. Note that we randomly select the feature vectors at the first τ = √ dT rounds, that is, they are independent. Moreover, the feature vectors are bounded. Thus, X1, X2, . . . , Xτ are independent sub-Gaussian with parameter 1. By Proposition 1, we have
+λmin(Vt) ≥ λmin(Vτ ) ≥ c √ dT
+for some constant c with probability at least 1 − exp(− √ dT ). By Theorem 1 and union bound, we have the desired result under condition (9).
+Lemma 6. Suppose that event EX holds, and that in round t, the action at is chosen at stage st. Then, a ∗ t ∈ As for all s ≤ st. Furthermore, we have
+µ(x′t,a∗t θ ∗)− µ(x′t,atθ∗)
+≤ { (8Lµ)/2 st if at is selected in step 2b
+(2Lµ)/ √ T if at is selected in step 2c .
+Define Vs,t = ∑
+t∈Ψs(T ) XtX ′ t, then by Lemma 2,
+∑
+t∈Ψs(T )
+w (s) t,at =
+∑
+t∈Ψs(T )
+α(δ)‖xt,at‖V −1s,t
+≤ α(δ) √ 2d log(T/d)|Ψs(n)| .
+On the other hand, by the step 2b of SupCB-GLM,
+∑
+t∈Ψs(T )
+w (s) t,at ≥ 2−s|Ψs(T )|.
+Combining the above two inequalities gives us
+|Ψs(T )| ≤ 2sα(δ) √ 2d log (T/d)|Ψs(T )|. (12)
+Let Ψ0 be the collection of trials such that at is chosen in step 2c. Since we have chose S = log2 T , each t ∈ [τ + 1, T ]must be in one of Ψs and hence, {τ, τ + 1, . . . , T } = Ψ0 ∪ ( ∪Ss=1Ψs(T ) ) . If we set τ = √ dT , we have
+RT =
+τ ∑
+t=1
+(
+µ(x′t,a∗t θ ∗)− µ(x′t,atθ∗)
+)
++
+T ∑
+t=τ+1
+(
+µ(x′t,a∗t θ ∗)− µ(x′t,atθ∗)
+)
+≤ τ + ∑
+t∈Ψ0
+(
+µ(x′t,a∗t θ ∗)− µ(x′t,atθ∗)
+)
++
+S ∑
+s=1
+∑
+t∈Ψs(T )
+(
+µ(x′t,a∗t θ ∗)− µ(x′t,atθ∗)
+)
+≤ √ dT + T · 2Lµ√
+T +
+S ∑
+s=1
+Lµ · 23−s · |Ψs(T )|
+≤ √ dT + 2Lµ √ T + 8Lµα(δ) S ∑
+s=1
+√
+2d log T
+d |Ψs(T )|
+≤ √ dT + 2Lµ √ T + 8Lµα(δ) √ 2d log(T/d) √ ST ≤ 45(σLµ/κ) √ logT log(TK/δ) log(T/d) √ dT ,
+with probability at least 1 − δ. Here, the first inequality is due to the assumption that 0 ≤ µ ≤ 1. The second inequality is Lemma 6. The third inequality is the inequality (12) and the fourth inequality is implied by Cauchy-Schwartz. This completes the proof of the high-probability result. 5. Discussions In this paper, we propose two algorithms forK-armed bandits with generalized linear models. While the first algorithm, UCB-GLM, achieves the optimal rate for the case of infinite number of actions, the second algorithm SupCBGLM is provable optimal for the case of finite number actions at each round. However, it remains open whether UCB-GLM can achieve the optimal rate for small K . 5.1. A better regret bound for UCB-GLM A key quantity in determine the regret of algorithm UCBGLM are the minimum eigenvalue of Vt. If we make an addition assumption on the minimum eigenvalue of Vt, we will be able to prove an O( √ dT ) regret bound for UCB- GLM. Theorem 4. We run algorithm UCB-GLM with τ = 8σ2
+κ2 d logT and α ≤ Lµσ/κ. For any δ ∈ [1/T, 1), suppose there is an universal constant c such that
+T ∑
+t=τ+1
+λ −1/2 min (Vt) ≤ c
+√ T . (13)
+holds with probability at least 1− δ, and
+T = Ω
+(
+σR
+κLµ d log2 T
+)
+. (14)
+Then, the regret of the algorithm is bounded by
+RT ≤ CLµσ
+κ
+√
+dT log(T/δ)
+with probability at least 1 − 2δ, where C is an universal constant.
+This theorem provides some insights of why UCB-GLM performs well in practice. Although the condition in (13) is hard to check and may be violated in some cases, for example, in K-armed bandits, we provide a heuristic argument to justify this assumption in a range of problems. When t is large enough, our estimator θ̂t is very close to θ ∗. If we assume there is a positive gap between 〈xt,a∗t , θ∗〉 and 〈xt,a, θ∗〉 for all a 6= a∗t , we will have at = a∗t after, for example, √ T steps. Since {xt,a, a ∈ [K]} are independent for t ∈ [T ], {xt,a∗t } are also independent samples. Then Vt/twill be well-approximated by the covariancematrix of xt,a∗t , which we denote by Σ0. In many problem in practice, especially when features are dense, it is unlikely the feature vector xt,a∗t lies in a low-dimensional subspace of R d. It implies that Σ0 has full rank, and that we will have λmin(Vt) = Θ(t · λmin(Σ0)) when t is large enough. It follows that,
+T ∑
+t=τ+1
+1 √
+λmin(Vt) =
+T ∑
+t=τ+1
+Θ(t−1/2) = O( √ T ).
+It should be cautioned that, since we do not know the distribution of our feature vectors, we cannot assume the above gap exists. It is therefore challenging to make the above arguments rigorous. In fact, when studying the ARIMA model in time series, Lai & Wei (1982, Example 1) provide an example such that λmin(Vt) = O(log t). 5.2. Open Questions Computational efficient algorithms. While UCB-GLM and SupCB-GLM enjoy good theoretical properties, they can be expensive in some application domains. First, they require inverting a d × d matrix in every step, a costly operation when d is large. Second, at step t, the MLE is computed using Θ(t) samples, meaning that the per-step complexity grows at least linearly with t for a straightforward implementation of the algorithms. It is therefore interesting to investigate more scalable alternatives. It is possible to use a first-order, iterative optimization procedure to amortize the cost, analogous to the approach taken by Agarwal et al. (2014).
+K-dependent lower bound. Currently, all the lower bound results on (generalized) linear bandits have no dependence on the number of actionsK . The minimax lower bound will be of particularly interest because all current lower bound results assume that K ≤ d. Although it will at most be a logarithm dependence on K , it is still a theoretically interesting question.
+Randomized algorithms with optimal regret rate. As opposed to the deterministic, UCB-style algorithms studied in this paper, randomized algorithms like EXP4 (Auer et al., 2002b) and Thompson Sampling (Thompson, 1933) have advantages in certain situations, for example, when reward observations are delayed (Chapelle & Li, 2012). Recently developed techniques for analyzing Bayes regret in BLM bandits (Russo & Van Roy, 2014) may be useful to analyze the cumulative regret considered here. A. Proof of Theorem 1 In the following, for simplicity, we will drop the subscript n when there is no ambiguity. Therefore, Vn is denoted V and so on.
+To prove normality-type results of the maximum likelihood estimator θ̂, typically we first show the n−1/2-consistency of θ̂ to θ∗. Then, by using a second-order Taylor expansion or Newton-step, we can prove the desired normality of θ̂. More details can be found in standard textbooks such as Van der Vaart (2000).
+Since m is twice differentiable with m̈ ≥ 0, the maximum-likelihood estimation can be written as the solution to the following equation
+n ∑
+i=1
+(Yi − µ(X ′iθ))Xi = 0 . (15)
+Define G(θ) := ∑n i=1 (µ(X ′ iθ)− µ(X ′iθ∗))Xi, and we have
+G(θ∗) = 0 and G(θ̂) =
+n ∑
+i=1
+ǫiXi , (16)
+where the noise ǫi is defined in (1). For convenience, define Z := G(θ̂) = ∑n i=1 ǫiXi.
+Step 1: Consistency of θ̂. We first prove the consistency of θ̂. For any θ1, θ2 ∈ Rd, mean value theorem implies that there exists some θ̄ = vθ1 + (1− v)θ2 with 0 < v < 1, such that
+G(θ1)−G(θ2) = [ n ∑
+i=1
+µ̇(X ′i θ̄)XiX ′ i
+]
+(θ1 − θ2) := F (θ̄)(θ1 − θ2) (17)
+Since µ̇ > 0 and λmin(V ) > 0, we have
+(θ1 − θ2)′(G(θ1)−G(θ2)) ≥ (θ1 − θ2)′(κV )(θ1 − θ2) > 0
+for any θ1 6= θ2. Hence, G(θ) is an injection from Rd to Rd, and so G−1 is a well-defined function. Consequently, (15) has a unique solution θ̂ = G−1(Z).
+Let us consider an η-neighborhood of θ∗, Bη := {θ : ‖θ − θ∗‖ ≤ η}, where η > 0 is a constant that will be specified later. Note that Bη is a convex set, thus θ̄ ∈ Bη as long as θ1, θ2 ∈ Bη . Define κη := infθ∈Bη µ̇(x′θ) > 0. From (17), for any θ ∈ Bη,
+‖G(θ)‖2V −1 = ‖G(θ) −G(θ∗)‖ 2 V −1
+= (θ − θ∗)′F (θ̄)V −1F (θ̄)(θ − θ∗) ≥ κ2ηλmin(V ) ‖θ − θ∗‖2 ,
+where the last inequality is due to the fact that F (θ̄) κηV . On the other hand, Lemma A of Chen et al. (1999) implies that
+{
+θ : ‖G(θ)‖V −1 ≤ κηη √ λmin(V ) } ⊂ Bη .
+Now it remains to upper bound ‖Z‖V −1 = ∥ ∥ ∥ G(θ̂) ∥ ∥ ∥
+V −1 to ensure θ̂ ∈ Bη . To do so, we need the following technical
+lemma, whose proof is deferred to Section C.
+Lemma 7. Recall σ which is the constant in (2). For any δ > 0, define the following event:
+EG := { ‖Z‖V −1 ≤ 4σ √ d+ log(1/δ) } .
+Then, EG holds with probability at least 1− δ.
+Suppose EG holds for the rest of the proof. Then, η ≥ 4σκη √ d+log(1/δ) λmin(V ) implies ∥ ∥ ∥ θ̂t − θ ∥ ∥ ∥ ≤ η. Since κ = κ1, we have κη ≥ κ as long as η ≤ 1. Thus, we have
+∥ ∥ ∥ θ̂ − θ ∥ ∥ ∥ ≤ 4σ
+κ
+√
+d+ log(1/δ)
+λmin(V ) ≤ 1 , (18)
+when λmin(V ) ≥ 16σ2 [d+ log(1/δ)] /κ2.
+Step 2: Normality of θ̂. Now, we are ready to precede to prove the normality result. The following assumes EG holds (which is high-probability event, according to Lemma 7).
+Define∆ := θ̂ − θ∗. It follows from (17) that there exists a v ∈ [0, 1] such that
+Z = G(θ̂)−G(θ∗) = (H + E)∆ ,
+where θ̃ := vθ∗ + (1− v)θ̂, H := F (θ∗) =∑ni=1 µ̇(X ′iθ∗)XiX ′i and E := F (θ̃)− F (θ∗). Intuitively, when θ̂ and θ∗ are close, elements in E are small. By the mean value theorem,
+E =
+n ∑
+i=1
+( µ̇(X ′i θ̃)− µ̇(X ′iθ∗) ) XiX ′ i =
+n ∑
+i=1
+µ̈(ri)X ′ i∆XiX ′ i
+for some ri ∈ R. Since µ̈ ≤ Mµ and v ∈ [0, 1], for any x ∈ Rd \ {0}, we have
+x′H−1/2EH−1/2x = (1 − v) n ∑
+i=1
+µ̈(ri)X ′ i∆ ∥ ∥ ∥ x′H−1/2Xi ∥ ∥ ∥ 2
+≤ n ∑
+i=1
+Mµ ‖Xi‖ ‖∆‖ ∥ ∥ ∥ x′H−1/2Xi ∥ ∥ ∥ 2
+≤ Mµ ‖∆‖ ( x′H−1/2 ( n ∑
+i=1
+XiX ′ i
+)
+H−1/2x
+)
+≤ Mµ κ ‖∆‖ ‖x‖2 ,
+where we have used the assumption that ‖Xi‖ ≤ 1 for the second inequality. Therefore,
+∥ ∥ ∥ H−1/2EH−1/2 ∥ ∥ ∥ ≤ Mµ κ ‖∆‖ ≤ 4Mµσ κ2
+√
+d+ log(1/δ)
+λmin(V ) . (19)
+When λmin(V ) ≥ 64M2µσ2(d+ log(1/δ))/κ4, we have ∥
+∥ ∥ H−1/2EH−1/2
+∥ ∥ ∥ ≤ 1/2 . (20)
+Now we are ready to prove the theorem. For any x ∈ Rd,
+x′(θ̂ − θ∗) = x′(H + E)−1Z = x′H−1Z − x′H−1E(H + E)−1Z . (21)
+Note that the matrix (H + E) is nonsingular, so its inversion exists.
+For the first term, {ǫi} are sub-Gaussian random variables with sub-Gaussian parameter σ. Define
+D := [X1, X2, . . . , Xn] ′ ∈ Rn×d
+to be the design matrix. Hoeffding inequality gives
+P{|x′H−1Z| ≥ t} ≤ 2 exp { − t 2
+2σ2 ‖x′H−1D′‖2
+}
+. (22)
+SinceH κV = κD′D, we have
+∥ ∥x′H−1D′ ∥ ∥ 2 = x′H−1D′DH−1x ≤ 1
+κ2 x′V −1x =
+1
+κ2 ‖x‖2V −1 ,
+so (22) implies
+P{|x′H−1Z| ≥ t} ≤ 2 exp { − t 2κ2
+2σ2 ‖x‖2V −1
+}
+.
+Let the right-hand side be 2δ and solve for t, we obtain that with probability at least 1− 2δ,
+|x′H−1Z| ≤ √ 2σ
+κ
+√
+log(1/δ) ‖x‖V −1 . (23)
+For the second term,
+|x′H−1E(H + E)−1Z| ≤ ‖x‖H−1 ∥ ∥ ∥ H−1/2E(H + E)−1Z ∥ ∥ ∥
+≤ ‖x‖H−1 ∥ ∥ ∥ H−1/2E(H + E)−1H1/2 ∥ ∥ ∥ ‖Z‖H−1
+≤ 1 κ ‖x‖V −1
+∥ ∥ ∥ H−1/2E(H + E)−1H1/2 ∥ ∥
+∥ ‖Z‖V −1 , (24)
+where the last inequality is due to the fact that H κV . Since (H + E)−1 = H−1 −H−1E(H + E)−1, we have ∥
+∥ ∥ H−1/2E(H + E)−1H1/2
+∥ ∥ ∥ = ∥ ∥ ∥ H−1/2E ( H−1 −H−1E(H + E)−1 ) H1/2 ∥ ∥ ∥
+= ∥ ∥ ∥ H−1/2EH−1/2 +H−1/2EH−1E(H + E)−1H1/2 ∥ ∥ ∥
+≤ ∥ ∥ ∥ H−1/2EH−1/2 ∥ ∥ ∥ + ∥ ∥ ∥ H−1/2EH−1/2 ∥ ∥ ∥ ∥ ∥ ∥ H−1/2E(H + E)−1H1/2 ∥ ∥ ∥ .
+By solving this inequality, we get
+∥ ∥ ∥ H−1/2E(H + E)−1H1/2 ∥ ∥ ∥ ≤
+∥ ∥H−1/2EH−1/2 ∥ ∥
+1− ∥ ∥H−1/2EH−1/2 ∥ ∥
+≤ 2 ∥ ∥ ∥ H−1/2EH−1/2 ∥ ∥ ∥ ≤ 8Mµσ
+κ2
+√
+d+ log(1/δ)
+λmin(V ) ,
+where we have used (20) and (19) in the second and third inequalities, respectively. Combining it with (24) and the bound in EG, we have
+|x′H−1E(H + E)−1Z| ≤ 32Mµσ 2 κ3 d+ log(1/δ) √ λmin(V ) ‖x‖V −1 . (25)
+From (21), (23) and (25), one can see that (5) holds as long as the lower bound (4) for λmin(V ) holds. Finally, an application of a union bound on two small-probability events (given in Lemma 7 and (23), respectively) asserts that (5) holds with probability at least 1− 3δ. B. Proof of Proposition 1 In the following, for simplicity, we will drop the subscript n when there is no ambiguity. Therefore, Vn is denoted V and so on.
+Let X be a random vector drawn from the distribution ν. Define Z := Σ−1/2X . Then Z is isotropic, namely, E[ZZ ′] = Id. Define U = ∑n t=1 ZtZ ′ t = Σ
+−1/2VΣ−1/2. From Lemma 1, we have that, for any t, with probability at least 1− 2 exp(−C2t2),
+λmin(U) ≥ n− C1σ2 √ nd− σ2t√n .
+where σ is the sub-Gaussian parameter of Z , which is upper-bounded by ∥ ∥Σ−1/2 ∥ ∥ = λ −1/2 min (Σ) (see, e.g., Vershynin (2012)). We thus can rewrite the above inequality (which holds with probability 1− δ as
+λmin(U) ≥ n− λ−1min(Σ) ( C1σ 2 √ nd+ t √ n ) .
+We now bound the minimum eigenvalue of V , as follows:
+λmin(V ) = min x∈Bd
+x′V x
+= min x∈Bd
+x′Σ1/2UΣ1/2x
+≥ λmin(U) min x∈Bd x′Σx
+= λmin(U)λmin(Σ) ≥ λmin(Σ) ( n− λ−1min(Σ)(C1σ2 √ nd+ t √ n) ) = λmin(Σ)n− C1 √ nd− C2 √ n log(1/δ) .
+Finally, it can be verified (Lemma 9) that the last expression above is no less than B as long as
+n ≥ (
+C1 √ d+ C2 √ log(1/δ)
+λmin(Σ)
+)2
++ 2B
+λmin(Σ) ,
+finishing the proof. C. Technical Lemmas and Proofs  C.1. Proof of Lemma 7 Noting that
+‖Z‖V −1 = ‖V −1/2Z‖2 = sup ‖a‖2≤1 〈a, V −1/2Z〉,
+let B̂ be a 1/2-net of the unit ball Bd. Then |B̂| ≤ 6d (Pollard, 1990, Lemma 4.1), and for any x ∈ Bd, there is a x̂ ∈ B̂ such that ‖x− x̂‖ ≤ 1/2. Consequently,
+〈x, V −1/2Z〉 = 〈x̂, V −1/2Z〉+ 〈x− x̂, V −1/2Z〉
+= 〈x̂, V −1/2Z〉+ ‖x− x̂‖ 〈 x− x̂‖x− x̂‖ , V −1/2Z〉
+≤ 〈x̂, V −1/2Z〉+ 1 2 sup z∈Bd 〈z, V −1/2Z〉.
+Taking supremum on both sides, we get
+sup x∈Bd 〈x, V −1/2Z〉 ≤ 2max x̂∈B̂ 〈x̂, V −1/2Z〉 .
+Then a union bound argument implies
+P {‖Z‖V −1 > t} ≤ P {
+max x̂∈B̂
+〈x̂, V −1/2Z〉 > t/2 }
+≤ ∑
+x̂∈B̂
+P
+{ 〈x̂, V −1/2Z〉 > t/2 }
+≤ ∑
+x̂∈B̂
+exp
+{
+− t 2
+8σ2 ∥ ∥x̂′V −1/2X ′ ∥ ∥ 2
+}
+≤ exp { −t2/(8σ2) + d log 6 } ,
+where we have used Hoeffding’s inequality for the third inequality and |B̂| ≤ 6d for the last inequality. A choice of t = 4σ √ d+ log(1/δ) completes the proof. C.2. Proof of Lemma 2 By Abbasi-Yadkori et al. (2011, Lemma 11), we have
+m+n ∑
+t=m+1
+‖Xt‖2V −1t ≤ 2 log detVm+n+1 detVm+1 ≤ 2d log ( tr (Vm+1) + n d ) − 2 log detVm+1 .
+Note that tr (Vm+1) = ∑m t=1 tr (XtX ′ t) = ∑m t=1 ‖Xt‖2 ≤ m and that det Vm+1 = ∏d i=1 λi ≥ λdmin(Vm+1) ≥ 1, where {λi} are the eigenvalues of Vm+1. Applying Cauchy-Schwartz inequality yields m+n ∑
+t=m+1
+‖Xt‖V −1t ≤
+√ √ √ √n m+n ∑
+t=m+1
+‖Xt‖2V −1t ≤ √ 2nd log ( n+m
+d
+)
+. C.3. Proof of Lemma 3 Define Gt(θ) = ∑t−1 i=1(µ(X ′ iθ) − µ(X ′iθ∗))Xi and Zt = ∑t−1 i=1 ǫiXi. Following the same argument as in the proof of Theorem 1, we have Gt(θ̂t) = Zt and ‖Gt(θ)‖2V −1t ≥ κ 2‖θ − θ∗‖2Vt (26) for any θ ∈ {θ : ‖θ − θ∗‖ ≤ 1}. Combining (26) with the following lemma and the equality Zt = Gt(θ̂t) completes the proof. Lemma 8. Suppose there is an integerm such that λmin(Vm) ≥ 1, then for any δ ∈ (0, 1), with probability at least 1− δ, for all t > m,
+‖Zt‖2V −1t ≤ 4σ 2
+(
+d 2 log(1 + 2t/d) + log(1/δ)
+)
+.
+Proof. For convenience, fix t such that t > m, and denote Vt and Zt by V and Z , respectively. Furthermore, define V̄ := V + λI and let 1 be the vector of all 1s. It is easy to observe that
+‖Z‖2V −1 = ‖Z‖ 2 V̄ −1 + Z ′(V −1 − V̄ −1)Z . (27) We start with bounding the second term. The ShermanMorrison formula gives
+V̄ −1 = V −1 − λV −2
+1 + λ1′V −11 .
+Since 1′V −11 ≥ 0, the above implies that 0 ≤ Z ′(V −1 − V̄ −1)Z
+≤ λZ ′V −2Z ≤ λ ∥ ∥V −1 ∥
+∥ ‖Z‖2V −1
+= λ
+λmin(V ) ‖Z‖2V −1 .
+Since λmin(V ) ≥ λmin(Vm) ≥ 1, we now have
+0 ≤ Z ′(V −1 − V̄ −1)Z ≤ λ ‖Z‖2V −1 .
+The above inequality together with (27) implies that
+‖Z‖2V −1 ≤ (1− λ)−1 ‖Z‖ 2 V̄ −1 .
+The proof can be finished by applying Theorem 1 and Lemma 10 from Abbasi-Yadkori et al. (2011) to bound ‖Z‖2V̄ −1 , using λ = 1/2. C.4. Proof of Lemma 6 We will prove the first part of the lemma by induction. It is easy to check the lemma holds for s = 1. Suppose we have a∗t ∈ As and we want to prove a∗t ∈ As+1. Since the algorithm proceeds to stage s+ 1, we know from step 2b that
+|m(s)t,a − x′t,aθ∗| ≤ w(s)t,a ≤ 2−s
+for all a ∈ As. Specially, it holds for a = a∗t because a∗t ∈ As by our induction step. Then the optimality of a∗t implies
+m (s) t,a∗t ≥ x′t,a∗t θ ∗ − 2−s ≥ x′t,aθ∗ − 2−s ≥ m(s)t,a − 2 · 2−s
+for all a ∈ As. Thus we have a∗t ∈ As+1 according to step 2d. Suppose at is selected at stage st in step 2b. If st = 1, obviously the lemma holds because 0 ≤ µ(x) ≤ 1 for all x. If st > 1, since we have proved a ∗ t ∈ Ast , again step 2b at stage st − 1 implies
+|m(st−1)t,a − x′t,aθ∗| ≤ 2−st+1
+for a = at and a = a ∗ t . Step 2d at stage st − 1 implies
+m (st−1) t,a∗t −m(st−1)t,at ≤ 2 · 2−st+1 .
+Combining above two inequalities, we get
+x′t,atθ ∗ ≥ m(st−1)t,at − 2−st+1 ≥ m (st−1) t,a∗t − 3 · 2−st+1 ≥ x′t,a∗t θ ∗ − 4 · 2−st+1 .
+When at is selected in step 2c, sincem (st) t,at ≥ m (st) t,a∗t , we have
+x′t,atθ ∗ ≥ m(st)t,at − 1/ √ T ≥ m(st)t,a∗t − 1/ √ T ≥ x′t,a∗t θ ∗ − 2/ √ T .
+Using the fact that µ(x1)− µ(x2) ≤ Lµ(x1 − x2) for x1 ≥ x2, we will get the desired result. C.5. Proof of Lemma 9 Lemma 9. Let a and b be two positive constants. Ifm ≥ a2 + 2b, thenm− a√m− b ≥ 0.
+Proof. Supposem ≥ a2 + 2b, then
+m− a√m− b = a2 + b− a √ a2 + 2b
+≥ a2 + b− a √ a2 + 2b+ b2/a2 = a2 + b− a √ (a+ b/a)2 = a2 + b− a(a+ b/a) = 0 .  With the development of modern technologies, contextual bandit problems have more applications, especially in web-based recommendation, advertising and search (Agarwal et al., 2009; Li et al., 2010; 2012).    With the development of modern technologies, contextual bandit problems have more applications, especially in web-based recommendation, advertising and search (Agarwal et al., 2009; Li et al., 2010; 2012).    The most studied model in contextual bandits literature is the linear model (Auer, 2003; Dani et al., 2008; Rusmevichientong & Tsitsiklis, 2010; Chu et al., 2011; Abbasi-Yadkori et al., 2011), in which the expected rewards at each round is a linear combination of features in the context vector.    The most studied model in contextual bandits literature is the linear model (Auer, 2003; Dani et al., 2008; Rusmevichientong & Tsitsiklis, 2010; Chu et al., 2011; Abbasi-Yadkori et al., 2011), in which the expected rewards at each round is a linear combination of features in the context vector.    The most studied model in contextual bandits literature is the linear model (Auer, 2003; Dani et al., 2008; Rusmevichientong & Tsitsiklis, 2010; Chu et al., 2011; Abbasi-Yadkori et al., 2011), in which the expected rewards at each round is a linear combination of features in the context vector.    Logistic regression model based algorithms have been shown to have substantial improvements over linear models (Li et al., 2012).    , 2002a; Bubeck & Cesa-Bianchi, 2012) to linear bandits (Auer, 2003; Abbasi-Yadkori et al., 2011).    While some UCB-type algorithms using GLMs perform well empirically (Li et al., 2012), there is little theoretical study of them.    , 2011; Abbasi-Yadkori et al., 2011), in which the expected rewards at each round is a linear combination of features in the context vector. The linear model is theoretically convenient to work on. However, in practice, we usually have binary rewards (click or not, treatment working or not). Logistic regression model based algorithms have been shown to have substantial improvements over linear models (Li et al., 2012). Hence, we consider generalized linear models (GLM) in the contextual bandit setting, in which linear, logistic and probit regression serve as three important special cases. The celebrated work of Lai & Robbins (1985) first introduces the upper confidence bound (UCB) approach to efficient exploration.    Later variants of the EXP4 algorithm (Beygelzimer et al., 2010; Agarwal et al., 2014) give an Õ( √ dKT ) regret that is near-optimal with respect to T .    Later variants of the EXP4 algorithm (Beygelzimer et al., 2010; Agarwal et al., 2014) give an Õ( √ dKT ) regret that is near-optimal with respect to T .    This rate improves the state-of-the-art results of Filippi et al. (2010) by a √ d factor, assuming the number of arms is fixed.    This rate improves the state-of-the-art results of Filippi et al. (2010) by a √ d factor, assuming the number of arms is fixed. Moreover, it matches the GLM bandits problem’s minimax lower bound indicated by the linear bandits problem and thus is optimal. SupCB-GLM is inspired by the seminal work of Auer (2003), which introduced a technique to construct independence samples in linear contextual bandits.    This rate improves the state-of-the-art results of Filippi et al. (2010) by a √ d factor, assuming the number of arms is fixed. Moreover, it matches the GLM bandits problem’s minimax lower bound indicated by the linear bandits problem and thus is optimal. SupCB-GLM is inspired by the seminal work of Auer (2003), which introduced a technique to construct independence samples in linear contextual bandits. A key observation in proving this result is that the l2 confidence ball of the unknown parameter is insufficient to calculate a sharp upper confidence bound, yet what we need is the confidence interval in all directions. Thus, we prove a finite sample normality type confidence bound for the maximum likelihood estimator of GLM. To our best knowledge, this is the first non-asymptotic normality type result for the GLM and might be of its own theoretical value. We also analyze a simple version of UCB algorithm called UCB-GLM that is widely used in practice. We prove it also achieves the optimal regret bound under a reasonable assumption. These results shed light on explaining the good empirical performance of GLM bandits in practice. Related Work The study of GLM bandits problem goes back at least to Sarkar (1991), who considered discounted regrets rather than cumulative regerts.    This rate improves the state-of-the-art results of Filippi et al. (2010) by a √ d factor, assuming the number of arms is fixed. Moreover, it matches the GLM bandits problem’s minimax lower bound indicated by the linear bandits problem and thus is optimal. SupCB-GLM is inspired by the seminal work of Auer (2003), which introduced a technique to construct independence samples in linear contextual bandits. A key observation in proving this result is that the l2 confidence ball of the unknown parameter is insufficient to calculate a sharp upper confidence bound, yet what we need is the confidence interval in all directions. Thus, we prove a finite sample normality type confidence bound for the maximum likelihood estimator of GLM. To our best knowledge, this is the first non-asymptotic normality type result for the GLM and might be of its own theoretical value. We also analyze a simple version of UCB algorithm called UCB-GLM that is widely used in practice. We prove it also achieves the optimal regret bound under a reasonable assumption. These results shed light on explaining the good empirical performance of GLM bandits in practice. Related Work The study of GLM bandits problem goes back at least to Sarkar (1991), who considered discounted regrets rather than cumulative regerts. They prove that a myopic rule without exploration is asymptotically optimal. Recently, Filippi et al. (2010) study the same stochastic GLM bandit problem considered here.    Note that this assumption is weaker than Assumption 1 in Filippi et al. (2010), as it only requires to control the local behavior of μ̇(xθ) near θ.    , 2009) and generalized linear models (Fahrmeir & Kaufmann, 1985; Chen et al., 1999).    We give a proof sketch here, and the full proof is found in the appendix. In the following, for simplicity, we will drop the subscript n when there is no ambiguity. Therefore,Vn is denotedV and so on. We will need a technical lemma, which is an existing result in randommatrix theory. The version we presented here is adapted from Equation (5.23) of Theorem 5.39 from Vershynin (2012). Lemma 1.    ∥ = λ −1/2 min (Σ) (see, e.g., Vershynin (2012)).    , 2002a) and linear bandits (Abbasi-Yadkori et al., 2011; Auer, 2003; Chu et al., 2011; Dani et al., 2008).    , 2002a) and linear bandits (Abbasi-Yadkori et al., 2011; Auer, 2003; Chu et al., 2011; Dani et al., 2008).    , 2002a) and linear bandits (Abbasi-Yadkori et al., 2011; Auer, 2003; Chu et al., 2011; Dani et al., 2008).    , the distribution ν) is only needed to ensure Vτ+1 is invertable (similar to the first phase in the algorithm of Filippi et al. (2010)); the rest of our analysis does not depend on this stochastic assumption.    , Abbasi-Yadkori et al. (2011)).    We instead use results on self-normalized martingales (Abbasi-Yadkori et al., 2011), together with a finitetime normality result like Theorem 1, to prove the next theorem.    Indeed, this rate matches the minimax lower bound up to logarithm factor for the infinite actions contextual bandit problems (Dani et al., 2008).    Indeed, this rate matches the minimax lower bound up to logarithm factor for the infinite actions contextual bandit problems (Dani et al., 2008). By choosing δ = 1/T and using the fact that RT ≤ T , this highprobability result implies a bound on the expected regret: E[RT ] = Õ(d √ T ). Our result improves the previous regret bound of Filippi et al. (2010) by a √ logT factor.    Indeed, this rate matches the minimax lower bound up to logarithm factor for the infinite actions contextual bandit problems (Dani et al., 2008). By choosing δ = 1/T and using the fact that RT ≤ T , this highprobability result implies a bound on the expected regret: E[RT ] = Õ(d √ T ). Our result improves the previous regret bound of Filippi et al. (2010) by a √ logT factor. Moreover, the algorithm proposed in Filippi et al. (2010) involves a projection step, which is computationally more expensive comparing to UCB-GLM.    Algorithm SupCB-GLM While the algorithm UCB-GLM performs sufficiently well in practice (Li et al., 2012), it is unclear whether it can achieve the optimal rates of O( √ dT logK), when K is small.    Algorithm SupCB-GLM While the algorithm UCB-GLM performs sufficiently well in practice (Li et al., 2012), it is unclear whether it can achieve the optimal rates of O( √ dT logK), when K is small. As mentioned in Section 4.1, the key technical difficulty in analyzing UCB-GLM is the dependence between samples. Inspired by a technique developed by Auer (2003) to create independent samples for linear contextual bandits, we propose another algorithm SupCB-GLM (Algorithm 3), which uses algorithm CB-GLM (Algorithm 2) as a subroutine.    Also, we would like to point out that, unlike SpectralEliminator (Valko et al., 2014), the algorithm can easily handle a changing action set.    If w (s) t,a > 2 −s for some a, we need to do more exploration on xt,a and thus we choose this action. Otherwise, the actions are filtered in step 2d such that the actions passed to the next stage are close enough to the optimal action. Since all the widths are smaller than 2, if m (s) t,a < m (s) t,j − 2 · 2 for some j ∈ As, the action a can not be the optimal action. The filter process terminates when we have already got accurate estimate of all xt,aθ ∗ up to the 1/ √ T level and we do not need to do exploration. Thus in step 2c we just choose the action that maximizes the estimated mean value. Our algorithm is different from the algorithm SupLinRel in Auer (2003) that we directly maximize the mean, rather than the upper confidence bound, in steps c and d.    Both in Theorem 2 and in Filippi et al. (2010), |x(θ̂n − θ∗)| is upper bounded by using the Cauchy-Schwartz inequality, |x(θ̂n − θ)| ≤ ‖x‖V −1 n ∥    This will lead to an extra √ d factor compared to (5). By using Cauchy-Schwartz (10), we only make use of the fact that θ̂n is close to θ ∗ in the l2 sense. However, (5) tells us that actually θ̂n is close to θ ∗ in every direction. This is the reason why we are able to remove the extra √ d factor to achieve a near-optimal regret. It also explains why the bound in Theorem 2 is tight when K is large. As K goes large, it is likely there is a direction x for which (10) is tight. Proof of Theorem 3. To facilitate our proof, we first present two technical lemmas. Lemma 4, Theorem 1, Theorem 5.39 of Vershynin (2012) together with a union bound yield Lemma 5.    Contextual bandits are widely used in Internet services from news recommendation to advertising. Generalized linear models (logistical regression in particular) have demonstrated stronger performance than linear models in many applications. However, most theoretical analyses on contextual bandits so far are on linear bandits. In this work, we propose an upper confidence bound based algorithm for generalized linear contextual bandits, which achieves an Õ( √ dT ) regret over T rounds with d dimensional feature vectors. This regret matches the minimax lower bound, up to logarithmic terms, and improves on the best previous result by a √ d factor, assuming the number of arms is fixed. A key component in our analysis is to establish a new, sharp finite-sample confidence bound for maximumlikelihood estimates in generalized linear models, which may be of independent interest. We also analyze a simpler upper confidence bound algorithm, which is useful in practice, and prove it to have optimal regret for the certain cases. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

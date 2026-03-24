@@ -1,0 +1,144 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: End-to-End MAP Training of a Hybrid HMM-DNN Model
+Paper Content: 1703.10356.pdf CRF End-to-End MAP Training of a Hybrid HMM-DNN Model Lior Fritz David Burshtein lior.fritz@gmail.com, burstyn@eng.tau.ac.il 1. Introduction A major advantage of connectionist temporal classification (CTC) [1] over a hybrid of a hidden Markov model (HMM) and a deep neural network (DNN) [2] lies in the simplicity of the training and its scalability. However, there are some issues with CTC. First, exact decoding is computationally intractable, and one needs to use some approximation [1]. In addition, CTC does not excel in providing a good alignment between the input and output sequences, posing challenges in some applications [3, 4].
+We suggest a novel training method of an HMM-DNN hybrid. Similarly to CTC, we use end-to-end training. However, unlike CTC, our derivation is formulated using the maximum a-posteriori (MAP) approach with a simple language model (LM) in the training stage. The resulting objective function is similar to [5] with some differences. First, we derive our method from first principles as a MAP estimate. Second, we allow the integration of a scalable LM into the objective function. Decoding can be performed using a standard HMM decoder, without approximations. We use the weighted finite state transducer (WFST) approach [6] and discuss some implementation issues. Speech recognition results on the Wall Street Journal (WSJ) corpus [7] compare favorably with CTC. One of the advantages of the method is its robustness and the fact that it can be used to provide reliable alignment between the input and output sequences. 2. The Model Consider a sentence where each word is represented by a left to right hidden Markov model (HMM) [8] whose states are the basic elements of the word (termed labels), such as the character spelling or the phonetic transcription of the word as in [9, 10]. A blank label is inserted between words, and we reserve two states for sentence start and end. The transcript (template),
+Γ, of the sentence is its sequence of labels. As an example, consider the sentence “is he” and assume a character-based modeling. Then the transcript is Γ = {start, blank, i, s, blank, h, e, blank, end}.
+In fact, the sentence transcript, Γ, defines a left to right HMM, where transitions are only allowed between neighboring states in the transcript, or from a state to itself (self transition). That is,
+P (Γk | Γj) = { pΓj (0) if k = j pΓj (1) if k = j + 1 0 otherwise
+(1)
+and pj(0) + pj(1) = 1 for all j. Figure 1 describes the character-based HMM defined by the sentence “is he”.
+To formulate a MAP estimation scheme we need to define a probabilistic LM for strings s = (s0, s1, . . . , sT ). This model also defines the distribution of the transcript random variable, Γ. As an optimal solution, one would use the ground-truth LM used in the decoding stage, yet this would be computationally infeasible. As an alternative solution, we suggest a degenerated model of labels bi-grams. We have found that this model is sufficient for obtaining state-of-the-art results. Given that at time t−1 the process is at state c, we remain at c with probability pc(0), and make a transition to any other state ĉ with probability pc(1)q(c, ĉ). That is,
+pc,ĉ =P (St = ĉ | St−1 = c) = {
+pc(0) if ĉ = c pc(1) · q(c, ĉ) otherwise (2)
+We assume q(c, c) = 0. For a characters based labeling this constraint can be dealt with either by using the solution suggested in [5], or by defining additional characters that represent consecutive identical characters (e.g. ‘ll’, ‘mm’). For phonetic based labeling we add a blank label between consecutive identical phonemes.
+Let {ot} be the sequence of acoustic feature vectors representing some sentence. Define a time-extended feature vector, õt
+∆= (ot−F , . . . ,ot, . . . ,ot+F ), for some integer F . We assume a left to right HMM for the sequence {õt}. The underlying hidden state (label) sequence is {st}, where st ∈ {0, 1, . . . , L−1} and L is the total number of possible states. The joint probability of õ ∆={õt}Tt=1
+ar X
+iv :1
+70 3.
+10 35
+6v 1
+[ cs
+.L G
+] 3
+0 M
+ar 2
+01 7
+and s ∆= {st}Tt=0 is given by
+P (õ, s) = T∏ t=1 pst−1,st T∏ t=1 P (õt | st) (3)
+Suppose also that some neural network (NN) recognizer produces the values yt,st ≡ yt,st,θ, which are estimates of 1 logP (st | õt), for t = 1, 2, . . . , T . Here θ are the parameters of the NN. Note that ∑L−1 l=0 e
+yt,l = 1 for all t. By Bayes’ law, (3) can be rewritten as,
+P (õ, s) = A ( T∏ t=1 pst−1,st ) · exp { T∑ t=1 (yt,st − ωst ) } (4) where ωl ∆= logP (l) is the logarithm of the prior proba-
+bility of the state l, and A = ∏T t=1 P (õt).
+We train our model using a database of N pairs (Γn, õn), n = 1, 2, . . . , N , where õn is the n-th observation sequence, and Γn is its associated transcript. First, the values of the probability transition matrix q(c, ĉ) can be estimated from a training text using
+q(c, ĉ) = Nc,ĉ/Nc (5)
+where Nc,ĉ (Nc, respectively) is the number of occurrences of label pairs c, ĉ (labels, c) in the text.
+To train the remaining model parameters we use the MAP criterion. The goal is to maximize the loglikelihood of the transcript given its observation sequence. That is, the MAP estimate, ΨMAP, to the parameter vector, Ψ = { θ, {pj(0), pj(1), ωj}j∈{0,1,...,L−1} } , is given by
+ΨMAP = argmax Ψ N∑ n=1 logPΨ (Γn | õn) (6)
+logP (Γ | õ) = logP (õ,Γ)− logP (õ) (7) Since the term A in (4) cancels out in (7), in the sequel we set A = 1 without loss of generality.
+Our criterion (6)-(7) is similar to the one in [5]. However, our criterion is derived as a MAP estimate. Also, in [5] the values of the transition probabilities between all labels have to be trained, whereas in our model, the probabilities q(c, ĉ) can be pre-trained, so that only pc(0) for all labels c need to be trained from the acoustics. This also allows convenient integration with higher-level LM.
+Once the model has been trained, Decoding is preformed with a standard LM instead of the simple bi-gram LM used for training. Thus we can apply a standard HMM decoder as we explain later in more detail. 2.1. Training Procedure To apply (6), we need to compute P (õ) and P (õ,Γ). By (4) and since, as explained, we may set A = 1, the first term, P (õ), is computed by summing over all possible state sequences, as follows,
+P (õ) = ∑
+s ( T∏ t=1 pst−1,st ) · exp { T∑ t=1 yt,st } (8)
+1The base of all the logarithms in this paper is e
+where we denote yt,st ∆= yt,st − ωst . The transition probabilities are given by (2). To compute P (õ,Γ) we use,
+P (õ,Γ) = ∑
+s∈S(Γ) ( T∏ t=1 pst−1,st ) · exp { T∑ t=1 yt,st } (9)
+where S(Γ) are all state sequences (s0, s1, . . . , sT ) which are consistent with the given transcript, Γ.
+To compute P (õ,Γ) and its derivatives efficiently, first denote
+αt(k) ∆= P (T (S0, . . . , St) ∈ (Γ0, . . . ,Γk) (10)
+, õ1, . . . , õt)
+βt(k) ∆= P (T (St, . . . , ST ) ∈ (Γk, . . . ,ΓK) (11)
+, õt+1, . . . , õT | St = Γk)
+where T (S0, . . . , St) is the transcript of the state sequence up to time t and where Γ0, . . . ,Γk is the k + 1 prefix of Γ. T (St, . . . , ST ) is the transcript of the state sequence from t to T and Γk, . . . ,ΓK is the K − k + 1
+suffix of Γ. Then P (õ,Γ) = K∑ k=0 αt(k)βt(k) for any t.
+Now, αt(k) and βt(k) can be computed efficiently using the following time recursions,
+αt(k) = (αt−1(k)pΓk (0) (12) +αt−1(k − 1)pΓk−1(1)q(Γk−1,Γk) ) eyt,Γk
+βt(k) =βt+1(k)pΓk (0)e yt+1,Γk (13)
++ βt+1(k + 1)pΓk (1)q(Γk,Γk+1)e yt+1,Γk+1
+Our training algorithm is a stochastic gradient descent (SGD) that operates on mini-batches. To compute the gradient with respect to any element, θi, of the parameter vector, θ, we use
+∂P (õ,Γ) ∂θi = ∑ t,k ∂P (õ,Γ) ∂yt,k ∂yt,k ∂θi
+(14)
+We calculate ∂yt,k ∂θi using the back-propagation algorithm. In addition, by (9),
+∂P (õ,Γ) ∂yt,r
+= ∑
+k : Γk=r
+αt(k)βt(k) (15)
+∂P (õ,Γ) ∂ωr = − T∑ t=1 ∑ k : Γk=r αt(k)βt(k) (16)
+∂P (õ,Γ) ∂pr(0) = T∑ t=1 ∑ k : Γk=r αt−1(k)βt(k) exp { yt,Γk } (17)
+∂P (õ,Γ) ∂pr(1) = T∑ t=1 ∑ k : Γk=r αt−1(k)q(Γk,Γk+1) (18)
+· βt(k + 1) exp { yt,Γk+1 } Note that the values eyt,l are constrained to be valid probabilities. To satisfy this constraint we use the standard approach of a softmax layer at the output of the
+NN. Similarly, pj(0), pj(1) and ωj are constrained to be valid probabilities. To satisfy this constraint, we first define unconstrained transition probabilities and priors and pass them through a softmax function that produces valid transition probabilities and priors. The derivatives of the unconstrained parameters can be calculated using the chain rule, taking into account the softmax derivatives and (15)-(18).
+To compute P (õ) and its derivatives efficiently, first denote
+α̃t(c) ∆= P (õ1, õ2, . . . , õt, St = c) (19)
+β̃t(c) ∆= P (õt+1, õt+2, . . . , õT | St = c) (20) Then P (õ) = ∑ c α̃t(c)β̃t(c) for any t. Now, α̃t(c) and β̃t(c) can be computed efficiently using,
+α̃t(c) = ( α̃t−1(c)pc(0) (21)
++ ∑ ĉ6=c α̃t−1(ĉ)pĉ(1)q(ĉ, c) ) eyt,c
+β̃t(c) =β̃t+1(c)pc(0)eyt+1,c (22) + ∑ ĉ6=c β̃t+1(ĉ)pc(1)q(c, ĉ)eyt+1,ĉ
+Also,
+∂P (õ) ∂yt,r = α̃t(r)β̃t(r) (23)
+∂P (õ) ∂ωr = − T∑ t=1 α̃t(r)β̃t(r) (24)
+∂P (õ) ∂pr(0) = T∑ t=1 α̃t−1(r)β̃t(r) exp { yt,r }
+(25)
+∂P (õ) ∂pr(1) = T∑ t=1 ∑ c6=r α̃t−1(r)q(r, c)β̃t(c) exp { yt,c } (26) 2.2. Decoding To decode we can use standard HMM decoding techniques without approximations. To integrate our model with a LM, we use the WFST approach. A WFST is a finite-state machine, in which each transition has an input symbol, an output symbol and a weight. Our WFST is implemented with the FST library OpenFST [11], and is based on the decoding method of EESEN [10].
+We first build separate WFSTs for the LM (grammar), the lexicon and the HMM labels. An example for the grammar WFST, G, with two possible sentences is shown in Figure 2a. The lexicon WFST, L, encodes sequences of lexicon units (e.g. phonemes or characters) to words. It enforces the occurrence of the blank label between words, and, for phoneme labeling, also between identical labels. An example is shown in Figure 2b. The HMM WFST, H, maps a sequence of frame-level labels into a single lexicon unit. It allows occurrences of repetitive labels with the proper weighting. An example is shown in Figure 2c. Finally, we compose these graphs into a single graph. The inputs to this graph are the outputs of the neural network, normalized by the priors.
+0 1cats:cats/1.0
+2 like:lik e/0.5
+4
+playing:playing/1.0
+3
+hate:hate/0.5 water: water/ 1.0
+(a) The G WFST exemplified on the sentences: “cats like playing” and “cats hate water”. The caption on each arc represents: input symbol : output symbol / weight.
+0 1 bl: 2 K:cats 3 AE: 4 T: 5 S:
+bl:
+(b) The L WFST exemplified on the word “cats” using phonemes. The symbol represents no input/output. 2.3. Numerical Issues For HMMs and CTC, the calculations of the forward and backward variables are usually performed in log-scale, as in [9,10]. Another possibility is to use the normalization technique in [12]. In our implementation it was necessary to combine both approaches, with some modification of the method in [12], as we now describe. For each time frame, t, we first compute the forward (backward, respectively) variables according to the original recursions in log-scale, and then subtract the maximal value of the forward (backward) variables at t from each forward (backward) variable. A simpler variant of the above is to perform the subtraction only every certain time units.
+For simplicity, we describe our method in the linear scale, for P (õ) and its derivatives. The adaptation to the calculation of P (õ,Γ) and its derivatives is straightforward. Denote α̃∗t
+∆= max c α̃t(c) and β̃∗t ∆= max c β̃t(c).
+Effectively, the normalized forward and backward variables are given by,
+αt(c) = α̃t(c) t∏
+u=1 α̃∗u , βt(c) = β̃t(c) T∏ u=t β̃∗u
+(27)
+Defining P t(õ) , ∑
+c αt(c)βt(c), we have P t(õ) = ∑ c α̃t(c) t∏
+u=1 α̃∗u β̃t(c) T∏ u=t β̃∗u = P (õ) t∏ u=1 α̃∗u T∏ u=t β̃∗u
+(28)
+Using (23)-(24) yields (the derivatives with respect to pr(0) and pr(1) can be obtained similarly using (25)- (26)),
+∂ logP (õ) ∂yt,r = αt(r)βt(r) P t(õ)
+(29)
+∂ logP (õ) ∂ωr = − T∑ t=1 αt(r)βt(r) P t(õ)
+(30) 2.4. Implementation We implemented our model in Tensorflow [13]. Our loss function is implemented in C++, where the samples in the mini-batch are calculated in parallel on different cores of the CPU. We have integrated the feature extraction procedures from EESEN (which uses Kaldi’s scripts [14]) and [15, 16], the NN procedures from Tensorflow and the WFSTs decoding procedures from EESEN. Since the computation time required by the NN is dominant, the training process takes only 5%-8% more time when using our loss function in comparison to CTC. 3. Experiments We conducted experiments on the Wall Street Journal (WSJ) corpus [7]. The training data consists of 81 hours of transcribed speech. We use almost the same training process and NN architecture as in [10]. We extract 95% of the training set for training, and 5% for cross validation. The inputs of the NN are 40-dimensional filterbank with delta and delta-delta coefficients. The features are normalized by mean and variance on the speaker basis. We operate on a phonemes-based system, with 72 labels. The utterances in the training set are sorted by their lengths. The mini-batch size is set to 30. We use the ADAM optimizer [17] with an initial learning rate of 0.001. We use gradient clipping [18] with a value of 50. The learning rate decay and the stopping criteria are determined based on the validation WER (optimizing for each method). We test our model on the eval92 and dev93 test sets. The acoustic model scores are scaled down by a factor of 0.5-0.9, and the optimal value is chosen. We use the standard pruned trigram LM of WSJ, as in [10]. The bi-gram LM used in training is obtained using the training set text, and the large WSJ LM training set text. We use a RNN architecture of 4 layers of 320 bi-directional LSTM cells [19] without peephole connections [20].
+Table 1 shows the obtained WER on the validation, eval92 and dev93 sets. We compare our model (HMMMAP) to the CTC model under the same conditions. Decoding with CTC is performed using the TLG WFST and the prior normalization method in [10]. Our CTC model obtains comparable results with the ones reported in [10]. We see a consistent improvement in WER of HMM-MAP compared to CTC. Figure 3 shows the validation WER vs. epoch of CTC, and our model using three different LMs during training: bi-grams, uni-grams and uniform. It demonstrates the importance of using a reasonable LM during training. Figure 4 shows the obtained alignments on some utterance from the training set. It demonstrates a significantly improved alignment of HMM-MAP compared to CTC, which is due to the peaky output distributions of CTC. 4. Conclusions We have presented a novel end-to-end MAP training method of a HMM-DNN hybrid. The model compares favorably to CTC on the WSJ corpus. We also believe our method is more robust in the following sense. In [21], using CTC, it was found that the network’s prediction of the blank label was too dominant during decoding. The authors suggested a blank-prediction-diminishing method, by subtracting a high prior from the network’s blank prediction. In [10] a different priors normalization method was proposed, which also diminishes the blank predictions. However, the formulation of the CTC model does not justify priors normalization. In [22] it has been shown that the priors subtraction method in [10] might even degrade the WER in some cases.
+In future work, we plan to further examine the effect of the LM used in the training process, and apply our model to other sequence-to-sequence tasks, where it may be important to provide good alignment between the input and output sequences. 5. Acknowledgements This research was supported by the Yitzhak and Chaya Weinstein Research Institute for Signal Processing. A Tesla K40c GPU used in this research was donated by the NVIDIA Corporation. 6. References [1] A. Graves, S. Fernández, F. Gomez, and J. Schmidhuber,
+“Connectionist temporal classification: labelling unsegmented sequence data with recurrent neural networks,” in Proceedings of the 23rd international conference on Machine learning. ACM, 2006, pp. 369–376.
+[2] G. Hinton, L. Deng, D. Yu, G. E. Dahl, A.-r. Mohamed, N. Jaitly, A. Senior, V. Vanhoucke, P. Nguyen, T. N. Sainath et al., “Deep neural networks for acoustic modeling in speech recognition: The shared views of four research groups,” IEEE Signal Processing Magazine, vol. 29, no. 6, pp. 82–97, 2012.
+[3] Y. Wang, X. Deng, S. Pu, and Z. Huang, “Residual convolutional CTC networks for automatic speech recognition,” arXiv preprint arXiv:1702.07793, 2017.
+[4] R. Sanabria, F. Metze, and F. De La Torre, “Robust end-to-end deep audiovisual speech recognition,” arXiv preprint arXiv:1611.06986, 2016.
+[5] R. Collobert, C. Puhrsch, and G. Synnaeve, “Wav2letter: an end-to-end convnet-based speech recognition system,” Neural Information Processing Systems (NIPS). [Online]. Available: https://arxiv.org/abs/1609.03193
+[6] M. Mohri, F. Pereira, and M. Riley, “Weighted finitestate transducers in speech recognition,” Computer Speech & Language, vol. 16, no. 1, pp. 69–88, 2002.
+[7] D. B. Paul and J. M. Baker, “The design for the Wall Street Journal-based CSR corpus,” in Proceedings of the workshop on Speech and Natural Language. Association for Computational Linguistics, 1992, pp. 357–362.
+[8] R. L. Rabiner, “A tutorial on hidden Markov models and selected applications in speech recognition,” Proceedings of the IEEE, vol. 77, no. 2, pp. 257–286, 1989.
+[9] A. Y. Hannun, C. Case, J. Casper, B. C. Catanzaro, G. Diamos, E. Elsen, R. Prenger, S. Satheesh, S. Sengupta, A. Coates, and A. Y. Ng, “Deep speech: scaling up end-to-end speech recognition,” CoRR, vol. abs/1412.5567, 2014. [Online]. Available: http://arxiv.org/abs/1412.5567
+[10] Y. Miao, M. Gowayyed, and F. Metze, “EESEN: Endto-end speech recognition using deep RNN models and WFST-based decoding,” in IEEE Workshop on Automatic Speech Recognition and Understanding (ASRU), December 2015.
+[11] C. Allauzen, M. Riley, J. Schalkwyk, W. Skut, and M. Mohri, “OpenFst: A general and efficient weighted finite-state transducer library. Implementation and Application of Automata,” 2007.
+[12] L. R. Rabiner and B.-H. Juang, Fundamentals of Speech Recognition. PTR Prentice Hall, 1993.
+[13] M. Abadi, A. Agarwal, P. Barham, E. Brevdo, Z. Chen, C. Citro, G. S. Corrado, A. Davis, J. Dean, M. Devin et al., “Tensorflow: Large-scale machine learning on heterogeneous distributed systems,” arXiv preprint arXiv:1603.04467, 2016.
+[14] D. Povey, A. Ghoshal, G. Boulianne, L. Burget, O. Glembek, N. Goel, M. Hannemann, P. Motlicek, Y. Qian, P. Schwarz et al., “The Kaldi speech recognition toolkit,” in IEEE 2011 workshop on automatic speech recognition and understanding, no. EPFL-CONF-192584. IEEE Signal Processing Society, 2011.
+[15] Y. Miao, “Kaldi+ pdnn: building dnn-based asr systems with kaldi and pdnn,” arXiv preprint arXiv:1401.6984, 2014.
+[16] V. Renkens, “Kaldi with TensorFlow Neural Net,” https: //github.com/vrenkens/tfkaldi, 2016.
+[17] D. Kingma and J. Ba, “ADAM: A method for stochastic optimization,” arXiv preprint arXiv:1412.6980, 2014.
+[18] R. Pascanu, T. Mikolov, and Y. Bengio, “On the difficulty of training recurrent neural networks,” International Conference on Machine Learning (ICML), vol. 28, pp. 1310–1318, 2013.
+[19] S. Hochreiter and J. Schmidhuber, “Long short-term memory,” Neural computation, vol. 9, no. 8, pp. 1735– 1780, 1997.
+[20] F. A. Gers, N. N. Schraudolph, and J. Schmidhuber, “Learning precise timing with LSTM recurrent networks,” Journal of machine learning research, vol. 3, no. Aug, pp. 115–143, 2002.
+[21] H. Sak, A. Senior, K. Rao, O. Irsoy, A. Graves, F. Beaufays, and J. Schalkwyk, “Learning acoustic frame labeling for speech recognition with recurrent neural networks,” in 2015 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP). IEEE, 2015, pp. 4280–4284.
+[22] N. Kanda, X. Lu, and H. Kawai, “Maximum a posteriori based decoding for CTC acoustic models,” Interspeech 2016, pp. 1868–1872, 2016.  Introduction A major advantage of connectionist temporal classification (CTC) [1] over a hybrid of a hidden Markov model (HMM) and a deep neural network (DNN) [2] lies in the simplicity of the training and its scalability.    Introduction A major advantage of connectionist temporal classification (CTC) [1] over a hybrid of a hidden Markov model (HMM) and a deep neural network (DNN) [2] lies in the simplicity of the training and its scalability.    First, exact decoding is computationally intractable, and one needs to use some approximation [1].    In addition, CTC does not excel in providing a good alignment between the input and output sequences, posing challenges in some applications [3, 4].    In addition, CTC does not excel in providing a good alignment between the input and output sequences, posing challenges in some applications [3, 4].    We use the weighted finite state transducer (WFST) approach [6] and discuss some implementation issues.    Speech recognition results on the Wall Street Journal (WSJ) corpus [7] compare favorably with CTC.    The Model Consider a sentence where each word is represented by a left to right hidden Markov model (HMM) [8] whose states are the basic elements of the word (termed labels), such as the character spelling or the phonetic transcription of the word as in [9, 10].    The Model Consider a sentence where each word is represented by a left to right hidden Markov model (HMM) [8] whose states are the basic elements of the word (termed labels), such as the character spelling or the phonetic transcription of the word as in [9, 10].    The Model Consider a sentence where each word is represented by a left to right hidden Markov model (HMM) [8] whose states are the basic elements of the word (termed labels), such as the character spelling or the phonetic transcription of the word as in [9, 10].    Our WFST is implemented with the FST library OpenFST [11], and is based on the decoding method of EESEN [10].    Our WFST is implemented with the FST library OpenFST [11], and is based on the decoding method of EESEN [10].    Numerical Issues For HMMs and CTC, the calculations of the forward and backward variables are usually performed in log-scale, as in [9,10].    Numerical Issues For HMMs and CTC, the calculations of the forward and backward variables are usually performed in log-scale, as in [9,10].    Another possibility is to use the normalization technique in [12].    In our implementation it was necessary to combine both approaches, with some modification of the method in [12], as we now describe.    Model WER% validation eval92 dev93 CTC, EESEN [10] 7.    87 Hybrid HMM-DNN [10] 7.    We implemented our model in Tensorflow [13].    We have integrated the feature extraction procedures from EESEN (which uses Kaldi’s scripts [14]) and [15, 16], the NN procedures from Tensorflow and the WFSTs decoding procedures from EESEN.    We have integrated the feature extraction procedures from EESEN (which uses Kaldi’s scripts [14]) and [15, 16], the NN procedures from Tensorflow and the WFSTs decoding procedures from EESEN.    We have integrated the feature extraction procedures from EESEN (which uses Kaldi’s scripts [14]) and [15, 16], the NN procedures from Tensorflow and the WFSTs decoding procedures from EESEN.    We conducted experiments on the Wall Street Journal (WSJ) corpus [7].    We use almost the same training process and NN architecture as in [10].    We use the ADAM optimizer [17] with an initial learning rate of 0.    We use gradient clipping [18] with a value of 50.    We use the standard pruned trigram LM of WSJ, as in [10].    We use a RNN architecture of 4 layers of 320 bi-directional LSTM cells [19] without peephole connections [20].    We use a RNN architecture of 4 layers of 320 bi-directional LSTM cells [19] without peephole connections [20].    Decoding with CTC is performed using the TLG WFST and the prior normalization method in [10].    Our CTC model obtains comparable results with the ones reported in [10].    In [21], using CTC, it was found that the network’s prediction of the blank label was too dominant during decoding.    In [10] a different priors normalization method was proposed, which also diminishes the blank predictions.    In [22] it has been shown that the priors subtraction method in [10] might even degrade the WER in some cases.    In [22] it has been shown that the priors subtraction method in [10] might even degrade the WER in some cases.    An hybrid of a hidden Markov model (HMM) and a deep neural network (DNN) is considered. End-to-end training using gradient descent is suggested, similarly to the training of connectionist temporal classification (CTC). We use a maximum a-posteriori (MAP) criterion with a simple language model in the training stage, and a standard HMM decoder without approximations. Recognition results are presented using speech databases. Our method compares favorably to CTC in terms of performance, robustness and quality of alignments. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

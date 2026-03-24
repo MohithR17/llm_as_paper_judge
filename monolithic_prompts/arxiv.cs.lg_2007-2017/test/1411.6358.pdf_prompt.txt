@@ -1,0 +1,411 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: A hybrid solution to improve iteration efficiency in the distributed learning
+Paper Content: 1411.6358.pdf META A hybrid solution to improve iteration efficiency in the distributed learning Junxiong Wang chuangzhetianxia@gmail.com wangzh@hit.edu.cn zhaochenxu001@gmail.com  ar X
+iv :1
+41 1.
+63 58
+v1 [
+cs .D
+C ]
+2 4
+N ov
+1. Introduction
+With an explosion in the number of massive-scale data, the cost time of traditional solutions is unacceptable. As a result of it, the demand for scalable disturbed platforms and frameworks is rising in many areas including machine learning, data mining and pattern recognition.
+Hadoop is widely used to speed up many machine learning algorithms applied in academy and industry. However, the serve problem about it is the lack of support for iterative programs. Thus lots of popular-used platforms and distributed frameworks appeared to optimize the iteration process for higher efficiency and less cost. A framework named Spark[1], widely used with a library for machine
+learning (MLlib), has improved the efficiency in many applications. Its modified solution, Resilient Distributed Datasets[2], speed up the data storage to an amazing step. In addition, Haloop[3] makes lots of improvement on iteration. It provides some rules to consult when developing the machine learning project based on map/reduce.
+When it comes to applications, some slave nodes, taking up only a small percentage of all, always cost much more time than others in one iteration because of communication fault or their low efficiency. Traditional solutions cannot handle it as they have to calculate it again when failure occurs.
+This paper presents a novel algorithm which is able to make a suitable balance in performance and efficiency. The master node doesn’t have to wait all the slave nodes. After a certain percentage of slaves has finished calculated and communicated with the master node, the master one will start next iteration rather than waiting others. This process can not only improve the efficiency dramatically but also have a high fault tolerance because some nodes’ fault do not have influence on this system. This algorithm is developed to decrease the total time, combining the synchronous and asynchronous process, resulting in reasonable efficiency and accuracy.
+We discuss the relationship between the abandon rate and the accuracy with statistic. In next section, this algorithm is proved to converge and the speed of convergence is Q-linear convergence with the mathematics proof. It is such an excepted result that balance the efficiency and performance.
+This idea can be applied to a list of algorithms including iterations such as Stochastic Gradient Descent, Conjugate Gradient Descent, L-BFGS and so on. Many existing platforms and framework can be improved with
+this approach.
+2. Algorithm
+When our approach is applied in Gradient Descent, we give the following algorithm.
+Suppose machine num is M and examples in each machine are ζ. For each iteration, the number of slaves that master should wait is γ. That is to say, only γζ examples can be calculated.
+Estimating the least number of slave nodes which need to communicate with master node is the first step.
+Algorithm 1 Calculate The Least Number of Slave Nodes Input: The capacity of data : N Confidence coefficient : α Relative error ξ
+Examples in each machine : ζ Output: Estimated Machine Number : γ
+γ = Nu2α/2
+(ξ2N + u2α/2) ∗ ζ ;
+Algorithm 2 Master’s algorithm 1: while IsConvergence == false do 2: if received γ slave nodes then 3: θi+1 = θi − ηt
+γ
+∑γ j=1 θ j i
+4: end if 5: end while
+Algorithm 3 Slaves’ algorithm
+1: Receive(θt) 2: θt+1 = θt− { 1
+ζ
+∑ζ i=1(θ T K[xi]− yi)K[xi] + λθt
+}
+3: Send(θt+1)
+3. The Algorithm’s Convergence
+In this section we will prove the convergence of this algorithm with an example of the quadratic programming. A definition of quadratic programming problem will be given first and then we will prove the convergence to explain the algorithm’s correctness.At the end of this section, we will discuss the speed of convergence.
+3.1. Brief Introduction
+We donate X ∈ Rm×n and Y ∈ Rm as the example input and output space respectively. And set θ∗ ∈ Rl as the
+optimal solution to a quadratic programming, then
+θ ∗ = arg min
+θ∈Rl
+1
+m
+m ∑
+i=1
+(fθ(xi)− yi)2 + λ ∥ ∥θ ∥ ∥ 2
+l2 (1)
+where λ > 0 is the regularization parameter.
+Definition 3.1. Denote function K is a kernel function
+where K[xi] =                      
+x2i1 xi1xi2
+... x2i2
+xi2xi3 ...
+x2in xi1 xi2
+... xin 1                       ∈ Rl.
+Above all, θ∗ can be written as
+θ ∗ = arg min
+θ∈Rl
+1
+m
+m ∑
+i=1
+(θTK[xi]− yi)2 + λ ∥ ∥θ ∥ ∥ 2
+l2 (2)
+In the t th iteration,θt can be updated as
+θ t+1 = θt−ηt{
+1
+ω
+ω ∑
+i=1
+(θTK[xi]− yi)K[xi] + λθt} (3)
+3.2. The Proof of Convergence
+According to Taylor formula, (3) can turn into
+f(θt+1) = f(θt)−
+ηt∇f(θt)T { 1
+ω
+ω ∑
+i=1
+(θTK[xi]− yi)K[xi] + λθt}
++O(0)
+(4)
+If f(θt+1) − f(θt) < 0, then
+ηt{ 1
+m
+m ∑
+i=1
+(θTK[xi]− yi)K[xi] + λθt}T
+∗ { 1 ω
+ω ∑
+i=1
+(θTK[xi]− yi)K[xi] + λθt} > 0 (5)
+where the step size ηt > 0. In order to prove the correctness of (5),we mention some useful lemma.
+Lemma 3.1. Donate the overall variance is σ2,we choose a random sample of n (sampled without repeating) capacity from N elements. The variance of the sample mean is
+σn = σ√ n
+√
+N − n N − 1
+Then, we proof this by statics theory. We define Z and z stand for the overall collection and sample collection respectively. So,
+σn =
+√ √ √ √ 1
+CnN
+cn N
+∑
+i=1
+(zi − Z) (6)
+Then,
+σ2n = 1
+CnN
+Cn N ∑
+i=1
+[ (zi1 + zi2 + · · ·+ zin)
+n − Z]2
+= 1
+CnNn 2
+Cn N ∑
+i=1
+[(zi1 + zi2 + · · ·+ zin)− nZ]2
+= 1
+CnNn 2 [
+Cn N ∑
+i=1
+(zi1 + zi2 + · · ·+ zin)2
+− 2nZ Cn N ∑
+i=1
+(zi1 + zi2 + · · ·+ zin) + n2CnNZ 2 ]
+= 1
+CnNn 2 [
+Cn N ∑
+i=1
+(zi1 + zi2 + · · ·+ zin)2
+− 2nZCn−1N−1 N ∑
+S=1
+ZS + n 2CnNZ 2 ]
+= 1
+CnNn 2
+Cn N ∑
+i=1
+(zi1 + zi2 + · · ·+ zin)2 − Z 2
+(7)
+Every sample has a ZS , then the expansion of the sample sum square has one Z2S , so there are C n−1 N−1 Z 2 S of ∑M i=1(zi1 + zi2 + · · ·+ zin), the total number of quadratic term is Cn−1N−1N = nC n N . There are (n 2−n)CnN ZiZj(i 6= j) and N(N − 1)
+2 kinds of ZiZj . So every kind has
+2n(n− 1)CnN N(N − 1) terms.
+1
+CnNn 2
+Cn N ∑
+i=1
+(zi1 + zi2 + · · ·+ zin)2 − Z 2
+= 1
+CnNn 2 {Cn−1N−1
+N ∑
+S=1
+Z2S + 2n(n− 1)CnN N(N − 1) ∑
+i<j
+ZiZj} − Z 2
+=( 1 nN − 1 N2 )
+M ∑
+S=1
+Z2S + 2( n− 1 N(N − 1) − 1 N2 ) ∑
+i<j
+ZiZj
+=( N − n n(N − 1))( N − 1 N2
+N ∑
+S=1
+Z2S − 2
+N2
+∑
+i<j
+ZiZj)
+=( N − n n(N − 1))[ 1 N
+N ∑
+S=1
+Z2S − 1
+N2 (
+N ∑
+S=1
++2 ∑
+i<j
+ZiZj)]
+= N − n N − 1 σ2
+n (8)
+Above all, Lemma 2.1 is proved to be right.
+Lemma 3.2. If the sample size n >= Nu2α/2s 2
+∆2N + u2α/2s 2
+,
+the confidence coefficient of error under 1−∆ is α
+Proof. If confidence coefficient is 1−∆. Then,
+P [| z − Z |< ∆] = 1− α (9)
+When n is large,we can utilize normal approximation to make a conclusion that
+P{| z − Z σz |< ∆z σz } = Φ(ua/2)− Φ(−ua/2) (10)
+Then, ∆z = ua/2σz (11)
+Combining Lemma 2.1 ,we know
+∆z = ua/2 s√ n
+√
+1− n N
+(12)
+n = Nu2a/2s 2
+∆2zN + u 2 a/2s 2
+(13)
+Above all, the correctness of Lemma 2.2 can be proved.
+Using these Lemma, we can debate some questions about (5).Denote a set named Z
+Z = {(θTK[x1]− y1)K[x1], (θTK[x2]− y2)K[x2], · · · , (θTK[xm]− ym)K[xm]}
+(14)
+Take ω elements from the collection Z , if we donate the average num of these elements is ω. When ∆ = ∣ ∣ ∣ ξZ ∣ ∣ ∣ is small, the correctness of (5) can
+be guaranteed. Combining (14), we can get n = Nu2a/2s 2 (ξZ) 2 N + u2a/2s 2 ≤ Nu2a/2s 2 ξ2s2N + u2a/2s 2 = Nu2a/2 ξ2N + u2a/2
+3.3. Speed of Convergence
+Definition 3.2. Suppose that this process produce a sequence of iterations(θt) converge to (θ∗), if there exist a real number β > 0 and a constant(q > 0) which has no relationship with the number of iterations(t) let
+limt→∞
+∥ ∥θ t+1 − θ∗ ∥ ∥
+l2 ∥ ∥ ∥θ k − θ∗ ∥ ∥ ∥ β
+l2
+= q. Therefore, the sequence θt
+has a convergence speed of Q-β -th.
+Our algorithm has a linear convergence of Q-th. That’s to say β = 1 and q > 0. We denote Bt = 1
+ω
+∑ω i=1(θ T K[xi] − yi)K[xi] + λθt.
+Then
+∥ ∥θ t+1 − θ∗ ∥ ∥ 2
+l2
+= 〈 θ t − θ∗ − ηtBt, θt − θ∗ − ηtBt 〉
+l2
+= ∥ ∥θ t − θ∗ ∥ ∥ 2
+l2 + 2ηt
+〈
+θ ∗ − θt, Bt
+〉
+l2 + η2t
+∥ ∥Bt ∥ ∥ 2
+l2
+(15)
+〈
+θ ∗ − θt, Bt
+〉
+=
+〈
+θ ∗ − θt, 1
+ω
+ω ∑
+i=1
+(θTK[xi]− [yi])K[xi] 〉
++ λ 〈 θ ∗ − θt, θt 〉
+=
+〈
+θ ∗ − θt, 1
+ω
+ω ∑
+i=1
+(θTK[xi]− [yi])K[xi] 〉
++ λ 〈 θ ∗, θt 〉 − λ ∥ ∥θ t ∥ ∥ 2
+l2
+≤ 〈 θ ∗ − θt, 1
+ω
+ω ∑
+i=1
+(θTK[xi]− [yi])K[xi] 〉
++ 1
+2 λ ∥ ∥θ ∗ ∥ ∥ 2 l2 +
+1 2 λ ∥ ∥θ t ∥ ∥ 2 l2 − λ ∥ ∥θ t ∥ ∥ 2 l2
+≤ 〈 θ ∗ − θt, 1
+ω
+ω ∑
+i=1
+(θTK[xi]− [yi])K[xi] 〉
++ λ
+2
+∥ ∥θ ∗ ∥ ∥ 2 l2 − λ
+2
+∥ ∥θ t ∥ ∥ 2
+l2
+(16)
+By the convexity, we get from
+〈
+θ ∗ − θt, 1
+ω
+ω ∑
+i=1
+(θTK[xi]− [yi])K[xi] 〉
+≤ 1 2ω [ 1 ω
+ω ∑
+i=1
+(θ∗KT [xi]− yi)2
+− ω ∑
+i=1
+(θtKT [xi]− yi)2]
+(17)
+So (16) can turn into
+〈
+θ ∗ − θt, Bt
+〉 l2 ≤ 1 2 [ 1 ω
+ω ∑
+i=1
+(θ∗KT [xi]− yi)2
++ λ ∥ ∥θ ∗ ∥ ∥ 2 l2 ]− 1 2 [ 1 ω
+ω ∑
+i=1
+(θtKT [xi]− yi)2 + λ ∥ ∥θ t ∥ ∥ 2
+l2 ]
+(18)
+So we need to prove the correctness of this function
+Lemma 3.3. λ ∥ ∥θ − θ∗ ∥ ∥ 2
+l2
+≤ { 1 ω ∑ω i=1 (θK T [xi]− yi)2 + λ ∥ ∥θ ∥ ∥ 2 l2 }− { 1 ω ∑ω i=1 (θ ∗ K T [xi]− yi)2 + λ ∥ ∥θ ∗ ∥ ∥ 2 l2 }
+Proof.
+θ ν = νθ + (1− ν)θ∗ (19)
+G(ν) = 1
+ω
+ω ∑
+i=1
+(θνTK[xi]− yi)2 + λ ∥ ∥θ ν ∥ ∥ 2
+l2 (20)
+G′(ν) =2λ(θ − θ∗)Tθν + 2 ω
+ω ∑
+i=1
+(θTK[xi]− yi)(θ
+− θ∗)TK[xi] (21)
+Beacause f ′(θ∗) = 0 ,then
+λ(θ − θ∗)Tθ∗ + 1 ω
+ω ∑
+i=1
+(θTK[xi]− yi)(θ−
+θ ∗)TK[xi] = 0
+(22)
+G′(ν) = 2λ(θ − θ∗)Tθν − 2λ(θ − θ∗)Tθ∗
++ 2
+ω
+ω ∑
+i=1
+(θνTK[xi]− yi)(θ − θ∗)TK[xi]
+− 2 ω
+ω ∑
+i=1
+(θ∗TK[xi]− yi)(θ − θ∗)TK[xi]
+= 2λν(θ − θ∗)T (θ − θ∗) + 2ν ω
+ω ∑
+i=1
+((θ − θ∗)TK[xi])2
+≥ 2λν(θ − θ∗)T (θ − θ∗) (23)
+Observe that G(1)−G(0) = ∫ 1
+0 G′(ν) dν.Thus,
+G(1)−G(0) ≥ 2λ(θ − θ∗)T (θ − θ∗) ∫ 1
+0
+ν dν
+= λ(θ − θ∗)T (θ − θ∗) (24)
+The correctness of Lemma3.3 can be proved.
+Combining Lemma3.3 and (18),We can get
+〈
+θ ∗ − θt, Bt
+〉 ≤ −λ 2 ∥ ∥θ t − θ∗ ∥ ∥ 2 l2 (25)
+Assume that k is the largest element of K[xi] , y is the largest element of Y
+Lemma 3.4. ∥ ∥θ t ∥ ∥ l2 ≤ yk
+λI
+Proof. We utilize mathematical induction to prove it. When t = 1, the correctness of lemma 2.4 is obvious.
+When t = t1, we assume that ∥ ∥θ t1 ∥ ∥ l2 ≤ yk
+λl is correct.
+So When t = t1 + 1,
+∥ ∥θ t1+1 ∥ ∥ l2 ≤ (1− ληt) ∥ ∥θ t ∥ ∥ l2 + ∥ ∥ ∥ ηt
+ω
+∑ω i=1 yiK[xi]
+∥ ∥ ∥
+l2
+≤ yk λl − ληt yk λl + ηt yk l = yk
+λl (26)
+Above all, Lemma 2.4 can be proved.
+Lemma 3.5.
+∥ ∥ ∥(θtTK[xi]− yi)K[xi] ∥ ∥ ∥ l2 ≤ yk
+3 λ + √ lyk (27)
+Proof. ∥
+∥ ∥(θtTK[xi]− yi)K[xi] ∥ ∥ ∥
+l2 ≤
+∥ ∥ ∥θ tT K[xi] ∥ ∥ ∥
+∞
+∥ ∥K[xi] ∥ ∥
+l2
++ y ∥ ∥K[xi] ∥ ∥
+l2
+≤ lk2 ∥ ∥θ t ∥ ∥
+l2 + y
+√ lk
+≤ lk2 yk λl
++ y √ lk
+= yk3 λ + √ lyk
+(28)
+Therefore,
+∥ ∥Bt ∥ ∥ 2 l2 ≤ ( 1
+ω
+ω ∑
+i=1
+∥ ∥ ∥(θTK[xi]− yi)K[xi] ∥ ∥ ∥
+l2 + λ
+∥ ∥θ t ∥ ∥
+l2 )2
+≤ (yk 3 λ + √ lyk + λ yk λl )2
+(29)
+So,combing (15) (25) (29),we can get
+∥ ∥θ t+1 − θ∗ ∥ ∥ 2 l2 ≤ (1− ληt) ∥ ∥θ t − θ∗ ∥ ∥ 2 l2
++ η2t ( yk3 λ + √ lyk + λ yk λl )2
+(30)
+So this algorithm is a linear convergence of Q-th.   Currently, many machine learning algorithms contain lots of iterations. When it comes to existing large-scale distributed systems, some slave nodes may break down or have lower efficiency. Therefore traditional machine learning algorithm may fail because of the instability of distributed system.We presents a hybrid approach which not only own a high fault-tolerant but also achieve a balance of performance and efficiency.For each iteration, the result of slow machines will be abandoned. First, we discuss the relationship between accuracy and abandon rate. Then we debate the convergence speed of this process. Finally, our experiments demonstrate our idea can dramatically reduce calculation time and be used in many platforms. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

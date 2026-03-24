@@ -1,0 +1,484 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Decoupling Exploration and Exploitation in Multi-Armed Bandits
+Paper Content: 1205.2874.pdf META Decoupling Exploration and Exploitation in Multi-Armed Bandits Orly Avner Shie Mannor Ohad Shamir orlyka@tx.technion.ac.il shie@ee.technion.ac.il ohadsh@microsoft.com  √ k dependence, depending on
+the behavior of the arms’ reward sequences. For the important case of piecewise stationary stochastic bandits, we show a significant improvement over existing algorithms. Our algorithms are based on a non-uniform sampling policy, which we show is essential to the success of any algorithm in the adversarial setup. Finally, we show some simulation results on an ultra-wide band channel selection inspired setting indicating the applicability of our algorithms. 1. Introduction Multi-armed bandits have long been a canonical framework for studying online learning under partial information constraints. In this framework, a learner has to repeatedly obtain rewards by choosing from a fixed set of k actions (arms), and gets to see only the reward of the chosen action. The goal of the learner is to minimize regret, namely the difference between her own cumulative reward and the cumulative reward of the best single action in hindsight. We focus here on algorithms suited for adversarial settings, which have
+Appearing in Proceedings of the 29 th International Conference on Machine Learning, Edinburgh, Scotland, UK, 2012. Copyright 2012 by the author(s)/owner(s).
+reasonable regret even without any stochastic assumptions on the reward generating process.
+A central theme in multi-armed bandits is the exploration-exploitation tradeoff : The learner must choose highly-rewarding actions most of the time in order to minimize regret, but also needs to do some exploration in order to determine which actions to choose. Ultimately, the tradeoff comes from the assumption that the learner is constrained to observe only the reward of the action she picked.
+While being a compelling and widely applicable framework, there exist several realistic bandit-like settings, which do not correspond to this fundamental assumption. For example, in ultra-wide band (UWB) communications, the decision maker, also called the “secondary,” has to decide in which channel to transmit and in what way. There are typically many possible channels (i.e., frequency bands) and several transmission methods (power, code used, modulation, etc.; see (Oppermann et al., 2004)). In some UWB devices, the secondary can sense a different channel (or channels) than the one it currently uses for transmission. In fact, in some settings, the secondary cannot sense the channel it is currently transmitting in because of interference. The UWB environment is extremely noisy since it potentially contains many other sources, called “primaries.” Some of these sources are sources whose behavior (which channel they use, for how long, and in which power level) can be very hard to predict as they represent a mobile device using WiMAX, WiFI or some other communication protocol. It is therefore sensible to model the behavior of primaries as an adversarial process or a piecewise stationary process. We should mention that UWB networks are highly complex, with many issues such as power constraints and multi-agency that have been considered in the multiarmed bandit framework (Liu & Zhao, 2010; Avner & Mannor, 2011; Lai et al., 2008), but the decoupling of ar X iv :1 20 5. 28 74 v3 [
+cs .L
+G ]
+3 0
+Ju n
+20 12
+sensing and transmission has not been considered to the best of our knowledge. More abstractly, our work relates to any bandit-like setting, where we are free to query the environment for some additional partial information, irrespective of our actual actions.
+In such settings, the assumption that the learner can only observe the reward of the action she picked is an unnecessary constraint, and one might hope that removing this constraint and constructing suitable algorithms would allow better performance. We emphasize that this is far from obvious: In this paper, we will mostly focus on the case where the learner may query just a single action, so in some sense the learner gets the same “amount of information” per round as the standard bandit setting (i.e., the reward of a single action out of k actions overall). The goal of this paper is to devise algorithms for this setting, and analyze theoretically and empirically whether the hope for improved performance is indeed justified. We emphasize that our results and techniques naturally generalize to cases where more than one action can be queried, and cases where the reward of the selected action is always revealed (see Sec. 7).
+Specifically, our contributions are the following:
+• We present a “decoupled” multi-armed bandit algorithm, which is suited to our setting. The algorithm is based on a certain querying distribution, which is adaptive and depends on the distribution by which the actions are actually picked. We show a “data-dependent” regret guarantee for the algorithm, which is never worse than that of standard bandit algorithms, and can be much better (in terms of dependence on the number of actions k), depending on how the actions’ rewards behave.
+• We prove that in certain settings (in particular, piecewise stochastic rewards), the decoupling assumption allows us to devise algorithms with significantly better performance than any possible standard bandit algorithm.
+• Our algorithms are based on a certain adaptive querying distribution, in contrast to previous works in the stochastic case where the querying distribution was uniform. We show that in some sense, such an adaptive policy is necessary in an adversarial setting, in order to get performance improvements compared to standard bandit algorithms.
+• We perform a preliminary experimental study, corroborating our theoretical findings and indicating that our algorithmic approach indeed leads
+to improved results, compared to standard approaches.
+The proofs of our theorems are provided in the appendix of the full version (Avner et al., 2012).
+Related Work. The idea of decoupling exploration and exploitation has appeared in a few previous works, but in different settings and contexts. For example, (Yu & Mannor, 2009) discuss a setting where the learner is allowed to query an additional action in a multi-armed bandit setting, but the focus there was on algorithms for stochastic bandits, as opposed to adversarial bandits as we do here. (Agarwal et al., 2010) study a bandit setting with (one or more) queries per round. However, they focus on the problem of bandit convex optimization, which is much more general than ours, and exploration and exploitation remains coupled in their framework. A different line of work ((Even-Dar et al., 2006; Audibert et al., 2010; Bubeck et al., 2011)) considers multi-armed bandits in a stochastic setting, where the goal is to identify the best action by performing pure exploration. While this work also conceptually “decouples” exploration and exploitation, the goal and setting are quite different than ours. 2. Problem Setting We use [k] as shorthand for {1, . . . , k}. Bold-face letters represent vectors, and 1A represents the indicator function for an event A. We use the standard bigOh notation O(·) to hide constants, and Õ(·) to hide constants and logarithmic factors. For a distribution vector p on the k-simplex, we use the notation
+‖p‖1/2 =  k∑ j=1 √ pj 2
+to describe the ‘`1/2’-norm of the distribution. It is straightforward to show that for a distribution vector, this quantity is always in [1, k]. In particular, it is k for the uniform distribution, and gets smaller the more non-uniform the distribution is, attaining the value of 1 when p is a unit vector.
+Our setting is a variant of the standard adversarial multi-armed bandit framework, focusing (for simplicity) on an oblivious adversary and a fixed horizon. In this setting, we have a fixed set of k > 1 actions and a fixed known number of rounds T . Each action i at each round t has an unknown associated reward gi(t) ∈ [0, 1]. At each round, a learner chooses one of the actions it, and obtains the associated reward git(t). The basic goal in this setting is to minimize the
+regret with respect to the best single action in hindsight, namely
+max i T∑ t=1 gi(t)− T∑ t=1 git(t).
+Unless specified otherwise, we make no assumptions on how the rewards gi(t) are generated (other than boundedness), and they might even be generated adversarially by an agent with full knowledge of our algorithm. However, we assume that the rewards are fixed in advance and do not depend on the learner’s (possibly random) choices in previous rounds.
+In standard multi-armed bandits, at the end of each round, the learner only gets to know the reward git(t) of the action it which was actually picked, but not the reward of other actions. Instead, in this paper we focus on a different setting, where the learner, after choosing an action it, may query a single action jt and get to see its associated reward gjt(t). This setting is a (slight) relaxation of the standard bandit setting, since we can always query jt = it. However, here it is possible to query an action different than it. We emphasize that the regret is still measured with respect to the chosen actions it, and the querying only has informational value. In order to compare our results with those obtainable in the standard setting, we will use the term standard bandit algorithm to refer to algorithms which are not free to query rewards, and are limited to receiving the reward of the chosen action. A typical example is the EXP3.P (Auer et al., 2002), with a Õ( √ kT ) regret upper bound, holding with high probability, or the Implicitly Normalized Forecaster of (Audibert & Bubeck, 2009) with O( √ kT ) regret.
+An interesting variant of our setting is when the learner gets to query more than one action, or gets to see git(t) on top of gjt(t). Such variants are further discussed in Sec. 7. 3. Basic Algorithm and Results In analyzing our “decoupled” setting, perhaps the first question one might ask is whether one can always get improved regret performance, compared to the standard bandit setting. Namely, that for any reward assignment, the attainable regret will always be significantly smaller. Unfortunately, this is not the case: It can be shown that there exists an adversarial strategy such that the regret of standard bandit algorithms is Θ̃( √ kT ), whereas the regret of any “decoupled” algorithm will be1 Ω( √ kT ). Therefore, one cannot hope to
+1One simply needs to consider the strategy used to obtain the Ω( √ kT ) regret lower bound in the standard bandit
+always obtain better performance. However, as we will soon show, this can be obtained under certain realistic conditions on the actions’ rewards.
+We now turn to present our first algorithm (Algorithm 1 below) and the associated regret analysis. The algorithm is rather similar in structure to standard bandit algorithms, picking actions at random in each round t according to a weighted distribution p(t) which is updated multiplicatively. The main difference is in determining how to query the reward. Here, the queried action is picked at random, according to a query distribution q(t) which is based on but not identical to p(t). More particularly, the queried action jt is chosen with probability
+qjt(t) = √ pjt(t)∑k
+j=1
+√ pj(t) . (1)
+Roughly speaking, this distribution can be seen as a “geometric average” between p(t) and a uniform distribution over the k actions. See Algorithm 1 for the precise pseudocode.
+Algorithm 1 Decoupled MAB Algorithm
+Input: Step size parameter µ ∈ [1, k], confidence parameter δ ∈ (0, 1) Let η = 1/ √ µT , β = 2η √ 6 log(3k/δ) and γ = η2(1 + β)2k2 ∀ j ∈ [k] let wj(1) = 1. for t = 1, . . . , T do
+∀ j ∈ [k], let pj(t) = (1− γ) wj(t)∑k l=1 wl(t)
++ γk Choose action it with probability pit(t) Query reward gjt(t) with probability
+qjt(t) =
+√ pjt (t)∑
+j
+√ pj(t)
+∀ j ∈ [k], let g̃j(t) = 1qj(t) (gj(t)1jt=j + β) ∀ j ∈ [k], let wj(t+ 1) = wj(t) exp(ηg̃j(t))
+end for
+Readers familiar with bandit algorithms might notice the existence of the common “exploration component” γ/k in the definition of pj(t). In standard bandit algorithm, this is used to force the algorithm to explore all arms to some extent. In our setting, exploration is performed via the separate query distribution qj(t), and in fact, this γ/k term can be inserted into the qj(t) definition instead. While this would be more aesthetically pleasing , it also seems to make our proofs
+setting (Auer et al., 2002). The lower bound proof can be shown to apply to a “decoupled” algorithm as well. Intuitively, this is because the hardness for the learner stems from distinguishing slightly different distributions based on at most T samples, which has nothing to do with the coupling constraint.
+and results more complicated, without substantially improving performance. Therefore, we will stick with this formulation.
+Before discussing the formal theoretical results, we would like to briefly explain the intuition behind this querying distribution. Most bandit algorithms (including ours) build upon a standard multiplicative updates approach, which updates the distribution p(t) multiplicatively based on each action’s rewards. In the bandit setting, we only get partial information on the rewards, and therefore resort to multiplicative updates based on an unbiased estimate of them. The key quantity which controls the regret is the variance of these estimates, in expectation over the action distribution p(t). In our case, this quantity turns out to
+be on the order of ∑k j=1 pj(t)/qj(t). Now, standard bandit algorithms, which may not query at will, are essentially constrained to have qj(t) = pj(t), leading to an expected variance of k and hence the k in their Õ( √ kT ) regret bound. However, in our case, we are free to pick the querying distribution q(t) as we wish.
+It is not hard to verify that ∑k j=1 pj(t)/qj(t) is minimized by choosing q(t) as in Eq. (1), with the value of ‖p(t)‖1/2. Thus, roughly speaking, instead of dependence on k, we get a dependence on 1T ∑T t=1 ‖p(t)‖1/2, as will be seen shortly.
+The theoretical analysis of our algorithm relies on the following technical quantity: For any algorithm parameter choices µ, δ, and for any v ∈ [1, k], define
+P (v, δ, µ) = Pr
+( 1
+T T∑ t=1 ‖p(t)‖1/2 > v
+) ,
+where the probability is over the algorithm’s randomness, run with parameters µ, δ, with respect to the (fixed) reward sequence. The formal result we obtain is the following:
+Theorem 1. Suppose that T is sufficiently large (and thus η and β sufficiently small) so that (1 + β)2 ≤ 2. Then for any v ∈ [1, k], it holds that with probability at least 1− δ − P (v, δ, µ) that the sequence of rewards gi1(1), . . . , giT (T ) returned by Algorithm 1 satisfies
+max i T∑ t=1 gi(t)− T∑ t=1 git(t)
+≤ Õ
+(√( v2
+µ + µ+ v
+) T + k2
+µ +
+k2
+T 3/2 ) where the Õ notation hides numerical constants and factors logarithmic in k and δ.
+At this point, the nature of this result might seem a bit cryptic. We will soon provide more concrete examples,
+but would like to give a brief general intuition. First of all, if we pick µ = v = k, then P (v, δ, µ) = 0 always (as ‖p(t)‖1/2 ≤ k), and the bound becomes Õ( √ kT ), holding with probability 1 − δ, similar to standard multi-armed bandit guarantees. This shows that our algorithm’s regret guarantee is never worse than that of standard bandit algorithms. However, the theorem also implies that under certain conditions, the resulting bound may be significantly better. For example, if we run the algorithm with µ = 1 and have v = O(1), then the bound becomes Õ (√ T ) for sufficiently large
+T . This bound is meaningful only if P (O(1), δ, 1) is reasonably small. This would happen if the distribution vectors p(t) chosen by the algorithm tend to be highly non-uniform, since it leads to a small value for 1 T ∑T t=1 ‖p(t)‖1/2.
+We now turn to provide a concrete scenario, where the bound we obtain is better than those obtained by standard bandit algorithms. Informally, the scenario we discuss assumes that although there are k actions, where k is possibly large, only a small number of them are actually “relevant” and have a performance close to that of the best action in hindsight. Intuitively, such cases would lead to the distribution vectors p(t) to be non-uniform, which is favorable to our analysis.
+Theorem 2. Suppose that the reward of each action is chosen i.i.d. from a distribution supported on [0, 1]. Furthermore, suppose that there exist a subset G ⊂ [k] of actions and a parameter ∆ > 0 (where |G|,∆ are considered constants independent of k, T ), such that the expected reward of any action in G is larger than the expected reward of any action in [k] \G by at least ∆. Then if we run our algorithm with
+µ = kmin{1, max{0, 4 3− 1 3 logk(T )}},
+it holds with probability at least 1− δ that the regret of the algorithm is at most
+Õ (√ kmax{0, 4 3− 1 3 logk(T )}T ) ,
+where the Õ notation hides numerical constants and factors logarithmic in δ, k.
+The bound we obtain interpolates between the usual Õ( √ kT ) bound obtained using a standard bandit algorithm, and a considerably better Õ( √ T ), as T gets larger compared with k. We note that a mathematically equivalent form of the bound is
+max
+{( k
+T
+)2/3 , ( 1
+T
+)1/2} T.
+Namely, the average per-round regret scales down as (k/T )2/3, until T is sufficiently large and we switch to
+a (1/T )1/2 regime. In contrast, the bound for standard bandit algorithms is always of the form (k/T )1/2, and the rate of regret decay is significantly slower.
+We emphasize that although the setting discussed above is a stochastic one (where the rewards are chosen i.i.d.), our algorithm can cope simultaneously with arbitrary rewards, unlike algorithms designed specifically for stochastic i.i.d. rewards (which do admit better dependence in T , although not necessarily in k).
+Finally, we note in practice, the optimal choice of µ depends on the (unknown) rewards, and hence cannot be determined by the learner in advance. However, this can be resolved algorithmically by a standard doubling trick (cf. (Cesa-Bianchi & Lugosi, 2006)), without materially affecting the regret guarantee. Roughly speaking, we can guess an upper bound v on 1T ∑T t=1 ‖p(t)‖1/2 and pick µ = v, and if the cu-
+mulative sum ∑ ‖p(t)‖1/2 eventually exceeds Tv at some round, then we double v and µ and restart the algorithm. 4. Decoupling Provably Helps in some Adversarial Settings So far, we have seen how the bounds obtained for our approach are better than the ones known for standard bandit algorithms. However, this doesn’t imply that our approach would indeed yield better performance in practice: it might be possible, for instance, that for the setting described in Thm. 2, one can provide a tighter analysis of standard bandit algorithms, and recover a similar result. In this section, we show that there are cases where decoupling provably helps, and our approach can provide performance provably better than any standard bandit algorithm, for informationtheoretic reasons. We note that the idea of decoupling has been shown to be helpful in cases reminiscent of the one we will be discussing (Yu & Mannor, 2009), but here we study it in the more general and challenging adversarial setting.
+Instead of the plain-vanilla multi-armed bandit setting, we will discuss here a slightly more general setting, where our goal is not to achieve regret with respect to the best single action, but rather to the best sequence of S > 1 actions. More specifically, we wish to obtain a regret bound of the form
+max 1=T1≤T2≤...≤TS+1=T
+i1,...,iS∈[k]
+S∑ s=1 Ts+1∑ t=Ts+1 gis(t)− T∑ t=1 git(t).
+This setting is well-known in the online learning literature, and has been considered for instance in (Herbster
+& Warmuth, 1998) for full-information online learning (under the name of “tracking the best expert”) and in (Auer et al., 2002) for the bandit setting (under the name of “regret against arbitrary strategies”).
+This setting is particularly suitable when the best action changes with time. Intuitively, our decoupling approach helps here, since we can exploit much more aggressively while still performing reasonable exploration, which is important for detecting such changes.
+The algorithm we use follows the lead of (Auer et al., 2002) and is presented as Algorithm 2. The only difference compared to Algorithm 1 is that the wj(t+ 1) parameters are computed differently. This change facilitates more aggressive exploration.
+Algorithm 2 Decoupled MAB Algorithm For Switching
+Input: Step size parameter µ ∈ [1, k], confidence parameter δ ∈ (0, 1), number of switches S Let η = √ S/µT , α = 1/T , β = 2η √ 6 log(3k/δ) and γ = η2(1 + β)2k2 ∀ j ∈ [k] let wj(1) = 1. for t = 1, . . . , T do
+∀ j ∈ [k], let pj(t) = (1− γ) wj(t)∑k l=1 wl(k)
++ γk Choose action it with probability pit(t) Query reward gjt(t) with probability qjt(t) =√ pjt (t)∑ j √ pj(t) ∀ j ∈ [k], let g̃j(t) = 1qj(t) (gj(t)1jt=j + β) ∀ j ∈ [k], let wj(t + 1) = wj(t) exp(ηg̃j(t)) + eα k ∑T i=1 wi(t)
+end for
+The following theorem, which is proven along similar lines to Thm. 1, shows that in this setting as well, we get the same kind of dependence on the distribution vectors p(t) as in the standard bandit setting.
+Theorem 3. Suppose that T is sufficiently large (and thus η and β sufficiently small) so that (1 + β)2 ≤ 2. Then for any v ∈ [1, k], it holds that with probability at least 1 − δ − P (v, δ, µ) that the sequence of rewards gi1(1), . . . , giT (T ) returned by algorithm 2 satisfies the following, simultaneously over all segmentations of {1, . . . , T} to S epochs and a choice of action
+is to each epoch:
+S∑ s=1 Ts+1∑ t=Ts+1 gis(t)− T∑ t=1 git(t)
+≤ Õ (√ S ( v2
+µ + µ+ v
+) T + k2
+µ +
+k2
+T 3/2
+) .
+The Õ notation hides numerical constants and factors logarithmic in k and δ.
+In particular, we can also get a parallel version of Thm. 2, which shows that when there are only a small number of “good” actions (compared to k), the leading term has decaying dependence on k, unlike standard bandit algorithms where the dependence on k is always√ k.
+Theorem 4. Suppose that the reward of each action is chosen i.i.d. from a distribution supported on [0, 1]. Furthermore, suppose that at each epoch s, there exists a subset Gs ⊂ [k] of actions and a parameter ∆ > 0 (where |Gs|,∆ are considered constants independent of k, T ), such that the expected reward of any action in Gs is larger than the expected reward of any action in [k]\Gs by at least ∆. Then if we run Algorithm 2 with
+µ = kmin{1, max{0, 4 3− 1 3 logk(T )}},
+it holds with probability at least 1− δ that the regret of the algorithm is at most
+Õ (√ Skmax{0, 4 3− 1 3 logk(T )}T ) ,
+where the Õ notation hides numerical constants and factors logarithmic in δ and k.
+Now, we are ready to present the main negative result of this section, which shows that in the setting of Thm. 2, any standard bandit algorithm cannot have a regret better than Ω( √ kT ), which is significantly worse. For simplicity, we will focus on the case where S = 2: namely, that we measure regret with respect to a single action from round 1 till some t0, and then from t0 +1 till T . Moreover, we consider a simple case where |G1| = |G2| = 1 and ∆ = 1/5, so there is just a single action at a time which is significantly better than all the other actions in expectation.
+Theorem 5. Suppose that T ≥ Ck for some sufficiently large universal constant C. Then in the setting of Thm. 2, there exists a randomized reward assignment (with |G1| = |G2| = 1 and ∆ = 1/5), such that for any standard bandit algorithm, its expected regret (over the rewards assignment and the algorithm’s randomness) is at least 0.007 √ (k − 1)T .
+The constant 0.007 is rather arbitrary and is not the tightest possible. We note that a related Ω( √ T ) lower bound has been obtained in (Garivier & Moulines, 2011). However, their result does not apply to the case S = 2 and more importantly, does not quantify a dependence on k. It is interesting to note that unlike the standard lower bound proof for standard bandits (Auer et al., 2002), we obtain here an Ω( √ kT ) regret even when ∆ > 0 is fixed and doesn’t decay with T . 5. The Necessity of a Non-Uniform Querying Distribution The theoretical results above demonstrated the efficacy of our approach, compared to standard bandit algorithms. However, the exact form of our querying distribution (querying action i with probability proportional to √ pj(t)) might still seem a bit mysterious. For example, maybe one can obtain similar results just by querying actions uniformly at random? Indeed, this is what has been done in some other online learning scenarios where queries were allowed (e.g., (Yu & Mannor, 2009; Agarwal et al., 2010)). However, we show below that in the adversarial setting, an adaptive and non-uniform querying distribution is indeed necessary to obtain regret bounds better than √ kT . For simplicity, we return to our basic setting, where our goal is to compete with just the best single fixed action in hindsight.
+Theorem 6. Consider any online algorithm over k > 2 actions and horizon T , which queries the actions based on a fixed distribution. Then there exists a strategy for the adversary conforming to the setting described in Thm. 2, for which the algorithm’s regret is at least c √ kT for some universal constant c.
+A proof sketch is presented in the appendix of the full version. The intuition of the proof is that if the querying distribution is fixed, and there are only a small number of “good” actions, then we spend too much time querying irrelevant actions, and this hurts our regret performance. 6. Experiments We compare the decoupled approach with common multi-armed bandit algorithms in a simulated adversarial setting. Our user chooses between k communication channels, where sensing and transmission can be decoupled. In other words, she may choose a certain channel for transmission while sensing (i.e., querying) a different, seemingly less attractive, channel.
+We simulate a heavily loaded UWB environment with a single, alternating, channel which is fit for transmission. The rewards of k − 1 channels are drawn from alternating uniform and truncated Gaussian distributions with random parameters, yielding adversarial rewards in the range [0, 6]. The remaining channel yields stochastic rewards drawn from a truncated Gaussian distribution bounded in the same range but with a mean drawn from [3, 6]. The identity of the better channel and its distribution parameters are re-drawn at exponentially distributed switching times.
+Figure 1 displays the results of a scenario with k = 10 channels, comparing the average reward acquired by the different algorithms over T = 10, 000 rounds. We implemented Algorithm 1, Exp3 (Auer et al., 2002), Exp3.P (Auer et al., 2002), a simple round robin policy (which just cycles through the arms in a fixed order) and a “greedy” decoupled form of round robin, which performs uniform queries and picks actions greedily based on the highest empirical average reward. The black arrows indicate rounds in which the identity of the stochastic arm and its distribution parameters were re-drawn. The results are averaged over 50 repetitions of a specific realization of rewards. Although we have tested our algorithm’s performance on several realizations of switching times and rewards with very good results, we display a single realization of these for the sake of clarity.
+Figure 2 displays the dynamics of channel selection for two of the k = 10 channels. The thick plots represent the number of times a channel was chosen over time, and the thin plots represent the number of times it was queried. The dashed plots represent a channel which was drawn as the better channel during some periods, resulting in a relatively high average reward,
+while the solid plots represent a channel with a low average reward. The increased flexibility of the decoupled approach is evident from the graph, as well as the adaptive, nonlinear sampling policy.
+Comments: We implement Algorithm 1 and not Algorithm 2 since the number of switches is unknown a-priori. Also, the rewards are in the range [0, 6] in order to keep all implemented algorithms on a similar scale, without violating the boundedness assumption. 7. Discussion In this paper, we analyzed if and how one can benefit in settings where exploration and exploitation can be “decoupled:” namely, that one can query for rewards independently of the action actually picked. We developed some algorithms for this setting, and showed that these can indeed lead to improved results, compared to the standard bandit setting, under certain conditions. We also performed some experiments that corroborate our theoretical findings.
+For simplicity, we focused on the case where only a single reward may be queried. If c > 1 queries are allowed, it is not hard to show parallel guarantees to those in this paper, where the dependence on k is replaced by dependence on k/c. Algorithmically, one simply needs to repeatedly sample from the query distribution c times, instead of a single time. We conjecture that similar lower bounds can be obtained as well. Interestingly, it seems that being allowed to see the reward of the action actually picked, on top of the queried reward, does not result in significantly improved regret guarantees (other than better constants).
+Several open questions remain. First, our results do not apply when the rewards are chosen by an adaptive adversary (namely, that the rewards are not fixed
+in advance but may be chosen individually at each round, based on the algorithm’s behavior in previous rounds). This is not just for technical reasons, but also because data and algorithm dependent quantities like P (v, δ, µ) do not make much sense if the rewards are not considered as fixed quantities.
+A second open question concerns the possible correlation between sensing and exploration. In some applications it is plausible that the choice of which arm to exploit affects the quality of the sample of the arm that is explored. For instance, in the UWB sensing example discussed in the introduction transmitting and receiving in the same channel is much less preferred than sensing in another channel because of interference in the same frequency band. It would be interesting to model such dependence and take it into account in the learning process.
+Finally, it remains to extend other bandit-related algorithms, such as EXP4 (Auer et al., 2002), to our setting, and study the advantage of decoupling in other adversarial online learning problems. Acknowledgements. This research was partially supported by the CORNET consortium (http://www.cornet.org.il/). A. Appendix  A.1. Proof of Thm. 1 We begin by noticing that for any possible distribution p1(t), . . . , pk(t), it must hold that ‖p(t)‖1/2 ∈ [1, k]. We will use this observation implicitly throughout the proof.
+For notational simplicity, we will write P (v) instead of P (v, δ, µ), since we will mainly consider things as a function of v where δ, µ are fixed.
+We will need the following two lemmas.
+Lemma 1. Suppose that β ≤ 1. Then it holds with probability at least 1− δ that for any i = 1, . . . , k,
+T∑ t=1 g̃i(t) ≥ T∑ t=1 gi(t)− log(k/δ) β
+Proof. Let Et denote expectation with respect to the algorithm’s randomness at round t, conditioned on the previous rounds. Since exp(x) ≤ 1 + x+ x2 for x ≤ 1, we have by definition of g̃i(t) that
+Et [exp (β(gi(t)− g̃i(t)))] = Et [ exp ( β ( gi(t)−
+gi(t)1jt=i qi(t)
+) − β 2
+qi(t) )] ≤ ( 1 + Et [ β ( gi(t)−
+gi(t)1jt=i qi(t)
+)] + Et [( β ( gi(t)−
+gi(t)1jt=i qi(t)
+))2]) exp ( − β 2
+qi(t)
+)
+≤ ( 1 + 0 + β2Et [( gi(t)1jt=i qi(t) )2]) exp ( − β 2 qi(t) ) ≤ ( 1 + β2
+qi(t)
+) exp ( − β 2
+qi(t)
+) .
+Using the fact that (1 + x) exp(−x) ≤ 1, we get that this expression is at most 1. As a result, we have
+E [ exp ( β
+T∑ t=1 (gi(t)− g̃i(t))
+)] ≤ 1.
+Now, by a standard Chernoff technique, we know that
+Pr ( T∑ t=1 (gi(t)− g̃i(t)) > ) ≤ exp(−β )E [ exp ( β T∑ t=1 (gi(t)− g̃i(t)) )] ≤ exp(−β ).
+Substituting δ = exp(−β ), solving for , and using a union bound to make the result hold simultaneously for all i, the result follows.
+We will also need the following straightforward corollary of Freedman’s inequality (Freedman, 1975) (see also Lemma A.8 in (Cesa-Bianchi & Lugosi, 2006))
+Lemma 2. Let X1, . . . , XT be a martingale difference sequence with respect to the filtration {Ft}t=1,...,T , and with |Xi| ≤ B almost surely for all i. Also, suppose that for some fixed v > 0 and confidence parameter P (v) ∈ (0, 1), it holds that Pr( ∑T t=1 E[X2t |Ft−1] > vT ) ≤ P (v). Then for any δ ∈ (0, 1), it holds with probability at least 1− δ − P (v) that T∑ t=1 Xt ≤ √ 2 log ( 1 δ ) vT + B 2 log ( 1 δ ) .
+We can now turn to prove the main theorem. We define the potential function Wt = ∑k j=1 wj(t), and get that
+Wt+1 Wt = k∑ j=1 wj(t)∑k l=1 wl(t) exp(ηg̃j(t)). (2)
+We have that ηg̃j(t) ≤ 1, since by definition of the various parameters,
+ηg̃j(t) ≤ η(1 + β) qj(t) ≤ η(1 + β)√ γ/k
+√ ‖p(t)‖1/2 ≤ k
+η(1 + β) √ γ ≤ 1.
+Using the definition of pj(t) and the inequality exp(x) ≤ 1 + x+ x2 for any x ≤ 1, we can upper bound Eq. (2) by
+k∑ j=1 pj(t)− γ/k 1− γ ( 1 + ηg̃j(t) + η 2g̃j(t) 2 )
+≤ 1 + η 1− γ k∑ j=1 pj(t)g̃j(t) + η2 1− γ k∑ j=1 pj(t)g̃j(t) 2.
+Taking logarithms and using the fact that log(1 + x) ≤ x, we get
+log ( Wt+1 Wt ) ≤ η 1− γ k∑ j=1 pj(t)g̃j(t) + η2 1− γ k∑ j=1 pj(t)g̃j(t) 2.
+Summing over all t, and canceling the resulting telescopic series, we get
+log ( WT+1 W1 ) ≤ η 1− γ T∑ t=1 k∑ j=1 pj(t)g̃j(t) + η2 1− γ T∑ t=1 k∑ j=1 pj(t)g̃j(t) 2. (3)
+Also, for any fixed action i, we have
+log ( WT+1 W1 ) ≥ log ( wi(T + 1) W1 ) = η T∑ t=1 g̃i(t)− log(k). (4)
+Combining Eq. (3) with Eq. (4) and slightly rearranging and simplifying, we get
+T∑ t=1 g̃i(t)− 1 1− γ T∑ t=1 k∑ j=1 pj(t)g̃j(t) ≤ log(k) η + η 1− γ T∑ t=1 k∑ j=1 pj(t)g̃j(t) 2. (5)
+We now start to analyze the various terms in this expression. At several points in what follows, we will implicitly use the definition of qj(t) and the fact that ‖p(t)‖1/2 ∈ [1, k].
+Let Et denote expectation with respect to the randomness of the algorithm on round t, conditioned on the previous rounds. Also, let
+g′j(t) = gj(t)1jt=j qj(t) ,
+and note that g̃j(t) = g ′ j(t) + β qj(t) and Et[g′j(t)] = gj(t). We have that
+k∑ j=1 pj(t)(g̃j(t)) = k∑ j=1 pj(t)g ′(t) + β k∑ j=1 pj(t) qj(t) = k∑ j=1 pj(t)g ′(t) + β‖p(t)‖1/2. (6)
+Also, ∑k j=1 pj(t)(g ′(t)− g(t)) is a martingale difference sequence (indexed by t), it holds that
+Et   k∑ j=1 pj(t)(g ′(t)− g(t)) 2  ≤ Et   k∑ j=1 pj(t)g ′(t) 2  ≤ k∑ r=1 qr(t)  k∑ j=1 pj(t) 1r=j qj(t) 2
+= k∑ r=1 p2r(t) qr(t) = √ ‖p(t)‖1/2 k∑ r=1 p3/2r (t) ≤ ‖p(t)‖1/2,
+and
+k∑ j=1 pj(t)(g ′(t)− g(t) ≤ k∑ j=1 pj(t)g ′(t) ≤ max j pj qj(t) ≤ √ ‖p(t)‖1/2 ≤ √ k.
+Therefore, applying Lemma 2, and using the assumptions stated in the theorem, it holds with probability at least 1− δ − P (v) that
+T∑ t=1 k∑ j=1 pj(t)g ′(t) ≤ T∑ t=1 k∑ j=1 pj(t)g(t) +
+√ 2 log ( 1
+δ
+) vT + √ k
+2 log
+( 1
+δ
+) . (7)
+Moreover, we can apply Azuma’s inequality with respect to the martingale difference sequence ∑k j=1 pj(t)g(t)− git(t), indexed by t (since it is chosen with probability pit(t)), and get that with probability at least 1− δ,
+T∑ t=1 k∑ j=1 pj(t)g(t)− git(t) ≤
+√ 1
+2 log
+( 1
+δ
+) T . (8)
+Combining Eq. (6), Eq. (7) and Eq. (8) with a union bound, and recalling that the event ∑T t=1 ‖p(t)‖1/2 ≤ vT is assumed to hold with probability at least 1− P (v), we get that with probability at least 1− 2δ − P (v),
+T∑ t=1 k∑ j=1 pj(t)(g̃j(t))− T∑ t=1 git(t) ≤ βvT +
+√ 2 log ( 1
+δ
+) vT + √ 1
+2 log
+( 1
+δ
+) T + √ k
+2 log
+( 1
+δ
+) . (9)
+We now turn to analyze the term ∑k j=1 pj(t)g̃ 2 j (t), using substantially the same approach. We have that
+k∑ j=1 pj(t)g̃ 2 j (t) = k∑ j=1 pj(t) ( g′j(t) + β qj(t) )2 ≤ 2 k∑ j=1 pj(t)g ′2 j (t) + 2β 2 k∑ j=1 pj(t) q2j (t) ≤ 2 k∑ j=1 pj(t)g ′2 j (t) + 2β 2k2.
+We note that ∑k j=1 pj(t)g
+′2(t) ≤ maxj pj(t)q2j (t) = ‖p(t)‖1/2 ≤ k. This implies that
+T∑ t=1 Et   k∑ j=1 pj(t)g ′2(t) 2  ≤ T∑ t=1 ‖p(t)‖21/2 ≤ ( T∑ t=1 ‖p(t)‖1/2 )2 ≤ (vT )2.
+Applying Lemma 2, we get that with probability at least 1− δ − P (v),
+T∑ t=1 k∑ j=1 pj(t)g ′2 j (t) ≤ T∑ t=1 Et  k∑ j=1 pj(t)g ′2 j (t) + vT√2 log(1 δ ) + k 2 log ( 1 δ ) .
+Moreover,
+Et  k∑ j=1 pj(t)g ′2 j (t)  ≤ k∑ r=1 qr(t) pr(t) q2r(t) = ‖p(t)‖1/2,
+so overall, we get that with probability at least 1− δ − P (v),
+T∑ t=1 k∑ j=1 pj(t)g̃ 2 j (t) ≤ 2vT
+( 1 + √ 2 log ( 1
+δ
+)) + k log ( 1
+δ
+) + 2β2k2. (10)
+Combining Lemma 1, Eq. (9) and Eq. (10) with a union bound, substituting into Eq. (5), and somewhat simplifying, we get that with probability at least 1− δ − P (v),
+max i T∑ t=1 gi(t)− T∑ t=1 git(t) ≤ γT + 2vT ( β + 2η √ 6 log(3/δ) ) + 2 √ 5 log(3/δ)vT + log(3k/δ) β + log(k) η
++ Õ (√ k + ηk + k2β2η ) .
+where Õ hides numerical constants and factors logarithmic in δ. Substituting our choices of γ and β, and again somewhat simplifying, we get the bound
+max i T∑ t=1 gi(t)− T∑ t=1 git(t) ≤ η
+( 8 √ 6 log ( 3k
+δ
+) vT ) + 1
+η
+(√ 1
+24 log
+( 3k
+δ
+) + log(k) ) + 2η2k2T
++ 2 √ 5 log(3/δ)vT + Õ (√ k + ηk + k2η3 ) .
+Plugging in η = √ 1/µT , we get the bound stated in the theorem. A.2. Proof of Thm. 2 For notational simplicity, we will use the O-notation to hide both constants and second-order factors (as T/k → ∞). Inspecting the proof of Thm. 1, it is easy to verify2 that it implies that with probability at least 1 − δ − P (v, δ, µ),
+max i∈[k] T∑ t=1 gi(t)− T∑ t=1 k∑ j=1 pj(t)gj(t) ≤ Õ
+(√( v2
+µ + µ+ v
+) T + k2
+µ +
+k2
+T 3/2
+) .
+Suppose w.l.o.g. action 1 is in G. Then it follows that
+T∑ t=1 k∑ j=1 pj(t) (g1(t)− gj(t)) ≤ Õ
+(√( v2
+µ + µ+ v
+) T + k2
+µ +
+k2
+T 3/2
+) .
+This bound holds for any choice of rewards. Now, we note that each gj(t) is chosen i.i.d. and independently of pj(t)), and thus ∑k j=1 pj(t)((g1(t) − gj(t)) − E[g1(t) − gj(t)]) is a martingale difference sequence. Applying Azuma’s inequality, we get that with probability at least 1− δ over the choice of rewards,
+T∑ t=1 k∑ j=1 pj(t) (g1(t)− gj(t)) ≥ T∑ t=1 k∑ j=1 pj(t) (E[g1(t)− gj(t)])− √ 2 log(1/δ)T ≥ T∑ t=1 ∑ j∈[k]\G pj(t)∆− √ 2 log(1/δ)T .
+Thus, by a union bound, with probability at least 1 − 2δ − P (v, δ, µ) over the randomness of the rewards and the algorithm, we get
+T∑ t=1 ∑ j∈[k]\G pj(t) ≤ Õ
+(√( v2
+µ + µ+ v
+) T + k2
+µ +
+k2
+T 3/2
+) , (11)
+2The difference from Thm. 1 is that the term ∑T t=1 git(t) is replaced by ∑k
+i=1 pi(t)gi(t). In the proof, we transformed the latter to the former by a martingale argument, but we could have just left it there and achieve the same bound.
+where Õ hides an inverse dependence on ∆. Now, we relate the left hand size to 1T ∑T t=1 ‖p(t)‖1/2. To do so, we note that for any vector x with support of size |G|, it holds that ‖x‖1/2 ≤ |G|‖x‖1. Using this and the fact that (a+ b)2 ≤ 2a2 + 2b2, we have
+‖p(t)‖1/2 = ∑ j∈G √ pj(t) + ∑ j∈[k]\G √ pj(t) 2 ≤ 2 ∑ j∈G √ pj(t) 2 + 2  ∑ j∈[k]\G √ pj(t) 2
+≤ 2|G|+ k ∑
+j∈[k]\G
+pj(t).
+Plugging this back to Eq. (11), and recalling that |G| is considered a constant independent of k, T , we get that with probability at least 1− 2δ − P (v, δ, µ), it holds that
+1
+T T∑ t=1 ‖p(t)‖1/2 ≤ Õ
+(√( v2
+µ + µ+ v
+) k2
+T + k3 µT + k3 T 5/2
+) .
+Recall that this bound holds for any v. In particular, if we pick v = k, then P (v, δ, µ) = 0, and we get that with probability at least 1− 2δ,
+1
+T T∑ t=1 ‖p(t)‖1/2 ≤ Õ ( k2√ µT + k3 µT + k3 T 5/2 ) . (12)
+This gives us a high-probability bound, holding with probability at least 1− 2δ, on 1T ∑T t=1 ‖p(t)‖1/2. But this means that if we pick v to equal the right hand size of Eq. (12), then by the very definition of P (v, δ, µ), we get P (v, δ, µ) = 2δ. Using this choice of v and applying Thm. 1, it follows that with probability at least 1− 4δ, the regret obtained by the algorithm is at most
+Õ
+(√( v2
+µ + µ+ v
+) T + k2
+µ +
+k2
+T 3/2
+) where v = max { 1 , Õ ( k2√ µT + k3 µT + k3 T 5/2 )} . (13)
+Now, it remains to optimize over µ to get a final bound. As a sanity check, we note that when µ = k and T ≥ k we get
+v = Õ
+(√ k3
+T + k2 T + k3 T 5/2
+) ≤ Õ(k),
+and a regret bound of Õ( √ kT ), same as a standard bandit algorithm. On the other hand, when µ = 1 and T ≥ Ω̃(k4), we get v = Õ(1) and a regret bound of Õ( √ T ), which is much better. The caveat is that we need T to be sufficiently large compared to k in order to get this effect. To understand what happens in between, it will be useful to represent this bound a bit differently. Let α = logT (k) ∈ (0, 1], so that k = Tα, and let µ = T β (where we need to ensure that β ∈ [0, α], as µ ∈ [1, k]). Then, a rather tedious but straightforward calculation shows that the regret bound above equals
+Õ ( T 1−β 2 + T 2α−β + T 3α− 3β+1 2 + T 3α− β 2−2 + T 1+β 2 + T 1/2 + Tα+ 1−β 4 + T 3α−β 2 + T 3 2α− 3 4 + T 2α− 3 2 ) .
+Using the fact that β ≤ α ≤ 1, we can drop the T 1−β 2 +T 1/2 terms, since it is always dominated by the T 1+β 2 term in the expression. The same goes for the T 3 2α− 3 4 +T 2α− 3 2 terms, since they are dominated by the T 3α−β 2 term (as β ≤ α ≤ 1). This also holds for the T 3α−β 2 term, which is dominated by the T 2α−β term, and the T 3α− β 2−2 term, which is dominated by the T 2α−β term. Thus, we now need to find the β minimizing the maximum exponent, i.e.,
+min β max
+{ 2α− β, 3α− 3β + 1
+2 ,
+1 + β
+2 , α+ 1− β 4
+} .
+This expression can be shown to be optimized for β = 13 max{0, 4α− 1}, where it equals 1 2 + 1 6 max{0, 4α− 1}. Substituting back α = logk(T ), we get the regret bound
+Õ ( T 1 2+ 1 6 max{0,4α−1} ) = Õ ( T 1 2+ α 6 max{0,4− 1α} ) = Õ ( T 1 2 k 1 6 max{0,4− 1α} ) = Õ (√ kmax{0, 4 3− 1 3 logk(T )}T ) ,
+obtained using
+µ = T β = T 1 3 max{0,4α−1} = T α 3 max{0,4− 1α} = kmax{0, 4 3− 1 3 logk(T )}.
+The derivation above assumed that α ≤ 1 (namely that T ≥ k). For T ≤ k, we need to clip µ to be at most k, and the regret bound obtained above is vacuous, as it is then larger than order of √ kT ≥ T . Thus, the bound we have obtained holds for any relation between k, T . A.3. Proof of Thm. 3 The proof is very similar to the one of Thm. 1, and we will therefore skip the derivation of some steps which are identical.
+We define the potential function Wt = ∑k j=1 wj(t), and get that
+Wt+1 Wt = k∑ j=1 wj(t)∑k l=1 wl(t) exp(ηg̃j(t)) + eα.
+Using a similar derivation as in the proof of Thm. 1, we get
+log ( Wt+1 Wt ) ≤ η 1− γ k∑ j=1 pj(t)g̃j(t) + η2 1− γ k∑ j=1 pj(t)g̃j(t) 2 + eα
+Summing over t = Ts + 1, . . . , Ts+1, we get
+log
+( WTs+1+1
+WTs+1
+) ≤ η
+1− γ Ts+1∑ t=Ts+1 k∑ j=1 pj(t)g̃j(t) + η2 1− γ Ts+1∑ t=Ts+1 k∑ j=1 pj(t)g̃j(t) 2. (14)
+Now, for any fixed action is, we have
+wi(Ts+1 + 1) ≥ wi(Ts + 2) exp η Ts+1∑ t=Ts+2 g̃is(t)  ≥ eα
+k WTs+1 exp η Ts+1∑ t=Ts+2 g̃is(t)  ≥ α
+k WTs+1 exp η Ts+1∑ t=Ts+1 g̃is(t)  , where in the last step we used the fact that by our parameter choices, ηg̃is(t) ≤ 1 (see proof of Thm. 1). Therefore, we get that
+log
+( WTs+1+1
+WTs+1
+) ≥ log ( wis(Ts+1 + 1)
+WTs+1
+) ≥ η Ts+1∑ t=Ts+1 g̃is(t) + log(α/k). (15)
+Combining Eq. (14) with Eq. (15) and slightly rearranging and simplifying, we get
+Ts+1∑ t=Ts+1 g̃is(t)− 1 1− γ T∑ t=1 k∑ j=1 pj(t)g̃j(t) ≤ log(k/α)S η + η 1− γ Ts+1∑ t=Ts+1 k∑ j=1 pj(t)g̃j(t) 2 + eα(Ts+1 − Ts) η .
+Summing over all time periods s, we get overall
+S∑ s=1 Ts+1∑ t=Ts+1 g̃is(t)− 1 1− γ T∑ t=1 k∑ j=1 pj(t)g̃j(t) ≤ log(k/α)S η + η 1− γ T∑ t=1 k∑ j=1 pj(t)g̃j(t) 2 + eαT η .
+In the proof of Thm. 1, we have already provided an analysis of these terms, which is not affected by the modification in the algorithm. Using this analysis, we end up with the following bound, holding with probability at least 1− δ − P (v, η, µ):
+S∑ s=1 Ts+1∑ t=Ts+1 gis(t)− T∑ t=1 git(t) ≤ η
+( 8 √ 6 log ( 3k
+δ
+) vT ) + 1
+η
+√ 1
+24 log
+( 3k
+δ
+) + 2η2k2T
++ 2 √ 5 log(3/δ)vT + log(k/α)S + eαT
+η + Õ
+(√ k + ηk + k2η3 ) ,
+where Õ hides numerical constants and factors logarithmic in δ. Plugging in α = 1/T and η = √ S/µT , we get the bound stated in the theorem. A.4. Proof of Thm. 4 The proof is almost identical to the one of Thm. 2, and we will only point out the differences.
+Starting in the same way, the analysis leads to the following bound:
+S∑ s=1 Ts+1∑ t=Ts+1 k∑ j=1 pj(t) (gis(t)− gj(t)) ≤ Õ
+(√ S ( v2
+µ + µ+ v
+) T + k2
+µ +
+k2
+T 3/2
+)
+This bound holds for any choice of rewards. Since each gj(t) is chosen i.i.d. and independently of pj(t)), we get that ∑k j=1 pj(t)((gis(t) − gj(t)) − E[gis(t) − gj(t)]) is a martingale difference sequence. Applying Azuma’s inequality, we get that with probability at least 1− δ over the choice of rewards,
+S∑ s=1 Ts+1∑ t=Ts+1 k∑ j=1 pj(t) (gis(t)− gj(t))
+≥ S∑ s=1 Ts+1∑ t=Ts+1 k∑ j=1 pj(t) (E[gis(t)− gj(t)])− √ 2 log(1/δ)T ≥ S∑ s=1 Ts+1∑ t=Ts+1 ∑ j∈[k]\Gs pj(t)∆− √ 2 log(1/δ)T .
+Thus, by a union bound, with probability at least 1 − 2δ − P (v, δ, µ) over the randomness of the rewards and the algorithm, we get
+S∑ s=1 Ts+1∑ t=Ts+1 ∑ j∈[k]\Gs pj(t) ≤ Õ
+(√( v2
+µ + µ+ v
+) T + k2
+µ +
+k2
+T 3/2
+)
+As in the proof of Thm. 2, we use the inequality ‖p(t)‖1/2 ≤ 2|Gs| + k ∑ j∈[k]\G pj(t) and the assumption that |Gs| is considered a constant independent of k, T , to get
+1
+T T∑ t=1 ‖p(t)‖1/2 ≤ Õ
+(√ S ( v2
+µ + µ+ v
+) k2
+T + k3 µT + k3 T 5/2
+) .
+The rest of the proof now follows verbatim the one of Thm. 4, with the only difference being the addition of the S factor in the square root. A.5. Proof of Thm. 5 Following standard lower-bound proofs for multi-armed bandits, we will focus on deterministic algorithms, We will show that there exists a randomized adversarial strategy, such that for any deterministic algorithm, the
+expected regret is lower bounded by Ω( √ kT ). Since this bound holds for any deterministic algorithm, it also holds for randomized algorithms, which choose the action probabilistically (this is because any such algorithm can be seen as a randomization over deterministic algorithms).
+The proof is inspired by the lower bound result3 of (Garivier & Moulines, 2011). We consider the following random adversary strategy. The adversary first fixes ∆ = 1/5. It then chooses an action a ∈ {2, . . . , k} uniformly at random, and an action t0 ∈ [t] with probability
+Pr(t0 = T ) = 1
+2 and Pr(t0 = t) =
+1
+2(T − 1) ∀t 6= T
+The adversary then randomly assigns i.i.d. rewards as follows (where we let B(p) denote a Bernoulli distribution with parameter p, which takes a value of 1 with probability p and 0 otherwise):
+gi(t) ∼  B ( 1 2 ) i = 1 B ( 1 2 −∆ ) i ∈ [k] \ {1, a} B ( 1 2 −∆ ) i = a, t ≤ t0
+B ( 1 2 + ∆ ) i = a, t > t0
+In words, action 1 is the best action in expectation for the first t0 rounds (all other actions being statistically identical), and then a randomly selected action a becomes better. Also, with probability 1/2, we have t0 = T , and then the distribution does not change at all. Note that both t0 and a are selected randomly and are not known to the learner in advance.
+For the proof, we will need some notation. We let E[·] denote expectation with respect to the random adversary strategy mentioned above. Also, we let Eat0 [·] denote expectation over the adversary strategy, conditioned on the adversary picking action a ∈ [k] and shift point t0 ∈ {1, . . . , T}. In particular, we let ET denote expectation over the adversary strategy, conditioned on the adversary picking t0 = T (which by definition of t0, implies that the reward distribution remains the same across all rounds, and the additional choice of the action a does not matter). Finally, define the random variable Nat to be the number of times the algorithm chooses action a, in the time window {t, t+ 1, . . . ,min{T, t+ dd √ T e}, where d is a positive integer to be determined later.
+Let us fix some t0 < T and some action a > 1. Let Pat0 denote the probability distribution over the sequence of dd √ T e rewards observed by the algorithm at time steps t0 + 1, . . . , t0 + dd √ T e, conditioned on the adversary picking action a and shift point t0. Also, let PT denote the probability distribution over such a sequence, conditioned on the adversary picking t0 = T and no distribution shift occurring. Then we have the following bound on the Kullback-Leibler divergence between the two distributions:
+Dkl ( P∅||Pat0 ) = t0+dd √ Te∑
+t=t0
+Dkl ( P∅(git(t) | git0 (t0), . . . , git−1(t−1)) || P a t0(·|git0 (t0), . . . , git−1(t−1)) ) = t0+dd √ Te∑
+t=t0
+P∅(it = a)Dkl ( 1
+2 −∆, 1 2 + ∆ ) = E∅ [ Nat0 ] 2∆ log ( 1 + 2∆
+1− 2∆
+) ≤ 2∆E∅ [ Nat0 ] .
+Using a standard information-theoretic argument, based on Pinsker’s inequality (see (Garivier & Moulines, 2011), as well as Theorem 5.1 in (Auer et al., 2002)), we have that for any function f(r) of the reward sequence r, whose range is at most [0, b], it holds that
+Eat0 [f(r)]− E∅[f(r)]] ≤ b √ 1
+2 Dkl
+( P∅||Pat0 ) .
+3This result also lower bounds the achievable regret in a setting quite similar to ours. However, the construction is different and more importantly, it does not quantify the dependence on k, the number of actions.
+In particular, applying this to Nat0 , we get
+Eat0 [ Nat0 ] ≤ ET [ Nat0 ] + dd √ T e √ ∆ET [ Nat0 ] .
+Averaging over all t0 ∈ {1, . . . , T − dd √ T e}, a ∈ {2, . . . , k} and applying Jensen’s inequality, we get
+∑k a=2 ∑T−dd√Te t0=1 Eat0 [ Nat0 ]
+(k − 1)(T − dd √ T e)
+≤ ET [∑k a=2 ∑T−dd√Te t0=1 Nat0 ] (k − 1)(T − dd √ T e) + dd √ T e √√√√∆ET [∑ka=2∑T−dd√Tet0=1 Nat0] (k − 1)(T − dd √ T e) .
+Now, let N>1 denote the total number of times the algorithm chooses an action in {2, . . . , k}. It is easily seen that
+k∑ a=2 T−dd √ Te∑
+t0=1
+Nat0 ≤ dd √ T eN>1,
+because on the left hand side we count every single choice of an action > 1 at most dd √ T e times. Plugging it back and slightly simplifying, we get∑k a=2 ∑T−dd√Te t0=1 Eat0 [ Nat0 ]
+(k − 1)(T − dd √ T e)
+≤ dd √ T e
+(k − 1)(T − dd √ T e)
+ET [ N>1 ] +
+√ d3∆d √ T e3
+(k − 1)(T − dd √ T e) ET [N>1]. (16)
+The left hand side of the expression above can be interpreted as the expected number of pulls of the best action in the time window [t0, . . . , t0+dd √ T e], conditioned on the adversary choosing t0 ≤ T−dd √ T e. Also, ∆ET [N>1] is clearly a lower bound on the regret, if the adversary chose t0 = T and action 1 remains the best throughout all rounds. Thus, denoting the regret by R, we have
+E[R] ≥ Pr ( t0 ≤ T − dd √ T e ) E [ R ∣∣∣t0 ≤ T − dd√T e]+ Pr(t0 = T )E [R|t0 = T ]
+≥ T − dd √ T e 2(T − 1) E [ R ∣∣∣t0 ≤ T − dd√T e]+ 1 2 ET [R] ≥ T − dd √ T e
+2(T − 1) ∆
+d√T − ∑ka=2∑T−dd √ Te t0=1 Eat0 [ Nat0 ]
+(k − 1)(T − dd √ T e)
++ ∆ 2 ET [N>1].
+We now choose d = √ k − 1/10, plug in ∆ = 1/5 and Eq. (16), and make the following simplifying assumptions (which are justified by picking the constant C in the theorem to be large enough):
+T − dd √ T e
+T − 1 ≥ 4 5 ,
+dd √ T e
+(k − 1)(T − dd √ T e) ≤ 6 5
+d
+(k − 1) √ T
+= 3 25 √ (k − 1)T , d √ T e2√ T ≤ 6 5 √ T .
+Performing the calculation, we get the following regret lower bound:
+2
+250
+√ (k − 1)T +
+( 1
+10 − 6 625 √ (k − 1)T
+) ET [N>1]− 3
+3125
+√ 2 (√ (k − 1)T ) ET [N>1],
+and lower bounding the √ (k − 1)T in the middle term by 1, we can further lower bound the expression by
+2
+250
+√ (k − 1)T + 113
+1250 ET [N>1]−
+3
+3125
+√ 2 (√ (k − 1)T ) ET [N>1].
+How small can this expression be as a function of ET [N>1]? It is easy to verify that the minimum of any function f(x) = wx− √ vx is attained for x = v/4w2, with a value of −v/4w. Plugging in this value (for the appropriate choice of v, w) and simplifying, the result stated in the theorem follows. A.6. Proof Sketch of Thm. 6 The proof idea is a reduction to the problem of distinguishing biased coins. In particular, suppose we have two Bernoulli random variables X,Y , one of which has a parameter 12 and one of which has a parameter 1 2 + . It is well-known that for some universal constant c, one cannot succeed in distinguishing the two, with a fixed probability, using only at most c/ 2 samples from each.
+We begin by noticing that for the fixed distribution (p1, . . . , pk), there must be two actions each of whose probabilities is at most 1/(k − 1) (otherwise, there are at least k − 1 actions whose probabilities are larger than 1/(k− 1), which is impossible). Without loss of generality, suppose these are actions 1, 2. We construct a bandit problem where the reward of action 1 is sampled i.i.d. according to a Bernoulli distribution with parameter 12 , and the reward of action 2 is sampled i.i.d. according to a Bernoulli distribution with parameter 12 + , where
+= √ c′k/T for some sufficiently small c′. The rest of the actions receive a deterministic reward of 0. Note that this setting corresponds to the one of Thm. 2, with ∆ = 1/2. We now run this algorithm for T = c′k/ 2 rounds. By picking c′ small enough, we can guarantee that with overwhelming probability, the algorithm samples actions 1, 2 less than c/ 2 times. By the information-theoretic lower bound, this implies that the algorithm must have chosen a suboptimal action for at least Ω(T ) times with constant probability. Therefore, the expected regret is at least Ω( T ), which equals Ω( √ kT ) by our choice of .  We should mention that UWB networks are highly complex, with many issues such as power constraints and multi-agency that have been considered in the multiarmed bandit framework (Liu & Zhao, 2010; Avner & Mannor, 2011; Lai et al., 2008), but the decoupling of ar X iv :1 20 5.    The proofs of our theorems are provided in the appendix of the full version (Avner et al., 2012).    (Agarwal et al., 2010) study a bandit setting with (one or more) queries per round.    A different line of work ((Even-Dar et al., 2006; Audibert et al., 2010; Bubeck et al., 2011)) considers multi-armed bandits in a stochastic setting, where the goal is to identify the best action by performing pure exploration.    A different line of work ((Even-Dar et al., 2006; Audibert et al., 2010; Bubeck et al., 2011)) considers multi-armed bandits in a stochastic setting, where the goal is to identify the best action by performing pure exploration.    A different line of work ((Even-Dar et al., 2006; Audibert et al., 2010; Bubeck et al., 2011)) considers multi-armed bandits in a stochastic setting, where the goal is to identify the best action by performing pure exploration.    P (Auer et al., 2002), with a Õ( √ kT ) regret upper bound, holding with high probability, or the Implicitly Normalized Forecaster of (Audibert & Bubeck, 2009) with O( √ kT ) regret.    setting (Auer et al., 2002).    This setting is well-known in the online learning literature, and has been considered for instance in (Herbster & Warmuth, 1998) for full-information online learning (under the name of “tracking the best expert”) and in (Auer et al., 2002) for the bandit setting (under the name of “regret against arbitrary strategies”).    The algorithm we use follows the lead of (Auer et al., 2002) and is presented as Algorithm 2.    It is interesting to note that unlike the standard lower bound proof for standard bandits (Auer et al., 2002), we obtain here an Ω( √ kT ) regret even when ∆ > 0 is fixed and doesn’t decay with T .    , (Yu & Mannor, 2009; Agarwal et al., 2010)).    We implemented Algorithm 1, Exp3 (Auer et al., 2002), Exp3.    P (Auer et al., 2002), a simple round robin policy (which just cycles through the arms in a fixed order) and a “greedy” decoupled form of round robin, which performs uniform queries and picks actions greedily based on the highest empirical average reward.    Finally, it remains to extend other bandit-related algorithms, such as EXP4 (Auer et al., 2002), to our setting, and study the advantage of decoupling in other adversarial online learning problems.    We will also need the following straightforward corollary of Freedman’s inequality (Freedman, 1975) (see also Lemma A.    1 in (Auer et al., 2002)), we have that for any function f(r) of the reward sequence r, whose range is at most [0, b], it holds that    We consider a multi-armed bandit problem where the decision maker can explore and exploit different arms at every round. The exploited arm adds to the decision maker’s cumulative reward (without necessarily observing the reward) while the explored arm reveals its value. We devise algorithms for this setup and show that the dependence on the number of arms, k, can be much better than the standard √ k dependence, depending on the behavior of the arms’ reward sequences. For the important case of piecewise stationary stochastic bandits, we show a significant improvement over existing algorithms. Our algorithms are based on a non-uniform sampling policy, which we show is essential to the success of any algorithm in the adversarial setup. Finally, we show some simulation results on an ultra-wide band channel selection inspired setting indicating the applicability of our algorithms. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

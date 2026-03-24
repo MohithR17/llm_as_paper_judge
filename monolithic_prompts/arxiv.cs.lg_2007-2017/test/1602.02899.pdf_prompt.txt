@@ -1,0 +1,128 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Secure Multi-Party Computation Based Privacy Preserving Extreme Learning Machine Algorithm Over Vertically Distributed Data
+Paper Content: 1602.02899.pdf CRF Secure Multi-Party Computation Based Privacy Preserving Extreme Learning Machine Algorithm Over Vertically Distributed Data Ferhat Özgür Çatak ozgur.catak@tubitak.gov.tr  ar X
+iv :1
+60 2.
+02 89
+9v 1
+[ cs
+.C R
+] 9
+Keywords: extreme learning machine, privacy preserving data analysis, secure multi-party computation 1 Introduction The main purpose of machine learning can be expressed as to find the patterns and summarize the data form of high-dimensional data sets. The classification algorithms [1,2] is one of the most widely used method of machine learning in real-life problems. Data sets used in real-life problems are high dimensional as a result, analysis of them is a complicated process.
+Extreme Learning Machine (ELM) was proposed by [3] based on generalized Single-hidden Layer Feed-forward Networks (SLFNs). Main characteristics of ELM are small training time compared to traditional gradient-based learning methods, high generalization property on predicting unseen examples with multiclass labels and parameter free with randomly generated hidden nodes.
+Background knowledge attack uses quasi-identifier attributes of a dataset and reduce the possible values of output sensitive information. A well-known
+example about background knowledge attack is the personal health information about of Massachusetts governor William Weld using a anonymized data set [4]. In order to overcome these types of attacks, various anonymization methods have been developed like k -anonymity [4], l -diversity [5], t -closeness [6].
+Although the anonymization methods are applied to data sets to protect sensitive data, though, the sensitive data is still accessed by an attacker in various ways [7]. Also, data anonymization methods are not applicable in some cases. In another scenario, consider the situation when two or more hospitals wants to analyze patient data [8] through collaborative processes that require using each other’s databases. In such cases, it is necessary to find a secure training method that can run jointly on private union databases, without revealing or pooling their sensitive data. Privacy-preserving ELM learning systems are one of the methods that the only information learned by the different parties is the output model of learning method.
+In this research, we propose a privacy-preserving ELM training model that constructs the global ELM classification model from the distributed data sets in multiple parties. The training data set is vertically partitioned among the parties, and the final distributed model is constructed at an independent party to securely predict the correct label for the new input data.
+The content of this paper is as follows: Related work is reviewed in Section 2. In Section 3, ELM, secure multi-party computation and the secure addition are explained. In section 4, our new privacy-preserving ELM for vertically partitioned data is proposed. Section 5 emprically shows the timing results of our method with different public data sets. 2 Related Works In this section, we review the existing works that have been developed for different machine learning methods. The major differences between our learning model and existing work are highlighted.
+Recently, there has been significant contributions in privacy-preserving machine learning. Secretans et al. [9] presents a probabilistic neural network (PNN) model. The PNN is an approximation of the theoretically optimal classifier, known as the Bayesian optimal classifier. There are at least three parties involved in the computation of the secure matrix summation to add the partial class conditional probability vectors together. Aggarwal et al. [10] developed condensation based learning method. They show that an anonymized data closely matches the characteristics of the original data. Samet et al. [11] present new privacy-preserving protocols for both the back-propagation and ELM algorithms among several parties. The protocols are presented for perceptron learning algorithm and applied only single layer models. Oliveria et al. [12] proposed methods distort confidential numerical features to protect privacy for clustering analysis. Guang et al. [13] proposed a privacy-preserving back-propagation algorithm for horizontally partitioned databases for multi-party case. They use secure sum in their protocols. Yu et al. [14] proposed a privacy-preserving solution for support
+vector machine classification. Their approach constructs the global SVM classification model from the data distributed at multiple parties, without disclosing the data of each party to others. 3 Preliminaries In this section, we introduce preliminary knowledge of ELM, secure multi-party computation and secure addition briefly. 3.1 Extreme learning machine ELM was originally proposed for the single-hidden layer feed-forward neural networks [15,16,3] . Then, ELM was extended to the generalized single-hidden layer feed-forward networks where the hidden layer may not be neuron like [17,18]. Main advantages of ELM classification algorithm is that ELM can be trained hundred times faster than traditional neural network or support vector machine algorithm since its input weights and hidden node biases are randomly created and output layer weights can be analytically calculated by using a least-squares method [19,20]. The most noticeable feature of ELM is that its hidden layer parameters are selected randomly.
+Given a set of training data D = {(xi, yi) | i = 1, ..., n},xi ∈ R p, yi ∈ {1, 2, ...,K}} sampled independently and identically distributed (i.i.d.) from some unknown distribution. The goal of a neural network is to learn a function f : X → Y where X is instances and Y is the set of all possible labels. The output label of an single hidden-layer feed-forward neural networks (SLFNs) with N hidden nodes can be described as
+fN (x) = N ∑
+i=1
+βiG(ai, bi,x), x ∈ R n, ai ∈ R n (1)
+where ai and bi are the learning parameters of hidden nodes and βi is the weight connecting the ith hidden node to the output node. The output function of ELM for generalized SLFNs can be identified by
+fN (x) =
+N ∑
+i=1
+βiG(ai, bi,x) = β × h(x) (2)
+For the binary classification applications, the decision function of ELM becomes
+fN(x) = sign
+(
+N ∑
+i=1
+βiG(ai, bi,x)
+)
+= sign (β × h(x)) (3)
+Equation 2 can be written in another form as
+Hβ = T (4)
+H and T are respectively hidden layer matrix and output matrix.
+β = H†T (5)
+H† is the Moore-Penrose generalized inverse of matrix H. Hidden layer matrix can be described as
+H(ã, b̃, x̃) =   G(a1, b1, x1) · · · G(aL, bL, x1) ... . . . ...
+G(a1, b1, xN ) · · · G(aL, bL, xN )  
+N×L
+(6)
+where ã = a1, ..., aL, b̃ = b1, ..., bL, x̃ = x1, ..., xN . Output matrix can be described as
+T = [ t1 . . . tN ]T
+(7)
+The hidden nodes of SLFNs can be randomly generated. They can be independent of the training data. 3.2 Secure Multi Party Computation In vertically partitioned data, each party holds different attributes of same data set. Let’s have n input instances, D = {(xi, yi) | xi ∈ R p, yi ∈ R} n
+i=1. The partition strategy is shown in Figure 1.
+Secure Multi-Party Addition In secure multi-party addition (SMA), each party, Pi, has a private local value, xi. At the end of the computation, we obtain the sum, x = ∑k−1
+i=0 . For this works, we applied the Yu et al. [21] secure addition procedure. Their approach is a generalization of the existing works [22] that uses secure communication and trusted party. Canonical order based , P0, · · · , Pk−1, protocol is applied. The SMA method is show in Algorithm 1. This protocol calculates the required sum in secure manner.
+Algorithm 1 Secure multi-party addition
+1: procedure SMA(P) 2: P0 : R← rand(F) ⊲ P0 randomly chooses a number R 3: V ← R + x0 mod F 4: P0 sends V to node P1 5: for i = 1, · · · , k − 1 do 6: Pi receives V = R + ∑i−1
+j=0 xj mod F
+7: Pi computes V = ( R + ∑i
+j=1 xj mod F
+)
+= ((xi + V ) mod F)
+8: Pi sends V to node Pi+1 9: end for 10: P0 : V ← (V −R) = (V −R mod F) ⊲ Actual addition result 11: end procedure 4 Privacy-preserving ELM over vertically partitioned data The data set that one wants to find a classifier for consists of m instances in n-dimensional space is shown with D ∈ Rm×n. Each instances of the data set has values for n features. Matrix D is vertically partitioned into i parties of P0, P1, · · · , Pi and each features of instances owned by a party that is private shown as Figure 1 illustrates. As shown in Equation 6, at second stage of ELM learning, hidden layer output matrix, H is calculated using randomly assigned hidden node parameters w, b and β. ELM calculates the matrix H and output weight vector, β, is obtained by multiplying H and T. Each member of H is computed with an activation function g such that G(wi,xi, bi) = g(xi ·wi + bi) for sigmoid or G(wi,xi, bi) = g(bi − ||xi −wi||) for radial based functions. An (i, j)th element of H is
+G(wi,xi, bi) = sign(xi ·wi + bi) (8)
+where xi is the ith instances of data set and wi is hidden node input weight of ith instance and xi,wi ∈ R
+n. Let x1i , · · ·x k i be vertically partitioned vectors of input instance xi andw 1 j , · · ·w k j
+be vertically partitioned vectors of jth hidden node input weight wj , b 0 j , · · · , b k j be jth node input bias over k different parties. Then the output of jth input node with ith instance of input data set using k sites is
+sign(xi ·wj + bj) = sign (( x0i ·w 0 j + b 0 j) + · · ·+ (x k j ·w k j + b k j ))
+(9)
+From Equation 9, calculation of hidden layer output matrix, H can be decomposed into k different parties using secure sum of matrices, such that
+H = sign (T1 + · · ·+Tk) (10)
+where
+Ti =  
+(
+xi1 ·w i 1 + b i 1
+) · · · (
+xi1 ·w i L + b i L
+)
+... . . . ... (
+xiN ·w i 1 + b i 1
+) · · · (
+xiL ·w i N + b i N
+)  
+N×L
+(11)
+Privacy Preserving ELM Algorithm Let D ∈ RM×N , and the number of input layer size be L, the number of parties be k, then the our training model becomes:
+1. Master party creates weight matrix, W ∈ RL×N 2. Master party distributes partition W with same feature size for each parties.
+3. Party P0 creates a random matrix, R =   rand1,1(F) · · · rand1,L(F) ... . . . ...
+randN,1(F) · · · randN,L(F)  
+N×L
+4. Party P0 creates perturbated output,V = R+  
+(
+x01 ·w 0 1 + b 0 1
+) · · · (
+x01 ·w 0 L + b 0 L
+)
+... . . . ... (
+x0N ·w 0 1 + b 0 1
+) · · · (
+x0N ·w 0 L + b 0 L
+)  
+5. for i = 1, · · · , k − 1
+– Pi computes V = V +  
+(
+xi1 ·w i 1 + b i 1
+) · · · (
+xi1 ·w i L + b i L
+)
+... . . . ... (
+xiN ·w i 1 + b i 1
+) · · · (
+xiL ·w i N + b i N
+)  
+– Pi sends V to Pi+1 6. P0 subtracts random matrix, R, from the received matrix V. H = (V −R)
+mod F
+7. Hidden layer node weight vector, β, is calculated. β = H† ·T 5 Experiments In this section, we perform experiments on real-world data sets from the public available data set repositories. Public data sets are used to evaluate the proposed learning method. Classification models of each data set are compared for accuracy results without using secure multi-party computation.
+Experimental setup : In this section, our approach is applied to six different data sets to verify model affectivity and efficiency. The data sets are summarized in Table 1, including australian, colon-cancer, diabetes, duke, heart, ionosphere. For each data set in Table 1, we vary number of party size, k from 2 to number
+of feature, n, of the data set. For instance, when our party size is three, k = 3, and attribute size fourteen, n = 14, then the first two party have 5 attributes, and last party has 4 attributes.
+Simulation Results: The accuracy of secure multi-party computation based ELM is exactly same for the traditional ELM training algorithm. Figure 2 shows results of our simulations. As shown in figure, time scale becomes its steady state position when number of parties, k, moves closer to number of attributes, k. 6 Conclusion and Future Works ELM learning algorithm, a new method compared to other classification algorithms. ELM outperforms traditional Single Layer Feed-forward Neural-networks and Support Vector Machines for big data [29]. The ELM is applied in many fields. Almost, in all fields that ELM is applied (i.e. medical records, business, government), privacy is a major concern.
+A new privacy-preserving learning model is proposed for ELM in vertically partitioned data in multi-party partitioning without sharing the data of each site to the others. In order to save the privacy of input data set, master party divides weight vector, and each party calculates the activation function result with its data and weight vector. Extending the privacy-preserving ELM to horizontally distributed data set is a future work for this approach.  The classification algorithms [1,2] is one of the most widely used method of machine learning in real-life problems.    The classification algorithms [1,2] is one of the most widely used method of machine learning in real-life problems.    Extreme Learning Machine (ELM) was proposed by [3] based on generalized Single-hidden Layer Feed-forward Networks (SLFNs).    example about background knowledge attack is the personal health information about of Massachusetts governor William Weld using a anonymized data set [4].    In order to overcome these types of attacks, various anonymization methods have been developed like k -anonymity [4], l -diversity [5], t -closeness [6].    In order to overcome these types of attacks, various anonymization methods have been developed like k -anonymity [4], l -diversity [5], t -closeness [6].    In order to overcome these types of attacks, various anonymization methods have been developed like k -anonymity [4], l -diversity [5], t -closeness [6].    Although the anonymization methods are applied to data sets to protect sensitive data, though, the sensitive data is still accessed by an attacker in various ways [7].    In another scenario, consider the situation when two or more hospitals wants to analyze patient data [8] through collaborative processes that require using each other’s databases.    [9] presents a probabilistic neural network (PNN) model.    [10] developed condensation based learning method.    [11] present new privacy-preserving protocols for both the back-propagation and ELM algorithms among several parties.    [12] proposed methods distort confidential numerical features to protect privacy for clustering analysis.    [13] proposed a privacy-preserving back-propagation algorithm for horizontally partitioned databases for multi-party case.    [14] proposed a privacy-preserving solution for support    1 Extreme learning machine ELM was originally proposed for the single-hidden layer feed-forward neural networks [15,16,3] .    1 Extreme learning machine ELM was originally proposed for the single-hidden layer feed-forward neural networks [15,16,3] .    1 Extreme learning machine ELM was originally proposed for the single-hidden layer feed-forward neural networks [15,16,3] .    Then, ELM was extended to the generalized single-hidden layer feed-forward networks where the hidden layer may not be neuron like [17,18].    Then, ELM was extended to the generalized single-hidden layer feed-forward networks where the hidden layer may not be neuron like [17,18].    Main advantages of ELM classification algorithm is that ELM can be trained hundred times faster than traditional neural network or support vector machine algorithm since its input weights and hidden node biases are randomly created and output layer weights can be analytically calculated by using a least-squares method [19,20].    Main advantages of ELM classification algorithm is that ELM can be trained hundred times faster than traditional neural network or support vector machine algorithm since its input weights and hidden node biases are randomly created and output layer weights can be analytically calculated by using a least-squares method [19,20].    [21] secure addition procedure.    Their approach is a generalization of the existing works [22] that uses secure communication and trusted party.    Data set #Train #Classes #Attributes australian [23] 690 2 14 colon-cancer [24] 62 2 2,000 diabetes [25] 768 2 8 duke breast cancer [26] 44 2 7,129 heart [27] 270 2 13 ionosphere [28] 351 2 34    Data set #Train #Classes #Attributes australian [23] 690 2 14 colon-cancer [24] 62 2 2,000 diabetes [25] 768 2 8 duke breast cancer [26] 44 2 7,129 heart [27] 270 2 13 ionosphere [28] 351 2 34    Data set #Train #Classes #Attributes australian [23] 690 2 14 colon-cancer [24] 62 2 2,000 diabetes [25] 768 2 8 duke breast cancer [26] 44 2 7,129 heart [27] 270 2 13 ionosphere [28] 351 2 34    Data set #Train #Classes #Attributes australian [23] 690 2 14 colon-cancer [24] 62 2 2,000 diabetes [25] 768 2 8 duke breast cancer [26] 44 2 7,129 heart [27] 270 2 13 ionosphere [28] 351 2 34    Data set #Train #Classes #Attributes australian [23] 690 2 14 colon-cancer [24] 62 2 2,000 diabetes [25] 768 2 8 duke breast cancer [26] 44 2 7,129 heart [27] 270 2 13 ionosphere [28] 351 2 34    Data set #Train #Classes #Attributes australian [23] 690 2 14 colon-cancer [24] 62 2 2,000 diabetes [25] 768 2 8 duke breast cancer [26] 44 2 7,129 heart [27] 270 2 13 ionosphere [28] 351 2 34    Especially in the Big Data era, the usage of different classification methods is increasing day by day. The success of these classification methods depends on the effectiveness of learning methods. Extreme learning machine (ELM) classification algorithm is a relatively new learning method built on feed-forward neural-network. ELM classification algorithm is a simple and fast method that can create a model from high-dimensional data sets. Traditional ELM learning algorithm implicitly assumes complete access to whole data set. This is a major privacy concern in most of cases. Sharing of private data (i.e. medical records) is prevented because of security concerns. In this research, we propose an efficient and secure privacy-preserving learning algorithm for ELM classification over data that is vertically partitioned among several parties. The new learning method preserves the privacy on numerical attributes, builds a classification model without sharing private data without disclosing the data of each party to others. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

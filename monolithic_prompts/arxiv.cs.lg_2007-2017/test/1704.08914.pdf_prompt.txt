@@ -1,0 +1,2482 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Past, Present, Future: A Computational Investigation of the Typology of Tense in 1000 Languages
+Paper Content: 1704.08914.pdf CRF Past, Present, Future: A Computational Investigation of the Typology of Tense in 1000 Languages Ehsaneddin Asgari Hinrich Schütze inquiries@cislmu.org 1 Introduction Significant linguistic resources such as machinereadable lexicons and part-of-speech (POS) taggers are available for at most a few hundred languages. This means that the majority of the languages of the world are low-resource. Lowresource languages like Fulani are spoken by tens of millions of people and are politically and economically important; e.g., to manage a sudden refugee crisis, NLP tools would be of great benefit. Even “small” languages are important for the preservation of the common heritage of humankind that includes natural remedies and linguistic and cultural diversity that can potentially enrich everybody. Thus, developing analysis methods for low-resource languages is one of the most important challenges of NLP today.
+We address this challenge by proposing a new method for analyzing what we call superparallel corpora, corpora that are by an order of magnitude more parallel than corpora that have been available in NLP to date. The corpus we work with in this paper is the Parallel Bible Corpus (PBC) that consists of translations of the New Testament in 1169 languages. Given that no NLP analysis tools are available for most of these 1169 languages, how can we extract the rich information that is potentially hidden in such superparallel corpora?
+The method we propose is based on two hypotheses. H1 Existence of overt encoding. For any important linguistic distinction f that is frequently encoded across languages in the world, there are a few languages that encode f overtly on the surface. H2 Overt-to-overt and overt-tonon-overt projection. For a language l that encodes f , a projection of f from the “overt languages” to l in the superparallel corpus will identify the encoding that l uses for f , both in cases in which the encoding that l uses is overt and in cases in which the encoding that l uses is nonovert. Based on these two hypotheses, our method proceeds in 5 steps.
+1. Selection of a linguistic feature. We select a linguistic feature f of interest. Running example: We select past tense as feature f .
+2. Heuristic search for head pivot. Through a heuristic search, we find a language lh that contains a head pivot ph that is highly correlated with the linguistic feature of interest.
+Running example: ”ti” in Seychelles Creole (CRS). CRS “ti” meets our requirements for a head pivot well as will be verified empirically in §3. First, ”ti” is a surface marker: it is easily identifable through whitespace tokenization and it is not ambiguous, e.g., it does not have a second meaning apart from being a grammatical marker. Second, ”ti” is a good marker for past tense in
+ar X
+iv :1
+70 4.
+08 91
+4v 1
+[ cs
+.C L
+] 2
+8 A
+pr 2
+01 7
+terms of both “precision” and “recall”. CRS has mandatory past tense marking (as opposed to languages in which tense marking is facultative) and ”ti” is highly correlated with the general notion of past tense.
+This does not mean that every clause that a linguist would regard as past tense is marked with ”ti” in CRS. For example, some tense-aspect configurations that are similar to English present perfect are marked with ”in” in CRS, not with ”ti” (e.g., ENG “has commanded” is translated as “in ordonn”).
+Our goal is not to find a head language and a head pivot that is a perfect marker of f . Such a head pivot probably does not exist; or, more precisely, linguistic features are not completely rigorously defined. In a sense, one of the significant contributions of this work is that we provide more rigorous definitions of past tense across languages; e.g., ”ti” in CRS is one such rigorous definition of past tense and it automatically extends (through projection) to 1000 languages in the superparallel corpus.
+3. Projection of head pivot to larger pivot set. Based on an alignment of the head language to the other languages in the superparallel corpus, we project the head pivot to all other languages and search for highly correlated surface markers, i.e., we search for additional pivots in other languages. This projection to more pivots achieves three goals. First, it makes the method more robust. Relying on a single pivot would result in many errors due to the inherent noisiness of linguistic data and because several components we use (e.g., alignment of the languages in the superparallel corpus) are imperfect. Second, as we discussed above, the head pivot does not necessarily have high “recall”; our example was that CRS “ti” is not applied to certain clauses that would be translated using present perfect in English. Thus, moving to a larger pivot set increases recall. Third, as we will see below, the pivot set can be leveraged to create a fine-grained map of the linguistic feature. Consider clauses referring to eventualities in the past that English speakers would render in past progressive, present perfect and simple past tense. Our hope is that the pivot set will cover these distinctions, i.e., one of the pivots marks past progressive, but not present prefect and simple past, another pivot marks present perfect, but not the other two and so on. It is
+beyond the scope of this paper to verify that we can produce such an analysis for all linguistic features, but a promising example of this type of map, including distinctions like progressive and perfective aspect, is given in §4.
+Running example: We compute the correlation of “ti” with words in other languages and select the 100 highest correlated words as pivots. Examples of pivots we find this way are Torres Strait Creole “bin” (from English “been”) and Tzotzil “laj”. “laj” is a perfective marker, e.g., “Laj meltzaj -uk” ‘LAJ be-made subj’ means “It’s done being built” (Aissen, 1987).
+4. Projection of pivot set to all languages. Now that we have a large pivot set, we project the pivots to all other languages to search for linguistic devices that express the linguistic feature f . Up to this point, we have made the assumption that it is easy to segment text in all languages into pieces of a size that is not too small (individual characters of the Latin alphabet would be too small) and not too large (entire sentences as tokens would be too large). Segmentation on standard delimiters is a good approximation for the majority of languages – but not for all: it undersegments some (e.g., the polysynthetic language Inuit) and oversegments others (e.g., languages that use punctuation marks as regular characters).
+For this reason, we do not employ tokenization in this step. Rather we search for character ngrams (2 ≤ n ≤ 6) to find linguistic devices that express f . This implementation of the search procedure is a limitation – there are many linguistic devices that cannot be found using it, e.g., templates in templatic morphology. We leave addressing this for future work (§6).
+Running example: We find “-ed” for English and “-te” for German as surface features that are highly correlated with the 100 past tense pivots.
+5. Linguistic analysis. The result of the previous steps is a superparallel corpus that is richly annotated with information about linguistic feature f . This structure can be exploited for the analysis of a single language li that may be the focus of a linguistic investigation. Starting with the character n-grams that were found in the step “projection of pivot set to all languages”, we can explore their use and function, e.g, for the mined n-gram “-ed” in English (assuming English is the language li and it is unfamiliar to us). Many of the other 1000 languages provide annotations of linguistic
+feature f for li: both the languages that are part of the pivot set (e.g., Tzotzil “laj”) and the mined ngrams in other languages that we may have some knowledge of (e.g., “-te” in German).
+We can also use the structure we have generated for typological analysis across languages following the work of Michael Cysouw. He has pioneered a new methodology for typology ((Cysouw, 2014), §5). We do not contribute any innovations to typology in this paper, but our method is a significant advancement computationally over Cysouw’s work because we overcome many of his limiting assumptions. Most importantly, our method scales to thousands of languages as we demonstrate below whereas Cysouw worked on a few dozen.
+Running example: We sketch the type of analysis that our new method makes possible in §4.
+The above steps “1. heuristic search for head pivot” and “2. projection of head pivot to larger pivot set” are based on H1: we assume the existence of overt coding in a subset of languages.
+The above steps “2. projection of head pivot to larger pivot set” and “3. projection of pivot set to all languages” are based on H2: we assume that overt-to-overt and overt-to-non-overt projection is possible.
+In the rest of the paper, we will refer to the method that consists of steps 1 to 5 as SuperPivot: “linguistic analysis of SUPERparallel corpora using surface PIVOTs”.
+We make three contributions. (i) Our basic hypotheses are H1 and H2. (H1) For an important linguistic feature, there exist a few languages that mark it overtly and easily recognizably. (H2) It is possible to project overt markers to overt and non-overt markers in other languages. Based on these two hypotheses we design SuperPivot, a new method for analyzing highly parallel corpora, and show that it performs well for the crosslingual analysis of the linguistic phenomenon of tense. (ii) Given a superparallel corpus, SuperPivot can be used for the analysis of any low-resource language represented in that corpus. In the supplementary material, we present results of our analysis for three tenses (past, present, future) for 11631 languages. An evaluation of accuracy is presented in Table 3.2. (iii) We extend Michael Cysouw’s pioneering work on typological analysis using paral-
+1We exclude six of the 1169 languages because they do not share enough verses with the rest.
+lel corpora by overcoming several limiting factors. The most important is that Cysouw’s method is only applicable if markers of the relevant linguistic feature are recognizable on the surface in all languages. In contrast, we only assume that markers of the relevant linguistic feature are recognizable on the surface in a small number of languages. 2 SuperPivot: Description of method 1. Selection of a linguistic feature. The linguistic feature of interest f is selected by the person who performs a SuperPivot analysis, i.e., by a linguist, NLP researcher or data scientist. Henceforth, we will refer to this person as the linguist.
+In this paper, f ∈ F = {past, present, future}. 2. Heuristic search for head pivot. There are several ways for finding the head language and the head pivot. Perhaps the linguist knows a language that has a good head pivot. Or she is a trained typologist and can find the head pivot by consulting the typological literature.
+In this paper, we use our knowledge of English and an alignment from English to all other languages to find head pivots. (See below for details on alignment.) We define a “query” in English and search for words that are highly correlated to the query in other languages. For future tense, the query is simply the word “will”, so we search for words in other languages that are highly correlated with “will”. For present tense, the query is the union of “is”, “are” and “am”. So we search for words in other languages that are highly correlated with the “merger” of these three words. For past tense, we POS tag the English part of PBC and merge all words tagged as past tense into one past tense word.2 We then search for words in other languages that are highly correlated with this artificial past tense word.
+As an additional constraint, we do not select the most highly correlated word as the head pivot, but the most highly correlated word in a Creole language. Our rationale is that Creole languages are more regular than other languages because they are young and have not accumulated “historical baggage” that may make computational analysis more difficult.
+the head language to all other languages in the corpus. This alignment is on the word level.
+We compute a score for each word in each language based on the number of times it is aligned to the head pivot, the number of times it is aligned to another word and the total frequencies of head pivot and word. We use χ2 (Casella and Berger, 2008) as the score throughout this paper. Finally, we select the k words as pivots that have the highest association score with the head pivot.
+We impose the constraint that we only select one pivot per language. So as we go down the list, we skip pivots from languages for which we already have found a pivot. We set k = 100 in this paper. Table 1 gives the top 10 pivots.
+4. Projection of pivot set to all languages. As discussed above, the process so far has been based on tokenization. To be able to find markers that cannot be easily detected on the surface (like “-ed” in English), we identify non-tokenizationbased character n-gram features in step 4.
+The immediate challenge is that without tokens, we have no alignment between the languages anymore. We could simply assume that the occurrence of a pivot has scope over the entire verse. But this is clearly inadequate, e.g., for the sentence “I arrived yesterday, I’m staying today, and I will leave tomorrow”, it is incorrect to say that it is marked as past tense (or future tense) in its entirety. Fortunately, the verses in the New Testament mostly have a simple structure that limits the variation in where a particular piece of content occurs in the verse. We therefore make the assumption that a particular relative position in language l1 (e.g., the character at relative position 0.62) is aligned with the same relative position in l2 (i.e., the character at relative position 0.62). This is likely to work for a simple example like “I arrived yesterday, I’m staying today, and I will leave tomorrow” across languages.
+In our analysis of errors, we found many cases where this assumption breaks down. A wellknown problematic phenomenon for our method is the difference between, say, VSO and SOV languages: the first class puts the verb at the beginning, the second at the end. However, keep in mind that we accumulate evidence over k = 100 pivots and then compute aggregate statistics over the entire corpus. As our evaluation below shows, the “linear alignment” assumption does not seem to do much harm given the general robustness of
+our method. One design element that increases robustness is that we find the two positions in each verse that are most highly (resp. least highly) correlated with the linguistic feature f . Specifically, we compute the relative position x of each pivot that occurs in the verse and apply a Gaussian filter (σ = 6 where the unit of length is the character), i.e., we set p(x) ≈ 0.066 (0.066 is the density of a Gaussian with σ = 6 at x = 0) and center a bell curve around x. The total score for a position x is then the sum of the filter values at x summed over all occurring pivots. Finally, we select the positions xmin and xmax with lowest and highest values for each verse. χ2 is then computed based on the number of times a character n-gram occurs in a window of size w around xmax (positive count) and in a window of sizew around xmin (negative count). Verses in which no pivot occurs are used for the negative count in their entirety. The top-ranked character ngrams are then output for analysis by the linguist. We set w = 20.
+5. Linguistic analysis. We now have created a structure that contains rich information about the linguistic feature: for each verse we have relative positions of pivots that can be projected across languages. We also have maximum positions within a verse that allow us to pinpoint the most likely place in the vicinity of which linguistic feature f is marked in all languages. This structure can be used for the analysis of individual low-resource languages as well as for typological analysis. We will give an example of such an analysis in §4.
+6. Hierarchical clusterings of markers and languages. As an additional evaluation, we worked on hierarchical clusterings of past, present and future pivots. As detailed in §2.4, we represent each verse by a vector of length 100 showing which pivot markers are used to express this verse. The other way of looking at these data is that for each marker we have an occurrence distribution over verses and we may exploit these data to demonstrate the distance between markers. For the purpose of comparing two markers, we propose calculation of the Jensen-Shannon divergence between the normalized occurrence distribution over verses:
+Dmpi ,mpj = JSD(m̂pi , m̂pj ),
+where m̂pi and m̂pi , are the normalized occurrence distributions over verses. We compare the obtained distance between markers with genetic
+distance of their corresponding languages using WALS information (Dryer et al., 2005). For visualization purposes, we perform Unweighted Pair Group Method with Arithmetic Mean (UPGMA) hierarchical clustering on the pairwise distance matrix of the marker for each tense separately (Johnson, 1967).
+In addition to clustering of pivot markers for each tense separately, we performed the same comparison for all top markers of 1107 languages3 and take the average distances of languages in past, present, and future marking. This allows us to compare the average tense behavior of languages.
+Dli,lj = 1
+3 (JSDpast+JSDpresent+JSDfuture), 3 Data, experiments and results  3.1 Data We use a New Testament subset of the Parallel Bible Corpus (PBS) (Mayer and Cysouw, 2014) that consists of 1556 translations of the the Bible in 1169 unique languages. We consider two languages to be different if they have different ISO 639-3 codes.
+The translations are aligned on the verse level. However, many translations do not have complete coverage, so that most verses are not present in at least one translation. One reason for this is that sometimes several consecutive verses are merged, so that one verse contains material that is in reality not part of it and the merged verses may then be missing from the translation. Thus, there is a trade-off between number of parallel translations and number of verses they have in common. Although some preprocessing was done by the authors of the resource, many translations are not preprocessed. For example, Japanese is not tokenized. We also observed some incorrectness and sparseness in the metadata. One example is that one Fijian translation (see §4) is tagged fij hindi, but it is Fijian, not Fiji Hindi.
+We use the 7958 verses with the best coverage across languages. 3.2 Experiments 1. Selection of a linguistic feature. We conduct three experiments for the linguistic features past tense, present tense and future tense.
+3We exclude languages that have fewer than 7000 verses in common with the pivot language to ensure quality of marker.
+2. Heuristic search for head pivot. We use the queries described in §2 for finding the following three head pivots. (i) Past tense head pivot: “ti” in Seychellois Creole (CRS) (McWhorter, 2005). (ii) Present tense head pivot: “ta” in Papiamentu (PAP) (Andersen, 1990). (iii) Future tense head pivot: “bai” in Tok Pisin (TPI) (Traugott, 1978; Sankoff, 1990).
+3. Projection of head pivot to larger pivot set. Using the method described in §2, we project each head pivot to a set of k = 100 pivots. Table 1 gives the top 10 pivots for each tense.
+4. Projection of pivot set to all languages. Using the method described in §2, we compute highly correlated character n-gram features, 2 ≤ n ≤ 6, for all 1163 languages.
+See §4 for the last step of SuperPivot: 5. Linguistic analysis. 3.3 Evaluation We rank n-gram features and retain the top 10, for each linguistic feature, for each language and for each n-gram size. We process 1556 translations. Thus, in total, we extract 1556× 5× 10 n-grams.
+Table 3.2 shows Mean Reciprocal Rank (MRR) for 10 languages. The rank for a particular ranking of n-grams is the first n-gram that is highly correlated with the relevant tense; e.g., character subsequences of the name “Paulus” are evaluated as incorrect, the subsequence “-ed” in English as correct for past. MRR is averaged over all n-gram sizes, 2 ≤ n ≤ 6. Chinese has consistent tense marking only for future, so results are poor. Russian and Polish perform poorly because their central grammatical category is aspect, not tense. The poor performance on Arabic is due to the limits of character n-gram features for a “templatic” language.
+During this evaluation, we noticed a surprising amount of variation within translations of one language; e.g., top-ranked n-grams for some German translations include names like “Paulus”. We suspect that for literal translations, linear alignment (§2) yields good n-grams. But many translations are free, e.g., they change the sequence of clauses. This deteriorates mined n-grams. See §6.
+Hierarchical clusterings of markers. Hierarchical clusterings of past, present and future pivots using JSD between the normalized occurrence distribution over verses are shown in Figure 1, Figure 2, and Figure 3 for past, present, and future
+tenses respectively. In addition to markers clusterings, the average tense behavior clustering of 1107 languages is depicted in Figure 4. In these figures languages are colored based on their language families using WALS (Dryer et al., 2005), languages without family information on WALS are uncolored. We observed that most of pivot past and future markers belong to Niger Congo family and present markers are mostly within IndoEuropean family. It can be seen that in many cases languages with the same family behave accordingly in tense marking. For instance, in past tense marking Oto-Manguean languages use almost the same marker of ni with small writing variations (Figure 1). Although Tezoatlán Mixtec did not have a record on WALS, since its marker is the same as other Oto-Manguean languages and works almost identical to ni in Oto-Manguean languages, we may guess this language is also OtoManguean, which turned out to be true when we performed further searches.4 There were many of such cases for which we could guess the family of language based on their tense marking similarities in Figure 1, Figure 2 and Figure 3.
+We use normalized JSD (0 ≤ JSD ≤ 1)
+4https://www.ethnologue.com/language/mxb
+for comparison of each pair of languages/markers; this allows us to investigate whether a simple threshold of 0.5 accurately predicts whether two languages are genetically related or not. The results are summarized in Table 3.3. Although the average tense marking divergence has a low recall, it expresses a high precision of 0.36, where the random chance is 1103 ≈ 0.01. Thus, it means that if divergence of tense marking is low the languages are very likely to be genetically related. This conclusion is supported by Figure 4 where many small clusters of nodes have the same color. This suggests that our method may help in completion of WALS. 4 A map of past tense To illustrate the potential of our method we select five out of the 100 past tense pivots that give rise to large clusters of distinct combinations. Starting with CRS, we find other pivots that “split” the set of verses that contain the CRS past tense pivot “ti” into two parts that have about the same size. This gives us two sets. We now look for a pivot that splits one of these two sets about evenly and so on. After iterating four times, we arrive at five pivots: CRS “ti”, Fijian (FIJ) “qai”, Hawaiian Creole (HWC) “wen”, Torres Strait Creole (TCS) “bin” and Tzotzil (TZO) “laj”.
+Figure 5 shows a t-SNE (Maaten and Hinton, 2008) visualization of the large clusters of combinations that are found for these five languages, including one cluster of verses that do not contain any of the five pivots.
+This figure is a map of past tense for all 1163 languages, not just for CRS, FIJ, HWC, TCS and TZO: once the interpretation of a particular cluster has been established based on CRS, FIJ, HWC, TCS and TZO, we can investigate this cluster in the 1164 other languages by looking at the verses
+avg tense past present future ( 696 1107 lang. - 103 fam.) ( 55 100 lang. - 15 fam.) ( 70 100 lang. - 17 fam.) ( 44 100
+lang. - 16 fam.) accuracy 0.93 0.55 0.81 0.58 precision 0.36 0.18 0.75 0.16 recall 0.01 0.59 0.37 0.61 TNR 0.99 0.55 0.96 0.58
+Table 3: Language family similarity prediction results based on coordinated marking of verses. Only languages with records on WALS are included in this evaluation. TNR: true negative rate.
+Tikar > ɓe Ozumacín Chinantec > maˊ Tektiteko > tuq Mazatlán Mixe >
+najty Dyula > tun
+Bambara > tun Luo (K
+enya and Tanzani
+a) > ne Morisye
+n > ti Sou thern B
+obo M adaré
+> man e
+Moba > din Ba
+fut > lɛ Fare
+fare > da a Krio
+> bin Jam aica
+n Cr eole
+Eng lish
+> did
+Naw dm
+> da Sra nan
+Ton go >
+ben
+Sai nt L
+ucia n C
+reo le F
+ren ch >
+té
+Hai tian
+Cr eol
+e > te
+Ma yan
+gna > d
+ai
+Ma yan
+gna > d
+ai
+Mo no
+(De mo
+cra tic Re pub
+lic of C
+ong o) > m
+a
+Ma ng sen
+g > m a Bo ko ba ru > b
+en Ko nk om ba > le Ga rifu na > áb a Ne ng e > ne Nu er > c u
+Ne ha n > ke Da wa wa > ya Ce ntr al Sa ma
+> si Kw an ya m a > ok wa Na ka na i > g oio
+La ng o (U ga nd a) > te Kw an ga > y a Tu ng ag > k al a Fi jia n > qa i Al go nq ui n > og i
+Sa ra m ac ca n > hë n M ao ri > ka Yo ru ba > s i Kw ai o > ka N ig er ia n Pi dg
+in > k on
+Ig bo
+> w e M oc ov í >
+s o
+Ku m am
+> o ko
+M ad
+ak > g a
+H ua
+ut la M
+az at ec > q ui ³
+Ku ra nk o > ya U rd u > ن ے H in di > n e C ho l > ts i Tz ot zi l > la j La ca nd on > c aj Si rio nó > q ue Kr io l > b in Ko nn i > d ie Te zo at lá n M ix te c > ni At at lá hu ca M ix te c > ni Yo so nd úa M ix te c > ni Pe ño le s M ix te c > ní Sa n M ig ue l E
+l G ra nd e M ix te c > ni
+O co te pe c M ix te c > nī So ut he rn P ue bl a M ix te c > nì Af rik aa ns > h et Ch av ac an o > ya Na m a (N am ib ia ) > g e Bu lu (C am er oo n) > n ga To rre s St ra it Cr eo le > b in
+M am
+pr uli > d aa
+Go ur m an ch ém
+a > de n Se se lw a Cr eo le Fr en ch > ti
+Pa tpa
+tar > ga
+Ya lun ka > yi No rth er n D
+ag ar a > tɩ
+W es ter n K
+an job al > j ix
+Ch uj > i x Q'a njo b'a l > m ax Kw ara 'ae > ka
+Ixil > ve Yo cob ou é D
+ida > ya
+Ma kaa
+> mú
+So uth
+Fa li >
+de
+Ch opi
+> t o Tam pul ma > f
+un
+Gito nga
+> d i Ika > nọ Eka juk > keh m
+Kas em >
+ma
+Tupu ri > r
+aw Susu > na xa Ndog o > g iì Buli (G hana) > yaa Queré taro O tomi > bi Mezqui tal Otom i > bi Estado d e México Otomi > bi Hawai'i Pi dgin > we n Gokana > be è Naro > kò Tzeltal > la North Alaskan Inupiatun > tavra
+Arawakan Oto-Manguean Mayan Niger-Congo unknown Indo-European Khoe-Kwadi Mande Tupian Algic
+Austronesian
+Guaicuruan
+Misumalpan
+Eastern Sudanic
+Eskimo-Aleut
+0.93
+Tikar > ɓe Ozumacín Chinantec > maˊ Tektiteko > tuq Mazatlán Mixe >
+najty Dyula > tun
+Bambara > tun Luo (K
+enya and Tanzani
+a) > ne Morisye
+n > ti Sou thern B
+obo M adaré
+> man e
+Moba > din Ba
+fut > lɛ Fare
+fare > da a Krio
+> bin Jam aica
+n Cr eole
+Eng lish
+> did
+Naw dm
+> da Sra nan
+Ton go >
+ben
+Sai nt L
+ucia n C
+reo le F
+ren ch >
+té
+Hai tian
+Cr eol
+e > te
+Ma yan
+gna > d
+ai
+Ma yan
+gna > d
+ai
+Mo no
+(De mo
+cra tic Re pub
+lic of C
+ong o) > m
+a
+Ma ng sen
+g > m a Bo ko ba ru > b
+en Ko nk om ba > le Ga rifu na > áb a Ne ng e > ne Nu er > c u
+Ne ha n > ke Da wa wa > ya Ce ntr al Sa ma
+> si Kw an ya m a > ok wa Na ka na i > g oio
+La ng o (U ga nd a) > te Kw an ga > y a Tu ng ag > k al a Fi jia n > qa i Al go nq ui n > og i
+Sa ra m ac ca n > hë n M ao ri > ka Yo ru ba > s i Kw ai o > ka N ig er ia n Pi dg
+in > k on
+Ig bo
+> w e M oc ov í >
+s o
+Ku m am
+> o ko
+M ad
+ak > g a
+H ua
+ut la M
+az
+at
+ec
+> q ui ³
+Ku
+ra
+nk
+o
+>
+ya
+U
+rd
+u
+>
+ن
+ے
+H
+in
+di
+>
+n
+e
+C
+ho
+l >
+ts
+i
+Tz
+ot
+zi
+l >
+la
+j
+La
+ca
+nd
+on
+>
+c
+aj
+Si
+rio
+nó
+>
+q
+ue
+Kr
+io
+l >
+b
+in
+Ko
+nn
+i >
+d
+ie
+Te
+zo
+at
+lá
+n
+M
+ix
+te
+c > ni
+At
+at
+lá
+hu
+ca
+M
+ix
+te
+c > ni
+Yo
+so
+nd
+úa
+M
+ix
+te
+c
+> ni
+Pe
+ño
+le
+s
+M
+ix
+te
+c
+>
+ní
+Sa
+n
+M
+ig
+ue
+l E
+l G
+ra
+nd e M ix te c > ni
+O
+co
+te
+pe
+c
+M
+ix
+te
+c
+>
+nī
+So
+ut
+he
+rn
+P
+ue
+bl
+a
+M
+ix
+te
+c > nì
+Af
+rik
+aa
+ns
+>
+h
+et
+Ch
+av
+ac
+an
+o
+>
+ya
+Na
+m
+a
+(N
+am
+ib
+ia
+) >
+g
+e
+Bu
+lu
+(C
+am
+er
+oo
+n)
+>
+n
+ga
+To
+rre
+s
+St
+ra
+it
+Cr
+eo
+le
+>
+b
+in
+M am
+pr uli > d aa
+Go ur m an ch ém
+a > de n Se se lw a Cr eo le Fr en ch > ti Pa tpa tar > ga
+Ya lun ka > yi No rth er n D
+ag ar a > tɩ
+W es ter n K
+an job al > j ix
+Ch uj > i x Q'a njo b'a l > m ax Kw ara 'ae > ka
+Ixil > ve Yo cob ou é D
+ida > ya
+Ma kaa
+> mú
+So uth
+Fa li >
+de
+Ch opi
+> t o Tam pul ma > f
+un
+Gito nga
+> d i Ika > nọ Eka juk > keh m Kas em > ma
+Tupu ri > r
+aw Susu > na xa Ndog o > g iì Buli (G hana) > yaa Queré taro O tomi > bi Mezqui tal Otom i > bi Estado d e México Otomi > bi Hawai'i Pi dgin > we n Gokana > be è Naro > kò Tzeltal > la
+North Alaskan Inupiatun > tavra
+Arawakan Oto-Manguean Mayan Niger-Congo unknown Indo-European Khoe-Kwadi Mande Tupian Algic Austronesian Guaicuruan Misumalpan Eastern Sudanic Eskimo-Aleut
+0.93
+Figure 1: Clustering of 100 pivot past tense markers. Each node is colored based on its family information. Languages with no record on WALS remained white. This clustering is based n J D of markers in marking 5960 verses in bible. We observed that most f pivot past and future markers belong to Niger Congo family and present markers are mostly within I do-Eur pean family. It can be seen that in many cases languages with the same family behave accordingly in tense marking. For instance, in past tense marking Oto-Manguean languages use almost the s me m rker of ni with small writing variation (Figure 1). Although Tezoatlán Mixtec did not have a record on WALS, since its marker is the same a other Oto-Manguean languages and works almost identical to ni in Oto-Manguean languages, we may g ess this language is also Oto-Manguean, which turned out to be true when we performed further searches.
+that are members of this cluster. This methodology supports the empirical investigation of questions like “how is progressive past tense expressed in language X”? We just need to look up the cluster(s) that correspond to progressive past tense, look up the verses that are members and retrieve the text of these verses in language X.
+To give the reader a flavor of the distinctions that are reflected in these clusters, we now list phenomena that are characteristic of verses that contain only one of the five pivots; these phenomena identify properties of one language that the other four do not have.
+CRS “ti”. CRS has a set of markers that can be systematically combined, in particular, a progressive marker “pe” that can be combined with the
+past tense marker “ti”. As a result, past progressive sentences in CRS are generally marked with “ti”. Example: “43004031 Meanwhile, the disciples were urging Jesus, ‘Rabbi, eat something.”’ “crs bible 43004031 Pandan sa letan, bann disip ti pe sipliy Zezi, ‘Met! Manz en pe.”’
+The other four languages do not consistently use the pivot for marking the past progressive; e.g., HWC uses “was begging” in 43004031 (instead of “wen”) and TCS uses “kip tok strongwan” ‘keep talking strongly’ in 43004031 (instead of “bin”).
+FIJ “qai”. This pivot means “and then”. It is highly correlated with past tense in the New Testament because most sequential descriptions of events are descriptions of past events. But there are also some non-past sequences. Example:
+Papiamento > ta Fiji Hindi > hei tlhIngan-Hol > oh Cameroon Mam
+bila > né R inconada Bik
+ol > do Ba tak Toba >
+do Bata k Simalu
+ngun > d o Maithili
+> अछ C aribbe
+an Hin dustan
+i > hai
+Urdu > ہ ے H
+indi > haai Ma
+rathi > आह Djim
+ini S enou
+fo > yɛn
+Ven go >
+lùu Wai ma
+> ha non
+a
+Hiri Mo
+tu > be Cab éca
+r > rä Par ecí
+s > aty o Vie
+tna me
+se > là
+Jar ai >
+jin g Go urm
+anc hém
+a > tie
+Ikw ere
+> bụ
+Igb o >
+bu Tu pu ri >
+di ñ
+Mi n N
+an C hin es e > sī
+Ha us
+a > ne Vu njo > ny i
+Sw ah ili (in div idu al lan gu ag e) > ni Te tun D ili > m ak Gu n > w ẹ Ha itia n Cr eo le > se W a > m aw h Pa ra uk > m aw h W ay an a > m an Li ng al a > ez al i Ba sq ue > d a Am ha ric > ነ ው M wa ni > n di M ak on de > n i Po go lo > n do R un di > n i Ki ny ar w an
+da > n i
+Pl au
+td ie ts ch > e s
+Ic el an
+di c > er
+Fi nn
+is h > on
+Es to ni an
+> o n
+N or th er n Sa
+m i >
+le a
+Po lis h > je st La tin > e st C ze ch > je G he g A lb an
+ia n > ës
+ht ë
+E ng
+lis h > is
+M od
+er n G re ek
+(1 45
+3- ) >
+ε ίν αι
+Sl ov
+ak > je
+R om
+an ia n > es te
+Al ba
+ni an
+> ë sh të
+Lo w S ax on
+> e s
+G er m an
+> is t W es te rn F ris ia n > is Fa ro es e > er Fr en ch > e st M id dl e En
+gl is h (1 10 0- 15 00 ) >
+is
+Fl em
+is h > is Sp an ish > e s Va le nc ia n > és Ru ss ia n > ес ть O ld S la vo ni c > ес ть
+An cie
+nt G re ek (t o 14 53 ) > εσ
+τιν
+Ira nia
+n Pe rs ian
+>
+است
+As sy ria n Ne
+oAr am
+aic >
+Vl ax R om
+an i > si St an da rd La tvi an > ir La tvi an > ir
+Ma lay (m
+ac ro lan gu ag e) > ad a
+Bu lu (C am ero
+on ) > ne No rw eg ian N yn ors k > er
+Afr ika an s > is No rw eg ian Bo
+km ål > e
+r
+Da nis h >
+er
+Sw ed ish > är Es per ant o > es tas
+Mb ay
+> n dï
+Ada ma
+wa Fu
+lful de
+> ɗ on
+Arm eni
+an > g
+ĕ
+Sin dhi
+> ٿو Kut ep > kú
+Sain t Lu
+cian Cre
+ole Fren
+ch > ka
+Nige rian
+Pidg in >
+dey
+Cha vaca
+no > ta
+Mada (Nig
+eria) > là
+Mam > in Sea Is land C
+reole Englis
+h > da
+Naro > ko Nama ( Namibi a) > ra Dari > می Dyula > be Bambara > b ɛ Zarma > ga
+Yucateco > ku Sango > yeke
+Sino-Tibetan Cariban Arawakan Mayan Basque Songhay Niger-Congo unknown Indo-European Khoe-Kwadi Mande Uralic Central Sudanic Austro-Asiatic Austronesian Chibchan Afro-Asiatic
+0.39
+Papiamento > ta Fiji Hindi > hei tlhIngan-Hol > oh Cameroon Mam
+bila > né R inconada Bik
+ol > do Ba tak Toba >
+do Bata k Simalu
+ngun > d o Maithili
+> अछ C aribbe
+an Hin dustan
+i > hai
+Urdu > ہ ے H
+indi > haai Ma
+rathi > आह Djim
+ini S enou
+fo > yɛn
+Ven go >
+lùu Wai ma
+> ha non
+a
+Hiri Mo
+tu > be Cab éca
+r > rä Par ecí
+s > aty o Vie
+tna me
+se > là
+Jar ai >
+jin g Go urm
+anc hém
+a > tie
+Ikw ere
+> bụ
+Igb o >
+bu Tu pu ri >
+di ñ
+Mi n N
+an C hin es e > sī
+Ha us
+a > ne Vu njo > ny i
+Sw
+ah
+ili
+(in
+div
+idu
+al
+lan
+gu
+ag
+e)
+>
+ni
+Te
+tun
+D
+ili
+> m
+ak
+Gu
+n >
+w
+ẹ
+Ha
+itia
+n
+Cr
+eo
+le
+>
+se
+W
+a
+>
+m
+aw
+h
+Pa
+ra
+uk
+>
+m
+aw
+h
+W
+ay
+an
+a
+>
+m
+an
+Li
+ng
+al
+a
+>
+ez
+al
+i
+Ba
+sq
+ue
+>
+d
+a
+Am
+ha
+ric
+>
+ነ
+ው
+M
+wa
+ni
+>
+n di
+M
+ak
+on
+de
+> n i
+Po
+go
+lo
+> n do
+R
+un
+di
+> n i
+Ki
+ny
+ar
+w an
+da > n i
+Pl au
+td ie ts ch > e s
+Ic el an
+di c > er
+Fi nn
+is h > on
+Es to ni an
+> o n
+N or th er n Sa
+m i >
+le a
+Po lis h > je st La tin > e st C ze ch > je G he g A lb an
+ia n > ës
+ht ë
+E ng
+lis h > is
+M od
+er n G re ek
+(1 45
+3- ) >
+ε ίν αι
+Sl ov ak > je R om
+an ia n > es te
+Al ba
+ni an
+> ë sh të
+Lo w S ax on
+> e s
+G er m an
+> is t W es te rn F ris ia n > is
+Fa
+ro es e > er
+Fr
+en
+ch > e st
+M
+id
+dl e En
+gl is h (1 10 0- 15 00 ) >
+is
+Fl em
+is
+h > is
+Sp
+an
+ish
+>
+e s
+Va
+le
+nc
+ia
+n
+>
+és
+Ru
+ss
+ia
+n
+>
+ес
+ть
+O
+ld
+S
+la
+vo
+ni
+c
+>
+ес ть
+An cie
+nt
+G
+re
+ek
+(t
+o
+14 53 ) > εσ
+τιν
+Ira nia
+n Pe rs ian
+>
+است
+As sy ria n Ne
+oAr am
+aic >
+Vl ax R om
+an i > si St an da rd La tvi an > ir La tvi an > ir
+Ma lay (m
+ac ro lan gu ag e) > ad a
+Bu lu (C am ero
+on ) > ne No rw eg ian N yn ors k > er
+Afr ika an s > is No rw eg ian Bo
+km ål > e
+r
+Da nis h >
+er
+Sw ed ish > är Es per ant o > es tas
+Mb ay
+> n dï Ada ma wa Fu
+lful de
+> ɗ on
+Arm eni
+an > g
+ĕ
+Sin dhi
+> ٿو
+Kut
+ep >
+kú
+Sain t Lu cian
+Cre
+ole Fren
+ch > ka
+Nige rian
+Pidg in >
+dey
+Cha vaca
+no > ta
+Mada (Nig
+eria) > là
+Mam > in Sea Is land C
+reole Englis
+h > da
+Naro > ko Nama ( Namibi a) > ra Dari > می Dyula > be Bambara > b ɛ Zarma > ga Yucateco > ku Sango > yeke
+Sino-Tibetan Cariban Arawakan Mayan Basque Songhay Niger-Congo unknown Indo-European Khoe-Kwadi Mande Uralic Central Sudanic Austro-Asiatic Austronesian Chibchan Afro-Asiatic
+0.39
+Figure 2: Clustering of 100 pivot present tense markers. Eac node is colored bas d on ts family information. Languages with no record on WALS remained w ite. This clustering is based on JSD of markers in marking 6590 verses in bible. It can be seen that in many cases languages with the same family behave accordingly in tense marking.
+“eng newliving 44009016 And I will show him how much he must suffer for my name’s sake.” “fij hindi 44009016 Au na qai vakatakila vua na levu ni ka e na sota kaya e na vukuqu.” This verse is future tense, but it continues a temporal sequence (it starts in the preceding verse) and therefore FIJ uses “qai”. The pivots of the other four languages are not general markers of temporal sequentiality, so they are not used for the future.
+HWC “wen”. HWC is less explicit than the other four languages in some respects and more explicit in others. It is less explicit in that not all sentences in a sequence of past tense sentences need to be marked explicitly with “wen”, resulting in some sentences that are indistinguishable from present tense. On the other hand, we found many cases of noun phrases in the other four languages that refer implicitly to the past, but are translated as a verb with explicit past tense marking in HWC. Examples: “hwc 2000 40026046 Da guy who wen set me up . . . ” ‘the guy who WEN set me up’, “eng newliving 40026046 . . . my betrayer . . . ”; “hwc 2000 43008005 . . . Moses wen tell us in da Rules . . . ” ‘Moses WEN tell us in the rules’, “eng newliving 43008005 The law of Moses says . . . ”; “hwc 2000 47006012 We wen give you guys our love . . . ”, “eng newliving 47006012 There is no lack of love on our part . . . ”. In these cases, the other four languages (and English too) use a noun phrase with no tense marking that is translated as
+a tense-marked clause in HWC. While preparing this analysis, we realized that HWC “wen” unfortunately does not meet one of the criteria we set out for pivots: it is not unambiguous. In addition to being a past tense marker (derived from standard English “went”), it can also be a conjunction, derived from “when”. This ambiguity is the cause for some noise in the clusters marked for presence of HWC “wen” in the figure.
+TCS “bin”. Conditionals is one pattern we found in verses that are marked with TCS “bin”, but are not marked for past tense in the other four languages. Example: “tcs bible 46015046 Wanem i bin kam pas i da nomal bodi ane den da spiritbodi i bin kam apta.” ‘what came first is the normal body and then the spirit body came after’, “eng newliving 46015046 What comes first is the natural body, then the spiritual body comes later.” Apparently, “bin” also has a modal aspect in TCS: generic statements that do not refer to specific events are rendered using “bin” in TCS whereas the other four languages (and also English) use the default unmarked tense, i.e., present tense.
+TZO “laj”. This pivot indicates perfective aspect. The other four past tense pivots are not perfective markers, so that there are verses that are marked with “laj”, but not marked with the past tense pivots of the other four languages. Example: “tzo huixtan 40010042 . . . ja’ch-ac’bat ben-
+Lashi > wa Achang > das Zaiwa > râ Mün Chin > khai Tedim Chin >
+ding Siyi n Chin > t
+u Zou > ding
+Mak (N igeria)
+> ding Hakha Chin >
+lai Falam Chin
+> ding Ngaw n Chi
+n > tu k Tuma -Irum
+u > a pi Suau > ab
+o Cerm a >
+ka Ngie
+mbo on >
+ge
+Mal ay (
+mac rola
+ngu age
+) > aka
+n
+Iwa l > a
+tob Aro p-L
+oke p >
+ole
+Kuo t >
+eba Ku wa a >
+ve
+Bw ana
+bw ana
+> kan
+i
+We stCe ntr al L
+imb a >
+kɔ ŋ
+Ma ske
+lyn es > de reh We ste rn Ka njo ba l > oj So uth ern Bo
+bo M ad aré > na
+Ku ran
+ko >
+si Ko nn i > na n Ma mp ru li > ni n Ek aju k > ba hk e Mo ss i > na
+Go ur m an ch ém
+a > ba a
+Ts on ga > ta Ko nk om
+ba > g a Fa re fa re > w ʋn Tu m ul un g Si sa al a > ja ŋ Pa as aa l > s ɩ Ta ng oa > p a Hm on g Da
+w > yu av
+Ka ra (P
+ap ua N ew
+G ui ne a) > ta a
+M or is ye n > po u M ad a (N ig er ia ) >
+lə N ig er ia n Pi dg in > g o Kr io > g o Iv bi e N or th -O kp el aAr he > y a Be liz e Kr io l E ng lis h > w ah n Lo te > la pe Ta m pu lm a > zi Sa n Ju an C ol or ad
+o M ix te c > cu a
+H ua
+st ec > n e
+C hu
+j > o l
+Ts im an
+é > ra Q ui ch é > na Ta ba sc o C ho
+nt al > x e
+Ka m w e > dz əg ə N ar o > gh a C ha yu co M
+ix te c > cu a Si o > m a H iri M ot u > do Vl ax R om an i > k a Ira ya > b at ay Se a Is la nd C re ol e En
+gl is h > gw
+in e
+Sa in t L uc ia n C re ol e Fr en ch > k ay Th ai > จะ G en > la Sa sa k > ge n M a'a ny an > s ag ar St an da rd M al ay > a ka n
+Ce nt ra l M
+al ay > k a
+Bi at ah B ida
+yu h > re
+In do ne sia n > ak an En gli sh > w ill Bu lga ria n > щ е Pa pia me nto > lo Ba ba M ala y > na nti Vie tna me se > sẽ
+Ja rai > či
+Te tun D ili >
+se i
+Wa > tak
+Pa rau
+k > ta k
+Ve nd a >
+ḓo
+Ma ced
+oni an
+> ќ е
+Ka ko
+> ta De nya > n yɛ
+Kah ua
+> p age
+Neh an
+> tu run
+g
+Swe dish
+> s kall
+Sou th G
+iziga > s
+a
+Cha vaca
+no > ay
+Bisla ma >
+bam bae
+Pijin > ba
+e
+Nyind rou >
+kam eh
+Tok P isin >
+bai
+Malê > tem Bugaw ac > oc Bukiyip > eke
+Mengen > la Seselwa Cre ole French > pou Hawai'i Pidgin > goin Afrikaans > sal Bekwarra > ba
+Sino-Tibetan Oto-Manguean Mayan Mosetenan Niger-Congo unknown Kuot Indo-European Khoe-Kwadi Torricelli Mande Tai-Kadai Austro-Asiatic Austronesian Afro-Asiatic Hmong-Mien
+0.31
+Lashi > wa Achang > das Zaiwa > râ Mün Chin > khai Tedim Chin >
+ding Siyi n Chin > t
+u Zou > ding
+Mak (N igeria)
+> ding Hakha Chin >
+lai Falam Chin
+> ding Ngaw n Chi
+n > tu k Tuma -Irum
+u > a pi Suau > ab
+o Cerm a >
+ka Ngie
+mbo on >
+ge
+Mal ay (
+mac rola
+ngu age
+) > aka
+n
+Iwa l > a
+tob Aro p-L
+oke p >
+ole
+Kuo t >
+eba Ku wa a >
+ve
+Bw ana
+bw ana
+> kan
+i
+We stCe ntr al L
+imb a >
+kɔ ŋ
+Ma ske
+lyn es > de reh We ste rn Ka njo ba l > oj So uth ern Bo
+bo M ad aré > na
+Ku ran
+ko >
+si Ko nn i > na n Ma mp ru li > ni n Ek aju k > ba hk e Mo ss i > na
+Go ur m an ch ém
+a > ba a
+Ts on ga > ta Ko nk om
+ba
+>
+g
+a
+Fa
+re
+fa
+re
+>
+w
+ʋn
+Tu
+m
+ul
+un
+g
+Si
+sa
+al
+a > ja ŋ
+Pa
+as
+aa
+l >
+s
+ɩ
+Ta
+ng
+oa
+>
+p
+a
+Hm
+on
+g
+Da
+w > yu av
+Ka ra (P
+ap ua N ew
+G ui ne a) > ta a
+M
+or
+is
+ye
+n
+> po u
+M
+ad
+a
+(N
+ig er ia ) >
+lə
+N
+ig
+er
+ia
+n
+Pi dg in > g o
+Kr
+io
+>
+g o
+Iv
+bi
+e
+N
+or th -O kp el aAr he > y a
+Be
+liz
+e
+Kr
+io l E ng lis h > w ah n
+Lo
+te
+>
+la pe
+Ta
+m
+pu
+lm a > zi
+Sa
+n
+Ju
+an C ol or ad
+o M ix te c > cu a
+H ua
+st ec > n e
+C hu
+j > o l
+Ts im an
+é > ra
+Q
+ui
+ch
+é
+> na
+Ta
+ba
+sc
+o C ho
+nt al > x e
+Ka
+m
+w
+e
+> dz əg ə
+N
+ar
+o
+>
+gh
+a
+C
+ha
+yu
+co
+M
+ix te c > cu a
+Si
+o
+>
+m
+a
+H
+iri
+M
+ot
+u
+> do
+Vl
+ax
+R
+om
+an i > k a
+Ira
+ya
+>
+b
+at ay
+Se
+a
+Is
+la
+nd
+C re ol e En
+gl is h > gw
+in e
+Sa
+in
+t L
+uc
+ia
+n C re ol e Fr en ch > k ay
+Th
+ai
+>
+จะ
+G
+en
+>
+la
+Sa
+sa
+k
+>
+ge
+n
+M
+a'a
+ny
+an
+>
+s
+ag
+ar
+St
+an
+da
+rd
+M
+al
+ay
+>
+a ka n
+Ce nt ra l M
+al ay > k a Bi at ah B ida yu h > re In do ne sia n > ak an En gli sh > w ill Bu lga ria n > щ е Pa pia me nto > lo Ba ba M ala y > na nti Vie tna me se > sẽ
+Ja rai > či
+Te tun D ili >
+se i
+Wa > tak Pa rau k > ta k Ve nd a > ḓo
+Ma ced
+oni an
+> ќ е
+Ka ko
+> ta
+De nya
+> n yɛ
+Kah ua
+> p age
+Neh an
+> tu run
+g
+Swe dish
+> s kall
+Sou th G
+iziga > s
+a
+Cha vaca
+no > ay
+Bisla ma >
+bam bae
+Pijin > ba
+e Nyind rou > kam eh Tok P isin > bai Malê > tem Bugaw ac > oc Bukiyip > eke
+Mengen > la Seselwa Cre ole French > pou Hawai'i Pidgin > goin Afrikaans > sal Bekwarra > ba
+Sino-Tibetan Oto-Manguean Mayan Mosetenan Niger-Congo unknown Kuot Indo-European Khoe-Kwadi Torricelli Mande Tai-Kadai Austro-Asiatic Austronesian Afro-Asiatic Hmong-Mien
+0.31
+Figure 3: Clustering of 100 pivot future tense markers. Each n de is colored based on its family information. Languages with no record on WALS remained white. This clustering is based on JSD of markers in marking 5733 verses in bible. It can be see tha in many cases languages with the same family behave accordingly in tense marking.
+dición yu’un hech laj spas . . . ” (literally “a blessing . . . LAJ make”), “eng newliving 40010042 . . . you will surely be rewarded.” Perfective aspect and past are correlated in the real world since most events that are viewed as simple wholes are in the past. But future events can also be viewed this way as the example shows.
+Similar maps for present and future tenses are presented in the Figure 6 and Figure 7. 5 Related work Our work is inspired by (Cysouw, 2014; Cysouw and Wälchli, 2007); see also (Dahl, 2007; Wälchli, 2010). Cysouw creates maps like Figure 5 by manually identifying occurrences of the proper noun “Bible” in a parallel corpus of Jehovah’s Witnesses’ texts. Areas of the map correspond to semantic roles, e.g., the Bible as actor (it tells you to do something) or as object (it was printed). This is a definition of semantic roles that is complementary to and different from prior typological research because it is empirically grounded in real language use across a large number of languages. It allows typologists to investigate traditional questions from a radically new perspective.
+The field of typology is important for both theoretical (Greenberg, 1960; Whaley, 1996; Croft, 2002) and computational (Heiden et al., 2000; Santaholma, 2007; Bender, 2009, 2011) linguis-
+tics. Typology is concerned with all areas of lingu stics: morphology (Song, 2014), syntax (Comrie, 1989; Croft, 2001; Croft and Poole, 2008; Song, 2014), semantic roles (Hartmann et al., 2014; Cysouw, 2014), semantics (KoptjevskajaTamm et al., 2007; Dahl, 2014; Wälchli and Cysouw, 2012; Sharma, 2009) etc. Typological information is important for many NLP tasks including discourse analysis (Myhill and Myhill, 1992), information retrieval (Pirkola, 2001), POS tagging (Bohnet and Nivre, 2012), parsing (Bohnet and Nivre, 2012; McDonald et al., 2013), machine translation (Hajič et al., 2000; Kunchukuttan and Bhattacharyya, 2016) and morphology (Bohnet et al., 2013).
+Tense is a central phenomenon in linguistics and the languages of the world differ greatly in whether and how they express tense (Traugott, 1978; Bybee and Dahl, 1989; Dahl, 2000, 1985; Santos, 2004; Dahl, 2007; Santos, 2004; Dahl, 2014).
+Low resource. Even resources with the widest coverage like World Atlas of Linguistic Structures (WALS) (Dryer et al., 2005) have little information for hundreds of languages. Many researchers have taken advantage of parallel information for extracting linguistic knowledge in low-resource settings (Resnik et al., 1997; Resnik, 2004; Mihalcea and Simard, 2005; Mayer and Cysouw, 2014;
+Luang Bola Avokaya Wandala Sundanese Kenga Kaiwá Galela Nadëb Mbula Sepik Iwam Halia Mokole Lukpa Wè NorthernLote South GizigaLampung ApiBislama Gumatj DjambarrpuynguCentral MazahuaDuri GilberteseBariaiTamil Sio BurarraTinputzBambamKono (Sierra Leone)Pinotepa Nacional Mixtec
+Toraja-Sa'danNgawn ChinTachelhitAmbulasMereyChortíTimneTawalaSouthern SamoRamoaainaKekchíChuukeseKuanuaSerbianMarshalleseMbukoJukun TakumKuwaataayChumburungShillukSilacayoapan Mixtec Lachixío Zapotec Isthmus Zapotec IzereGudeWestern Penan
+MundaniDiiMayoyao Ifugao GapapaiwaKimréMotuSouthern Birifor AnufoMuyangCacuaMelpaComaltepec Chinantec GokanaKupang Malay HelongTobaPopti'Kwanyama NyabwaWestern Bukidnon Manobo
+KadiwéuGaroAguacateco TakiaTepeuxila Cuicatec
+MamYawaBuhidChiquitano MurleKadazan Dusun
+Ese EjjaÖmieMentawai Central Bontok Mopán Maya Upper Necaxa Totonac Talaandig Gorontalo Tuwali Ifugao DobuGarifuna Zulgo-Gemzek Quiotepec Chinantec AdeleBokobaru BusaKambera San Mateo Del Mar Huave ArosiKayapó Manggarai Parkwa Thado Chin
+AbauRotokas DeloSarIyojwa'ja Chorote
+Iyo'wujwa Chorote WolofOwaDitammari Masana Mamara Senoufo Lama (Togo) Bete-Bendi VengoNawdmWapishana Chayuco Mixtec
+Northeastern Dinka Lushai Indonesian Sissala Ngiemboon
+Epena WarisDenya Uab Meto West-Central Limba BafiaBembe Macedonian Bulgarian VaglaTumulung Sisaala Patamona
+Northern Kurdish Adhola Maithili Fiji Hindi Caribbean Hindustani Mískito DariMayangna M ayangna Luo (Kenya and Tanzania) Nomaande Sranan Tongo Tektiteko Sochiapan Chinantec Isthmus M ixe Toura (Côte d'Ivoire)
+Jamaican Creole English Classical Syriac Egyptian Arabic Sinte Romani Awadhi W elsh M azatlán M
+ixe
+Gujarati Ozumacín Chinantec IrishAssyrian Neo-Aramaic Nilamba Luwo EwePogolo Basque
+W estern Highland Chatino Tataltepec Chatino Plateau M alagasy Aché M alayalam
+Eastern Canadian Inuktitut Komba Purepecha W estern Highland Purepecha Tohono O'odham M am asa EseAnjam Guerrero Nahuatl M i'km aq Kannada Uyghur Faiwol Highland Totonac Telefol Dano Cajonos Zapotec M ankanya W arlpiri AuYucuna
+NiiTwi North Tanna Siane Um anakaina
+Coyutla Totonac Erzya Lalana Chinantec Kanite Inoke-Yate W antoat G agauz Sekpele G uarayu Tz'utujil
+M ende (Papua N
+ew G
+uinea)
+X hosa Itaw it M abaan K uku-Yalanji San Jerónim o Tecóatl M
+azatec
+Bengali O riya (individual language) M auw ake A nkave Teribe K w anga M aiw a (Papua N ew
+G uinea)
+Pam plona A
+tta M ale (Ethiopia) G iraw a Choapan Zapotec N konya Som ali Saam ia Valencian M askelynes N orthern G rebo
+M ixtepec Zapotec Santo D om ingo A lbarradas Zapotec Bribri O cotlán Zapotec A ngam i N aga Chechen Copala Triqui A m anab Palantla Chinantec U ripiv-W ala-Rano-A tchin Tum buka W aim a M atal IyoSan Pedro A m uzgos A m uzgo Pele-A ta Siona Yine K eley-I K allahan Sabaot Lhom i M ansaka A ta M anobo Botolan Sam bal N am iae Barai Tereno Tlahuitoltepec M ixe Texm elucan Zapotec Totontepec M ixe Batad Ifugao Teutila Cuicatec K yaka K arajá N epali (individual language) ChipayaF ol op a Ch iq ui hu itl án M az at ec K an da w o M ag -a nt si Ay ta U ra rin a W er i G ua ya be ro N or th T ai ro ra So ut h Ta iro ra Sa fe yo ka A ne m e W ak e K un im ai pa Bi nu m ar ie n H an ga H un di Im ba bu ra H ig hl an d Q ui ch ua Ti m be Ta tu yoZi a Su en a D ed ua Si nh al es e K oy a Si ro i N um an gg an g Ya u (M or ob e Pr ov in ce ) M ac un a W ai m ah a K ire Ca ra pa na Ba ra sa na -E du ria Pi ra ta pu yo G ua na no D es an o Si ria no A ng gu ru k Ya li A le ka no Be na be na Tu m aIru m u H ul i A ga ra bi W af fa Ik w er e O bo lo N ya ky us aN go nd
+e
+N ga
+m ba
+y
+M ap
+ud un
+gu n
+Ba ta
+k D
+ai ri
+Ba ta
+k A ng
+ko la
+Ba ta
+k Si
+m al
+un gu
+n
+W ic
+hí L
+ha m
+té s N
+oc te
+n
+Ca lu
+ya nu
+n
+A gu
+ta yn
+en
+A gu
+sa n
+M an
+ob o
+M as
+ba te
+ny o
+Ce nt
+ra l B
+ik ol
+M at
+ig sa
+lu g
+M an
+ob o
+W ar
+ay (P
+hi lip
+pi ne
+s)
+K in
+ar ay
+-A
+H ili
+ga yn
+on
+Ce bu
+an o
+M on
+go nd
+ow
+Ta ga
+lo g
+Pi lip
+in o
+Ea ste
+rn B
+on to
+k
+Pa ng
+as in
+an
+Br oo
+ke 's
+Po in
+t P ala
+wa no
+M ar
+an ao Bi m a Ya m ba Sw ati
+Co atz
+os pa
+n M
+ix tec Gu lay Pa ra na n M bu nd a
+Te soG a Al urEfi k
+Te pe
+to tu
+tla C
+hi na
+nt ec
+M en
+de (S
+ier ra
+L eo
+ne )
+W es
+ter n N
+ig er
+F ul
+fu ld
+e
+M oc
+hi
+M ac
+ha m
+e
+Ri nc
+on ad
+a B ik
+ol
+Ba tak
+T ob
+a
+Se im
+at Ki sa r
+In ab
+ak no
+n He he
+M aa
+sin a F
+ulf uld
+e
+M ak
+on deIlo ko
+Ca sig
+ur an
+D um
+ag at
+Ag ta
+Be mb
+a ( Za
+mb ia)
+Po ko moKw ere Ru nd
+i
+M ala
+wi S
+en a
+Ki ny
+arw an
+da
+Ki ku
+yu
+Ku ps
+ab inyVu njoPu larGo go Ki gir
+ya maDi go
+Sw ah
+ili (i
+nd ivi
+du al
+lan gu
+ag e)
+No rth
+ern Sa miLa tin
+An cie
+nt Gr
+ee k (
+to 14
+53 )
+Sp an
+ish Ny an ja
+Co atl
+án M ixeFr en ch Ba va
+ria n Slo va k Cz ec h Po lis h Li thu
+an ianFin nis h Es ton ian
+Sta nd
+ard La
+tvi an La tvi an Ma lte se Sw ab
+ian
+Ge rm
+an Fle mi sh
+We ste
+rn Fri
+sia n Fa roe se
+Pla utd
+iet sch Ice lan dic Lo w Sa xo
+n
+Ira nia
+n P ers
+ian
+Es per
+ant o
+Te tel
+cin go
+N ahu
+atl Am har
+ic
+Ge org
+ian
+Sta nd
+ard Ar
+abi c
+Uk rai nia nSu
+baNa nd e Mw aniKa gu lu Ny
+atu ruBis saBi neIta
+lian
+Hu nga
+ria n Wa yan
+a
+Ca pan
+ahu a
+Mi cho
+acá n N
+ahu atlSec oyaLin gal
+a
+Sou thw
+est Gb
+aya
+Lo wla
+nd Tar
+ahu ma
+ra
+We ste
+rn A rra
+rnt a
+Na po
+Lo wla
+nd Qu
+ech ua Co lor ado
+Seb at B
+et G ura
+ge
+Ch hat
+tisg arh
+i
+Mi tla
+Zap ote cSel eeH
+opi
+Nig eria
+n F ulfu
+lde
+Por tug
+ues e Ak oos
+e
+Eas tern
+Or om
+o
+We ster
+n A pac
+he
+Hal h M
+ong olia
+n
+S'g aw
+Kar en
+Caj am
+arc a Q
+uec hua
+Cen tral
+Kh merKa biy èTuc ano Tor o S
+o D ogo nCar rierBo
+muTen hari mPar ecísC
+ofán
+Jala pa D
+e D íaz
+Ma zate c Dan galé atM
+a'di Am arak aeriDat
+oog aYe le
+Pap antl
+a To tona cNgä bereKen
+yang Ban aBua mu Mal ba B
+irifo rLaa ri
+Sou thwe
+stern Din
+ka Mun duru kúAp alaí Yess
+an-M ayoS indh iMas
+aabaKo ongoH ebre wDuru
+ma Kom i-Zy rian BooHam er-B
+annaPam pang a El N ayar Cora Santa Tere
+sa Co ra Shipi bo-C oniboEas t Kew
+aWest Kew
+a
+West ern T
+lacol ula V
+alley Zapo
+tec
+South easte
+rn Te pehua
+n
+Tlach ichilc
+o Tep ehuaSever
+n Ojib waY
+aquiJuqui la Mi xe North
+ern Te pehua n Ashén
+inka P ajonal LimbuMa rkwee
+taOj ibwa Gamo BauziA
+guarun a Yalála g Zapo tecUsa rufaCa
+vineñaL edo Ka iliKeyag anaI
+atmulZoogoc ho Zapo tecYatzach i Zapote
+cH aya
+YopnoH uambisa PunjabiAng
+al Henen gYi pmaA ekyom
+Selepet Yaweyuh aY arebaKora
+fe-Yegha NabakGuh
+u-Samane Rawa
+Mape BorongSo mba-Siawar i
+KubeU mbu-Ungu
+Bo-Ung ImbonguHuaylla Wa nca QuechuaEastern Apurímac Quec
+huaNorthern Conchu cos Ancash Quec
+huaHuaylas Anc ash Quechua
+Kazakh Shuar
+Kyrgyz Eastern Tamang
+Páez Kosena Awiyaana Asháninka
+Chuave Achuar-Shiwiar
+Sukuma Northern Oaxaca Nahuatl
+Yaminahua Sharanahua Lambayeque Quechua Kwoma
+Mountain Koiali Fore
+Kamula Telugu Southern Pastaza Quechua Naasioi
+Northern Paiute Gumuz
+Gwahatike Mayo
+Alamblak Woun Meu
+Chachi Ama (Papua New Guinea)
+Huichol Pichis Ashéninka Ucayali-Yurúa Ashéninka
+Ajyíninka Apurucayali Cusco Quechua Ayacucho Quechua
+Cañar Highland Quichua
+Chimborazo Highland Quichua Lelemi Khakas
+Oirat Russia Buriat
+Ossetic Arabela Cherokee
+Galibi Carib Koorete Azerbaijani
+South Azerbaijani Southern Altai
+Eastern Mari Chuvash
+Uzbek Karachay-Balkar
+Kara-Kalpak Bashkir
+Tatar Kambaata
+North Junín Quechua
+Huallaga Huánuco Quechua
+North Bolivian Quechua
+South Bolivian Quechua
+Margos-Yarowilca-Lauricocha Quechua
+Huamalíes-Dos de Mayo Huánuco Quechua Tharaka Gusii North Ndebele
+South Ndebele zulu
+Machiguenga Ignaciano Trinitario
+Southeastern Puebla Nahuatl Lenje Shona
+Kutu Nyoro Nyankole
+Kankanaey Yanesha'
+Timugon Murut Konso
+Southern Puebla Mixtec South Fali Hausa
+Kahua Maru Lashi
+Zaiwa
+Yocoboué Dida Urak Lawoi'
+Hiri Motu Tupuri Susu
+Yalunka Buli (Ghana) Mandinka
+Kuranko Ekajuk Konni
+Bulu (Cameroon) Afrikaans
+Gourmanchéma
+San Juan Colorado Mixtec Mampruli Yoruba Baba Malay Igbo
+Djimini Senoufo Makaa Ika
+Kwara'ae Chopi
+Gitonga Chuj Tangoa
+Chavacano
+Seselwa Creole French Querétaro Otomi Mezquital Otomi
+Estado de México Otomi Ixil Ndogo Plapo Krumen Tampulma Kriol
+Qaqet Kaingang Patpatar
+Torres Strait Creole Northern Dagara Mada (Nigeria) Gikyode Tzeltal
+Nigerian Pidgin Western Kanjobal Q'anjob'al Naro Ticuna
+Hawai'i Pidgin
+Francisco León Zoque Eastern Tawbuid Kuot Tok Pisin Iwal Alangan Uma
+Napu
+Bwanabwana Nama (Namibia) Tabaru Tboli Tobelo
+Buginese
+Standard Malay Sasak
+Central Malay Ngaju Sangir Huastec
+Biatah Bidayuh Tsimané Siyin Chin
+Falam Chin Pijin
+Jarai Tetun Dili
+Vietnamese Hakka Chinese Thai tlhIngan-Hol
+Southern Nambikuára Chácobo
+Panao Huánuco Quechua Northwest Alaska Inupiatun Kamasau Doyayo Sinaugoro Kasem Sabu Yosondúa M ixtec Ocotepec M ixtec Nobonob Batak Karo M inaveha Tacana
+Central Tarahumara Kanasi Eastern Bolivian Guaraní Ozolotepec Zapotec M iahuatlán Zapotec Orokaiva M arik M ekeo Alune Tabaa Zapotec Rincón Zapotec
+W ichí Lhamtés Güisnay Southern Carrier M axakalí Gwichʼin 'Auhelawa Ayautla M azatec Dadibi Northern Em berá
+Xicotepec De Juárez Totonac Quioquitani-Quierí Zapotec Tabo Paraguayan Guaraní Chadian Arabic Pam ona M anikion Sarangani Blaan Koronadal Blaan Uspanteco M olim a Zotung Chin Rikbaktsa Cuiba Keapara Kabyle Bunam a M ufian
+Nias Banggai
+Jola-Kasa Tabassaran W aorani
+San M artín Quechua Angaataha Fasu
+N orth A
+laskan Inupiatun A purinã Bedjond U rubú-K aapor O lo Iam alele Patep Sursurunga N
+galum N om atsiguenga Cubeo K oreguaje Southw est Tanna G olin H uehuetla Tepehua A m ele W askia Chayahuita Aw a-Cuaiquer K am ano Tam asheq Salt-Yui
+Southern Conchucos A ncash Q
+uechua W estern K ayah G uam biano O ksapm in Biangai Candoshi-Shapra Cashinahua Aw a (Papua N ew G uinea) Bora Bim in H ighland Popoluca K agayanen Eastern H uasteca N ahuatl Central H uasteca N ahuatl W estern H uasteca N ahuatl W olaytta D aw ro M ian M urui H uitoto Bargam W ayuu Inga
+San M arcos Tlalcoyalco Popoloca K um yk Iduna M akasar Ew age-N otu A ngor W iru M una Yatee Zapotec A ruam u Cam sá G uerrero A m uzgo Yongkom M atsés Sam berigi N alca K afa Tuyuca G uahibo Tena Low land Q uichua Zacatlán-A huacatlán-Tepetzintla N ahuatl Southern Rincon Zapotec Pi ap oc o K ob on K al am Ta i K aq ch ik el Tu rk ish M in ic a H ui to to Ca qu in te K ei n N or th er n Pu eb la N ah ua tl Co ta ba to M an ob o Ce nt ra l T un eb o M ui na ne G of a Ca sh ib oCa ca ta ib o Av ar ic K um an (P ap ua N ew G ui ne a) H ig hl an d O ax ac a Ch on ta l D ag a Sa ni yo -H iy ew e Bo rd er K un a N or th er n Pa sta za Q ui ch ua
+A da
+m aw
+a Fu
+lfu ld e Te zo at lá n M ix te c Pe ño le s M ix te c Li m os K al in ga Sa n Bl as K un a M ba y
+Yu ra
+ca re
+Ce nt
+ra l A
+ym ar a H ig hl an d Pu eb
+la N
+ah ua tl W es te rn B ol iv ia n G ua ra ní Co pt ic Pi sa flo re s T ep eh ua K ar am oj on g Jo la -F on yi Sa n M ig ue l E l G ra nd e M ix
+te c
+A ta
+tlá hu
+ca M
+ix te c Ja m ilt ep ec M ix te c K ar ka r-Y ur i A kh a Sa ra m ac ca n D iu xi -T ila nt on go M
+ix te c Pw o N or th er n K ar en Ea ste rn B ru Ch ic hi ca pa n Za po te c Tz ot zi l Ca bé ca r M os ko na M ey ah M ar at hi A m at lá n Za po te c Sa nt a M ar ía Q ui eg ol an i Z ap ot ec Co at ec as A lta s Z ap ot ec
+Ru ss
+ia n O ld S la
+vo ni c Sl ov en ia n M ad ak W uv ul uA ua Ya gu a Si rio nó Pi la gá M ün C hi n M atu C hi n
+Ka ch in Le ala o
+Ch in
+an tec
+M ac
+us hi Ak aw aio Sa n Ju an A
+tzi ng
+o Po
+po lo
+ca
+Ca rib
+be an
+Ja va
+ne se
+Ib an Ch ol M en
+ge n Ce rm a Ne ha n
+La ng
+o (U
+ga nd a) Ku m am Yu ca tec o La ca nd on
+Sa po sa Ce nt ra
+l S am a M oc ov í Te na ng o O to m i M ao
+ri Ea ste rn
+H ig
+hl an
+d O to
+m i
+M oo
+se C
+re e Ur du Fi jia n Tu ng ag
+Hi nd i Ly élé Ka pi ng
+am ara
+ng i
+So uth
+ern N
+un i
+Fo n Sa n M
+art ín
+Itu ny
+os o T
+riq ui
+Sa ng o Bu gle re Ge n
+Ya be m M ap os
+B ua
+ng
+Bu ga
+wa c M alê Qu ich é Bu kiy ip
+Bu mb
+ita A
+rap es
+h
+Iv bie
+N or
+thOk
+pe la-
+Ar he
+Am ba i M an gg
+a B ua
+ng
+To l Ac hi Po qo
+mc hi' Ub ir Ar ifa ma -M
+ini afi
+a
+Ch am
+ac oc
+o
+Ku ke le Nd o Ira ya Bo lin ao
+Ch am
+orr o M oro Ko rea n Sa ran ga ni M
+an ob
+o
+Ta ga
+ba wa No rth ern K
+hm er
+M an
+da rin
+C hin
+ese
+Su lka Sa ter
+é-M aw
+é
+W ipi Ap ina yé Kw
+aio Al go nq
+uin Mw ag ha vu l Da wa wa Hu au tla M aza tec
+Sa nu má Ya no má mi Nd on
+ga Ze mb a Ha nu no o Ira qw Us ila Ch ina nte c
+Ku o Ko on
+zim e Ne ng e Nu er So uth ern Ki si
+Tig rin
+ya Ud uk Mu mu ye No pal a C hat ino
+Ea ste
+rn Hig
+hla nd
+Ch atin
+o
+Ma dur
+ese Ba lin ese Tab asc o C hon
+tal
+Na faa
+nra Gu aja jára Ba wm Ch in Bu rm ese Ba lan tak
+Ba kai
+rí Ay ore o Ce ntr al C aga
+yan Ag
+ta
+Ma ca De g Sam oan Pau ma rí
+Xa ván
+te Bal ang ao Usa n No one KimNo rthw est Gb aya
+Ku waa Mo ssi Nga nga m Kus aal
+Paa saa
+l Ntc ham Bim oba Bek war ra Loz i Kak o
+Sou ther
+n So tho
+Sep edi Tsw ana Dyu la Bam bara
+Xaa son
+gax ang
+o
+Arm enia
+n
+Mor isye
+n
+Krio Sea
+Isla nd C
+reol e En
+glis h
+Bafu t Sain t Lu
+cian Cre
+ole F renc
+h
+Vute Tika r Nor weg ian B okm
+ål
+Nor weg
+ian N ynor
+sk
+Dan ish Eng lish Vlax Rom ani Swe dish
+Alba nian Ghe g Al bani an Mod ern G reek (145
+3-)
+Midd le En
+glish (110
+0-15 00)
+Haiti an C
+reole Beliz e Kri ol En glish Mob a Faref are Vend a Papia ment o
+Nyin drou Arop -Lok ep Mana m Ma'an yan Mofu -Gud ur Irigw e
+Kaya bí Waha u Ken yah Tsikim ba Came roon M ambil a Zarma Suau Ninzo Dogri
+b Iu Mie n Lobi Southe rn Bob o Mad aré Hanga Zou Mak (N igeria)
+Tedim Chin Minang kabau Terman u Hakha C hin Adiouk rou Hdi Jur Mod o Min Nan Chinese Hmong Daw Gun Wa Parauk Malay (m acrolangu age)
+Javanese Achinese Supyire Se noufo Mono (De mocratic R epublic of Congo) Mangseng Lahu Achang Magdalena P eñasco Mixt ec Kouya Miyobe Mbyá Guaran
+í Eastern Karab oro Waama Mündü Nigeria Mambila Konkomba Kamwe Tojolabal Obo Manobo Nakanai Dan Kara (Papua New Guinea) Guinea Kpelle Baatonum Tsonga Romanian Croatian Kutep Japanese
+0.02
+Luang Bola Avokaya Wandala Sundanese Kenga Kaiwá Galela Nadëb Mbula Sepik Iwam Halia Mokole Lukpa Wè NorthernLote South GizigaLampung ApiBislama Gumatj DjambarrpuynguCentral MazahuaDuri
+GilberteseBariaiTamil Sio BurarraTinputzBambamKono (Sierra Leone)Pinotepa Nacional Mixtec
+Toraja-Sa'danNgawn ChinTachelhitAmbulasMereyChortíTimneTawalaSouthern SamoRamoaainaKekchíChuukeseKuanuaSerbianMarshalleseMbukoJukun TakumKuwaataayChumburungShillukSilacayoapan Mixtec Lachixío Zapotec Isthmus Zapotec IzereGudeWestern Penan
+MundaniDiiMayoyao Ifugao GapapaiwaKimréMotuSouthern Birifor
+AnufoMuyangCacuaMelpaComaltepec Chinantec
+GokanaKupang Malay HelongTobaPopti'Kwanyama NyabwaWestern Bukidnon Manobo
+KadiwéuGaroAguacateco TakiaTepeuxila Cuicatec
+MamYawaBuhidChiquitano MurleKadazan Dusun
+Ese EjjaÖmieMentawai Central Bontok
+Mopán Maya Upper Necaxa Totonac Talaandig Gorontalo
+Tuwali Ifugao
+DobuGarifuna Zulgo-Gemzek
+Quiotepec Chinantec AdeleBokobaru BusaKambera San Mateo Del Mar Huave ArosiKayapó Manggarai
+Parkwa Thado Chin
+AbauRotokas DeloSarIyojwa'ja Chorote
+Iyo'wujwa Chorote WolofOwaDitammari
+Masana Mamara Senoufo Lama (Togo) Bete-Bendi
+Vengo NawdmWapishana
+Chayuco Mixtec Northeastern Dinka Lushai Indonesian Sissala Ngiemboon Epena WarisDenya Uab Meto West-Central Limba BafiaBembe Macedonian Bulgarian
+VaglaTumulung Sisaala Patamona
+Northern Kurdish Adhola Maithili Fiji Hindi
+Caribbean Hindustani Mískito DariMayangna M ayangna
+Luo (Kenya and Tanzania) Nomaande Sranan Tongo Tektiteko Sochiapan Chinantec Isthmus M ixe Toura (Côte d'Ivoire) Jamaican Creole English Classical Syriac Egyptian Arabic Sinte Romani Awadhi W elsh M azatlán M
+ixe
+Gujarati Ozumacín Chinantec IrishAssyrian Neo-Aramaic Nilamba Luwo EwePogolo Basque
+W estern Highland Chatino Tataltepec Chatino Plateau M alagasy Aché M alayalam
+Eastern Canadian Inuktitut Komba Purepecha W estern Highland Purepecha Tohono O'odham M am asa EseAnjam Guerrero Nahuatl M i'km aq Kannada Uyghur Faiwol Highland Totonac Telefol Dano Cajonos Zapotec M ankanya W arlpiri AuYucuna
+NiiTwi North Tanna Siane Um
+anakaina Coyutla Totonac Erzya Lalana Chinantec Kanite Inoke-Yate W antoat G agauz Sekpele G uarayu Tz'utujil
+M ende (Papua N
+ew G
+uinea)
+X hosa Itaw it M abaan
+K uku-Yalanji San Jerónim o Tecóatl M
+azatec
+Bengali O riya (individual language) M auw ake A nkave Teribe K w anga M aiw a (Papua N ew
+G uinea)
+Pam plona A
+tta M ale (Ethiopia) G iraw a Choapan Zapotec N konya Som ali Saam ia Valencian M askelynes N orthern G rebo
+M ixtepec Zapotec Santo D om
+ingo A lbarradas Zapotec
+Bribri O cotlán Zapotec A ngam i N aga Chechen Copala Triqui A m anab Palantla Chinantec U ripiv-W
+ala-Rano-A tchin
+Tum buka W aim a M atal IyoSan Pedro A m uzgos A m uzgo Pele-A ta Siona Yine K eley-I K allahan Sabaot Lhom i M ansaka A ta M anobo Botolan Sam bal N am iae Barai Tereno Tlahuitoltepec M ixe Texm elucan Zapotec Totontepec M ixe Batad Ifugao Teutila Cuicatec K yaka K arajá N epali (individual language) ChipayaF ol op a Ch iq ui hu itl án M az at ec K an da w o M ag -a nt si Ay ta U ra rin a W er i G ua ya be ro N or th T ai ro ra So ut h Ta iro ra Sa fe yo ka A ne m e W ak e K un im ai pa Bi nu m ar ie n H an ga H un di Im ba bu ra H ig hl an d Q ui ch ua Ti m be Ta tu yoZi a Su en a D ed ua Si nh al es e K oy a Si ro i N um an gg an g Ya u (M or ob e Pr ov in ce ) M ac un a W ai m ah a K ire Ca ra pa na Ba ra sa na -E du ria Pi ra ta pu yo G ua na no D es an o Si ria no A ng gu ru k Ya li A le ka no Be na be na Tu m aIru m u H ul i A ga ra bi W af fa Ik w er e O bo lo N ya ky us aN go nd
+e
+N ga
+m ba
+y
+M ap
+ud un
+gu n
+Ba ta
+k D
+ai ri
+Ba ta
+k A ng
+ko la
+Ba ta
+k Si
+m al
+un gu
+n
+W ic
+hí L
+ha m
+té s N
+oc te
+n
+Ca lu
+ya nu
+n
+A gu
+ta yn
+en
+A gu
+sa n
+M an
+ob o
+M as
+ba te
+ny o
+Ce nt
+ra l B
+ik ol
+M at
+ig sa
+lu g
+M an
+ob o
+W ar
+ay (P
+hi lip
+pi ne
+s)
+K in
+ar ay
+-A
+H ili
+ga yn
+on
+Ce bu
+an o
+M on
+go nd
+ow
+Ta ga
+lo g
+Pi lip
+in o
+Ea ste
+rn B
+on to
+k
+Pa ng
+as in
+an
+Br oo
+ke 's
+Po in
+t P ala
+wa no
+M ar
+an ao Bi m
+a
+Ya m
+ba Sw
+ati
+Co atz
+os pa
+n M
+ix tec Gu lay Pa ra
+na n
+M bu
+nd a Te soGaAl
+urEfi k
+Te pe
+to tu
+tla C
+hi na
+nt ec
+M en
+de (S
+ier ra
+L eo
+ne )
+W es
+ter n N
+ig er
+F ul
+fu ld
+e
+M oc
+hi
+M ac
+ha m
+e
+Ri nc
+on ad
+a B ik
+ol
+Ba tak
+T ob
+a
+Se im
+at Ki sa r
+In ab
+ak no
+n He he
+M aa
+sin a F
+ulf uld
+e
+M ak
+on deIlo ko
+Ca sig
+ur an
+D um
+ag at
+Ag ta
+Be mb
+a ( Za
+mb ia)
+Po ko
+mo Kw ere Ru nd
+i
+M ala
+wi S
+en a
+Ki ny
+arw an
+da
+Ki ku
+yu
+Ku ps
+ab inyVu
+njoPu larGo go
+Ki gir
+ya maDi
+go
+Sw ah
+ili (i
+nd ivi
+du al
+lan gu
+ag e)
+No rth
+ern Sa
+miLa tin
+An cie
+nt Gr
+ee k (
+to 14
+53 )
+Sp an
+ish Ny an
+ja
+Co atl
+án M
+ixe Fr en
+ch
+Ba va
+ria n Slo va
+k Cz ec
+h Po lis
+h
+Li thu
+an ianFin nis
+h
+Es ton
+ian
+Sta nd
+ard La
+tvi an La tvi
+an Ma lte
+se
+Sw ab
+ian
+Ge rm
+an Fle mi
+sh
+We ste
+rn Fri
+sia n Fa roe
+se
+Pla utd
+iet sch Ice lan
+dic
+Lo w
+Sa xo
+n
+Ira nia
+n P ers
+ian
+Es per
+ant o
+Te tel
+cin go
+N ahu
+atl Am har
+ic
+Ge org
+ian
+Sta nd
+ard Ar
+abi c
+Uk rai
+nia nSu
+baNa nd e Mw
+aniKa gu lu Ny
+atu ruBis
+saBi neIta
+lian
+Hu nga
+ria n Wa yan
+a
+Ca pan
+ahu a
+Mi cho
+acá n N
+ahu atlSec
+oyaLin gal
+a
+Sou thw
+est Gb
+aya
+Lo wla
+nd Tar
+ahu ma
+ra
+We ste
+rn A rra
+rnt a
+Na po
+Lo wla
+nd Qu
+ech ua Co lor
+ado
+Seb at B
+et G ura
+ge
+Ch hat
+tisg arh
+i
+Mi tla
+Zap ote
+cSel eeH
+opi
+Nig eria
+n F ulfu
+lde
+Por tug
+ues e Ak oos
+e Eas tern Or om
+o We ster n A pac
+he Hal h M
+ong olia
+n S'g aw
+Kar en Caj am arc a Q
+uec hua Cen tral
+Kh merKa
+biy èTuc
+ano Tor o S o D ogo
+nCar rierBo
+muTen hari
+mPar ecísC
+ofán Jala pa D e D íaz
+Ma zate c Dan
+galé atMa
+'di Am
+arak aeriDat
+oog aYe le Pap antl
+a To tona
+cNgä bereKen
+yang Ban
+aBua mu Mal ba B
+irifo rLaa
+ri Sou thwe stern Din
+ka Mun
+duru kúAp
+alaí Yess
+an-M ayoS
+indh iMas
+aabaKo ongoH
+ebre wDuru
+ma Kom
+i-Zy rian
+BooHam er-B
+annaPam pang a El N
+ayar Cora Santa Tere
+sa Co ra Shipi bo-C
+oniboEas t Kew
+aWest Kew
+a
+West ern T
+lacol ula V
+alley Zapo
+tec South easte
+rn Te pehua
+n Tlach ichilc
+o Tep ehuaSever
+n Ojib waY
+aquiJuqui la Mi xe North
+ern Te pehua n Ashén
+inka P ajonal
+LimbuMa rkwee
+taOj ibwa
+Gamo BauziA
+guarun a Yalála g Zapo
+tecUsa rufaCav
+ineñaL edo Ka
+iliKeyag anaI
+atmulZoogoc ho Zapo
+tecYatzach i Zapote
+cH aya
+YopnoH uambisa PunjabiAng
+al Henen gYi
+pmaA ekyom
+Selepet Yaweyuh
+aY arebaKora
+fe-Yegha NabakGuh
+u-Samane Rawa
+Mape BorongSom
+ba-Siawari KubeU
+mbu-Ungu Bo-Ung
+ImbonguHuaylla Wan ca QuechuaEastern A
+purímac Quechu aNorthern Conchu
+cos Ancash Quec huaHuaylas Anca
+sh Quechua Kazakh
+Shuar Kyrgyz
+Eastern Tamang Páez
+Kosena Awiyaana Asháninka
+Chuave Achuar-Shiwiar
+Sukuma Northern Oaxaca Nahuatl
+Yaminahua Sharanahua
+Lambayeque Quechua Kwoma
+Mountain Koiali Fore
+Kamula Telugu
+Southern Pastaza Quechua Naasioi
+Northern Paiute Gumuz
+Gwahatike Mayo
+Alamblak Woun Meu
+Chachi Ama (Papua New Guinea)
+Huichol Pichis Ashéninka
+Ucayali-Yurúa Ashéninka
+Ajyíninka Apurucayali Cusco Quechua
+Ayacucho Quechua
+Cañar Highland Quichua
+Chimborazo Highland Quichua Lelemi Khakas
+Oirat Russia Buriat
+Ossetic Arabela
+Cherokee
+Galibi Carib Koorete
+Azerbaijani
+South Azerbaijani
+Southern Altai
+Eastern Mari Chuvash
+Uzbek
+Karachay-Balkar
+Kara-Kalpak Bashkir
+Tatar
+Kambaata
+North Junín Quechua
+Huallaga Huánuco Quechua
+North Bolivian Quechua
+South Bolivian Quechua
+Margos-Yarowilca-Lauricocha Quechua Huamalíes-Dos de Mayo Huánuco Quechua Tharaka Gusii North Ndebele
+South Ndebele zulu
+Machiguenga
+Ignaciano
+Trinitario
+Southeastern Puebla Nahuatl Lenje Shona
+Kutu Nyoro
+Nyankole
+Kankanaey
+Yanesha'
+Timugon Murut Konso
+Southern Puebla Mixtec South Fali Hausa
+Kahua Maru Lashi
+Zaiwa
+Yocoboué Dida Urak Lawoi'
+Hiri Motu
+Tupuri Susu
+Yalunka
+Buli (Ghana) Mandinka
+Kuranko
+Ekajuk
+Konni
+Bulu (Cameroon) Afrikaans
+Gourmanchéma
+San Juan Colorado Mixtec Mampruli Yoruba Baba Malay Igbo
+Djimini Senoufo Makaa Ika
+Kwara'ae Chopi
+Gitonga Chuj
+Tangoa
+Chavacano
+Seselwa Creole French Querétaro Otomi Mezquital Otomi
+Estado de México Otomi Ixil Ndogo Plapo Krumen Tampulma Kriol
+Qaqet
+Kaingang Patpatar
+Torres Strait Creole Northern Dagara Mada (Nigeria) Gikyode Tzeltal
+Nigerian Pidgin Western Kanjobal Q'anjob'al Naro Ticuna
+Hawai'i Pidgin
+Francisco León Zoque Eastern Tawbuid Kuot Tok Pisin Iwal Alangan Uma
+Napu
+Bwanabwana Nama (Namibia) Tabaru Tboli Tobelo
+Buginese
+Standard Malay Sasak
+Central Malay Ngaju Sangir Huastec
+Biatah Bidayuh Tsimané Siyin Chin
+Falam Chin Pijin
+Jarai Tetun Dili
+Vietnamese Hakka Chinese Thai tlhIngan-Hol
+Southern Nambikuára Chácobo
+Panao Huánuco Quechua Northwest Alaska Inupiatun Kamasau Doyayo Sinaugoro Kasem Sabu Yosondúa M ixtec Ocotepec M ixtec Nobonob Batak Karo M inaveha Tacana
+Central Tarahumara Kanasi Eastern Bolivian Guaraní Ozolotepec Zapotec M iahuatlán Zapotec Orokaiva M arik M ekeo
+Alune
+Tabaa Zapotec
+Rincón Zapotec
+W
+ichí Lhamtés Güisnay
+Southern Carrier
+M
+axakalí
+Gwichʼin
+'Auhelawa
+Ayautla M
+azatec
+Dadibi
+Northern Em
+berá
+Xicotepec De Juárez Totonac
+Quioquitani-Quierí Zapotec
+Tabo
+Paraguayan Guaraní
+Chadian Arabic Pam ona M anikion Sarangani Blaan Koronadal Blaan Uspanteco M olim a Zotung Chin Rikbaktsa Cuiba Keapara Kabyle Bunam a M ufian
+Nias Banggai
+Jola-Kasa Tabassaran W aorani
+San M artín Quechua Angaataha Fasu
+N orth A
+laskan Inupiatun A purinã Bedjond U rubú-K aapor O lo Iam alele Patep Sursurunga N
+galum N om atsiguenga Cubeo K oreguaje Southw est Tanna G olin H uehuetla Tepehua A m ele W askia Chayahuita Aw a-Cuaiquer K am ano Tam asheq Salt-Yui
+Southern Conchucos A ncash Q
+uechua W estern K ayah G uam biano O ksapm in Biangai Candoshi-Shapra Cashinahua Aw a (Papua N ew G uinea) Bora Bim in H ighland Popoluca K agayanen Eastern H uasteca N ahuatl Central H uasteca N ahuatl W estern H uasteca N ahuatl W olaytta D aw ro M ian M urui H uitoto Bargam W ayuu Inga
+San M arcos Tlalcoyalco Popoloca K um yk Iduna M akasar Ew age-N otu A ngor W iru M una Yatee Zapotec A ruam u Cam sá G uerrero A m uzgo Yongkom M atsés Sam berigi N alca K afa Tuyuca G uahibo Tena Low land Q uichua Zacatlán-A huacatlán-Tepetzintla N ahuatl Southern Rincon Zapotec Pi ap oc o K ob on K al am Ta i K aq ch ik el Tu rk ish M in ic a H ui to to Ca qu in te K ei n N or th er n Pu eb la N ah ua tl Co ta ba to M an ob o Ce nt ra l T un eb o M ui na ne G of a Ca sh ib oCa ca ta ib o Av ar ic K um an (P ap ua N ew G ui ne a) H ig hl an d O ax ac a Ch on ta l D ag a Sa ni yo -H iy ew e Bo rd er K un a N or th er n Pa sta za Q ui ch ua
+A da
+m aw
+a Fu
+lfu ld e Te zo at lá n M ix te c Pe ño le s M ix te c Li m os K al in ga Sa n Bl as K un a M ba y Yu ra ca re Ce nt ra l A ym ar a H ig hl an d Pu eb la N
+ah ua tl W es te rn B ol iv ia n G ua ra ní Co pt ic Pi sa flo re s T ep eh ua K ar am oj on g Jo la -F on yi Sa n M ig ue l E l G ra nd e M ix
+te c
+A ta
+tlá hu
+ca M
+ix te c Ja m ilt ep ec M ix te c K ar ka r-Y ur i A kh a Sa ra m ac ca n D iu xi -T ila nt on go M
+ix te c Pw o N or th er n K ar en Ea ste rn B ru Ch ic hi ca pa n Za po te c Tz ot zi l Ca bé ca r M os ko na M ey ah M ar at hi A m at lá n Za po te c Sa nt a M ar ía Q ui eg ol an i Z ap ot ec Co at ec as A lta s Z ap ot ec
+Ru ss
+ia n O ld S la
+vo ni c Sl ov en ia n M ad ak W uv ul uA ua Ya gu a Si rio nó Pi la gá M ün C hi n M atu C hi n
+Ka ch in Le ala o
+Ch in
+an tec
+M ac
+us hi Ak aw aio Sa n Ju an A
+tzi ng
+o Po
+po lo
+ca
+Ca rib
+be an
+Ja va
+ne se
+Ib an Ch ol M en
+ge n Ce rm a Ne ha n
+La ng
+o (U
+ga nd
+a)
+Ku m am Yu ca tec o La ca nd on Sa po sa
+Ce nt
+ra l S
+am a M oc ov í Te na ng o O to m i
+M ao ri Ea ste rn
+H ig
+hl an
+d O to
+m i
+M oo
+se C
+re e Ur du Fi jia n Tu ng ag
+Hi
+nd
+i
+Ly
+élé
+Ka
+pi
+ng
+am ara
+ng i
+So uth
+ern N
+un i
+Fo n Sa n M
+art ín
+Itu ny
+os o T
+riq ui
+Sa ng o Bu gle re Ge n
+Ya be m M ap os
+B ua
+ng
+Bu ga
+wa c M alê Qu ich é Bu kiy ip
+Bu mb
+ita A
+rap es
+h
+Iv bie
+N or
+thOk
+pe la-
+Ar he
+Am ba i M an gg
+a B ua
+ng
+To l Ac hi
+Po qo
+mc hi' Ub ir Ar ifa ma -M
+ini afi
+a
+Ch am
+ac oc
+o
+Ku ke le Nd
+o Ira ya Bo lin ao
+Ch am
+orr o M oro Ko rea
+n Sa ran ga
+ni M
+an ob
+o
+Ta ga
+ba wa No rth ern K
+hm er
+M an
+da rin
+C hin
+ese
+Su lka Sa ter
+é-M aw
+é
+W ipi Ap ina yé Kw
+aio Al go nq
+uin
+Mw ag
+ha vu
+l
+Da wa wa Hu au tla
+M aza
+tec
+Sa nu má Ya no má mi
+Nd on ga Ze mb a
+Ha nu
+no o Ira qw Us ila Ch ina
+nte c
+Ku o Ko on
+zim e Ne ng e Nu er
+So uth
+ern Ki
+si
+Tig rin
+ya Ud uk Mu mu ye
+No pal
+a C hat
+ino
+Ea ste
+rn Hig
+hla nd
+Ch atin
+o
+Ma dur
+ese
+Ba lin
+ese Tab asc
+o C hon
+tal
+Na faa
+nra Gu aja jára Ba wm Ch in Bu rm ese
+Ba lan
+tak Ba kai rí Ay ore o Ce ntr al C aga yan Ag
+ta
+Ma ca De g Sam oan
+Pau ma
+rí
+Xa ván
+te
+Bal ang
+ao
+Usa n No one
+KimNo rthw
+est Gb
+aya
+Ku waa Mo ssi Nga nga m
+Kus aal Paa saa l Ntc ham
+Bim oba Bek war ra Loz i Kak o
+Sou ther
+n So tho
+Sep edi Tsw ana Dyu la
+Bam bara Xaa son gax ang
+o
+Arm enia
+n Mor isye n Krio Sea Islan d Cr eole Eng
+lish
+Bafu t Sain t Lu
+cian Cre
+ole F renc
+h
+Vute Tika r Nor weg ian B okm
+ål
+Nor weg
+ian N ynor
+sk
+Dan ish Eng lish Vlax Rom ani
+Swe dish Alba nian
+Ghe g Al
+bani an
+Mod ern G
+reek (145
+3-)
+Midd le En
+glish (110
+0-15 00)
+Haiti an C
+reole Beliz e Kri ol En glish Mob a Faref are
+Vend a Papia ment o Nyin drou
+Arop -Lok
+ep
+Mana m Ma'an yan Mofu -Gud ur Irigw e
+Kaya bí Waha u Ken yah Tsikim ba Came roon M ambil a Zarma Suau Ninzo Dogri
+b Iu Mie
+n Lobi Southe rn Bob o Mad aré Hanga Zou Mak (N igeria)
+Tedim Chin Minang kabau Terman u Hakha C hin Adiouk rou
+Hdi Jur Mod o Min Nan Chinese Hmong Daw Gun Wa Parauk Malay (m acrolangu age)
+Javanese Achinese Supyire Se noufo Mono (De mocratic R epublic of Congo) Mangseng Lahu Achang Magdalena P eñasco Mixt ec Kouya Miyobe Mbyá Guaran
+í Eastern Karab oro Waama Mündü Nigeria Mambila Konkomba Kamwe Tojolabal Obo Manobo Nakanai Dan Kara (Papua New Guinea) Guinea Kpelle Baatonum Tsonga Romanian Croatian Kutep Japanese
+Barbacoan Sino-Tibetan Quechuan Cariban Mangrida Arawakan Altaic Lower Sepik-Ramu Oto-Manguean Jivaroan Nadahup Yele Mayan Basque Songhay Cahuapanan Matacoan Na-Dene Camsá Teberan-Pawaian Tacanan Urarina Mixe-Zoque Macro-Ge Zaparoan Mosetenan Niger-Congo Tarascan Awin-Pare Waorani unknown Karkar-Yuri Kuot Left May Peba-Yaguan Tol Trans-New Guinea Guahiban Huitotoan West Bougainville Yanomam Nakh-Daghestanian Huavean Uru-Chipaya Indo-European East Bird's Head Tucanoan Baining-Taulil Khoe-Kwadi Oksapmin Totonacan Choco Torricelli Mande Tai-Kadai Tupian Uralic Ticuna Araucanian Candoshi Kordofanian Ok Arauan Sepik Yawa Central Sudanic Yuracare Pama-Nyungan Yareban Austro-Asiatic Cofán Gumuz Algic Austronesian Guaicuruan Senagi Tequistlatecan Paezan Iroquoian Chibchan Korean Zamucoan Japanese Kartvelian Sulka Border Harakmbet Dravidian West Papuan Misumalpan Uto-Aztecan Panoan East Bougainville Nambikuaran Dagan Chiquito Eastern Sudanic Afro-Asiatic Dogon East Geelvink Bay Hmong-Mien Cacua-Nukak Eskimo-Aleut
+Clustering of 1107 Language based on their average divergence in past, present, and future markings
+0.04
+Figure 4: Clustering of 1107 languages based on the average Je sen-Shannon divergence in past, present, and future marking of their respective top markers. Each node s colored based on its family information. Languages with no record on WALS remained white. It can be seen that many small clusters of nodes have the same color, which together with our quantitative evaluation supports that if divergence of tense marking is low the languages are very likely to be genetically relat d.
+Christodouloupoulos and Steedman, 2015; Lison and Tiedemann, 2016).
+Parallel projection. Parallel projection across languages has been used for variety of NLP tasks. Machine translation aside, which is the most natural task on parallel corpora (Brown et al., 1993), parallel projection has been used for sense disambiguation (Ide, 2000), parsing (Hwa et al., 2005), paraphrasing (Bannard and CallisonBurch, 2005), part-of-speech tagging (Mukerjee et al., 2006), coreference resolution (de Souza and Orăsan, 2011), event marking (Nordrum, 2015), morphological segmentation (Chung et al., 2016), bilingual analysis of linguistic marking (McEnery
+and Xiao, 1999; Xiao and McEnery, 2002), as well as language classification (Asgari and Mofrad, 2016). 6 Conclusion We presented SuperPivot, an analysis method for low-resource languages that occur in a superp rallel corpus, i.e., in a corpus that contains an order of magnitude more languages than parallel corpora currently in use. We showed that SuperPivot performs well for the crosslingual an lysis of the linguistic phenomenon of tense. We produced analysis results for more than 1000 languages, conducting – to the best of our knowledg
+– the largest crosslingual computational study performed to date. We extended existing methodology for leveraging parallel corpora for typological analysis by overcoming a limiting assumption of earlier work. We only require that a linguistic feature is overtly marked in a few of thousands of languages as opposed to requiring that it be marked in all languages under investigation.
+There are at least three future directions that seem promising to us: (i) creating a common map of tense along the lines of Figure 5, but unifying the three tenses; (ii) generalizing character ngrams to more general features, so that templates in templatic morphology, reduplication and other more complex manifestations of linguistic features can be captured; and (iii) segmenting verses into clauses and performing linear alignment not on the verse level (which caused many errors in our experiments), but on the clause level instead.   We present SuperPivot, an analysis<lb>method for low-resource languages that<lb>occur in a superparallel corpus, i.e., in a<lb>corpus that contains an order of magni-<lb>tude more languages than parallel corpora<lb>currently in use. We show that SuperPivot<lb>performs well for the crosslingual analysis<lb>of the linguistic phenomenon of tense.<lb>We produce analysis results for more than<lb>1000 languages, conducting – to the best<lb>of our knowledge – the largest crosslin-<lb>gual computational study performed to<lb>date. We extend existing methodology for<lb>leveraging parallel corpora for typological<lb>analysis by overcoming a limiting as-<lb>sumption of earlier work: We only require<lb>that a linguistic feature is overtly marked<lb>in a few of thousands of languages as<lb>opposed to requiring that it be marked in<lb>all languages under investigation. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

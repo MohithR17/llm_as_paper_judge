@@ -1,0 +1,332 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Deriving Neural Architectures from Sequence and Graph Kernels
+Paper Content: 1705.09037.pdf META Deriving Neural Architectures from Sequence and Graph Kernels Tao Lei Wengong Jin Regina Barzilay Tommi Jaakkola <taolei@csail.mit.edu>, gong@csail.mit.edu>. 1. Introduction Many recent studies focus on designing novel neural architectures for structured data such as sequences or annotated graphs. For instance, LSTM (Hochreiter & Schmidhuber, 1997), GRU (Chung et al., 2014) and other complex recurrent units (Zoph & Le, 2016) can be easily adapted to embed structured objects such as sentences (Tai et al., 2015) or molecules (Li et al., 2015; Dai et al., 2016) into vector spaces suitable for later processing by standard predictive methods. The embedding algorithms are typically integrated into an end-to-end trainable architecture so as to tailor the learnable embeddings directly to the task at hand.
+The embedding process itself is characterized by a sequence operations summarized in a structure known as the computational graph. Each node in the computational
+*Equal contribution 1MIT Computer Science & Artificial Intelligence Laboratory. Correspondence to: Tao Lei <taolei@csail.mit.edu>, Wengong Jin <wengong@csail.mit.edu>.
+Proceedings of the 34 th International Conference on Machine Learning, Sydney, Australia, PMLR 70, 2017. Copyright 2017 by the author(s).
+graph identifies the unit/mapping applied while the arcs specify the relative arrangement/order of operations. The process of designing such computational graphs or associated operations for classes of objects is often guided by insights and expertise rather than a formal process.
+Recent work has substantially narrowed the gap between desirable computational operations associated with objects and how their representations are acquired. For example, value iteration calculations can be folded into convolutional architectures so as to optimize the representations to facilitate planning (Tamar et al., 2016). Similarly, inference calculations in graphical models about latent states of variables such as atom characteristics can be directly associated with embedding operations (Dai et al., 2016).
+We appeal to kernels over combinatorial structures to define the appropriate computational operations. Kernels give rise to well-defined function spaces and possess rules of composition that guide how they can be built from simpler ones. The comparison of objects inherent in kernels is often broken down to elementary relations such as counting of common sub-structures as in
+K(χ, χ′) = ∑ s∈S 1[s ∈ χ]1[s ∈ χ′] (1)
+where S is the set of possible substructures. For example, in a string kernel (Lodhi et al., 2002), S may refer to all possible subsequences while a graph kernel (Vishwanathan et al., 2010) would deal with possible paths in the graph. Several studies have highlighted the relation between feed-forward neural architectures and kernels (Hazan & Jaakkola, 2015; Zhang et al., 2016) but we are unaware of any prior work pertaining to kernels associated with neural architectures for structured objects.
+In this paper, we introduce a class of deep recurrent neural embedding operations and formally characterize their associated kernel spaces. The resulting kernels are parameterized in the sense that the neural operations relate objects of interest to virtual reference objects through kernels. These reference objects are parameterized and readily optimized for end-to-end performance.
+To summarize, the proposed neural architectures, or Kernel Neural Networks 1 , enjoy the following advantages:
+1Code available at https://github.com/taolei87/icml17 knn
+ar X
+iv :1
+70 5.
+09 03
+7v 3
+[ cs
+.N E
+] 3
+0 O
+ct 2
+01 7
+Deriving Neural Architectures from Sequence and Graph Kernels
+• The architecture design is grounded in kernel computations.
+• Our neural models remain end-to-end trainable to the task at hand.
+• Resulting architectures demonstrate state-of-the-art performance against strong baselines.
+In the following sections, we will introduce these neural components derived from string and graph kernels, as well as their deep versions. Due to space limitations, we defer proofs to supplementary material. 2. From String Kernels to Sequence NNs Notations We define a sequence (or a string) of tokens (e.g. a sentence) as x1:L = {xi}Li=1 where xi ∈ Rd represents its ith element and |x| = L denotes the length. Whenever it is clear from the context, we will omit the subscript and directly use x (and y) to denote a sequence. For a pair of vectors (or matrices) u,v, we denote 〈u,v〉 = ∑ k ukvk as their inner product. For a kernel function Ki(·, ·) with subscript i, we use φi(·) to denote its underlying mapping, i.e. Ki(x,y) = 〈φi(x), φi(y)〉 = φi(x)>φi(y).
+String Kernel String kernel measures the similarity between two sequences by counting shared subsequences (see Lodhi et al. (2002)). For example, let x and y be two strings, a bi-gram string kernel K2(x,y) counts the number of bi-grams (xi,xj) and (yk,yl) such that (xi,xj) = (yk,yl) 2,
+K2(x,y) = ∑
+1≤i<j≤|x| 1≤k<l≤|y|
+λx,i,j λy,k,l δ(xi,yk) · δ(xj ,yl)
+(2) where λx,i,j , λy,k,l ∈ [0, 1) are context-dependent weights and δ(x, y) is an indicator that returns 1 only when x = y. The weight factors can be realized in various ways. For instance, in temporal predictions such as language modeling, substrings (i.e. patterns) which appear later may have higher impact for prediction. Thus a realization λx,i,j = λ|x|−i−1 and λy,k,l = λ|y|−k−1 (penalizing substrings far from the end) can be used to determine weights given a constant decay factor λ ∈ (0, 1).
+In our case, each token in the sequence is a vector (such as one-hot encoding of a word or a feature vector). We shall replace the exact match δ(u,v) by the inner product 〈u,v〉. To this end, the kernel function (2) can be rewritten as,∑ 1≤i<j≤|x| ∑ 1≤k<l≤|y| λx,i,j λy,k,l 〈xi,yk〉 · 〈xj ,yl〉
+2We define n-gram as a subsequence of original string (not necessarily consecutive).
+= ∑
+1≤i<j≤|x| ∑ 1≤k<l≤|y| λx,i,j λy,k,l 〈xi ⊗ xj ,yk ⊗ yl〉
+= 〈∑ i<j λ|x|−i−1 xi ⊗ xj , ∑ k<l λ|y|−k−1 yk ⊗ yl 〉 (3)
+where xi⊗xj ∈ Rd×d (and similarly yk⊗yl) is the outerproduct. In other words, the underlying mapping of kernel K2() defined above is φ2(x) = ∑ 1≤i<j≤|x| λ
+|x|−i−1xi ⊗ xj . Note we could alternatively use a partial additive scoring 〈xi,yk〉+ 〈xj ,yl〉, and the kernel function can be generalized to n-grams when n 6= 2. Again, we commit to one realization in this section.
+String Kernel NNs We introduce a class of recurrent modules whose internal feature states embed the computation of string kernels. The modules project kernel mapping φ(x) into multi-dimensional vector space (i.e. internal states of recurrent nets). Owing to the combinatorial structure of φ(x), such projection can be realized and factorized via efficient computation. For the example kernel discussed above, the corresponding neural component is realized as,
+c1[t] = λ · c1[t− 1] + ( W(1)xt ) cj [t] = λ · cj [t− 1] + ( cj−1[t− 1] W(j)xt
+) h[t] = σ(cn[t]), 1 < j ≤ n (4)
+where cj [t] are the pre-activation cell states at word xt, and h[t] is the (post-activation) hidden vector. cj [0] is initialized with a zero vector. W(1), ..,W(n) are weight matrices to be learned from training examples.
+The network operates like other RNNs by processing each input token and updating the internal states. The elementwise multiplication can be replaced by addition + (corresponding to the partial additive scoring above). As a special case, the additive variant becomes a word-level convolutional neural net (Kim, 2014) when λ = 0.3
+3h[t] = σ(W(1)xt−n+1 + · · ·+W(n)xt) when λ = 0.
+Deriving Neural Architectures from Sequence and Graph Kernels 2.1. Single Layer as Kernel Computation Now we state how the proposed class embeds string kernel computation. For j ∈ {1, .., n}, let cj [t][i] be the i-th entry of state vector cj [t], w (j) i represents the i-th row of matrix W(j). Define wi,j = {w(1)i ,w (2) i , ...,w (j) i } as a “reference sequence” constructed by taking the i-th row from each matrix W(1), ..,W(j).
+Theorem 1. Let x1:t be the prefix of x consisting of first t tokens, and Kj be the string kernel of j-gram shown in Eq.(3). Then cj [t][i] evaluates kernel function,
+cj [t][i] = Kj (x1:t,wi,j) = 〈φj(x1:t), φj(wi,j)〉
+for any j ∈ {1, .., n}, t ∈ {1, .., |x|}.
+In other words, the network embeds sequence similarity computation by assessing the similarity between the input sequence x1:t and the reference sequence wi,j . This interpretation is similar to that of CNNs, where each filter is a “reference pattern” to search in the input. String kernel NN further takes non-consecutive n-gram patterns into consideration (seen from the summation over all n-grams in Eq.(3)).
+Applying Non-linear Activation In practice, a non-linear activation function such as polynomial or sigmoid-like activation is added to the internal states to produce the final output state h[t]. It turns out that many activations are also functions in the reproducing kernel Hilbert space (RKHS) of certain kernel functions (see Shalev-Shwartz et al. (2011); Zhang et al. (2016)). When this is true, the underlying kernel of h[t] is the composition of string kernel and the kernel containing the activation. We give the formal statements below.
+Lemma 1. Let x and w be multi-dimensional vectors with finite norm. Consider the function f(x) := σ(w>x) with non-linear activation σ(·). For functions such as polynomials and sigmoid function, there exists kernel functions Kσ(·, ·) and the underlying mapping φσ(·) such that f(x) is in the reproducing kernel Hilbert space of Kσ(·, ·), i.e.,
+f(x) = σ(w>x) = 〈φσ(x), ψ(w)〉
+for some mapping ψ(w) constructed from w. In particular, Kσ(x,y) can be the inverse-polynomial kernel 12−〈x,y〉 for the above activations.
+Proposition 1. For one layer string kernel NN with nonlinear activation σ(·) discussed in Lemma 1, h[t][i] as a function of input x belongs to the RKHS introduced by the composition of Kσ(·, ·) and string kernel Kn(·, ·). Here a kernel composition Kσ,n(x,y) is defined with the underlying mapping x 7→ φσ(φn(x)), and hence Kσ,n(x,y) = φσ(φn(x))>φσ(φn(y)).
+Proposition 1 is the corollary of Lemma 1 and Theorem 1, since h[t][i] = σ(cn[t][i]) = σ(Kn(x1:t,wi,j)) = 〈φσ(φn(x1:t)), w̃i,j〉 and φσ(φn(·)) is the mapping for the composed kernel. The same proof applies when h[t] is a linear combination of all ci[t] since kernel functions are closed under addition. 2.2. Deep Networks as Deep Kernel Construction We now address the case when multiple layers of the same module are stacked to construct deeper networks. That is, the output states h(l)[t] of the l-th layer are fed to the (l+1)th layer as the input sequence. We show that layer stacking corresponds to recursive kernel construction (i.e. (l + 1)- th kernel is defined on top of l-th kernel), which has been proven for feed-forward networks (Zhang et al., 2016).
+We first generalize the sequence kernel definition to enable recursive construction. Notice that the definition in Eq.(3) uses the linear kernel (inner product) 〈xi,yk〉 as a “subroutine” to measure the similarity between substructures (e.g. tokens) within the sequences. We can therefore replace it with other similarity measures introduced by other “base kernels”. In particular, let K(1)(·, ·) be the string kernel (associated with a single layer). The generalized sequence kernel K(l+1)(x,y) can be recursively defined as,∑ i<j k<l λx,i,j λy,k,l K(l)σ (x1:i,y1:k) K(l)σ (x1:j ,y1:l) =
+〈∑ i<j φ(l)σ (x1:i)⊗ φ(l)σ (x1:j), ∑ k<l φ(l)σ (y1:k)⊗ φ(l)σ (y1:l) 〉
+where φ(l)(·) denotes the pre-activation mapping of the lth kernel, φ(l)σ (·) = φσ(φ(l)(·)) denotes the underlying (post-activation) mapping for non-linear activation σ(·), and K(l)σ (·, ·) is the l-th post-activation kernel. Based on this definition, a deeper model can also be interpreted as a kernel computation.
+Theorem 2. Consider a deep string kernel NN with L layers and activation function σ(·). Let the final output state h(L)[t] = σ(c(L)n [t]) (or any linear combination of {c(l)i [t]}, i = 1, .., n). For l = 1, · · · , L,
+(i) c(l)n [t][i] as a function of input x belongs to the RKHS of kernel K(l)(·, ·);
+(ii) h(l)[t][i] belongs to the RKHS of kernel K(l)σ (·, ·). 3. From Graph Kernels to Graph NNs In the previous section, we encode sequence kernel computation into neural modules and demonstrate possible extensions using different base kernels. The same ideas apply
+Deriving Neural Architectures from Sequence and Graph Kernels
+to other types of kernels and data. Specifically, we derive neural components for graphs in this section.
+Notations A graph is defined as G = (V,E), with each vertex v ∈ V associated with feature vector fv . The neighbor of node v is denoted as N(v). Following previous notations, for any kernel function K∗(·, ·) with underlying mapping φ∗(·), we use K∗,σ(·, ·) to denote the postactivation kernel induced from the composed underlying mapping φ∗,σ = φσ(φ∗(·)). 3.1. Random Walk Kernel NNs We start from random walk graph kernels (Gärtner et al., 2003), which count common walks in two graphs. Formally, let Pn(G) be the set of walks x = x1 · · ·xn, where ∀i : (xi, xi+1) ∈ E.4 Given two graphs G and G′, an n-th order random walk graph kernel is defined as:
+KnW (G,G′) = λn−1 ∑
+x∈Pn(G) ∑ y∈Pn(G′) n∏ i=1 〈fxi , fyi〉 (5)
+where fxi ∈ Rd is the feature vector of node xi in the walk.
+Now we show how to realize the above graph kernel with a neural module. Given a graph G, the proposed neural module is:
+c1[v] = W (1)fv cj [v] = λ ∑
+u∈N(v)
+cj−1[u] W(j)fv (6)
+hG = σ( ∑ v cn[v]) 1 < j ≤ n
+where again c∗[v] is the cell state vector of node v, and hG is the representation of graph G aggregated from node vectors. hG could then be used for classification or regression.
+Now we show the proposed model embeds the random walk kernel. To show this, construct Ln,k as a “reference walk” consisting of the row vectors {w(1)k , · · · ,w (n) k } from the parameter matrices. Here Ln,k = (LV , LE), where LV = {v0, v1, · · · , vn}, LE = {(vi, vi+1)} and vi’s feature vector is w(i)k . We have the following theorem:
+Theorem 3. For any n ≥ 1, the state value cn[v][k] (the k-th coordinate of cn[v]) satisfies:∑
+v
+cn[v][k] = KnW (G,Ln,k)
+thus ∑ v cn[v] lies in the RKHS of kernel KnW . As a corollary, hG lies in the RKHS of kernel KnW,σ(). 4A single node could appear multiple times in a walk. 3.2. Unified View of Graph Kernels The derivation of the above neural module could be extended to other classes of graph kernels, such as subtree kernels (cf. (Ramon & Gärtner, 2003; Vishwanathan et al., 2010)). Generally speaking, most of these kernel functions factorize graphs into local sub-structures, i.e.
+K(G,G′) = ∑ v ∑ v′ Kloc(v, v′) (7)
+where Kloc(v, v′) measures the similarity between local sub-structures centered at node v and v′.
+For example, the random walk kernel KnW can be equivalently defined with Knloc(v, v′) = 〈fv, fv ′〉 if n = 1 〈fv, fv′〉 · λ
+∑ u∈N(v) ∑ u′∈N(v′) Kn−1loc (u, u′) if n > 1
+Other kernels like subtree kernels could be recursively defined similarly. Therefore, we adopt this unified view of graph kernels for the rest of this paper.
+In addition, this definition of random walk kernel could be further generalized and enhanced by aggregating neighbor features non-linearly:
+Knloc(v, v′) = 〈fv, fv′〉 ◦ λ ∑
+u∈N(v) ∑ u′∈N(v′) Kn−1loc,σ(u, u ′)
+where ◦ could be either multiplication or addition. σ(·) denotes a non-linear activation and Kn−1loc,σ(·, ·) denotes the post-activation kernel when σ(·) is involved. The generalized kernel could be realized by modifying Eq.(6) into:
+cj [v] = W (j)fv ◦ λ ∑ u∈N(v) σ(cj−1[u]) (8)
+where ◦ could be either + or operation. 3.3. Deep Graph Kernels and NNs Following Section 2, we could stack multiple graph kernel NNs to form a deep network. That is:
+c (l) 1 [v] = W (l,1)h(l−1)[v]
+c (l) j [v] = W
+(l,j)h(l−1)[v] ◦ λ ∑
+u∈N(v)
+σ ( c (l) j−1[u] ) h(l)[v] = σ(U(l)c(l)n [v]) 1 ≤ l ≤ L, 1 < j ≤ n
+The local kernel function is recursively defined in two dimensions: depth (term h(l)) and width (term cj). Let the pre-activation kernel in the l-th layer be K(l)loc(v, v′) = K (l,n) loc (v, v
+′), and the post-activation kernel be K(l)loc,σ(v, v′) = K (l,n) loc,σ(v, v ′). We recursively define
+Deriving Neural Architectures from Sequence and Graph Kernels
+K(l,j)loc (v, v′) = K (l−1) loc,σ (v, v ′) if j = 1 K(l−1)loc,σ (v, v′) ◦ λ ∑
+u∈N(v) ∑ u′∈N(v′) K(l,j−1)loc,σ (u, u′) if j > 1
+for j = 1, · · · , n. Finally, the graph kernel is K(L,n)(G,G′) = ∑ v,v′ K (L,n) loc (v, v
+′). Similar to Theorem 2, we have Theorem 4. Consider a deep graph kernel NN with L layers and activation function σ(·). Let the final output state hG = ∑ v h (L)[v]. For l = 1, · · · , L; j = 1, · · · , n:
+(i) c(l)j [v][i] as a function of input v and graph G belongs
+to the RKHS of kernel K(l,j)loc (·, ·);
+(ii) h(l)[v][i] belongs to the RKHS of kernel K(l,n)loc,σ(·, ·).
+(iii) hG[i] belongs to the RKHS of kernel K(L,n)(·, ·). 3.4. Connection to Weisfeiler-Lehman Kernel We derived the above deep kernel NN for the purpose of generality. This model could be simplified by setting n = 2, without losing representational power (as non-linearity is already involved in depth dimension). In this case, we rewrite the network by reparametrization:
+h(l)v = σ U(l)1 h(l−1)v ◦U(l)2 ∑ u∈N(v) σ ( V(l)h(l−1)u ) (9) In this section, we further show that this model could be enhanced by sharing weight matrices U and V across layers. This parameter tying mechanism allows our model to embed Weisfeiler-Lehman kernel (Shervashidze et al., 2011). For clarity, we briefly review basic concepts of WeisfeilerLehman kernel below.
+Weisfeiler-Lehman Graph Relabeling WeisfeilerLehman kernel borrows concepts from the WeisfeilerLehman isomorphism test for labeled graphs. The key idea of the algorithm is to augment the node labels by the sorted set of node labels of neighbor nodes, and compress these augmented labels into new, short labels (Figure 2). Such relabeling process is repeated T times. In the i-th iteration, it generates a new labeling li(v) for all nodes v in graph G, with initial labeling l0.
+Generalized Graph Relabeling The key observation here is that graph relabeling operation could be viewed as neighbor feature aggregation. As a result, the relabeling process naturally generalizes to the case where nodes are associated with continuous feature vectors. In particular, let r be the relabeling function. For a node v ∈ G:
+r(v) = σ(U1fv +U2 ∑
+u∈N(v)
+σ(Vfu)) (10)
+Figure 2. Node relabeling in Weisfeiler-Lehman isomorphism test. Figure taken from Shervashidze et al. (2011)
+Note that our definition of r(v) is exactly the same as hv in Equation 9, with ◦ being additive composition.
+Weisfeiler-Lehman Kernel Let K be any graph kernel (called base kernel). Given a relabeling function r, Weisfeiler-Lehman kernel with base kernel K and depth L is defined as
+K(L)WL(G,G ′) = L∑ i=0 K(ri(G), ri(G′)) (11)
+where r0(G) = G and ri(G), ri(G′) are the i-th relabeled graph of G and G′ respectively.
+Weisfeiler-Lehman Kernel NN Now with the above kernel definition, and random walk kernel as the base kernel, we propose the following recurrent module:
+c (l) 0 [v] = W (l,0)h(l−1)v c (l) j [v] = λ ∑ u∈N(v) c (l) j−1[u] W (l,j)h(l−1)v
+h(l)v = σ U1h(l−1)v +U2 ∑ u∈N(v) σ(Vh(l−1)u )  h (l) G =
+∑ v c(l)n [v] 1 ≤ l ≤ L, 1 < j ≤ n
+where h(0)v = fv and U1,U2,V are shared across layers. The final output of this network is hG = ∑L l=1 h (l) G .
+The above recurrent module is still an instance of deep kernel, even though some parameters are shared. A minor difference here is that there is an additional random walk kernel NN that connects i-th layer and the output layer. But this is just a linear combination of L deep random walk kernels (of different depth). Therefore, as an corollary of Theorem 4, we have: Proposition 2. For a Weisfeiler-Lehman Kernel NN with L iterations and random walk kernel KnW as base kernel, the final output state hG = ∑ l h (l) G belongs to the RKHS of kernel K(L)WL(·, ·).
+Deriving Neural Architectures from Sequence and Graph Kernels 4. Adaptive Decay with Neural Gates The sequence and graph kernel (and their neural components) discussed so far use a constant decay value λ regardless of the current input. However, this is often not the case since the importance of the input can vary across the context or the applications. One extension is to make use of neural gates that adaptively control the decay factor. Here we give two illustrative examples:
+Gated String Kernel NN By replacing constant decay λ with a sigmoid gate, we modify our single-layer sequence module as:
+λt = σ(U[xt,ht−1] + b) c1[t] = λt c1[t− 1] + ( W(1)xt ) cj [t] = λt cj [t− 1] + ( cj−1[t− 1] W(j)xt
+) h[t] = σ(cn[t]) 1 < j ≤ n
+As compared with the original string kernel, now the decay factor λx,i,j is no longer λ|x|−i−1, but rather an adaptive value based on current context.
+Gated Random Walk Kernel NN Similarly, we could introduce gates so that different walks have different weights:
+λu,v = σ(U[fu, fv] + b)
+c0[v] = W (0)fv cj [v] = ∑
+u∈N(v)
+λu,v cj−1[u] W(j)fv
+hG = σ( ∑ v cn[v]) 1 < j ≤ n
+The underlying kernel of the above gated network becomes
+KnW (G,G′) = ∑
+x∈Pn(G) ∑ y∈Pn(G′) n∏ i=1 λxi,yi 〈fxi , fyi〉
+where each path is weighted by different decay weights, determined by network itself. 5. Related Work Sequence Networks Considerable effort has gone into designing effective networks for sequence processing. This includes recurrent modules with the ability to carry persistent memories such as LSTM (Hochreiter & Schmidhuber, 1997) and GRU (Chung et al., 2014), as well as non-consecutive convolutional modules (RCNNs, Lei et al. (2015)), and others. More recently, Zoph & Le (2016) exemplified a reinforcement learning-based search algorithm to further optimize the design of such recurrent architectures. Our proposed neural networks offer similar state
+evolution and feature aggregation functionalities but derive the motivation for the operations involved from wellestablished kernel computations over sequences.
+Recursive neural networks are alternative architectures to model hierarchical structures such as syntax trees and logic forms. For instance, Socher et al. (2013) employs recursive networks for sentence classification, where each node in the dependency tree of the sentence is transformed into a vector representation. Tai et al. (2015) further proposed tree-LSTM, which incorporates LSTM-style architectures as the transformation unit. Dyer et al. (2015; 2016) recently introduced a recursive neural model for transitionbased language modeling and parsing. While not specifically discussed in the paper, our ideas do extend to similar neural components for hierarchical objects (e.g. trees).
+Graph Networks Most of the current graph neural architectures perform either convolutional or recurrent operations on graphs. Duvenaud et al. (2015) developed Neural Fingerprint for chemical compounds, where each convolution operation is a sum of neighbor node features, followed by a linear transformation. Our model differs from theirs in that our generalized kernels and networks can aggregate neighboring features in a non-linear way. Other approaches, e.g., Bruna et al. (2013) and Henaff et al. (2015), rely on graph Laplacian or Fourier transform.
+For recurrent architectures, Li et al. (2015) proposed gated graph neural networks, where neighbor features are aggregated by GRU function. Dai et al. (2016) considers a different architecture where a graph is viewed as a latent variable graphical model. Their recurrent model is derived from Belief Propagation-like algorithms. Our approach is most closely related to Dai et al. (2016), in terms of neighbor feature aggregation and resulting recurrent architecture. Nonetheless, the focus of this paper is on providing a framework for how such recurrent networks could be derived from deep graph kernels.
+Kernels and Neural Nets Our work follows recent work demonstrating the connection between neural networks and kernels (Cho & Saul, 2009; Hazan & Jaakkola, 2015). For example, Zhang et al. (2016) showed that standard feedforward neural nets belong to a larger space of recursively constructed kernels (given certain activation functions). Similar results have been made for convolutional neural nets (Anselmi et al., 2015), and general computational graphs (Daniely et al., 2016). We extend prior work to kernels and neural architectures over structured inputs, in particular, sequences and graphs. Another difference is how we train the model. While some prior work appeals to convex optimization through improper learning (Zhang et al., 2016; Heinemann et al., 2016) (since kernel space is larger), we use the proposed networks as building blocks in typical non-convex but flexible neural network training.
+Deriving Neural Architectures from Sequence and Graph Kernels 6. Experiments The left-over question is whether the proposed class of operations, despite its formal characteristics, leads to more effective architecture exploration and hence improved performance. In this section, we apply the proposed sequence and graph modules to various tasks and empirically evaluate their performance against other neural network models. These tasks include language modeling, sentiment classification and molecule regression. 6.1. Language Modeling on PTB Dataset and Setup We use the Penn Tree Bank (PTB) corpus as the benchmark. The dataset contains about 1 million tokens in total. We use the standard train/development/test split of this dataset with vocabulary of size 10,000.
+Model Configuration Following standard practice, we use SGD with an initial learning rate of 1.0 and decrease the learning rate by a constant factor after a certain epoch. We back-propagate the gradient with an unroll size of 35 and use dropout (Hinton et al., 2012) as the regularization. Unless otherwise specified, we train 3-layer networks with n = 1 and normalized adaptive decay.5 Following (Zilly et al., 2016), we add highway connections (Srivastava et al., 2015) within each layer:
+c(l)[t] = λt c(l)[t− 1] + (1− λt) (W(l)h(l−1)[t]) h(l)[t] = ft c(l)[t] + (1− ft) h(l−1)[t]
+where h(0)[t] = xt, λt is the gated decay factor and ft is the transformation gate of highway connections.6
+Results Table 1 compares our model with various state-ofthe-art models. Our small model with 5 million parameters achieves a test perplexity of 73.6, already outperforming many results achieved using much larger network. By increasing the network size to 20 million, we obtain a test perplexity of 69.2, with standard dropout. Adding variational dropout (Gal & Ghahramani, 2016) within the recurrent cells further improves the perplexity to 65.5. Finally, the model achieves 63.8 perplexity when the recurrence depth is increased to 4, being state-of-the-art and on par with the results reported in (Zilly et al., 2016; Zoph & Le, 2016). Note that Zilly et al. (2016) uses 10 neural layers and Zoph & Le (2016) adopts a complex recurrent cell found by reinforcement learning based search. Our network is architecturally much simpler.
+Figure 3 analyzes several variants of our model. Wordlevel CNNs are degraded cases (λ = 0) that ignore non-
+5See the supplementary sections for a discussion of network variants.
+6We found non-linear activation is no longer necessary when the highway connection is added.
+contiguous n-gram patterns. Clearly, this variant performs worse compared to other recurrent variants with λ > 0. Moreover, the test perplexity improves from 84.3 to 76.8 when we train the constant decay vector as part of the model parameters. Finally, the last two variants utilize neural gates (depending on input xt only or both input xt and previous state h[t−1]), further improving the performance. 6.2. Sentiment Classification Dataset and Setup We evaluate our model on the sentence classification task. We use the Stanford Sentiment Treebank benchmark (Socher et al., 2013). The dataset consists of 11855 parsed English sentences annotated at both the root (i.e. sentence) level and the phrase level using 5- class fine-grained labels. We use the standard split for training, development and testing. Following previous work, we also evaluate our model on the binary classification variant of this benchmark, ignoring all neutral sentences.
+Deriving Neural Architectures from Sequence and Graph Kernels
+Following the recent work of DAN (Iyyer et al., 2015) and RLSTM (Tai et al., 2015), we use the publicly available 300-dimensional GloVe word vectors (Pennington et al., 2014). Unlike prior work which fine tunes the word vectors, we normalize the vectors (i.e. ‖w‖22 = 1) and fixed them for simplicity.
+Model Configuration Our best model is a 3-layer network with n = 2 and hidden dimension d = 200. We average the hidden states h[t] across t, and concatenate the averaged vectors from the 3 layers as the input of the final softmax layer. The model is optimized with Adam (Kingma & Ba, 2015), and dropout probability of 0.35.
+Results Table 2 presents the performance of our model and other networks. We report the best results achieved across 5 independent runs. Our best model obtains 53.2% and 89.9% test accuracies on fine-grained and binary tasks respectively. Our model with only a constant decay factor also obtains quite high accuracy, outperforming other baseline methods shown in the table. 6.3. Molecular Graph Regression Dataset and Setup We further evaluate our graph NN models on the Harvard Clean Energy Project benchmark, which has been used in Dai et al. (2016); Duvenaud et al. (2015) as their evaluation dataset. This dataset contains 2.3 million candidate molecules, with each molecule labeled with its power conversion efficiency (PCE) value.
+We follow exactly the same train-test split as Dai et al. (2016), and the same re-sampling procedure on the training data (but not the test data) to make the algorithm put more
+emphasis on molecules with higher PCE values, since the data is distributed unevenly.
+We use the same feature set as in Duvenaud et al. (2015) for atoms and bonds. Initial atom features include the atoms element, its degree, the number of attached hydrogens, its implicit valence, and an aromaticity indicator. The bond feature is a concatenation of bond type indicator, whether the bond is conjugated, and whether the bond is in a ring.
+Model Configuration Our model is a Weisfeiler-Lehman NN, with 4 recurrent iterations and n = 2. All models (including baseline) are optimized with Adam (Kingma & Ba, 2015), with learning rate decay factor 0.9.
+Results In Table 3, we report the performance of our model against other baseline methods. Neural Fingerprint (Duvenaud et al., 2015) is a 4-layer convolutional neural network. Convolution is applied to each atom, which sums over its neighbors’ hidden state, followed by a linear transformation and non-linear activation. Embedded Loopy BP (Dai et al., 2016) is a recurrent architecture, with 4 recurrent iterations. It maintains message vectors for each atom and bond, and propagates those vectors in a message passing fashion. Table 3 shows our model achieves stateof-the-art against various baselines. 7. Conclusion We proposed a class of deep recurrent neural architectures and formally characterized its underlying computation using kernels. By linking kernel and neural operations, we have a “template” for deriving new families of neural architectures for sequences and graphs. We hope the theoretical view of kernel neural networks can be helpful for future model exploration.
+Deriving Neural Architectures from Sequence and Graph Kernels Acknowledgement We thank Prof. Le Song for sharing Harvard Clean Energy Project dataset. We also thank Yu Zhang, Vikas Garg, David Alvarez, Tianxiao Shen, Karthik Narasimhan and the reviewers for their helpful comments. This work was supported by the DARPA Make-It program under contract ARO W911NF-16-2-0023. A. Examples of kernel / neural variants Our theoretical results apply to some other variants of sequence kernels and the associated neural components. We give some examples in the this section. Table 4 shows three network variants, corresponding to three realizations of string kernels provided in Table 5.
+Connection to LSTMs Interestingly, many recent work has reached similar RNN architectures through empirical exploration. For example, Greff et al. (2015) found that simplifying LSTMs, by removing the input gate or coupling it with the forget gate does not significantly change the performance. However, the forget gate (corresponding to the decay factor λ in our notation) is crucial for performance. This is consistent with our theoretical analysis and the empirical results in Figure 3. Moreover, Balduzzi & Ghifary (2016) and Lee et al. (2017) both suggest that a linear additive state computation suffices to provide competitive performance compared to LSTMs: 7
+c[t] = λf c1[t− 1] + λi (Wxt) h[t] = σ(c[t])
+In fact, this variant becomes an instance of the kernel NN presented in this work (with n = 1 and adaptive gating), when λf = λt and λi = 1− λt or 1.
+7Balduzzi & Ghifary (2016) also includes the previous token , i.e. Wxt + W′xt−1, which doesn’t affect the discussion here. B. Proof of Theorem 1 We first generalize the kernel definition in Eq.(3) to the case of any n-gram. For any integer n > 0, the underlying mapping of the n-th order string kernel is defined as,
+φn(x) = ∑
+1≤i1<···<in≤|x|
+λ|x|−i1−n+1 xi1 ⊗ xi2 ⊗ · · · ⊗ xin
+We now show that String Kernel NN states cn[t] defined in (4),
+n = 1 : c1[t] = λ · c1[t− 1] +W(1)xt n > 1 : cn[t] = λ · cn[t− 1] + ( cn−1[t− 1] W(n)xt ) is equivalent to summing over all n-grams within the first t tokens x1:t = {x1, · · · ,xt},
+cn[t] = ∑
+1≤i1<i2<···<in≤t
+( W(1)xi1 · · · W(n)xin ) · λt−i1−n+1
+Proof: We prove the equivalence by induction. When n = 1, for c1[t] we have,
+c1[t] = ∑
+1≤i1≤t
+( W(1)xi1 ) · λt−i1
+=  ∑ 1≤i1≤t−1 ( W(1)xi1 ) · λt−1−i1  ︸ ︷︷ ︸
+c1[t−1]
+·λ + W(1)xt
+= c1[t− 1] · λ + W(1)xt
+When n = k > 1, suppose the state iteration holds for 1, · · · , k − 1, we have,
+cn[t] = ∑
+1≤i1<i2<···<in≤t
+( W(1)xi1 · · · W(n)xin ) · λt−i1−n+1
+=  ∑ 1≤i1<i2<···<in≤t−1 ( W(1)xi1 · · · W(n)xin ) · λt−1−i1−n+1  ︸ ︷︷ ︸
+when in<t: cn[t−1]
+·λ
++  ∑ 1≤i1<i2<···<in=t ( W(1)xi1 · · · W(n)xin ) · λt−1−i1−n+1  ︸ ︷︷ ︸
+when in=t = cn[t− 1] · λ + ( cn−1[t− 1] W(n)xt ) Now we proceed to prove Theorem 1.
+Proof: From the above results, we know that for cn[t],
+cn[t] = ∑
+1≤i1<i2<···<in≤t
+( W(1)xi1 · · · W(n)xin ) · λt−i1−n+1
+In particular, the value of the i-th entry, cn[t][i], is equal to,
+cn[t][i] = ∑
+1≤i1<i2<···<in≤t
+〈 w
+(1) i ,xi1
+〉 · · · 〈 w
+(n) i ,xin 〉 ︸ ︷︷ ︸〈
+xi1⊗···⊗xin ,w (1) i ⊗···⊗w (n) i
+〉 · λt−i1−n+1
+= 〈 ∑ 1≤i1<i2<···<in≤t λt−i1−n+1 xi1 ⊗ · · · ⊗ xin , w (1) i ⊗ · · · ⊗w (n) i 〉
+= 〈φn(x1:t), φn(wi,n)〉
+where w(k)i represents the i-th row of matrix W (k) and wi,n = {w(1)i , · · · ,w (n) i }. This completes the proof since Kn(x1:t,wi,n) = 〈φn(x1:t), φn(wi,n)〉 by definition.
+Remarks This theorem demonstrates that the NN state vectors cn can be seen as projecting the kernel mapping φn(x) into a low-dimensional space using the parameterized matrices {W(i)}i = 1n. This is similar to word embeddings and CNNs, where the input (a single word or an n-gram) is projected to obtain a low-dimensional representation. C. Proof of Theorem 2 We first review necessary concepts and notations for the ease of reading. Similar to the proof in Appendix B, the generalized string kernel K(l) and K(l)σ in Eq.(??) can be defined with the underlying mappings,
+φ(l)(x) = ∑
+1≤i1<···<in≤|x|
+λ|x|−i1−n+1 φ(l−1)σ (x1:i1)⊗ φ(l−1)σ (x1:i2)⊗ · · · ⊗ φ(l−1)σ (x1:i1)
+φ(l)σ (x) = φσ(φ (l)(x))
+where φσ() is the underlying mapping of a kernel function whose reproducing kernel Hilbert space (RKHS) contains the non-linear activation σ() used in the String Kernel NN layer. Here K(l)() is the “pre-activation kernel” and K(l)σ () is the “post-activation kernel”. To show that the values of String Kernel NN states c(l)[t] is contained in the RKHS of K(l)() and that of h(l)[t] is contained in the RKHS of K(l)σ (), we re-state the claim in the following way, Theorem 5. Given a deep n-gram String Kernel NN with non-linear activation σ(). Assuming σ() lies in the RKHS of a kernel function with underlying mapping φσ(), then
+(i) c(l)[t] lies in the RKHS of kernel K(l)() in the sense that
+c (l) j [t][i] = 〈 φ(l)(x1:t), ψ (l) i,j 〉 for any internal state c(l)j [t] (1 ≤ j ≤ n) of the l-th layer, where ψ (l) i,j is a mapping constructed from model parameters;
+(ii) h(l)[t] lies in the RKHS of kernel K(l)σ () as a corollary in the sense that
+h(l)[t][i] = σ(c(l)n [t][i]) = σ (〈 φ(l)(x1:t), ψ (l) i,n 〉) (based on (i))
+= 〈 φσ(φ (l)(x1:t)), ψσ(ψ (l) i,n) 〉
+(Lemma 1)
+and we denote ψσ(ψ (l) i,n) as ψ (l) σ,i,n for short.
+Proof: We prove by induction on l. When l = 1, the proof of Theorem 1 already shows that c(1)j [t][i] =〈 φ (1) j (x1:t), φ (1) j (wi,j) 〉 in a one-layer String Kernel NN. Simply let ψ(1)i,j = φ (1) j (wi,j) completes the proof for the case of l = 1.
+Suppose the lemma holds for l = 1, · · · , k, we now prove the case of l = k + 1. Similar to the proof of Theorem 1, the value of c(k+1)j [t][i] equals to
+c (k+1) j [t][i] = ∑ 1≤i1<···<ij≤t 〈 w (1) i ,h (k)[i1] 〉 · · · 〈 w (j) i ,h (k)[ij ] 〉 · λt−i1−j+1 (12)
+where w(j)i is the i-th row of the parameter matrix W (j) of the l-th layer. Note h(k)[t][i] =〈
+φ (k) σ (x1:t), ψ (k) σ,i,n 〉 , we construct a matrix M by stacking all {ψ(k)σ,i,n}i as the row vectors.8 We then
+can rewrite h(k)[t] = Mφ(k)σ (x1:t). Plugging this into Eq (12), we get
+c (k+1) j [t][i] = ∑ 1≤i1<···<ij≤t 〈 w (1) i ,Mφ (k) σ (x1:i1) 〉 · · · 〈 w (j) i ,Mφ (k) σ (x1:ij ) 〉 · λt−i1−j+1
+= ∑
+1≤i1<···<ij≤t
+〈 M>w
+(1) i︸ ︷︷ ︸
+ui,1
+, φ(k)σ (x1:i1)
+〉 · · · 〈 M>w
+(j) i︸ ︷︷ ︸
+ui,j
+, φ(k)σ (x1:ij )
+〉 · λt−i1−j+1
+= ∑
+1≤i1<···<ij≤t
+〈 ui,1, φ (k) σ (x1:i1) 〉 · · · 〈 ui,j , φ (k) σ (x1:ij ) 〉 · λt−i1−j+1
+= 〈 ∑ 1≤i1<···<ij≤t
+λt−i1−j+1 φ(k)σ (xi1)⊗ · · · ⊗ φ(k)σ (xij )︸ ︷︷ ︸ φ(k+1)(x1:t) , ui,1 ⊗ · · · ⊗ ui,j
+〉
+= 〈 φ(k+1)(x1:t), ui,1 ⊗ · · · ⊗ ui,j 〉 Define ψ(k+1)i,j = ui,1 ⊗ · · · ⊗ ui,j completes the proof for the case of l = k + 1.
+8Note in practice the mappings φ(k)σ and ψ (k) σ may have infinite dimension because the underlying mapping for the non-linear activation φσ() can have infinite dimension. The proof still apply since the dimensions are still countable and the vectors have finite norm (easy to show this by assuming the input xi and parameter W are bounded. D. Proof for Theorem 3 Recall that random walk graph kernel is defined as:
+Kn(G,G′) = λn ∑
+x∈Pn(G) ∑ y∈Pn(G′) n∏ i=1 〈fxi , fyi〉
+φn(G) = λ n ∑ x∈Pn(G) fx0 ⊗ fx1 ⊗ · · · ⊗ fxn
+and single-layer graph NN computes its states as:
+cn[v] = λ ∑
+u∈N(v)
+cn−1[u] W(n)fv
+= λn ∑
+un−1∈N(v) ∑ un−2∈N(un−1) · · · ∑ u0∈N(u1) W(0)fu0 W(1)fu1 · · · W(n)fun
+= λn ∑
+u=u0···un∈Pn(G,v)
+W(0)fu0 W(1)fu1 · · · W(n)fun
+where we define Pn(G, v) be the set of walks that end with node v. For the i-th coordinate of cn[v], we have
+cn[v][i] = λ n ∑ u∈Pn(G,v) ∏ i 〈 w (i) i , fui 〉 ∑ v cn[v][i] = λ n ∑ u∈Pn(G) ∏ i 〈 w (i) i , fui
+〉 = Kn(G,Ln,k)
+The last step relies on the fact that Pn(Ln,k) has only one element {w(0)i ,w (1) i , · · · ,w (n) i }. E. Proof for Theorem 4 For clarity, we re-state the kernel definition and theorem in the following:
+K(L,n)(G,G′) = ∑ v ∑ v′ K(L,n)loc,σ (v, v ′)
+When l = 1:
+K(l,j)loc (v, v ′) =  〈fv, fv′〉 if j = 1 〈fv, fv′〉+ λ ∑ u∈N(v) ∑ u′∈N(v′) K(l,j−1)loc,σ (u, u′) if j > 1
+0 if Pj(G, v) = ∅ or Pj(G′, v′) = ∅
+When l > 1:
+K(l,j)loc (v, v ′) =  K(l−1)loc,σ (v, v ′) if j = 1 K(l−1)loc,σ (v, v′) + λ ∑ u∈N(v) ∑ u′∈N(v′) K(l,j−1)loc,σ (u, u′) if j > 1
+0 if Pj(G, v) = ∅ or Pj(G′, v′) = ∅
+where Pj(G, v) is the set of walks of length j starting from v. Note that we force K(l,j)loc = 0 when there is no valid walk starting from v or v′, so that it only considers walks of length j. We use additive version just for illustration (multiplicative version follows the same argument).
+Theorem 6. For a deep random walk kernel NN with L layers and activation function σ(·), assuming the final output state hG = ∑ v h (l)[v], for l = 1, · · · , L; j = 1, · · · , n:
+(i) c(l)j [v][i] as a function of input v and graph G belongs to the RKHS of kernel K (l,j) loc (·, ·) in that
+c (l) j [v][i] = 〈 φ (l,j) G (v), ψ (l) i,j 〉 where φ(l)G (v) is the mapping of node v in graph G, and ψ (l) i,j is a mapping constructed from model parameters.
+(ii) h(l)[v][i] belongs to the RKHS of kernel K(l,n)loc,σ(·, ·) as a corollary:
+h(l)[v][i] = σ (∑ k uikc (l) n [v][k] ) = σ (∑ k uik 〈 φ (l,n) G (v), ψ (l) k,n 〉)
+= σ (〈 φ (l,n) G (v), ∑ k uikψ (l) k,n 〉)
+= 〈 φσ(φ (l,n) G (v)), ψσ (∑ k uikψ (l) k,n )〉
+We denote ψσ (∑ k uikψ (l) k,n ) as ψ(l)σ,i,n, and φσ(φ (l,n) G (v)) as φ (l) G,σ(v) for short.
+(iii) hG[i] belongs to the RKHS of kernel K(L,n)(·, ·).
+Proof of (i), (ii): We prove by induction on l. When l = 1, from kernel definition, the kernel mapping is recursively defined as:
+φ (1,j) G (v) =  fv if j = 1[ fv, √ λ ∑ u∈N(v) φσ(φ (1,j−1) G (u)) ] if j > 1
+0 if Pj(G, v) = ∅ or Pj(G′, v′) = ∅
+We prove c(1)j [v][i] = 〈 φ (1,j) G (v), ψ (1) i,j 〉 by induction on j. When j = 1, c(1)1 [v][i] = 〈 w (1,1) i , fv 〉 . Our hypothesis holds by ψ(1)i,1 = w (1,1) i . Suppose induction hypothesis holds for 1, 2, · · · , j − 1. If Pj(G, v) = ∅, we could always set c(1)j [v][i] = 0 in neural network computation. Otherwise:
+c (1) j [v][i] =
+〈 w
+(1,j) i , fv
+〉 + λ ∑ u∈N(v) σ ( c (1) j−1[u][i] ) = 〈 w
+(1,j) i , fv
+〉 + λ ∑ u∈N(v) σ (〈 φ (1,j−1) G (u), ψ (1) i,j−1 〉) = 〈 w
+(1,j) i , fv
+〉 + √ λ ∑
+u∈N(v)
+〈 φσ(φ (1,j−1) G (u)), √ λψσ(ψ (1) i,j−1) 〉
+= 〈fv,√λ ∑ u∈N(v) φσ(φ (1,j−1) G (u))  , [w(1,j)i ,√λψσ(ψ(1)i,j−1)] 〉
+Let ψ(1)i,j = [ w (1,j) i , √ λψσ(ψ (1) i,j−1) ] concludes the base case l = 1. Suppose induction hypothesis holds for 1, 2, · · · , l − 1. Note that when l > 1:
+φ (l,j) G (v) =  φσ(φ (l−1) G (v)) if j = 1[ φσ(φ (l−1) G (v)), √ λ ∑ u∈N(v) φσ(φ (l,j−1) G (u)) ] if j > 1
+0 if Pj(G, v) = ∅ or Pj(G′, v′) = ∅
+Now we prove c(l)j [v][i] = 〈 φ (l,j) G (v), ψ (l) i,j 〉 by induction on j. When j = 1,
+c (l) 1 [v][i] =
+〈 w
+(l,1) i ,h
+(l−1)[v] 〉
+= ∑ k w (l,1) ik 〈 φ (l−1) G,σ (v), ψ (l−1) σ,k,n 〉 = 〈 φ (l,1) G (v),
+∑ k w (l,1) ik ψ (l−1) σ,k,n
+〉
+Let ψ(l)i,j = ∑ kw (l,1) ik ψ (l−1) σ,k,n completes the proof for j = 1. Now suppose this holds for 1, 2, · · · , j − 1. Same as before, we only consider the case when Pj(G, v) 6= ∅:
+c (l) j [v][i] =
+〈 w
+(l,j) i ,h
+(l−1)[v] 〉 + λ ∑ u∈N(v) σ ( c (l) j−1[u][i] ) =
+∑ k w (l,j) ik 〈 φ (l−1) G,σ (v), ψ (l−1) σ,k,n 〉 + λ ∑ u∈N(v) σ (〈 φ (l,j−1) G (u), ψ (l) i,j−1 〉)
+= 〈 φ (l−1) G,σ (v), ∑ k w (l,j) ik ψ (l−1) σ,k,n 〉 + λ ∑ u∈N(v) 〈 φ (l,j−1) G,σ (u), ψσ(ψ (l) i,j−1) 〉
+= 〈 φ (l−1) G,σ (v), ∑ k w (l,j) ik ψ (l−1) σ,k,n 〉 + 〈 √ λ ∑ u∈N(v) φ (l,j−1) G,σ (u), √ λψσ(ψ (l) i,j−1) 〉
+= 〈φ(l−1)G,σ (v),√λ ∑ u∈N(v) φ (l,j−1) G,σ (u)  ,[∑ k w (l,j) ik ψ (l−1) σ,k,n , √ λψσ(ψ (l) i,j−1) ]〉
+= 〈 φ (l,j) G (v), ψ (l) i,j 〉 Let ψ(l)i,j = [∑ kw (l,j) ik ψ (l−1) σ,k,n , √ λψσ(ψ (l) i,j−1) ] concludes the proof.
+Proof for (iii): We construct a directed chain Ln,k = (V,E) from model parameters, with nodes V = {ln, ln−1, · · · , l0} and E = {(vi+1, vi)}. lj’s underlying mapping is ψ(L)σ,i,j . Now we have
+hG[i] = ∑ v h(L)[v][i] = ∑ v∈G 〈 φσ(φ (L) G (v)), ψ (L) σ,i,n 〉 = ∑ v∈G ∑ v∈Ln,k K(L,n)loc (v, ln) = K (L,n)(G,Ln,k)
+Note that we are utilizing the fact that K(L,n)loc (v, lj) = 0 for all j 6= n (because Pn(Ln,j , lj) = ∅).  For instance, LSTM (Hochreiter & Schmidhuber, 1997), GRU (Chung et al., 2014) and other complex recurrent units (Zoph & Le, 2016) can be easily adapted to embed structured objects such as sentences (Tai et al.    , 2014) and other complex recurrent units (Zoph & Le, 2016) can be easily adapted to embed structured objects such as sentences (Tai et al., 2015) or molecules (Li et al.    , 2015) or molecules (Li et al., 2015; Dai et al., 2016) into vector spaces suitable for later processing by standard predictive methods.    , 2015) or molecules (Li et al., 2015; Dai et al., 2016) into vector spaces suitable for later processing by standard predictive methods.    For example, value iteration calculations can be folded into convolutional architectures so as to optimize the representations to facilitate planning (Tamar et al., 2016).    Similarly, inference calculations in graphical models about latent states of variables such as atom characteristics can be directly associated with embedding operations (Dai et al., 2016).    For example, in a string kernel (Lodhi et al., 2002), S may refer to all possible subsequences while a graph kernel (Vishwanathan et al.    Several studies have highlighted the relation between feed-forward neural architectures and kernels (Hazan & Jaakkola, 2015; Zhang et al., 2016) but we are unaware of any prior work pertaining to kernels associated with neural architectures for structured objects.    String Kernel String kernel measures the similarity between two sequences by counting shared subsequences (see Lodhi et al. (2002)).    It turns out that many activations are also functions in the reproducing kernel Hilbert space (RKHS) of certain kernel functions (see Shalev-Shwartz et al. (2011); Zhang et al.    It turns out that many activations are also functions in the reproducing kernel Hilbert space (RKHS) of certain kernel functions (see Shalev-Shwartz et al. (2011); Zhang et al. (2016)).    (l + 1)th kernel is defined on top of l-th kernel), which has been proven for feed-forward networks (Zhang et al., 2016).    Random Walk Kernel NNs We start from random walk graph kernels (Gärtner et al., 2003), which count common walks in two graphs.    This parameter tying mechanism allows our model to embed Weisfeiler-Lehman kernel (Shervashidze et al., 2011).    Figure taken from Shervashidze et al. (2011) Note that our definition of r(v) is exactly the same as hv in Equation 9, with ◦ being additive composition.    This includes recurrent modules with the ability to carry persistent memories such as LSTM (Hochreiter & Schmidhuber, 1997) and GRU (Chung et al., 2014), as well as non-consecutive convolutional modules (RCNNs, Lei et al.    Similar results have been made for convolutional neural nets (Anselmi et al., 2015), and general computational graphs (Daniely et al.    , 2015), and general computational graphs (Daniely et al., 2016).    While some prior work appeals to convex optimization through improper learning (Zhang et al., 2016; Heinemann et al., 2016) (since kernel space is larger), we use the proposed networks as building blocks in typical non-convex but flexible neural network training.    While some prior work appeals to convex optimization through improper learning (Zhang et al., 2016; Heinemann et al., 2016) (since kernel space is larger), we use the proposed networks as building blocks in typical non-convex but flexible neural network training.    This includes recurrent modules with the ability to carry persistent memories such as LSTM (Hochreiter & Schmidhuber, 1997) and GRU (Chung et al., 2014), as well as non-consecutive convolutional modules (RCNNs, Lei et al. (2015)), and others.    This includes recurrent modules with the ability to carry persistent memories such as LSTM (Hochreiter & Schmidhuber, 1997) and GRU (Chung et al., 2014), as well as non-consecutive convolutional modules (RCNNs, Lei et al. (2015)), and others. More recently, Zoph & Le (2016) exemplified a reinforcement learning-based search algorithm to further optimize the design of such recurrent architectures.    This includes recurrent modules with the ability to carry persistent memories such as LSTM (Hochreiter & Schmidhuber, 1997) and GRU (Chung et al., 2014), as well as non-consecutive convolutional modules (RCNNs, Lei et al. (2015)), and others. More recently, Zoph & Le (2016) exemplified a reinforcement learning-based search algorithm to further optimize the design of such recurrent architectures. Our proposed neural networks offer similar state evolution and feature aggregation functionalities but derive the motivation for the operations involved from wellestablished kernel computations over sequences. Recursive neural networks are alternative architectures to model hierarchical structures such as syntax trees and logic forms. For instance, Socher et al. (2013) employs recursive networks for sentence classification, where each node in the dependency tree of the sentence is transformed into a vector representation.    This includes recurrent modules with the ability to carry persistent memories such as LSTM (Hochreiter & Schmidhuber, 1997) and GRU (Chung et al., 2014), as well as non-consecutive convolutional modules (RCNNs, Lei et al. (2015)), and others. More recently, Zoph & Le (2016) exemplified a reinforcement learning-based search algorithm to further optimize the design of such recurrent architectures. Our proposed neural networks offer similar state evolution and feature aggregation functionalities but derive the motivation for the operations involved from wellestablished kernel computations over sequences. Recursive neural networks are alternative architectures to model hierarchical structures such as syntax trees and logic forms. For instance, Socher et al. (2013) employs recursive networks for sentence classification, where each node in the dependency tree of the sentence is transformed into a vector representation. Tai et al. (2015) further proposed tree-LSTM, which incorporates LSTM-style architectures as the transformation unit.    This includes recurrent modules with the ability to carry persistent memories such as LSTM (Hochreiter & Schmidhuber, 1997) and GRU (Chung et al., 2014), as well as non-consecutive convolutional modules (RCNNs, Lei et al. (2015)), and others. More recently, Zoph & Le (2016) exemplified a reinforcement learning-based search algorithm to further optimize the design of such recurrent architectures. Our proposed neural networks offer similar state evolution and feature aggregation functionalities but derive the motivation for the operations involved from wellestablished kernel computations over sequences. Recursive neural networks are alternative architectures to model hierarchical structures such as syntax trees and logic forms. For instance, Socher et al. (2013) employs recursive networks for sentence classification, where each node in the dependency tree of the sentence is transformed into a vector representation. Tai et al. (2015) further proposed tree-LSTM, which incorporates LSTM-style architectures as the transformation unit. Dyer et al. (2015; 2016) recently introduced a recursive neural model for transitionbased language modeling and parsing. While not specifically discussed in the paper, our ideas do extend to similar neural components for hierarchical objects (e.g. trees). Graph Networks Most of the current graph neural architectures perform either convolutional or recurrent operations on graphs. Duvenaud et al. (2015) developed Neural Fingerprint for chemical compounds, where each convolution operation is a sum of neighbor node features, followed by a linear transformation.    , Bruna et al. (2013) and Henaff et al.    , Bruna et al. (2013) and Henaff et al. (2015), rely on graph Laplacian or Fourier transform.    , Bruna et al. (2013) and Henaff et al. (2015), rely on graph Laplacian or Fourier transform. For recurrent architectures, Li et al. (2015) proposed gated graph neural networks, where neighbor features are aggregated by GRU function.    , Bruna et al. (2013) and Henaff et al. (2015), rely on graph Laplacian or Fourier transform. For recurrent architectures, Li et al. (2015) proposed gated graph neural networks, where neighbor features are aggregated by GRU function. Dai et al. (2016) considers a different architecture where a graph is viewed as a latent variable graphical model.    , Bruna et al. (2013) and Henaff et al. (2015), rely on graph Laplacian or Fourier transform. For recurrent architectures, Li et al. (2015) proposed gated graph neural networks, where neighbor features are aggregated by GRU function. Dai et al. (2016) considers a different architecture where a graph is viewed as a latent variable graphical model. Their recurrent model is derived from Belief Propagation-like algorithms. Our approach is most closely related to Dai et al. (2016), in terms of neighbor feature aggregation and resulting recurrent architecture.    , Bruna et al. (2013) and Henaff et al. (2015), rely on graph Laplacian or Fourier transform. For recurrent architectures, Li et al. (2015) proposed gated graph neural networks, where neighbor features are aggregated by GRU function. Dai et al. (2016) considers a different architecture where a graph is viewed as a latent variable graphical model. Their recurrent model is derived from Belief Propagation-like algorithms. Our approach is most closely related to Dai et al. (2016), in terms of neighbor feature aggregation and resulting recurrent architecture. Nonetheless, the focus of this paper is on providing a framework for how such recurrent networks could be derived from deep graph kernels. Kernels and Neural Nets Our work follows recent work demonstrating the connection between neural networks and kernels (Cho & Saul, 2009; Hazan & Jaakkola, 2015). For example, Zhang et al. (2016) showed that standard feedforward neural nets belong to a larger space of recursively constructed kernels (given certain activation functions).    We back-propagate the gradient with an unroll size of 35 and use dropout (Hinton et al., 2012) as the regularization.    5 Following (Zilly et al., 2016), we add highway connections (Srivastava et al.    , 2016), we add highway connections (Srivastava et al., 2015) within each layer: c[t] = λt c[t− 1] + (1− λt) (W(l)h(l−1)[t]) h[t] = ft c[t] + (1− ft) h(l−1)[t] where h[t] = xt, λt is the gated decay factor and ft is the transformation gate of highway connections.    8 perplexity when the recurrence depth is increased to 4, being state-of-the-art and on par with the results reported in (Zilly et al., 2016; Zoph & Le, 2016).    We back-propagate the gradient with an unroll size of 35 and use dropout (Hinton et al., 2012) as the regularization. Unless otherwise specified, we train 3-layer networks with n = 1 and normalized adaptive decay.5 Following (Zilly et al., 2016), we add highway connections (Srivastava et al., 2015) within each layer: c[t] = λt c[t− 1] + (1− λt) (W(l)h(l−1)[t]) h[t] = ft c[t] + (1− ft) h(l−1)[t] where h[t] = xt, λt is the gated decay factor and ft is the transformation gate of highway connections.6 Results Table 1 compares our model with various state-ofthe-art models. Our small model with 5 million parameters achieves a test perplexity of 73.6, already outperforming many results achieved using much larger network. By increasing the network size to 20 million, we obtain a test perplexity of 69.2, with standard dropout. Adding variational dropout (Gal & Ghahramani, 2016) within the recurrent cells further improves the perplexity to 65.5. Finally, the model achieves 63.8 perplexity when the recurrence depth is increased to 4, being state-of-the-art and on par with the results reported in (Zilly et al., 2016; Zoph & Le, 2016). Note that Zilly et al. (2016) uses 10 neural layers and Zoph & Le (2016) adopts a complex recurrent cell found by reinforcement learning based search.    We back-propagate the gradient with an unroll size of 35 and use dropout (Hinton et al., 2012) as the regularization. Unless otherwise specified, we train 3-layer networks with n = 1 and normalized adaptive decay.5 Following (Zilly et al., 2016), we add highway connections (Srivastava et al., 2015) within each layer: c[t] = λt c[t− 1] + (1− λt) (W(l)h(l−1)[t]) h[t] = ft c[t] + (1− ft) h(l−1)[t] where h[t] = xt, λt is the gated decay factor and ft is the transformation gate of highway connections.6 Results Table 1 compares our model with various state-ofthe-art models. Our small model with 5 million parameters achieves a test perplexity of 73.6, already outperforming many results achieved using much larger network. By increasing the network size to 20 million, we obtain a test perplexity of 69.2, with standard dropout. Adding variational dropout (Gal & Ghahramani, 2016) within the recurrent cells further improves the perplexity to 65.5. Finally, the model achieves 63.8 perplexity when the recurrence depth is increased to 4, being state-of-the-art and on par with the results reported in (Zilly et al., 2016; Zoph & Le, 2016). Note that Zilly et al. (2016) uses 10 neural layers and Zoph & Le (2016) adopts a complex recurrent cell found by reinforcement learning based search.    Model |θ| PPL LSTM (large) (Zaremba et al., 2014) 66m 78.    4 Character CNN (Kim et al., 2015) 19m 78.    9 Variational RHN (Zilly et al., 2016) 23m 65.    We use the Stanford Sentiment Treebank benchmark (Socher et al., 2013).    Model Fine Binary RNN (Socher et al. (2011)) 43.    Model Fine Binary RNN (Socher et al. (2011)) 43.2 82.4 RNTN (Socher et al. (2013)) 45.    Model Fine Binary RNN (Socher et al. (2011)) 43.2 82.4 RNTN (Socher et al. (2013)) 45.7 85.4 DRNN (Irsoy & Cardie (2014)) 49.    Model Fine Binary RNN (Socher et al. (2011)) 43.2 82.4 RNTN (Socher et al. (2013)) 45.7 85.4 DRNN (Irsoy & Cardie (2014)) 49.8 86.8 RLSTM (Tai et al. (2015)) 51.    0 DCNN (Kalchbrenner et al. (2014)) 48.    0 DCNN (Kalchbrenner et al. (2014)) 48.5 86.9 CNN-MC (Kim (2014)) 47.    0 DCNN (Kalchbrenner et al. (2014)) 48.5 86.9 CNN-MC (Kim (2014)) 47.4 88.1 Bi-LSTM (Tai et al. (2015)) 49.    5 LSTMN (Cheng et al. (2016)) 47.    5 LSTMN (Cheng et al. (2016)) 47.9 87.0 PVEC (Le & Mikolov (2014)) 48.    5 LSTMN (Cheng et al. (2016)) 47.9 87.0 PVEC (Le & Mikolov (2014)) 48.7 87.8 DAN (Iyyer et al. (2014)) 48.    5 LSTMN (Cheng et al. (2016)) 47.9 87.0 PVEC (Le & Mikolov (2014)) 48.7 87.8 DAN (Iyyer et al. (2014)) 48.2 86.8 DMN (Kumar et al. (2016)) 52.    Following the recent work of DAN (Iyyer et al., 2015) and RLSTM (Tai et al.    , 2015) and RLSTM (Tai et al., 2015), we use the publicly available 300-dimensional GloVe word vectors (Pennington et al.    , 2015), we use the publicly available 300-dimensional GloVe word vectors (Pennington et al., 2014).    Model (Dai et al., 2016) |θ| RMSE Mean Predicator 1 2.    Molecular Graph Regression Dataset and Setup We further evaluate our graph NN models on the Harvard Clean Energy Project benchmark, which has been used in Dai et al. (2016); Duvenaud et al.    Molecular Graph Regression Dataset and Setup We further evaluate our graph NN models on the Harvard Clean Energy Project benchmark, which has been used in Dai et al. (2016); Duvenaud et al. (2015) as their evaluation dataset.    Molecular Graph Regression Dataset and Setup We further evaluate our graph NN models on the Harvard Clean Energy Project benchmark, which has been used in Dai et al. (2016); Duvenaud et al. (2015) as their evaluation dataset. This dataset contains 2.3 million candidate molecules, with each molecule labeled with its power conversion efficiency (PCE) value. We follow exactly the same train-test split as Dai et al. (2016), and the same re-sampling procedure on the training data (but not the test data) to make the algorithm put more Table 3: Experiments on Harvard Clean Energy Project.    Molecular Graph Regression Dataset and Setup We further evaluate our graph NN models on the Harvard Clean Energy Project benchmark, which has been used in Dai et al. (2016); Duvenaud et al. (2015) as their evaluation dataset. This dataset contains 2.3 million candidate molecules, with each molecule labeled with its power conversion efficiency (PCE) value. We follow exactly the same train-test split as Dai et al. (2016), and the same re-sampling procedure on the training data (but not the test data) to make the algorithm put more Table 3: Experiments on Harvard Clean Energy Project. We report Root Mean Square Error(RMSE) on test set. The first block lists the results reported in Dai et al. (2016) for reference.    Embedded Loopy BP (Dai et al., 2016) is a recurrent architecture, with 4 recurrent iterations.    The design of neural architectures for structured objects is typically guided by experimental insights rather than a formal process. In this work, we appeal to kernels over combinatorial structures, such as sequences and graphs, to derive appropriate neural operations. We introduce a class of deep recurrent neural operations and formally characterize their associated kernel spaces. Our recurrent modules compare the input to virtual reference objects (cf. filters in CNN) via the kernels. Similar to traditional neural operations, these reference objects are parameterized and directly optimized in end-to-end training. We empirically evaluate the proposed class of neural architectures on standard applications such as language modeling and molecular graph regression, achieving state-of-the-art results across these applications. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

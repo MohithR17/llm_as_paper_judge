@@ -1,0 +1,30 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: None
+Paper Content: 1503.08873.pdf CRF   pmineiro@microsoft.com nikosk@microsoft.com  ar X
+iv :1
+50 3.
+08 87
+3v 1
+[ cs
+.L G
+] 3
+0 M
+ar 2
+01 5 1 CONTRIBUTIONS We provide a statistical motivation for label embedding by demonstrating that the optimal rankconstrained least squares estimator can be constructed from an optimal unconstrained estimator of an embedding of the labels. In other words, embedding can provide beneficial sample complexity reduction even if computational constraints are not binding.
+We identify a natural object to define label similarity: the expected outer product of the conditional label probabilities. In particular, in conjunction with a low-rank constraint, this indicates two label embeddings are similar when their conditional probabilities are linearly dependent across the dataset. This unifies prior work utilizing the confusion matrix for multiclass (Bengio et al., 2010) and the empirical label covariance for multilabel (Tai & Lin, 2012).
+We apply techniques from randomized linear algebra (Halko et al., 2011) to develop an efficient and scalable algorithm for constructing the embeddings, essentially via a novel randomized algorithm for partial least squares (Geladi & Kowalski, 1986). Intuitively, this technique implicitly decomposes the prediction matrix of a model which would be prohibitively expensive to form explicitly. 2 DESCRIPTION  2.1 NOTATION We denote vectors by lowercase letters x, y etc. and matrices by uppercase letters W , Z etc. The input dimension is denoted by d, the output dimension by c and the embedding dimension by k. For an m×n matrix X ∈ Rm×n we use ||X ||F for its Frobenius norm, X† for the pseudoinverse,ΠX,L for the projection onto the left singular subspace of X . 2.2 PROPOSED ALGORITHM Our proposal is Rembrandt, described in Algorithm 1. We use the top right singular space of ΠX,LY as a label embedding, or equivalently, the top principal components of Y ⊤ΠX,LY (leveraging the fact that the projection is idempotent). Using randomized techniques, we can decompose this matrix without explicitly forming it, because we can compute the product of ΠX,LY with another matrix Q via Y ⊤ΠX,LY Q = Y ⊤XZ∗ where Z∗ = argminZ∈Rd×(k+p) ‖Y Q − XZ‖ 2 F . Algorithm 1
+Algorithm 1 Rembrandt: Response EMBedding via RANDomized Techniques
+1: function REMBRANDT(k,X ∈ Rn×d, Y ∈ Rn×c) 2: (p, q) ← (20, 1) ⊲ These hyperparameters rarely need adjustment. 3: Q ← randn(c, k + p) 4: for i ∈ {1, . . . , q} do ⊲ Randomized range finder for Y ⊤ΠX,LY 5: Z ← argmin ‖Y Q−XZ‖2F 6: Q ← orthogonalize(Y ⊤XZ) 7: end for ⊲ NB: total of (q + 1) data passes, including next line 8: F ← (Y ⊤XQ)⊤(Y ⊤XQ) ⊲ F ∈ R(k+p)×(k+p) is “small” 9: (V,Σ2) ← eig(F, k) 10: V ← QV ⊲ V ∈ Rc×k is the embedding 11: return (V,Σ) 12: end function
+is a specialization of randomized PCA to this particular form of the matrix multiplication operator. Fortunately, because X†(ΠX,LY )k is the optimal rank-constrained least squares weight matrix, Rembrandt is a randomized algorithm for partial least squares (Geladi & Kowalski, 1986).
+Algorithm 1 is inexpensive to compute. The matrix vector product Y Q is a sparse matrix-vector product so complexity O(nsk) depends only on the average (label) sparsity per example s and the embedding dimension k, and is independent of the number of classes c. The fit is done in the embedding space and therefore is independent of the number of classes c, and the outer product with the predicted embedding is again a sparse product with complexity O(nsk). The orthogonalization step is O(ck2), but this is amortized over the data set and essentially irrelevant as long as n > c. Furthermore random projection theory suggests k should grow only logarithmically with c. 2.3 EXPERIMENTS   We apply techniques from randomized linear algebra (Halko et al., 2011) to develop an efficient and scalable algorithm for constructing the embeddings, essentially via a novel randomized algorithm for partial least squares (Geladi & Kowalski, 1986).    Many modern multiclass and multilabel problems are characterized by increasingly large output spaces. For these problems, label embeddings have been shown to be a useful primitive that can improve computational and statistical efficiency. In this work we utilize a correspondence between rank constrained estimation and low dimensional label embeddings that uncovers a fast label embedding algorithm which works in both the multiclass and multilabel settings. The result is a randomized algorithm for partial least squares, whose running time is exponentially faster than naive algorithms. We demonstrate our techniques on two large-scale public datasets, from the Large Scale Hierarchical Text Challenge and the Open Directory Project, where we obtain state of the art results. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

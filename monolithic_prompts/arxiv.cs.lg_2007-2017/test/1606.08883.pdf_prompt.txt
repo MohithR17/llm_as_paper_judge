@@ -1,0 +1,966 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: None
+Paper Content: 1606.08883.pdf CRF  Lili Su Nitin H. Vaidya nhv}@illinois.edu (lilisu3@illinois.edu)  ar X
+iv :1
+60 6.
+08 88
+3v 1
+[ cs
+.D C
+] 2
+8 Ju
+n 20
+agents repeatedly collect partially informative observations about an unknown state of the world, and try to collaboratively learn the true state. We focus on the impact of the adversarial agents on the performance of consensus-based non-Bayesian learning, where non-faulty agents combine local learning updates with consensus primitives. In particular, we consider the scenario where an unknown subset of agents suffer Byzantine faults – agents suffering Byzantine faults behave arbitrarily.
+We propose two learning rules.
+– In our first update rule, each agent updates its local beliefs as (up to normalization) the product of (1) the likelihood of the cumulative private signals and (2) the weighted geometric average of the beliefs of its incoming neighbors and itself. Under reasonable assumptions on the underlying network structure and the global identifiability of the network, we show that all the non-faulty agents asymptotically agree on the true state almost surely. For the case when every agent is failure-free, we show that (with high probability) each agent’s beliefs on the wrong hypotheses decrease at rate O(exp(−Ct2)), where t is the number of iterations, and C is a constant. – In general when agents may be adversarial, network identifiability condition specified for the above learning rule scales poorly in the number of state candidates m. In addition, the computation complexity per agent per iteration of this learning rule is forbiddingly high. Thus, we propose a modification of our first learning rule, whose complexity per iteration per agent is O(m2n log n), where n is the number of agents in the network. We show that this modified learning rule works under a much weaker network identifiability condition. In addition, this new condition is independent of m.
+⋆ This research is supported in part by National Science Foundation award NSF 1421918. Any opinions, findings, and conclusions or recommendations expressed here are those of the authors and do not necessarily reflect the views of the funding agencies or the U.S. government.
+2 1 Introduction Decentralized hypothesis testing (learning) has received significant amount of attention [1,2,3,5,6,7,8]. The traditional decentralized detection framework consists of a collection of spatially distributed sensors and a fusion center [5,6,7]. The sensors independently collect noisy observations of the environment state, and send only summary of the private observations to the fusion center, where a final decision is made. In the case when the sensors directly send all the private observations, the detection problem can be solved using a centralized scheme. The above framework does not scale well, since each sensor needs to be connected to the fusion center and full reliability of the fusion center is required, which may not be practical as the system scales.
+Distributed hypothesis testing in the absence of fusion center is considered in [2,22,23,21]. In particular, Gale and Kariv [2] studied the distributed hypothesis testing problem in the context of social learning, where fully Bayesian belief update rule is studied. Bayesian update rule is impractical in many applications due to memory and computation constraints of each agent.
+To avoid the complexity of Bayesian learning, a non-Bayesian learning framework that combines local Bayesian learning with distributed consensus was proposed by Jadbabaie et al. [3], and has attracted much attention [10,14,15,16,11,18,17,13]. Jadbabaie et al. [3] considered the general setting where external signals are observed during each iteration of the algorithm execution. Specifically, the belief of each agent is repeatedly updated as the arithmetic mean of its local Bayesian update and the beliefs of its neighbors – combining iterative consensus algorithm with local Bayesian update. It is shown [3] that, under this learning rule, each agent learns the true state almost surely. The publication of [3] has inspired significant efforts in designing and analyzing non-Bayesian learning rules with a particular focus on refining the fusion strategies and analyzing the (asymptotic and/or finite time) convergence rates of the refined algorithms [10,14,15,16,11,18,17,13]. In this paper we are particularly interested in the log-linear form of the update rule, in which, essentially, each agent updates its belief as the geometric average of the local Bayesian update and its neighbors’ beliefs [15,10,14,16,11,18,17,13]. The log-linear form (geometric averaging) update rule is shown to converge exponentially fast [10,16]. Taking an axiomatic approach, the geometric averaging fusion is proved to be optimal [13]. An optimization-based interpretation of this rule is presented in [16], using dual averaging method with properly chosen proximal functions. Finite-time convergence rates are investigated independently in [14,11,17]. Both [14] and [18] consider time-varying networks, with slightly different network models. Specifically, [14] assumes that the union of every consecutive B networks is strongly connected, while [18] considers random networks. In this paper, we consider static networks for ease of exposition, although we believe that our results can be easily generalized to time-varying networks.
+The prior work implicitly assumes that the networked agents are reliable in the sense that they correctly follow the specified learning rules. However, in some practical multi-agent networks, this assumption may not hold. For example, in social networks, it is possible that some agents are adversarial, and try to prevent the true state from being learned by the good agents. Thus, this paper focuses on the fault-tolerant version the non-Bayesian framework proposed in [3]. In particular, we assume that an unknown subset of agents may suffer Byzantine faults.
+An agent suffering Byzantine fault may not follow the pre-specified algorithms/protocols, and misbehave arbitrarily. For instance, a faulty agent may lie to other agents (possibly non-consistently) about its own estimates. In addition, a faulty agent is assumed to have a complete knowledge of the system, including the network topology, the local functions of all the non-faulty agents, the algorithm specification of the non-faulty agents, the execution of the algorithm, the local estimates of all the non-faulty agents, and contents of messages the other agents send to each other. Also,
+3 the faulty agents can potentially collaborate with each other to prevent the non-faulty agents from achieving their goal. An alternative fault model, where some agents may unexpectedly cease computing and communicate with each other asynchronously, is considered in our companion work [34]. The Byzantine fault-tolerance problem was introduced by Pease et al. [24] and has attracted intensive attention from researchers [25,26,27,30,28,31]. Our goal is to design algorithms that enable all the non-faulty agents to learn the underlying true state.
+The existing non-Bayesian learning algorithms [10,11,13,14,15,16,17,18] are not robust to Byzantine agents, since the malicious messages sent by the Byzantine agents are indiscriminatingly utilized in the local belief updates. On the other hand, the incorporation of Byzantine consensus is nontrivial, since (i) the effective communication networks are dependent on the all the random local observations, making it non-trivial to adapt analysis of previous algorithms to our setting; and (ii) the problem of identifying tight topological condition for reaching Byzantine multi-dimensional consensus iteratively is open, making it challenging to identify the minimal detectability condition on the networked agents to learn the true environmental state.
+Contributions: Our contributions are two-fold.
+– We first propose an update rule wherein each agent iteratively updates its local beliefs as (up to normalization) the product of (1) the likelihood of the cumulative private signals and (2) the weighted geometric average of the beliefs of its incoming neighbors and itself (using iterative Byzantine multi-dimensional consensus). In contrast to the existing algorithms [14,11], where only the current private signal is used in the update, our proposed algorithm relies on the cumulative private signals. Under reasonable assumptions on the underlying network structure and the global identifiability of the network, we show that all the non-faulty agents asymptotically agree on the true state almost surely. In addition, for the special case when every agent is guaranteed to be failure-free, we show that (with high probability) each agent’s beliefs on the wrong hypotheses decrease at rate O(exp(−Ct2)), where t is the number of iterations, and C is a constant. Thus, our proposed rule may be of independent interest for the failure-free setting considered in [10,11,13,14,15,16,17,18]. – The local computation complexity per agent of the first learning rule is high due to the adoption of multi-dimensional consensus primitives. More importantly, the network identifiability condition used for that learning rule scales poorly in the number of possible states m. Thus, we propose a modification of our first learning rule, whose complexity per iteration per agent is O(m2n log n), where n is the number of agents in the network. We show that this modified learning rule works under a much weaker global identifiability condition, which is independent of m. We cast the general m–ary hypothesis testing problem into a collection of binary hypothesis testing sub-problems.
+Outline: The rest of the paper is organized as follows. Section 2 presents the problem formulation. Section 3 briefly reviews existing results on vector Byzantine consensus, and matrix representation of the state evolution. Our first algorithm and its correctness analysis are presented in Section 4. Section 5 demonstrates the above learning rule in the special case when f = 0, and presents a finite-time analysis.The modified learning rule and its correctness analysis are summarized in Section 6. Section 7 concludes the paper, and discusses possible extensions. 2 Problem Formulation Network Model: Our network model is similar to the model used in [4,30]. We consider a synchronous system. A collection of n agents (also referred as nodes) are connected by a directed network G(V, E),
+4 where V = {1, . . . , n} and E is the collection of directed edges. For each i ∈ V, let Ii denote the set of incoming neighbors of agent i. In any execution, up to f agents suffer Byzantine faults. For a given execution, let F denote the set of Byzantine agents, and N denote the set of non-faulty agents. Throughout this paper, we assume that f satisfies the condition implicitly imposed by the given topology conditions mentioned later. We assume that each non-faulty agent knows f , but does not know the actual number of faulty agents |F|. 1 Possible misbehavior of faulty agents includes sending incorrect and mismatching (or inconsistent) messages. The Byzantine agents are also assumed to have complete knowledge of system, including the network topology, underlying running algorithm, the states or even the entire history. The faulty agents may collaborate with each other adaptively [12]. Note that |F| ≤ f and |N | ≥ n− f since at most f agents may fail. (As noted earlier, although we assume a static network topology, our results can be easily generalized to time-varying networks.)
+Throughout this paper, we use the terms agent and node interchangeably.
+Observation Model: Our observation model is identical the model used in [3,11,18]. Let Θ = {θ1, θ2, . . . , θm} denote a set of m environmental states, which we call hypotheses. In the t-th iteration, each agent independently obtains a private signal about the environmental state θ∗, which is initially unknown to every agent in the network. Each agent i knows the structure of its private signal, which is represented by a collection of parameterized marginal distributions Di = {ℓi(wi|θ)| θ ∈ Θ, wi ∈ Si}, where ℓi(·|θ) is the distribution of private signal when θ is the true state, and Si is the finite private signal space. For each θ ∈ Θ, and each i ∈ V, the support of ℓi(·|θ) is the whole signal space, i.e., ℓi(wi|θ) > 0, ∀wi ∈ Si and ∀ θ ∈ Θ. Let sit be the private signal observed by agent i in iteration t, and let st = {s1t , s2t , . . . , snt } be the signal profile at time t (i.e., signals observed by the agents in iteration t). Given an environmental state θ, the signal profile st is generated according to the joint distribution ℓ1(s 1 t |θ)× ℓ2(s2t |θ)× · · · × ℓn(snt |θ). In addition, let si1,t be the signal history up to time t for agent i = 1, · · · , n, and let s1,t = {s11,t, s21,t, . . . , sn1,t} be the signal profile history up to time t. 3 Byzantine Consensus In this section, we briefly review relevant exsting results on Byzantine consensus. Byzantine consensus has attracted significant amount of attention [25,26,29,27,30,28,31]. While the past work mostly focus on scalar inputs, the more general vector (or multi-dimensional) inputs have been studied recently [31,29,28]. Complete communication networks are considered in [31,29], where tight conditions on the number of agents are identified. Incomplete communication networks are studied in [28]. Closer to the non-Bayesian learning problem is the class of iterative approximate Byzantine consensus algorithms, where each agent is only allowed to exchange information about its state with its neighbors. In particular, our learning algorithms build upon Byz-Iter algorithm proposed in [28] and a simple algorithm proposed in [30] for iterative Byzantine consensus with vector inputs and scalar inputs, respectively, in incomplete networks. A matrix representation of the non-faulty agents’ states evolution under Byz-Iter algorithm is provided by [28], which also captures the dynamics of the simple algorithm with scalar inputs in [30]. To make this paper self-contained, in this section, we briefly review the algorithm Byz-Iter and its matrix representation.
+3.1 Algorithm Byz-Iter [28]
+Algorithm Byz-Iter is based on Tverberg’s Theorem [32].
+1 This is because the upper bound f can be learned via long-time performance statistics, whereas, the actual size of F varies across executions, and may be impossible to be predicted in some applications.
+5 Theorem 1. [32] Let f be a nonnegative integer. Let Y be a multiset containing vectors from R m such that |Y | ≥ (m + 1)f + 1. There exists a partition Y1, Y2, · · · , Yf+1 of Y such that Yi is nonempty for 1 ≤ i ≤ f + 1, and the intersection of the convex hulls of Yi’s are nonempty, i.e., ∩f+1i=1 Conv(Yi) 6= Ø, where Conv(Yi) is the convex hull of Yi for i = 1, · · · , f + 1.
+The proper partition in Theorem 1, and the points in ∩f+1i=1 Conv(Yi), are referred as Tverberg partition of Y and Tverberg points of Y , respectively.
+For convenience of presenting our algorithm in Section 4, we present Byz-Iter (described in Algorithm 2) below using One-Iter (described in Algorithm 1) as a primitive. The parameter xi passed to One-Iter at agent i, and yi returned by One-Iter are both m-dimensional vectors. Let vi be the state of agent i that will be iteratively updated, with vit being the state at the end of iteration t and vi0 being the input of agent i. In each iteration t ≥ 1, a non-faulty agent performs the steps inOne-Iter. In particular, in the message receiving step, if a message is not received from some neighbor, that neighbor must be faulty, as the system is synchronous. In this case, the missing message values are set to some default value. Faulty agents may deviate from the algorithm specification arbitrarily. In Byz-Iter, the value returned by One-Iter at agent i is assigned to vit.
+Algorithm 1: Algorithm One-Iter with input xi at agent i
+1 Zi ← Ø; 2 Transmit xi on all outgoing links;
+3 Receive messages on all incoming links. % These message values form a multiset Ri of size |Ii|.% 4 for every C ⊆ Ri ∪ {xi} such that |C| = (m+ 1)f + 1 do 5 add to Zi a Tverberg point of multiset C 6 end 7 Compute yi as follows: yi ← 1 1+|Zi| ( xi + ∑ z∈Zi z ) ; 8 Return yi;
+Algorithm 2: Algorithm Byz-Iter [28]: t-th iteration at agent i
+1 vit ← One-Iter(vit−1);
+Remark 1. Note that for each agent i ∈ N , the computation complexity per iteration is
+Ω (( |Ri ∪ {xi}| (m+ 1)f + 1 )) = Ω (( |Ii|+ 1 (m+ 1)f + 1 )) .
+In the worst case, ||Ii|+ 1| = n, and
+Ω (( |Ii|+ 1 (m+ 1)f + 1 )) = Ω ((
+n
+(m+ 1)f + 1
+))
+= Ω
+(
+(n
+e
+)(m+1)f+1 )
+.
+Since our first learning rule is based on Algorithm Byz-Iter, the computation complexity of our first proposed algorithm is also high. Nevertheless, our first learning rule contains our main algorithmic
+6 ideas. More importantly, this learning rule can be modified such that the computation complexity per iteration per agent is O(m2n log n). Specifically, the modified learning rule adopts the scalar Byzantine consensus instead of the m–dimensional consensus. This modified learning rule is optimal in the sense that it works under minimal network identifiability requirements.
+3.2 Correctness of Algorithm Byz-Iter
+We briefly summarize the aspects of correctness proof of Algorithm 2 from [28] that are necessary for our subsequent discussion. By using the Tverberg points in the update of vit above, effectively, the extreme message values (that may potentially be sent by faulty agents) are trimmed away. Informally speaking, trimming certain messages can be viewed as ignoring (or removing) incoming links that carry the outliers. [28] shows that the effective communication network thus obtained can be characterized by a “reduced graph” of G(V, E), defined below. It is important to note that the non-faulty agents do not know the identity of the faulty agents.
+Definition 1 (m–dimensional reduced graph). An m–dimensional reduced graph H(N , EF ) of G(V, E) is obtained by (i) removing all faulty nodes F , and all the links incident on the faulty nodes F ; and (ii) for each non-faulty node (nodes in N ), removing up to mf additional incoming links.
+Definition 2. A source component in any given m–dimensional reduced graph is a strongly connected component (of that reduced graph), which does not have any incoming links from outside that component.
+It turns out that the effective communication network is potentially time-varying (partly) due to time-varying behavior of faulty nodes. Assumption 1 below states a condition that is sufficient for reaching approximate Byzantine vector consensus using Algorithm 1 [28].
+Assumption 1 Every m–dimensional reduced graph of G(V, E) contains a unique source component.
+Let Cm be the set of all the m–dimensional reduced graph of G(V, E). Define χm , |Cm|. Since G(V, E) is finite, we have χm < ∞. Let Hm ∈ Cm be an m–dimensional reduced graph of G(V, E) with source component SHm . Define
+γm , minHm∈Cm |SHm |, (1)
+i.e., γm is the minimum source component size among all the m–dimensional reduced graphs. Note that γm ≥ 1 if Assumption 1 holds for a given m.
+Theorem 2. [28] Suppose Assumption 1 holds for a given m ≥ 1. Under Algorithm Byz-Iter, all the non-faulty agents (agents in N ) reach consensus asymptotically, i.e., limt→∞ |vit − vjt | = 0,∀ i, j ∈ N .
+The proof of Theorem 2 relies crucially on a matrix representation of the state evolution. 3.3 Matrix Representation [28] Let |F| = φ (thus, 0 ≤ φ ≤ f). Without loss of generality, assume that agents 1 through n− φ are non-faulty, and agents n− φ+ 1 to n are Byzantine.
+7 Lemma 1. [28] Suppose Assumption 1 holds for a given m ≥ 1. The state updates performed by the non-faulty agents in the t–th iteration (t ≥ 1) can be expressed as
+vit =
+n−φ ∑
+j=1
+Aij[t]v j t−1, (2)
+where A[t] ∈ R(n−φ)×(n−φ) is a row stochastic matrix for which there exists an m–dimensional reduced graph Hm[t] with adjacency matrix Hm[t] such that A[t] ≥ βmHm[t], where 0 < βm ≤ 1 is a constant that depends only on G(V, E).
+Let Φ(t, r) , A[t] · · ·A[r] for 1 ≤ r ≤ t+ 1. By convention, Φ(t, t) = A[t] and Φ(t, t+ 1) = I. Note that Φ(t, r) is a backward product. Using prior work on coefficients of ergodicity [9], under Assumption 1, it has been shown [28,19] that
+lim t≥r, t→∞ Φ(t, r) = 1π(r), (3)
+where π(r) ∈ Rn−φ is a row stochastic vector, and 1 is the column vector with each entry being 1. Recall that χm is the total number of m–dimensional reduced graphs of G(V, E), and βm is defined in Lemma 1, and φ , |F|. The convergence rate in (3) is exponential.
+Theorem 3. [28] For all t ≥ r ≥ 1, it holds that |Φij(t, r)− πj(r)| ≤ (1 − βνm)⌈ t−r+1 ν ⌉, where ν , χm(n− φ). Recall that γm is defined in (1). The next lemma is a consequence of the results in [28].
+Lemma 2. [28] For any r ≥ 1, there exists a reduced graph H[r] with source component Sr such that πi(r) ≥ βχm(n−φ)m for each i ∈ Sr. In addition, |Sr| ≥ γm. 3.4 Tight Topological Condition for Scalar Iterative Byzantine Consensus The above analysis shows that Assumption 1 is sufficient for achieving Byzantine consensus iteratively. For the special case when m = 1,(i.e., the inputs provided at individual non-faulty agents are scalars) it has been shown [30] that Assumption 1 is also necessary.
+Theorem 4. [30] For scalar inputs, iterative approximate Byzantine consensus is achievable among non-faulty agents if and only if every 1-dimensional reduced graph of G(V, E) contains only one source component.
+Moreover, the following simple algorithm (Algorithm 3) works under Assumption 1 when m = 1. In addition, it has been show that the dynamic of the non-faulty agents states admits the same matrix representation as in Subsection 3.3 with the reduced graph being 1–dimensional reduced graph defined in Definition 1.
+With the above background on Byzantine vector consensus, we are now ready to present our first algorithm and its analysis. 4 Byzantine Fault-Tolerant Non-Bayesian Learning (BFL) In this section, we present our first learning rule, named Byzantine Fault-Tolerant Non-Bayesian Learning (BFL). In BFL, each agent i maintains a belief vector µi ∈ Rm, which is a distribution over the set Θ, with µi(θ) being the probability with which the agent i believes that θ is the true
+8 Algorithm 3: Algorithm Scalar Byzantine Consensus: iteration t ≥ 1 [30] 1 Transmit vi[t− 1] on all outgoing links; 2 Receive messages on all incoming links. % These message values wj [t] for each j ∈ Ii form a multiset
+Ri[t] of size |Ii|. %
+3 Sort the received values wj [t] for each j ∈ Ii in a non-decreasing order; 4 Remove the largest f values and the smallest f values. % Denote the set of indices of incoming
+neighbors whose values have not been removed at iteration t by I∗i [t].%
+5 Update vi as follows: vi[t] ← ∑ j∈I∗ i [t] wj [t]+v
+i[t−1] 1+|I∗
+i [t]| ;
+environmental state. Since no signals are observed before the execution of an algorithm, the belief µi is often initially set to be uniform over the set Θ, i.e., (
+µi0(θ1), µ i 0(θ1), . . . , µ i 0(θm)
+)T = ( 1 m , . . . , 1 m )T .
+Recall that θ∗ is the true environmental state. We say the networked agents collaboratively learn θ∗ if for every non-faulty agent i ∈ N ,
+lim t→∞
+µit(θ ∗) = 1 a.s. (4)
+where a.s. denotes almost surely.
+BFL is a modified version of the geometric averaging update rule that has been investigated in previous work [14,15,11,17]. In particular, we modify the averaging rule to take into account Byzantine faults. More importantly, in each iteration, we use the likelihood of the cumulative local observations (instead of the likelihood of the current observation only) to update the local beliefs.
+For t ≥ 1, the steps to be performed by agent i in the t–th iteration are listed below. Note that faulty agents can deviate from the algorithm specification. The algorithm below uses One-Iter presented in the previous section as a primitive. Recall that si1,t is the cumulative local observations up to iteration t. Since the observations are i.i.d., it holds that ℓi(s i 1,t|θ) = ∏t r=1 ℓi(s i r|θ). So ℓi(si1,t|θ) can be computed iteratively in Algorithm 4.
+Algorithm 4: BFL: Iteration t ≥ 1 at agent i 1 ηit ← One-Iter(log µit−1); 2 Observe sit; 3 for θ ∈ Θ do 4 ℓi(s i 1,t|θ) ← ℓi(sit|θ) ℓi(si1,t−1|θ); 5 µit(θ) ← ℓi(si1,t|θ) exp(ηit(θ))∑m
+p=1 ℓi(s i 1,t|θp) exp(ηit(θp))
+;
+6 end
+The main difference of Algorithm 4 with respect to the algorithms in [14,15,11,17] is that (i) our algorithm uses a Byzantine consensus iteration as a primitive (in line 1), and (ii) ℓi(s i 1,t|θ) used in line 5 is the likelihood for observations from iteration 1 to t (the previous algorithms instead use ℓi(s i t|θ) here). Observe that the consensus step is being performed on log of the beliefs, with the result being stored as ηit (in line 1) and used in line 4 to compute the new beliefs.
+9 Recalling the matrix representation of the Byz-Iter algorithm as per Lemma 1, we can write the following equivalent representation of line 1 of Algorithm 4.
+ηit(θ) =
+n−φ ∑
+j=1
+Aij [t] log µ j t−1(θ) = log
+n−φ ∏
+j=1
+µ j t−1(θ) Aij [t], ∀θ ∈ Θ. (5)
+where A[t] is a row stochastic matrix whose properties are specified in Lemma 1. Note that µit(θ) is random for each i ∈ N and t ≥ 1, as it is updated according to local random observations. Since the consensus is performed over log µit ∈ Rm, the update matrix A[t] is also random. In particular, for each t ≥ 1, matrix A[t] is dependent on all the cumulative observations over the network up to iteration t. This dependency makes it non-trivial to adapt analysis from previous algorithms to our setting. In addition, adopting the local cumulative observation likelihood makes the analysis with Byzantine faults easier. 4.1 Identifiability In the absence of agent failures [3], for the networked agents to detect the true hypothesis θ∗, it is sufficient to assume that G(V, E) is strongly connected, and that θ∗ is globally identifiable. That is, for any θ 6= θ∗, there exists a node j ∈ V such that the Kullback-Leiber divergence between the true marginal ℓj(·|θ∗) and the marginal ℓj(·|θ), denoted by D (ℓj(·|θ∗)||ℓj(·|θ)), is nonzero; equivalently,
+∑ j∈V D (ℓj(·|θ∗)||ℓj(·|θ)) 6= 0, (6)
+where D (ℓj(·|θ∗)||ℓj(·|θ)) is defined as
+D (ℓj(·|θ∗)||ℓj(·|θ)) , ∑ wj∈Sj ℓj(wj |θ∗) log
+ℓj(wj |θ∗) ℓj(wj |θ) . (7)
+Since θ∗ may change from execution to execution, (6) is required to hold for any choice of θ∗. Intuitively speaking, if any pair of states θ1 and θ2 can be distinguished by at least one agent in the network, then sufficient exchange of local beliefs over strongly connected network will enable every agent distinguish θ1 and θ2. However, in the presence of Byzantine agents, a stronger global identifiability condition is required. The following assumption builds upon Assumption 1.
+Assumption 2 Suppose that Assumption 1 holds for m = |Θ|. For any θ 6= θ∗, and for any m–dimensional reduced graph H of G(V, E) with SH denoting the unique source component, the following holds
+∑
+j∈SH D (ℓj(·|θ∗) ‖ ℓj(·|θ)) 6= 0. (8)
+In contrast to (6), where the summation is taken over all the agents in the network, in (8), the summation is taken over agents in the source component only. Intuitively, the condition imposed by Assumption 2 is that all the agents in the source component can detect the true state θ∗ collaboratively. If iterative consensus is achieved, the accurate belief can be propagated from the source component to every other non-faulty agent in the network.
+10
+Remark 2. We will show later that when Assumption 2 holds, BFL algorithm enables all the nonfaulty agents concentrate their beliefs on the true state θ∗ almost surely. That is, Assumption 2 is a sufficient condition for a consensus-based non-Bayesian learning algorithm to exist. However, Assumption 2 is not necessary, observing that Assumption 1 (upon which Assumption 2 builds) is not necessary for m-dimensional Byzantine consensus algorithms to exist. As illustrated by our second learning rule (described later), the adoption of m-dimensional Byzantine consensus primitives is not necessary. Nevertheless, BFL contains our main algorithmic and analytical ideas. In addition, BFL provides an alternative learning rule for the failure-free setting (where no fault-tolerant consensus primitives are needed). 4.2 Convergence Results Our proof parallels the structure of a proof in [14], but with some key differences to take into account our update rule for the belief vector.
+For any θ1, θ2 ∈ Θ, and any i ∈ V, define ψit(θ1, θ2) and Lt(θ1, θ2) as follows
+ψit(θ1, θ2) , log µit(θ1)
+µit(θ2) , Lit(θ1, θ2) , log
+ℓi(s i t|θ1) ℓi(s i t|θ2) . (9)
+To show Algorithm 4 solves (4), we will show that ψit(θ, θ ∗) a.s.−−→ −∞ for θ 6= θ∗, which implies that µit(θ)
+a.s.−−→ 0 for all θ 6= θ∗ and for all i ∈ N , i.e., all non-faulty agents asymptotically concentrate their beliefs on the true hypothesis θ∗. We do this by investigating the dynamics of beliefs which is represented compactly in a matrix form.
+For each θ 6= θ∗, and each i ∈ N = {1, 2, · · · , n− φ}, we have
+ψit(θ, θ ∗) = log
+µit(θ)
+µit(θ ∗)
+(a) = log 
+n−φ ∏
+j=1
+(
+µ j t−1(θ)
+µ j t−1(θ ∗)
+)Aij [t]
+× ℓi(s
+i 1,t|θ)
+ℓi(s i 1,t|θ∗) 
+=
+n−φ ∑
+j=1
+Aij[t] log µ j t−1(θ)
+µ j t−1(θ
+∗) + log
+ℓi(s i 1,t|θ)
+ℓi(s i 1,t|θ∗)
+=
+n−φ ∑
+j=1
+Aij[t]ψ j t−1(θ, θ
+∗) + t ∑
+r=1
+Lir(θ, θ∗), (10)
+where equality (a) follows from (5) and the update of µi in Algorithm 4, and the last equality follows from (9) and the fact that the local observations are i.i.d. for each agent.
+Let ψt(θ, θ ∗) ∈ Rn−φ be the vector that stacks ψit(θ, θ∗), with the i–th entry being ψit(θ, θ∗) for
+all i ∈ N . The evolution of ψ(θ, θ∗) can be compactly written as
+ψt(θ, θ ∗) = A[t]ψt−1(θ, θ ∗) + t ∑
+r=1
+Lr(θ, θ∗). (11)
+Expanding (11), we get
+ψt(θ, θ ∗) = Φ(t, 1)ψ0(θ, θ ∗) + t ∑
+r=1
+Φ(t, r + 1)
+r ∑
+k=1
+Lk(θ, θ∗). (12)
+11
+For each θ ∈ Θ and i ∈ V, define Hi(θ, θ∗) ∈ Rn−φ as
+Hi(θ, θ ∗) ,
+∑
+wi∈Si ℓi(wi|θ∗) log
+ℓi(wi | θ) ℓi(wi | θ∗)
+= −D(ℓi(·|θ∗) ‖ ℓi(·|θ)) by (7) ≤ 0. (13)
+Let H ∈ C be an arbitrary reduced graph with source component SH. Define C0 and C1 as
+−C0 , min i∈V min θ1,θ2∈Θ;θ1 6=θ2 min wi∈Si
+( log ℓi(wi|θ1) ℓi(wi|θ2) ) , (14)
+C1 , minH∈C min θ,θ∗∈Θ;θ 6=θ∗
+∑
+i∈SH D(ℓi(·|θ∗) ‖ ℓi(·|θ)). (15)
+The constant C0 serves as an universal upper bound on | log ℓi(wi|θ1)ℓi(wi|θ2) | for all choices of θ1 and θ2, and for all signals. Intuitively, the constant C1 is the minimal detection capability of the source component under Assumption 2.
+Due to |Θ| = m < ∞ and |Si| < ∞ for each i ∈ N , we know that C0 < ∞. Besides, it is easy to see that −C0 ≤ 0 (thus, C0 ≥ 0). In addition, under Assumption 2, we have C1 > 0.
+Now we present a key lemma for our main theorem.
+Lemma 3. Under Assumption 2, for any θ 6= θ∗, it holds that
+1 t2
+t ∑
+r=1 
+n−φ ∑
+j=1
+Φij(t, r + 1) r ∑
+k=1
+Ljk(θ, θ∗)− r n−φ ∑
+j=1
+πj(r + 1)Hj(θ, θ ∗)  a.s.−−→ 0. (16)
+As it can be seen later, the proof of Lemma 3 is significantly different from the analogous lemma in [14].
+Theorem 5. When Assumption 2 holds, each non-faulty agent i ∈ N will concentrate its belief on the true hypothesis θ∗ almost surely, i.e., µit(θ) a.s.−−→ 0 for all θ 6= θ∗.
+Proof. Consider any θ 6= θ∗. Recall from (12) that
+ψt(θ, θ ∗) = Φ(t, 1)ψ0(θ, θ ∗) + t ∑
+r=1
+Φ(t, r + 1)
+r ∑
+k=1
+Lk(θ, θ∗)
+=
+t ∑
+r=1
+Φ(t, r + 1)
+r ∑
+k=1
+Lk(θ, θ∗).
+The last equality holds as µi0 is uniform, and ψ i 0(θ, θ ∗) = 0 for each i ∈ N . Since the supports of ℓi(·|θ) and ℓi(·|θ∗) are the whole signal space Si for each agent i ∈ N , it holds that ∣ ∣ ∣
+ℓi(wi|θ) ℓi(wi|θ∗)
+∣ ∣
+∣ < ∞ for each wi ∈ Si, and
+0 ≥ Hi(θ, θ∗) ≥ min wi∈Si
+(
+log ℓi(wi|θ) ℓi(wi|θ∗)
+)
+≥ − C0 > −∞. (17)
+12
+By (17), we know that |∑n−φj=1 πj(r+1)Hj(θ, θ∗)| ≤ C0 < ∞. Due to the finiteness of ∑n−φ j=1 πj(r+ 1)Hj(θ, θ ∗), we are able to add and subtract r1 ∑n−φ j=1 πj(r + 1)Hj(θ, θ ∗) from (12). We get
+ψt(θ, θ ∗) =
+t ∑
+r=1 Φ(t, r + 1)
+r ∑
+k=1
+Lk(θ, θ∗)− r1 n−φ ∑
+j=1
+πj(r + 1)Hj(θ, θ ∗) 
++ t ∑
+r=1
+r1
+n−φ ∑
+j=1
+πj(r + 1)Hj(θ, θ ∗). (18)
+For each i ∈ N , we have
+ψit(θ, θ ∗) =
+t ∑
+r=1 
+n−φ ∑
+j=1
+Φij(t, r + 1)
+r ∑
+k=1
+Ljk(θ, θ∗)− r n−φ ∑
+j=1
+πj(r + 1)Hj(θ, θ ∗) 
++
+t ∑
+r=1
+r
+n−φ ∑
+j=1
+πj(r + 1)Hj(θ, θ ∗). (19)
+To show limt→∞ µit(θ) a.s.−−→ 0 for θ 6= θ∗, it is enough to show ψit(θ, θ∗) a.s.−−→ −∞. Our convergence proof has similar structure as the analysis in [14]. From Lemma 3, we know that
+1 t2
+t ∑
+r=1 
+n−φ ∑
+j=1
+Φij(t, r + 1)
+r ∑
+k=1
+Ljk(θ, θ∗)− r n−φ ∑
+j=1
+πj(r + 1)Hj(θ, θ ∗)  a.s.−−→ 0. (20)
+Next we show that the second term of the right hand side of (19) decreases quadratically in t.
+t ∑
+r=1
+r
+n−φ ∑
+j=1
+πj(r + 1)Hj(θ, θ ∗) ≤
+t ∑
+r=1
+r ∑
+j∈Sr πj(r + 1)Hj(θ, θ
+∗) by (13)
+≤ t ∑
+r=1
+rβχ(n−φ) ∑
+j∈Sr Hj(θ, θ
+∗) by Lemma 2
+≤ − t ∑
+r=1
+rβχ(n−φ)C1 by (15) and (13)
+≤ − t 2
+2 βχ(n−φ)C1. (21)
+Therefore, by (19), (20) and (21), almost surely, the following hold
+lim t→∞
+1 t2 ψit(θ, θ ∗) ≤ −1 2 βχ(n−φ)C1.
+Therefore, we have ψit(θ, θ ∗) a.s.−−→ −∞ and µit(θ) a.s.−−→ 0 for i ∈ N and θ 6= θ∗, proving Theorem 5.
+We now present the proof of our key lemma – Lemma 3.
+13
+Proof (Proof of Lemma 3). By (9), we have
+∣ ∣Lir(θ, θ∗) ∣ ∣ =
+∣ ∣ ∣ ∣ log ℓi(s i t|θ)
+ℓi(s i t|θ∗)
+∣ ∣ ∣ ∣
+≤ max i∈V max θ1,θ2∈Θ;θ1 6=θ2 max wi∈Si
+∣ ∣ ∣ ∣ log ℓi(wi|θ1) ℓi(wi|θ2) ∣ ∣ ∣ ∣ .
+Note that maxi∈V maxθ1,θ2∈Θ;θ1 6=θ2 maxwi∈Si
+∣ ∣
+∣ log ℓi(wi|θ1)
+ℓi(wi|θ2)
+∣ ∣ ∣ is symmetric in θ1 and θ2. Thus,
+∣ ∣Lir(θ, θ∗) ∣ ∣ ≤ max i∈V max θ1,θ2∈Θ;θ1 6=θ2 max wi∈Si
+∣ ∣ ∣ ∣ log ℓi(wi|θ1) ℓi(wi|θ2) ∣ ∣ ∣ ∣ = max i∈V max θ1,θ2∈Θ;θ1 6=θ2 max wi∈Si log ℓi(wi|θ1) ℓi(wi|θ2)
+= max i∈V max θ1,θ2∈Θ;θ1 6=θ2 max wi∈Si − log ℓi(wi|θ2) ℓi(wi|θ1)
+= −min i∈V min θ1,θ2∈Θ;θ1 6=θ2 min wi∈Si log ℓi(wi|θ2) ℓi(wi|θ1) = −(−C0) = C0 < ∞. (22)
+Thus, adding and subtracting 1 t2 ∑t r=1 ∑n−φ j=1 πj(r + 1) ∑r k=1L j k(θ, θ ∗) from the first term on the right hand side of (19), we can get
+1 t2
+t ∑
+r=1 
+n−φ ∑
+j=1
+Φij(t, r + 1) r ∑
+k=1
+Ljk(θ, θ∗)− πj(r + 1)r n−φ ∑
+j=1
+Hj(θ, θ ∗) 
+= 1
+t2
+t ∑
+r=1
+n−φ ∑
+j=1
+(Φij(t, r + 1)− πj(r + 1)) r ∑
+k=1
+Ljk(θ, θ∗)
++ 1
+t2
+t ∑
+r=1
+n−φ ∑
+j=1
+πj(r + 1)
+(
+r ∑
+k=1
+Ljk(θ, θ∗)− rHj(θ, θ∗) ) . (23)
+For the first term of the right hand side of (23), we have
+1 t2
+∣ ∣ ∣ ∣ ∣ ∣ t ∑
+r=1
+n−φ ∑
+j=1
+(Φij(t, r + 1)− πj(r + 1)) r ∑
+k=1
+Ljk(θ, θ∗)
+∣ ∣ ∣ ∣ ∣ ∣
+≤ 1 t2
+t ∑
+r=1
+n−φ ∑
+j=1
+|Φij(t, r + 1)− πj(r + 1)| r ∑
+k=1
+∣ ∣
+∣ Ljk(θ, θ∗)
+∣ ∣ ∣ (24)
+≤ 1 t2
+t ∑
+r=1
+n−φ ∑
+j=1
+|Φij(t, r + 1)− πj(r + 1)| rC0 by (22)
+≤ 1 t2
+t ∑
+r=1
+n−φ ∑
+j=1
+(1− βν)⌈ t−rν ⌉rC0 by Theorem 3
+≤ 1 t2
+(t(n− φ)C0) t ∑
+r=1
+(1− βν)⌈ t−rν ⌉
+≤ (n− φ)C0 (1− βν)(1− (1− βν) 1ν )t . (25)
+Thus, for every sample path, we have
+1 t2
+t ∑
+r=1
+n−φ ∑
+j=1
+(Φij(t, r + 1)− πj(r + 1)) r ∑
+k=1
+Ljk(θ, θ∗) → 0.
+14
+For the second term of the right hand side of (23), we will show that
+1 t2
+t ∑
+r=1
+n−φ ∑
+j=1
+πj(r + 1)
+(
+r ∑
+k=1
+Ljk(θ, θ∗)− rHj(θ, θ∗) ) a.s.−−→ 0,
+i.e., almost surely for any ǫ > 0 there exists sufficiently large t(ǫ) such that ∀ t ≥ t(ǫ),
+1 t2
+∣ ∣ ∣ ∣ ∣ ∣ t ∑
+r=1
+n−φ ∑
+j=1
+πj(r + 1)
+(
+r ∑
+k=1
+Ljk(θ, θ∗)− rHj(θ, θ∗) )
+∣ ∣ ∣ ∣ ∣ ∣ ≤ ǫ. (26)
+We prove this by dividing r into two ranges r ∈ {1, · · · , √ t} and r ∈ { √ t+ 1, · · · , t}, i.e.,
+1 t2
+t ∑
+r=1
+n−φ ∑
+j=1
+πj(r + 1)
+(
+r ∑
+k=1
+Ljk(θ, θ∗)− rHj(θ, θ∗) )
+= 1
+t2
+√ t
+∑
+r=1
+n−φ ∑
+j=1
+πj(r + 1)
+(
+r ∑
+k=1
+Ljk(θ, θ∗)− rHj(θ, θ∗) )
++ 1
+t2
+t ∑
+r= √ t+1
+n−φ ∑
+j=1
+πj(r + 1)
+(
+r ∑
+k=1
+Ljk(θ, θ∗)− rHj(θ, θ∗) ) . (27)
+For the first term of the right hand side of (27), we have
+1 t2
+∣ ∣ ∣ ∣ ∣ ∣
+√ t
+∑
+r=1
+n−φ ∑
+j=1
+πj(r + 1)
+(
+r ∑
+k=1
+Ljk(θ, θ∗)− rHj(θ, θ∗) )
+∣ ∣ ∣ ∣ ∣ ∣
+≤ 1 t2
+√ t
+∑
+r=1
+n−φ ∑
+j=1
+πj(r + 1) (2rC0) by (13) and (22)
+= 1
+t2 (2C0)
+√ t
+∑
+r=1
+r
+≤ C0 ( 1
+t +
+1
+t 3 2
+)
+.
+Thus, there exists t1(ǫ) such that for all t ≥ t1(ǫ), it holds that
+1 t2
+∣ ∣ ∣ ∣ ∣ ∣
+√ t
+∑
+r=1
+n−φ ∑
+j=1
+πj(r + 1)
+(
+r ∑
+k=1
+Ljk(θ, θ∗)− rHj(θ, θ∗) )
+∣ ∣ ∣ ∣ ∣ ∣ ≤ ǫ 2 .
+For the second term of the right hand side of (27), we have
+1 t2
+t ∑
+r= √ t+1
+n−φ ∑
+j=1
+πj(r + 1)
+(
+r ∑
+k=1
+Ljk(θ, θ∗)− rHj(θ, θ∗) )
+= 1
+t
+t ∑
+r= √ t+1
+n−φ ∑
+j=1
+πj(r + 1) r
+t
+(
+1
+r
+r ∑
+k=1
+Ljk(θ, θ∗)−Hj(θ, θ∗) )
+15
+Since Ljk(θ, θ∗)’s are i.i.d., from Strong LLN, we know that 1r ∑r k=1L j k(θ, θ ∗)−Hj(θ, θ∗) a.s.−−→ 0. That is, with probability 1, the sample path converges. Now, focus on each convergent sample path. For sufficiently large r(ǫ), it holds that for any r ≥ r(ǫ),
+∣ ∣ ∣ ∣ ∣ 1 r r ∑
+k=1
+Ljk(θ, θ∗)−Hj(θ, θ∗) ∣ ∣ ∣ ∣
+∣ ≤ ǫ 2 .
+Recall that r ≥ √ t. Thus, we know that there exists sufficiently large t2(ǫ) such that ∀ t ≥ t2(ǫ),
+r ≥ √ t is large enough and
+∣ ∣ ∣ ∣ ∣ 1 r r ∑
+k=1
+Ljk(θ, θ∗)−Hj(θ, θ∗) ∣ ∣ ∣ ∣
+∣ ≤ ǫ 2 .
+Then, we have ∀ t ≥ t2(ǫ),
+1 t2
+∣ ∣ ∣ ∣ ∣ ∣ t ∑
+r= √ t+1
+n−φ ∑
+j=1
+πj(r + 1)
+(
+r ∑
+k=1
+Ljk(θ, θ∗)− rHj(θ, θ∗) )
+∣ ∣ ∣ ∣ ∣ ∣
+= 1
+t
+t ∑
+r= √ t+1
+n−φ ∑
+j=1
+πj(r + 1) r
+t
+∣ ∣ ∣ ∣ ∣ 1 r r ∑
+k=1
+Ljk(θ, θ∗)−Hj(θ, θ∗) ∣ ∣ ∣ ∣
+∣
+≤ 1 t
+t ∑
+r= √ t+1
+n−φ ∑
+j=1
+πj(r + 1) r
+t
+ǫ
+2
+= 1
+t
+t ∑
+r= √ t+1
+r
+t
+ǫ 2 = ǫ 2 1 t2
+t ∑
+r= √ t+1
+r
+= ǫ
+4
+1 t2 (
+t2 − √ t )
+≤ ǫ 2 .
+Therefore, for any ǫ > 0, there exists max{t1(ǫ), t2(ǫ)}, such that for any t ≥ max{t1(ǫ), t2(ǫ)},
+1 t2
+∣ ∣ ∣ ∣ ∣ ∣ t ∑
+r=1
+n−φ ∑
+j=1
+πj(r + 1)
+(
+r ∑
+k=1
+Ljk(θ, θ∗)− rHj(θ, θ∗) )
+∣ ∣ ∣ ∣ ∣ ∣ ≤ ǫ,
+for every convergent sample path. In addition, we know a sample path is convergent with probability 1. Thus (26) holds almost surely.
+Therefore, Lemma 3 is proved. 5 BFL in the absence of Byzantine Agents, i.e., f = 0 In this section, we present BFL for the special case in the absence of Byzantine agents, i.e., f = 0, named Failure-free BFL. Since f = 0, all the agents in the network are cooperative, and no trimming is needed. Indeed, the BFL for f = 0 is a simple modification of the algorithm proposed in [14].
+For each time t ≥ 1, we define a matrix that follows the structure of G(V, E) as follows:
+Aij ,
+{
+1 |Ii|+1 , j ∈ Ii ∪ {i} 0, otherwise.
+(28)
+16
+Algorithm 5: Failure-free BFL
+1 Transmit current belief vector µit−1 on all outgoing edges; 2 Wait until a private signal sit is observed and belief vectors are received from all incoming neighbors Ii; 3 for θ ∈ Θ do
+4 µit(θ) ← ℓi(si1,t|θ)
+∏ j∈Ii∪{i} µ j t−1(θ) 1 |Ii|+1
+∑m p=1 ℓi(s i 1,t|θ) ∏ j∈Ii∪{i} µ j t−1(θ) 1 |Ii|+1
+.
+5 end
+Thus, the dynamic of ψit(θ, θ ∗) (defined in (9)) under Algorithm 5 can be written as
+ψit(θ, θ ∗) = log
+µit(θ)
+µit(θ ∗)
+= log ℓi(s
+i 1,t|θ)
+∏ j∈Ii∪{i} µ j t−1(θ)
+1 |Ii|+1
+ℓi(si1,t|θ∗) ∏ j∈Ii∪{i} µ j t−1(θ
+∗) 1 |Ii|+1
+= log ∏
+j∈Ii∪{i}
+[
+µ j t−1(θ)
+µ j t−1(θ ∗)
+] 1 |Ii|+1
++ log ℓi(s
+i 1,t | θ)
+ℓi(si1,t | θ∗)
+= log ∏
+j∈Ii∪{i}
+[
+µ j t−1(θ)
+µ j t−1(θ ∗)
+] 1 |Ii|+1
++
+t ∑
+r=1
+log ℓi(s
+i r | θ)
+ℓi(sir | θ∗)
+= n ∑
+j=1
+Aijψ i t−1(θ, θ
+∗) + t ∑
+r=1
+Lir(θ, θ∗) by (9) and (28)
+Recall that ψt(θ, θ ∗) ∈ Rn−φ is the vector that stacks ψit−1(θ, θ∗) with the i–th entry being
+ψit−1(θ, θ ∗) for all i ∈ N . Since f = 0, i.e., the network is free of failures, it holds that
+0 ≤ φ = |F| ≤ f = 0. Thus, ψt(θ, θ ∗) ∈ Rn. Similar to (12), the evolution of ψt(θ, θ∗) can be compactly written as follows.
+ψt(θ, θ ∗) = Atψ0(θ, θ ∗) + t ∑
+r=1
+At−r r ∑
+k=1
+Lk(θ, θ∗)
+=
+t ∑
+r=1
+At−r r ∑
+k=1
+Lk(θ, θ∗). (29)
+The last equality holds from the fact that ψ0(θ, θ ∗) = 0.
+As mentioned before, the non-Bayesian learning rules [14,15,11,17] are consensus-based learning algorithms, wherein agents are required to reach a common decision asymptotically.
+Assumption 3 The underlying communication network G(V, E) is strongly connected. It is easy to see that G(V, E) itself is the only reduced graph of G(V, E), and that Assumption 3 is the special case of Assumption 1 when f = 0. Thus,
+χm = 1, and νm = χm(n− φ) = n.
+17
+Note that both χm and νm are independent of m when f = 0. Henceforth in this section, we drop the subscripts of χm and νm for ease of notation.
+Similar to (3), for any r ≥ 1, we get
+lim t≥r, t→∞
+At−r = 1π.
+Since A is time-invariant, the product limit limt≥r, t→∞At−r is also independent of r.
+It is easy to see that
+A ≥ 1 n H,
+where H is the adjacency matrix of the communication graph G(V, E), and that
+πj ≥ 1
+nn , ∀ j = 1, · · · , n. (30)
+The following corollary is a direct consequence of Theorem 3, and its proof is omitted.
+Corollary 1. For all t ≥ r ≥ 1, it holds that ∣ ∣[At−r]ij − πj ∣ ∣ ≤ (1− 1 nn )⌈ t−r n ⌉, where [At−r]ij is the i, j–th entry of matrix At−r.
+In addition, when f = 0, Assumption 2 becomes
+Assumption 4 Suppose that Assumption 3 holds. For any θ 6= θ∗, the following holds
+m ∑
+j=1
+D (ℓj(·|θ∗) ‖ ℓj(·|θ)) 6= 0. (31)
+As an immediate consequence of Theorem 5, we have the following corollary.
+Corollary 2. When Assumption 4 holds, each agent i will concentrate its belief on the true hypothesis θ∗ almost surely, i.e., µit(θ) a.s.−−→ 0 for all θ 6= θ∗.
+Since Corollary 2 is the special case of Theorem 5 for f = 0, the proof of Corollary 2 is omitted. 5.1 Finite-Time Analysis of Failure-Free BFL In this subsection, we present the convergence rate that is achievable in finite time with high probability. Our proof is similar to the proof presented in [14,17].
+Lemma 4. Let λ , ( 1− ( 1 n )n ) 1 n , and let θ 6= θ∗, and consider ψit(θ, θ∗) as defined in (9). Then, for each agent i we have
+E [ ψit(θ, θ ∗) ] ≤ nC0 (1− 1 nn )(1− λ)t− C1 2nn t2.
+18
+Proof. By (29), we have ψit(θ, θ ∗) = ∑t r=1 ∑n j=1[A t−r]ij ∑r k=1L j k(θ, θ ∗). Taking expectation of ψit(θ, θ ∗) with respect to ℓi(· | θ∗), we get
+E ∗ [ψit(θ, θ ∗) ] = E∗ 
+t ∑
+r=1
+n ∑
+j=1
+[At−r]ij
+r ∑
+k=1
+Ljk(θ, θ∗) 
+= t ∑
+r=1
+n ∑
+j=1
+[At−r]ij
+r ∑
+k=1
+E ∗ [ Ljk(θ, θ∗) ]
+= t ∑
+r=1
+n ∑
+j=1
+[At−r]ijrHj(θ, θ ∗) by (13)
+= t ∑
+r=1
+n ∑
+j=1
+( [At−r]ij − πj ) rHj(θ, θ ∗) +
+t ∑
+r=1
+n ∑
+j=1
+πjrHj(θ, θ ∗). (32)
+For the first term in the right hand side of (32), we have
+t ∑
+r=1
+n ∑
+j=1
+( [At−r]ij − πj ) rHj(θ, θ ∗) ≤
+t ∑
+r=1
+n ∑
+j=1
+∣ ∣[At−r]ij − πj ∣ ∣ r |Hj(θ, θ∗)|
+≤ t ∑
+r=1
+n ∑
+j=1
+[
+1− 1 nn
+]⌈ t−r n ⌉ rC0 by Corollary 1, and (14)
+= nC0
+t ∑
+r=1
+[
+1− 1 nn
+]⌈ t−r n ⌉ r
+≤ nC0 (1− 1
+nn )(1− λ)t. (33)
+Since G(V, E) is the only source component, C1 (defined in (15)) becomes
+C1 = min θ,θ∗∈Θ;θ 6=θ∗
+n ∑
+i=1
+D(ℓi(·|θ∗) ‖ ℓi(·|θ)).
+Thus, for the second term in the right hand side of (32), we get
+t ∑
+r=1
+n ∑
+j=1
+πjrHj(θ, θ ∗) ≤
+t ∑
+r=1
+n ∑
+j=1
+1
+nn rHj(θ, θ
+∗) by (30) and (13)
+= 1
+nn
+t ∑
+r=1
+r
+n ∑
+j=1
+Hj(θ, θ ∗)
+≤ − 1 nn
+t ∑
+r=1
+rC1
+≤ − C1 2nn t2. (34)
+19
+By (33) and (34), (32) becomes
+E ∗ [ψit(θ, θ ∗) ]
+= t ∑
+r=1
+n ∑
+j=1
+( [At−r]ij − πj ) rHj(θ, θ ∗) +
+t ∑
+r=1
+n ∑
+j=1
+πjrHj(θ, θ ∗)
+≤ nC0 (1− 1 nn )(1− λ)t− C1 2nn t2, (35)
+proving the lemma.
+Similar to [14,17], we also use McDiarmid’s Inequality.
+Theorem 6 (McDiarmid’s Inequality). Let X1, · · · ,Xt be independent random variables and consider the mapping H : X t → R. If for r = 1, · · · , t, and every sample x1, · · · , xt, x′r ∈ X , the function H satisfies
+∣ ∣H(x1, · · · , xr, · · · , xt)−H(x1, · · · , x′r, · · · , xt) ∣ ∣ ≤ cr,
+then for all ǫ > 0,
+P [|H(x1, · · · , xt)− E[H(x1, · · · , xt)]| ≥ ǫ] ≤ exp { −2ǫ2 ∑t
+r=1 c 2 r
+}
+.
+Theorem 7. Under Assumption 4, for any ρ ∈ (0, 1), there exists an integer T (ρ) such that with probability 1− ρ, for all t ≥ T (ρ) and for all θ 6= θ∗, we have
+µit(θ) ≤ exp (
+nC0
+(1− 1 nn
+)(1− λ) t− C1 4nn t2
+)
+where C0 and C1 are defined in (14) and (15) respectively, and T (ρ) = 64C20n 2n
+3C21 log 1 ρ .
+Proof. Since µit(θ ∗) ∈ (0, 1], we have
+µit(θ) ≤ µit(θ)
+µit(θ ∗)
+= exp ( ψit(θ, θ ∗) ) .
+Thus, we have
+P
+( µit(θ) ≥ exp (
+nC0
+(1− 1 nn
+)(1− λ) t− C1 4nn t2
+)) ≤ P ( ψit(θ, θ ∗) ≥ nC0
+(1− 1 nn
+)(1− λ)t− C1 4nn t2
+)
+≤ P (
+ψit(θ, θ ∗)− E∗ [ ψit(θ, θ ∗) ] ≥ C1 4nn
+t2 ) .
+20
+Note that ψit(θ, θ ∗) is a function of the random vector s1, · · · , st. For a given sample path
+s1, · · · , st, and for all p ∈ {1, · · · , t}, we have
+max sp∈S1×···×St
+ψit(θ, θ ∗)− min sp∈S1×···×St ψit(θ, θ ∗)
+= max sp∈S1×···×St
+t ∑
+r=1
+n ∑
+j=1
+[At−r]ij
+r ∑
+k=1
+Lk(θ, θ∗)− min sp∈S1×···×St
+t ∑
+r=1
+n ∑
+j=1
+[At−r]ij
+r ∑
+k=1
+Lk(θ, θ∗)
+= max sp∈S1×···×St
+t ∑
+r=p
+n ∑
+j=1
+[At−r]ij
+r ∑
+k=1
+Lk(θ, θ∗)− min sp∈S
+t ∑
+r=p
+n ∑
+j=1
+[At−r]ij
+r ∑
+k=1
+Lk(θ, θ∗)
+= max sp∈S1×···×St
+t ∑
+r=p
+n ∑
+j=1
+[At−r]ijLp(θ, θ∗)− min sp∈S
+t ∑
+r=p
+n ∑
+j=1
+[At−r]ijLp(θ, θ∗)
+≤ t ∑
+r=p
+n ∑
+j=1
+[At−r]ijC0 + t ∑
+r=p
+n ∑
+j=1
+[At−r]ijC0
+= 2C0(t− p+ 1) , cp.
+By McDiarmid’s inequality (Theorem 6), we obtain that
+P
+(
+ψ∗t (θ, θ ∗)− E∗ [ψ∗t (θ, θ∗)] ≥
+C1 4nn t2 ) ≤ exp ( − 2 C21 16n2n t4
+∑t p=1(2C0(t− p+ 1))2
+)
+≤ exp ( − 3C 2 1
+64C20n 2n
+t
+)
+,
+where the last inequality follows from the fact that
+t(t+ 1)(2t+ 1) ≤ 4t3 ∀ t ≥ 2,
+which can be shown by induction. Therefore, for a given confidence level ρ, in order to have
+P
+( µit(θ) ≥ exp (
+nC0
+(1− 1 nn
+)(1− λ)t− C1 4nn t2
+))
+≤ ρ,
+we require that
+t ≥ T (ρ) = 64C 2 0n 2n
+3C21 log
+1 ρ .
+Remark 3. The above finite-time analysis is not directly applicable for the general case when f > 0, due to the fact that the local beliefs are dependent on all the observations collected so far as well as all the future observations.
+Remark 4. Our analysis for the special when f = 0 also works for time-varying networks [14]. In addition, with identical analysis, we are able to adapt the failure-free scheme to work in the more general setting where there is no underlying true state, and the goal is to have the agents collaboratively identify an optimal θ ∈ Θ that best explains all the observations obtained over the whole network.
+21 6 Modified BFL and Minimal Network Identifiability To reduce the computation complexity per iteration in general, and to identify the minimal (tight) global identifiability of the network for any consensus-based learning rule of interest to learn the true state, we propose a modification of the above learning rule, which works under much weaker network topology and global identifiability condition.
+We decompose the m-ary hypothesis testing problem into m(m−1) (ordered) binary hypothesis testing problems. For each pair of hypotheses θ1 and θ2, each non-faulty agent updates the likelihood ratio of θ1 over θ2 as follows. Let r i t(θ1, θ2) be the log likelihood ratio of θ1 over θ2 kept by agent i at the end of iteration t. Our modified learning rule applies consensus procedures to log likelihood ratio, i.e., rit(θ1, θ2), which is a scalar. For Algorithm 6, we only require scalar iterative Byzantine (approximate) consensus among the non-faulty agents to be achievable.
+When scalar consensus is achievable, the following assumption on the identifiability of the network to detect θ∗ is minimal, meaning that if this assumption is not satisfied, then no correct consensus-based non-Bayesian learning exists.
+Assumption 5 Suppose that every 1-dimensional reduced graph of G(V, E) contains only one source component. For any θ 6= θ∗, and for any 1-dimensional reduced graph H1 of G(V, E) with SH1 denoting the unique source component, the following holds
+∑
+j∈SH1
+D (ℓj(·|θ∗) ‖ ℓj(·|θ)) 6= 0. (36)
+Assumption 5 is minimal for the following reasons: (1) For any consensus-based learning rule to work, the communication network G(V, E) should support consensus with scalar inputs. That is, every 1-dimensional reduced graph of G(V, E) must contain only one source component. (2) Under some faulty behaviors of the Byzantine agents, one particular 1–dimensional reduced graph may govern the entire dynamics of ri(θ1, θ2). If (36) does not hold for that reduced graph, then the good agents may not able to distinguish θ1 from θ2.
+Algorithm 6: Pairwise Learning
+1 Initialization: for θ1, θ2 ∈ Θ, and θ1 6= θ2 do 2 ri0(θ1, θ2) ← 0; 3 end 4 while t ≥ 1 do 5 for θ1, θ2 ∈ Θ, and θ1 6= θ2 do 6 Transmit current belief vector rit−1(θ1, θ2) on all outgoing edges; 7 Wait until a private signal sit is observed and log likelihood ratios r̃ j t−1(θ1, θ2) are received from all incoming neighbors Ii; 8 Sort the received log likelihood ratios r̃jt−1(θ1, θ2) in a non-decreasing order, and
+remove the smallest f values and the largest f values. % Denote the set of indices of incoming neighbors whose ratios have not been removed at iteration t by I∗i [t].%
+9 rit(θ1, θ2) ← ∑ j∈I∗ i [t] r̃ j t−1(θ1,θ2)+r i t−1(θ1,θ2)
+|I∗[t]|+1 + log ℓi(si1,t|θ1) ℓi(si1,t|θ2) .
+10 end
+11 end
+22
+For each iteration, the computation complexity per agent (non-faulty) can be calculated as follows. The cost-dominant procedure in each iteration is sorting the received log likelihood ratios, which takes O(n log n) operations. In total, we have m(m− 1) order pairs of hypotheses. Thus, the total computation per agent per iteration is O(m2n log n).
+Theorem 8. Suppose Assumption 5 holds. Under Algorithm 6, for any θ 6= θ∗, the following holds:
+rit(θ ∗, θ) a.s.−−→ +∞, and rit(θ, θ∗) a.s.−−→ −∞.
+Proof. By [20], we know that for each pair of hypotheses θ1 and θ2, there exists a row-stochastic matrix M1,2[t] ∈ R(n−φ)×(n−φ) such that
+rit(θ1, θ2) =
+n−φ ∑
+j=1
+M1,2ij [t]r j t−1(θ1, θ2) + log
+ℓi(s i 1,t | θ1) ℓi(si1,t | θ2) . (37)
+Note that matrix M1,2 depends on the choice of hypotheses θ1 and θ2. For a given pair of hypotheses θ1 and θ2, let rt(θ1, θ2) ∈ Rn−φ be the vector that stacks rit(θ1, θ2). The evolution of r(θ1, θ2) can be compactly written as
+rt(θ1, θ2) = M 1,2[t]rt−1(θ1, θ2) +
+t ∑
+r=1
+Lr(θ1, θ2)
+= t ∑
+r=1
+Φ1,2(t, r + 1) r ∑
+k=1
+Lk(θ1, θ2), (38)
+where Φ1,2(t, r+1) , M1,2[t]M1,2[t− 1] · · ·M1,2[r+1] for r ≤ t, Φ1,2(t, t) , M1,2[t] and Φ1,2(t, t+ 1) , I. We do the analysis for each pair of θ1 and θ2 separately.
+The remaining proof is identical to the proof of Theorem 5, and is omitted.
+Proposition 1. Suppose there exists θ̃ ∈ Θ such that for any θ 6= θ̃, it holds that rit(θ̃, θ) a.s.−−→ +∞, and rit(θ, θ̃) a.s.−−→ −∞. Then θ̃ = θ∗.
+Proof. We prove this proposition by contradiction. Suppose there exists θ̃ 6= θ∗ ∈ Θ such that for any θ 6= θ̃, it holds that rit(θ̃, θ) a.s.−−→ +∞, and rit(θ, θ̃) a.s.−−→ −∞. Then we know that rit(θ̃, θ∗)
+a.s.−−→ +∞ and rit(θ∗, θ̃) a.s.−−→ −∞, contradicting Theorem 8. Thus, Proposition 1 is true. 7 Conclusion This paper addresses the problem of consensus-based non-Bayesian learning over multi-agent networks when an unknown subset of agents may be adversarial (Byzantine). We propose two learning rules, and characterize the tight network identifiability condition for any consensus-based learning rule of interest to exist. In our first update rule, each agent updates its local beliefs as (up to normalization) the product of (1) the likelihood of the cumulative private signals and (2) the weighted geometric average of the beliefs of its incoming neighbors and itself. Under reasonable assumptions on the underlying network structure and the global identifiability of the network, we show that all the non-faulty agents asymptotically agree on the true state almost surely. For the case when every agent is failure-free, we show that (with high probability) each agent’s beliefs on the wrong
+23
+hypotheses decrease at rate O(exp(−Ct2)), where t is the number of iterations, and C is a constant. In general when agents may be adversarial, network identifiability condition specified for the above learning rule scales poorly in m. In addition, the computation complexity per agent per iteration of this learning rule is forbiddingly high. Thus, we propose a modification of our first learning rule, whose complexity per iteration per agent is O(m2n log n). We show that this modified learning rule works under a much weaker global identifiability condition that is independent of m.
+We so far focussed on synchronous system and static network, our results may be generalizable to asynchronous as well as time varying network.
+Throughout this paper, we assume that consensus among non-faulty agents needs to be achieved. Although this is necessary for the family of consensus-based algorithms (by definition), this is not the case for the non-faulty agents to collaboratively learn the true state in general. Indeed, there is a tradeoff between the capability of the network to reach consensus and the tight condition of the network detectability. For instance, if the network is disconnected, then information cannot be propagated across the connected components. Thus, the non-faulty agents in each connected component have to be able to learn the true state. We leave investigating the above tradeoff as future work.  2 1 Introduction Decentralized hypothesis testing (learning) has received significant amount of attention [1,2,3,5,6,7,8].    2 1 Introduction Decentralized hypothesis testing (learning) has received significant amount of attention [1,2,3,5,6,7,8].    2 1 Introduction Decentralized hypothesis testing (learning) has received significant amount of attention [1,2,3,5,6,7,8].    2 1 Introduction Decentralized hypothesis testing (learning) has received significant amount of attention [1,2,3,5,6,7,8].    2 1 Introduction Decentralized hypothesis testing (learning) has received significant amount of attention [1,2,3,5,6,7,8].    2 1 Introduction Decentralized hypothesis testing (learning) has received significant amount of attention [1,2,3,5,6,7,8].    2 1 Introduction Decentralized hypothesis testing (learning) has received significant amount of attention [1,2,3,5,6,7,8].    The traditional decentralized detection framework consists of a collection of spatially distributed sensors and a fusion center [5,6,7].    The traditional decentralized detection framework consists of a collection of spatially distributed sensors and a fusion center [5,6,7].    The traditional decentralized detection framework consists of a collection of spatially distributed sensors and a fusion center [5,6,7].    Distributed hypothesis testing in the absence of fusion center is considered in [2,22,23,21].    Distributed hypothesis testing in the absence of fusion center is considered in [2,22,23,21].    Distributed hypothesis testing in the absence of fusion center is considered in [2,22,23,21].    Distributed hypothesis testing in the absence of fusion center is considered in [2,22,23,21].    In particular, Gale and Kariv [2] studied the distributed hypothesis testing problem in the context of social learning, where fully Bayesian belief update rule is studied.    [3], and has attracted much attention [10,14,15,16,11,18,17,13].    [3], and has attracted much attention [10,14,15,16,11,18,17,13].    [3], and has attracted much attention [10,14,15,16,11,18,17,13].    [3], and has attracted much attention [10,14,15,16,11,18,17,13].    [3], and has attracted much attention [10,14,15,16,11,18,17,13].    [3], and has attracted much attention [10,14,15,16,11,18,17,13].    [3], and has attracted much attention [10,14,15,16,11,18,17,13].    [3], and has attracted much attention [10,14,15,16,11,18,17,13].    [3], and has attracted much attention [10,14,15,16,11,18,17,13].    [3] considered the general setting where external signals are observed during each iteration of the algorithm execution.    It is shown [3] that, under this learning rule, each agent learns the true state almost surely.    The publication of [3] has inspired significant efforts in designing and analyzing non-Bayesian learning rules with a particular focus on refining the fusion strategies and analyzing the (asymptotic and/or finite time) convergence rates of the refined algorithms [10,14,15,16,11,18,17,13].    The publication of [3] has inspired significant efforts in designing and analyzing non-Bayesian learning rules with a particular focus on refining the fusion strategies and analyzing the (asymptotic and/or finite time) convergence rates of the refined algorithms [10,14,15,16,11,18,17,13].    The publication of [3] has inspired significant efforts in designing and analyzing non-Bayesian learning rules with a particular focus on refining the fusion strategies and analyzing the (asymptotic and/or finite time) convergence rates of the refined algorithms [10,14,15,16,11,18,17,13].    The publication of [3] has inspired significant efforts in designing and analyzing non-Bayesian learning rules with a particular focus on refining the fusion strategies and analyzing the (asymptotic and/or finite time) convergence rates of the refined algorithms [10,14,15,16,11,18,17,13].    The publication of [3] has inspired significant efforts in designing and analyzing non-Bayesian learning rules with a particular focus on refining the fusion strategies and analyzing the (asymptotic and/or finite time) convergence rates of the refined algorithms [10,14,15,16,11,18,17,13].    The publication of [3] has inspired significant efforts in designing and analyzing non-Bayesian learning rules with a particular focus on refining the fusion strategies and analyzing the (asymptotic and/or finite time) convergence rates of the refined algorithms [10,14,15,16,11,18,17,13].    The publication of [3] has inspired significant efforts in designing and analyzing non-Bayesian learning rules with a particular focus on refining the fusion strategies and analyzing the (asymptotic and/or finite time) convergence rates of the refined algorithms [10,14,15,16,11,18,17,13].    The publication of [3] has inspired significant efforts in designing and analyzing non-Bayesian learning rules with a particular focus on refining the fusion strategies and analyzing the (asymptotic and/or finite time) convergence rates of the refined algorithms [10,14,15,16,11,18,17,13].    The publication of [3] has inspired significant efforts in designing and analyzing non-Bayesian learning rules with a particular focus on refining the fusion strategies and analyzing the (asymptotic and/or finite time) convergence rates of the refined algorithms [10,14,15,16,11,18,17,13].    In this paper we are particularly interested in the log-linear form of the update rule, in which, essentially, each agent updates its belief as the geometric average of the local Bayesian update and its neighbors’ beliefs [15,10,14,16,11,18,17,13].    In this paper we are particularly interested in the log-linear form of the update rule, in which, essentially, each agent updates its belief as the geometric average of the local Bayesian update and its neighbors’ beliefs [15,10,14,16,11,18,17,13].    In this paper we are particularly interested in the log-linear form of the update rule, in which, essentially, each agent updates its belief as the geometric average of the local Bayesian update and its neighbors’ beliefs [15,10,14,16,11,18,17,13].    In this paper we are particularly interested in the log-linear form of the update rule, in which, essentially, each agent updates its belief as the geometric average of the local Bayesian update and its neighbors’ beliefs [15,10,14,16,11,18,17,13].    In this paper we are particularly interested in the log-linear form of the update rule, in which, essentially, each agent updates its belief as the geometric average of the local Bayesian update and its neighbors’ beliefs [15,10,14,16,11,18,17,13].    In this paper we are particularly interested in the log-linear form of the update rule, in which, essentially, each agent updates its belief as the geometric average of the local Bayesian update and its neighbors’ beliefs [15,10,14,16,11,18,17,13].    In this paper we are particularly interested in the log-linear form of the update rule, in which, essentially, each agent updates its belief as the geometric average of the local Bayesian update and its neighbors’ beliefs [15,10,14,16,11,18,17,13].    In this paper we are particularly interested in the log-linear form of the update rule, in which, essentially, each agent updates its belief as the geometric average of the local Bayesian update and its neighbors’ beliefs [15,10,14,16,11,18,17,13].    The log-linear form (geometric averaging) update rule is shown to converge exponentially fast [10,16].    The log-linear form (geometric averaging) update rule is shown to converge exponentially fast [10,16].    Taking an axiomatic approach, the geometric averaging fusion is proved to be optimal [13].    An optimization-based interpretation of this rule is presented in [16], using dual averaging method with properly chosen proximal functions.    Finite-time convergence rates are investigated independently in [14,11,17].    Finite-time convergence rates are investigated independently in [14,11,17].    Finite-time convergence rates are investigated independently in [14,11,17].    Both [14] and [18] consider time-varying networks, with slightly different network models.    Both [14] and [18] consider time-varying networks, with slightly different network models.    Specifically, [14] assumes that the union of every consecutive B networks is strongly connected, while [18] considers random networks.    Specifically, [14] assumes that the union of every consecutive B networks is strongly connected, while [18] considers random networks.    Thus, this paper focuses on the fault-tolerant version the non-Bayesian framework proposed in [3].    An alternative fault model, where some agents may unexpectedly cease computing and communicate with each other asynchronously, is considered in our companion work [34].    [24] and has attracted intensive attention from researchers [25,26,27,30,28,31].    [24] and has attracted intensive attention from researchers [25,26,27,30,28,31].    [24] and has attracted intensive attention from researchers [25,26,27,30,28,31].    [24] and has attracted intensive attention from researchers [25,26,27,30,28,31].    [24] and has attracted intensive attention from researchers [25,26,27,30,28,31].    [24] and has attracted intensive attention from researchers [25,26,27,30,28,31].    [24] and has attracted intensive attention from researchers [25,26,27,30,28,31].    The existing non-Bayesian learning algorithms [10,11,13,14,15,16,17,18] are not robust to Byzantine agents, since the malicious messages sent by the Byzantine agents are indiscriminatingly utilized in the local belief updates.    The existing non-Bayesian learning algorithms [10,11,13,14,15,16,17,18] are not robust to Byzantine agents, since the malicious messages sent by the Byzantine agents are indiscriminatingly utilized in the local belief updates.    The existing non-Bayesian learning algorithms [10,11,13,14,15,16,17,18] are not robust to Byzantine agents, since the malicious messages sent by the Byzantine agents are indiscriminatingly utilized in the local belief updates.    The existing non-Bayesian learning algorithms [10,11,13,14,15,16,17,18] are not robust to Byzantine agents, since the malicious messages sent by the Byzantine agents are indiscriminatingly utilized in the local belief updates.    The existing non-Bayesian learning algorithms [10,11,13,14,15,16,17,18] are not robust to Byzantine agents, since the malicious messages sent by the Byzantine agents are indiscriminatingly utilized in the local belief updates.    The existing non-Bayesian learning algorithms [10,11,13,14,15,16,17,18] are not robust to Byzantine agents, since the malicious messages sent by the Byzantine agents are indiscriminatingly utilized in the local belief updates.    The existing non-Bayesian learning algorithms [10,11,13,14,15,16,17,18] are not robust to Byzantine agents, since the malicious messages sent by the Byzantine agents are indiscriminatingly utilized in the local belief updates.    The existing non-Bayesian learning algorithms [10,11,13,14,15,16,17,18] are not robust to Byzantine agents, since the malicious messages sent by the Byzantine agents are indiscriminatingly utilized in the local belief updates.    In contrast to the existing algorithms [14,11], where only the current private signal is used in the update, our proposed algorithm relies on the cumulative private signals.    In contrast to the existing algorithms [14,11], where only the current private signal is used in the update, our proposed algorithm relies on the cumulative private signals.    Thus, our proposed rule may be of independent interest for the failure-free setting considered in [10,11,13,14,15,16,17,18].    Thus, our proposed rule may be of independent interest for the failure-free setting considered in [10,11,13,14,15,16,17,18].    Thus, our proposed rule may be of independent interest for the failure-free setting considered in [10,11,13,14,15,16,17,18].    Thus, our proposed rule may be of independent interest for the failure-free setting considered in [10,11,13,14,15,16,17,18].    Thus, our proposed rule may be of independent interest for the failure-free setting considered in [10,11,13,14,15,16,17,18].    Thus, our proposed rule may be of independent interest for the failure-free setting considered in [10,11,13,14,15,16,17,18].    Thus, our proposed rule may be of independent interest for the failure-free setting considered in [10,11,13,14,15,16,17,18].    Thus, our proposed rule may be of independent interest for the failure-free setting considered in [10,11,13,14,15,16,17,18].    2 Problem Formulation Network Model: Our network model is similar to the model used in [4,30].    2 Problem Formulation Network Model: Our network model is similar to the model used in [4,30].    The faulty agents may collaborate with each other adaptively [12].    Observation Model: Our observation model is identical the model used in [3,11,18].    Observation Model: Our observation model is identical the model used in [3,11,18].    Observation Model: Our observation model is identical the model used in [3,11,18].    Byzantine consensus has attracted significant amount of attention [25,26,29,27,30,28,31].    Byzantine consensus has attracted significant amount of attention [25,26,29,27,30,28,31].    Byzantine consensus has attracted significant amount of attention [25,26,29,27,30,28,31].    Byzantine consensus has attracted significant amount of attention [25,26,29,27,30,28,31].    Byzantine consensus has attracted significant amount of attention [25,26,29,27,30,28,31].    Byzantine consensus has attracted significant amount of attention [25,26,29,27,30,28,31].    Byzantine consensus has attracted significant amount of attention [25,26,29,27,30,28,31].    While the past work mostly focus on scalar inputs, the more general vector (or multi-dimensional) inputs have been studied recently [31,29,28].    While the past work mostly focus on scalar inputs, the more general vector (or multi-dimensional) inputs have been studied recently [31,29,28].    While the past work mostly focus on scalar inputs, the more general vector (or multi-dimensional) inputs have been studied recently [31,29,28].    Complete communication networks are considered in [31,29], where tight conditions on the number of agents are identified.    Complete communication networks are considered in [31,29], where tight conditions on the number of agents are identified.    Incomplete communication networks are studied in [28].    In particular, our learning algorithms build upon Byz-Iter algorithm proposed in [28] and a simple algorithm proposed in [30] for iterative Byzantine consensus with vector inputs and scalar inputs, respectively, in incomplete networks.    In particular, our learning algorithms build upon Byz-Iter algorithm proposed in [28] and a simple algorithm proposed in [30] for iterative Byzantine consensus with vector inputs and scalar inputs, respectively, in incomplete networks.    A matrix representation of the non-faulty agents’ states evolution under Byz-Iter algorithm is provided by [28], which also captures the dynamics of the simple algorithm with scalar inputs in [30].    A matrix representation of the non-faulty agents’ states evolution under Byz-Iter algorithm is provided by [28], which also captures the dynamics of the simple algorithm with scalar inputs in [30].    1 Algorithm Byz-Iter [28] Algorithm Byz-Iter is based on Tverberg’s Theorem [32].    1 Algorithm Byz-Iter [28] Algorithm Byz-Iter is based on Tverberg’s Theorem [32].    [32] Let f be a nonnegative integer.    Algorithm 2: Algorithm Byz-Iter [28]: t-th iteration at agent i 1 v t ← One-Iter(v t−1); Remark 1.    2 Correctness of Algorithm Byz-Iter We briefly summarize the aspects of correctness proof of Algorithm 2 from [28] that are necessary for our subsequent discussion.    [28] shows that the effective communication network thus obtained can be characterized by a “reduced graph” of G(V, E), defined below.    Assumption 1 below states a condition that is sufficient for reaching approximate Byzantine vector consensus using Algorithm 1 [28].    [28] Suppose Assumption 1 holds for a given m ≥ 1.    3 Matrix Representation [28] Let |F| = φ (thus, 0 ≤ φ ≤ f).    [28] Suppose Assumption 1 holds for a given m ≥ 1.    Using prior work on coefficients of ergodicity [9], under Assumption 1, it has been shown [28,19] that lim t≥r, t→∞ Φ(t, r) = 1π(r), (3) where π(r) ∈ Rn−φ is a row stochastic vector, and 1 is the column vector with each entry being 1.    Using prior work on coefficients of ergodicity [9], under Assumption 1, it has been shown [28,19] that lim t≥r, t→∞ Φ(t, r) = 1π(r), (3) where π(r) ∈ Rn−φ is a row stochastic vector, and 1 is the column vector with each entry being 1.    Using prior work on coefficients of ergodicity [9], under Assumption 1, it has been shown [28,19] that lim t≥r, t→∞ Φ(t, r) = 1π(r), (3) where π(r) ∈ Rn−φ is a row stochastic vector, and 1 is the column vector with each entry being 1.    [28] For all t ≥ r ≥ 1, it holds that |Φij(t, r)− πj(r)| ≤ (1 − β m) t−r+1 ν ⌉, where ν , χm(n− φ).    The next lemma is a consequence of the results in [28].    [28] For any r ≥ 1, there exists a reduced graph H[r] with source component Sr such that πi(r) ≥ βχm(n−φ) m for each i ∈ Sr.    , the inputs provided at individual non-faulty agents are scalars) it has been shown [30] that Assumption 1 is also necessary.    [30] For scalar inputs, iterative approximate Byzantine consensus is achievable among non-faulty agents if and only if every 1-dimensional reduced graph of G(V, E) contains only one source component.    8 Algorithm 3: Algorithm Scalar Byzantine Consensus: iteration t ≥ 1 [30] 1 Transmit vi[t− 1] on all outgoing links; 2 Receive messages on all incoming links.    BFL is a modified version of the geometric averaging update rule that has been investigated in previous work [14,15,11,17].    BFL is a modified version of the geometric averaging update rule that has been investigated in previous work [14,15,11,17].    BFL is a modified version of the geometric averaging update rule that has been investigated in previous work [14,15,11,17].    BFL is a modified version of the geometric averaging update rule that has been investigated in previous work [14,15,11,17].    Algorithm 4: BFL: Iteration t ≥ 1 at agent i 1 η t ← One-Iter(log μt−1); 2 Observe st; 3 for θ ∈ Θ do 4 li(s i 1,t|θ) ← li(st|θ) li(s1,t−1|θ); 5 μt(θ) ← li(s1,t|θ) exp(η t(θ)) ∑m p=1 li(s i 1,t|θp) exp(η t(θp)) ; 6 end The main difference of Algorithm 4 with respect to the algorithms in [14,15,11,17] is that (i) our algorithm uses a Byzantine consensus iteration as a primitive (in line 1), and (ii) li(s i 1,t|θ) used in line 5 is the likelihood for observations from iteration 1 to t (the previous algorithms instead use li(s i t|θ) here).    Algorithm 4: BFL: Iteration t ≥ 1 at agent i 1 η t ← One-Iter(log μt−1); 2 Observe st; 3 for θ ∈ Θ do 4 li(s i 1,t|θ) ← li(st|θ) li(s1,t−1|θ); 5 μt(θ) ← li(s1,t|θ) exp(η t(θ)) ∑m p=1 li(s i 1,t|θp) exp(η t(θp)) ; 6 end The main difference of Algorithm 4 with respect to the algorithms in [14,15,11,17] is that (i) our algorithm uses a Byzantine consensus iteration as a primitive (in line 1), and (ii) li(s i 1,t|θ) used in line 5 is the likelihood for observations from iteration 1 to t (the previous algorithms instead use li(s i t|θ) here).    Algorithm 4: BFL: Iteration t ≥ 1 at agent i 1 η t ← One-Iter(log μt−1); 2 Observe st; 3 for θ ∈ Θ do 4 li(s i 1,t|θ) ← li(st|θ) li(s1,t−1|θ); 5 μt(θ) ← li(s1,t|θ) exp(η t(θ)) ∑m p=1 li(s i 1,t|θp) exp(η t(θp)) ; 6 end The main difference of Algorithm 4 with respect to the algorithms in [14,15,11,17] is that (i) our algorithm uses a Byzantine consensus iteration as a primitive (in line 1), and (ii) li(s i 1,t|θ) used in line 5 is the likelihood for observations from iteration 1 to t (the previous algorithms instead use li(s i t|θ) here).    Algorithm 4: BFL: Iteration t ≥ 1 at agent i 1 η t ← One-Iter(log μt−1); 2 Observe st; 3 for θ ∈ Θ do 4 li(s i 1,t|θ) ← li(st|θ) li(s1,t−1|θ); 5 μt(θ) ← li(s1,t|θ) exp(η t(θ)) ∑m p=1 li(s i 1,t|θp) exp(η t(θp)) ; 6 end The main difference of Algorithm 4 with respect to the algorithms in [14,15,11,17] is that (i) our algorithm uses a Byzantine consensus iteration as a primitive (in line 1), and (ii) li(s i 1,t|θ) used in line 5 is the likelihood for observations from iteration 1 to t (the previous algorithms instead use li(s i t|θ) here).    1 Identifiability In the absence of agent failures [3], for the networked agents to detect the true hypothesis θ∗, it is sufficient to assume that G(V, E) is strongly connected, and that θ∗ is globally identifiable.    2 Convergence Results Our proof parallels the structure of a proof in [14], but with some key differences to take into account our update rule for the belief vector.    (16) As it can be seen later, the proof of Lemma 3 is significantly different from the analogous lemma in [14].    Our convergence proof has similar structure as the analysis in [14].    Indeed, the BFL for f = 0 is a simple modification of the algorithm proposed in [14].    As mentioned before, the non-Bayesian learning rules [14,15,11,17] are consensus-based learning algorithms, wherein agents are required to reach a common decision asymptotically.    As mentioned before, the non-Bayesian learning rules [14,15,11,17] are consensus-based learning algorithms, wherein agents are required to reach a common decision asymptotically.    As mentioned before, the non-Bayesian learning rules [14,15,11,17] are consensus-based learning algorithms, wherein agents are required to reach a common decision asymptotically.    As mentioned before, the non-Bayesian learning rules [14,15,11,17] are consensus-based learning algorithms, wherein agents are required to reach a common decision asymptotically.    Our proof is similar to the proof presented in [14,17].    Our proof is similar to the proof presented in [14,17].    Similar to [14,17], we also use McDiarmid’s Inequality.    Similar to [14,17], we also use McDiarmid’s Inequality.    Our analysis for the special when f = 0 also works for time-varying networks [14].    By [20], we know that for each pair of hypotheses θ1 and θ2, there exists a row-stochastic matrix M1,2[t] ∈ R(n−φ)×(n−φ) such that r t(θ1, θ2) = n−φ ∑    Abstract This paper addresses the problem of non-Bayesian learning over multi-agent networks, where agents repeatedly collect partially informative observations about an unknown state of the world, and try to collaboratively learn the true state. We focus on the impact of the adversarial agents on the performance of consensus-based non-Bayesian learning, where non-faulty agents combine local learning updates with consensus primitives. In particular, we consider the scenario where an unknown subset of agents suffer Byzantine faults – agents suffering Byzantine faults behave arbitrarily. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

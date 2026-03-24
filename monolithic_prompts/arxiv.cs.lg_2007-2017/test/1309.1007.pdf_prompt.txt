@@ -1,0 +1,381 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Concentration in unbounded metric spaces and algorithmic stability
+Paper Content: 1309.1007.pdf CRF Concentration in unbounded metric spaces and algorithmic stability Aryeh Kontorovich   ar X
+iv :1
+30 9.
+10 07
+v2 [
+m at
+h. PR
+] 1 1 Introduction Concentration of measure inequalities are at the heart of statistical learning theory. Roughly speaking, concentration allows one to conclude that the performance of a (sufficiently “stable”) algorithm on a (sufficiently “close to iid”) sample is indicative of the algorithm’s performance on future data. Quantifying what it means for an algorithm to be stable and for the sampling process to be close to iid is by no means straightforward and much recent work has been motivated by these questions. It turns out that the various notions of stability are naturally expressed in terms of the Lipschitz continuity of the algorithm in question (Bousquet and Elisseeff, 2002; Kutin and Niyogi, 2002; Rakhlin et al., 2005; Shalev-Shwartz et al., 2010), while appropriate relaxations of the iid assumption are achieved using various kinds of strong mixing (Karandikar and Vidyasagar, 2002; Gamarnik, 2003; Rostamizadeh and Mohri, 2007; Mohri and Rostamizadeh, 2008; Steinwart and Christmann, 2009; Steinwart et al., 2009; Zou et al.; Mohri and Rostamizadeh, 2010; London et al., 2012, 2013; Shalizi and Kontorovich, 2013).
+An elegant and powerful work-horse driving many of the aforementioned results is McDiarmid’s inequality (McDiarmid, 1989):
+P(|ϕ− Eϕ| > t) ≤ 2 exp ( − 2t 2
+∑n i=1 w 2 i
+)
+, (1)
+where ϕ is a real-valued function of the sequence of independent random variables X = (X1, . . . , Xn), such that
+|ϕ(x) − ϕ(x′)| ≤ wi (2)
+whenever x and x′ differ only in the ith coordinate. Aside from being instrumental in proving PAC bounds (Boucheron et al., 2005), McDiarmid’s inequality has also found use in algorithmic stability results (Bousquet and Elisseeff, 2002). Non-iid extensions of (1) have also been considered (Marton, 1996; Rio, 2000; Chazottes et al., 2007; Kontorovich and Ramanan, 2008).
+The distribution-free nature of McDiarmid’s inequality makes it an attractive tool in learning theory, but also imposes inherent limitations on its applicability. Chief among these limitations is the inability of (1) to provide risk bounds for unbounded loss functions. Even in the bounded case, if the Lipschitz condition (2) holds not everywhere but only with high probability — say, with a much larger constant on a small set of exceptions — the bound in (1) still charges the full cost of the worst-case constant. To counter this difficulty, Kutin (2002); Kutin and Niyogi (2002) introduced an extension of McDiarmid’s inequality to weakly difference-bounded functions and used it to analyze the risk of “almost-everywhere” stable algorithms. This influential result has been invoked in a number of recent papers (El-Yaniv and Pechyony, 2006; Mukherjee et al., 2006; Hush et al., 2007; Agarwal and Niyogi, 2009; Shalev-Shwartz et al., 2010; Rubinstein and Simma, 2012).
+However, the approach of Kutin and Niyogi entails some difficulties as well. These come in two flavors: analytical (complex statement and proof) and practical (conditions are still too restrictive in some cases); we will elaborate upon this in Section 3. In this paper, we propose an alternative approach to the concentration of “almost-everywhere” or “average-case” Lipschitz functions. To this end, we introduce the notion of the subgaussian diameter of a metric probability space. The latter may be finite even when the metric diameter is infinite, and we show that this notion generalizes the more restrictive property of bounded differences.
+Main results. This paper’s principal contributions include defining the subgaussian diameter of a metric probability space and identifying its role in relaxing the bounded differences condition. In Theorem 1, we show that the subgaussian diameter can essentially replace the far more restrictive metric diameter in concentration bounds. This result has direct ramifications for algorithmic stability (Theorem 2). We furthermore extend our concentration inequality to non-independent processes (Theorem 3) and to other Orlicz norms (Theorem 4).
+Outline of paper. In Section 2 we define the subgaussian diameter and relate it to (weakly) bounded differences in Section 3. We state and prove the concentration inequality based on this notion in Section 4 and give an application to algorithmic stability in Section 5. We then give an extension to non-independent
+data in Section 6 and discuss other Orlicz norms in Section 7. Conclusions and some open problems are presented in Section 8. 2 Preliminaries A metric probability space (X , ρ, µ) is a measurable space X whose Borel σalgebra is induced by the metric ρ, endowed with the probability measure µ. Our results are most cleanly presented when X is a discrete set but they continue to hold verbatim for Borel probability measures on Polish spaces. It will be convenient to write Eϕ = ∑
+x∈X P(x)ϕ(x) even when the latter is an integral. Random variables are capitalized (X), specified sequences are written in lowercase, the notation Xji = (Xi, . . . , Xj) is used for all sequences, and sequence concatenation is denoted multiplicatively: xjix k j+1 = x k i . We will frequently use the shorthand P(xji ) = ∏j k=i P(Xk = xk). Standard order of magnitude notation such as O(·) and Ω(·) will be used. A function ϕ : X → R is L-Lipschitz if
+|ϕ(x) − ϕ(x′)| ≤ Lρ(x, x′), x, x′ ∈ X .
+Let (Xi, ρi, µi), i = 1, . . . , n be a sequence of metric probability spaces. We define the product probability space
+Xn = X1 ×X2 . . .×Xn
+with the product measure
+µn = µ1 × µ2 × . . .× µn
+and ℓ1 product metric
+ρn(x, y) =
+n ∑
+i=1
+ρi(xi, yi), x, y ∈ Xn. (3)
+We will denote partial products by
+X ji = Xi ×Xi+1 × . . .×Xj .
+We write Xi ∼ µi to mean that Xi is an Xi-valued random variable with law µi — i.e., P(Xi ∈ A) = µi(A) for all Borel A ⊂ Xi. This notation extends naturally to sequences: Xn1 ∼ µn. We will associate to each (Xi, ρi, µi) the symmetrized distance random variable Ξ(Xi) defined by
+Ξ(Xi) = ǫiρi(Xi, x′i), (4)
+where Xi, x ′ i ∼ µi are independent and ǫi = ±1 with probability 1/2, independent of Xi, x ′ i. We note right away that Ξ(Xi) is a centered random variable:
+E[Ξ(Xi)] = 0. (5)
+A real-valued random variable X is said to be subgaussian if it admits a σ > 0 such that
+EeλX ≤ eσ2λ2/2, λ ∈ R. (6)
+The smallest σ for which (6) holds will be denoted by σ∗(X). We define the subgaussian diameter ∆SG(Xi) of the metric probability space (Xi, ρi, µi) in terms of its symmetrized distance Ξ(Xi):
+∆SG(Xi) = σ∗(Ξ(Xi)). (7)
+If a metric probability space (X , ρ, µ) has finite diameter,
+diam(X ) := sup x,x′∈X ρ(x, x′) < ∞,
+then its subgaussian diameter is also finite:
+Lemma 1.
+∆SG(X ) ≤ diam(X ).
+Proof. Let Ξ = Ξ(X ) be the symmetrized distance. By (5), we have E[Ξ] = 0 and certainly |Ξ| ≤ diam(X ). Hence,
+EeλΞ ≤ exp((2 diam(X )λ)2/8) = exp(diam(X )2λ2/2),
+where the inequality follows from Hoeffding’s Lemma.
+The bound in Lemma 1 is nearly tight in the sense that for every ε > 0 there is a metric probability space (X , ρ, µ) for which
+diam(X ) < ∆SG(X ) + ε. (8)
+To see this, take X to be an N -point space with the uniform distribution and ρ(x, x′) = 1 for all distinct x, x′ ∈ X . Taking N sufficiently large makes ∆SG(X ) arbitrarily close to diam(X ) = 1. We do not know whether diam(X ) = ∆SG(X ) can be achieved.
+On the other hand, there exist unbounded metric probability spaces with finite subgaussian diameter. A simple example is (X , ρ, µ) with X = R, ρ(x, x′) = |x− x′| and µ the standard Gaussian probability measure dµ = (2π)−1/2e−x2/2dx. Obviously, diam(X ) = ∞. Now the symmetrized distance Ξ = Ξ(X ) is distributed as the difference (=sum) of two standard Gaussians: Ξ ∼ N(0, 2). Since EeλΞ = eλ 2 , we have
+∆SG(X ) = √ 2. (9)
+More generally, the subgaussian distributions on R are precisely those for which ∆SG(R) < ∞. 3 Related work McDiarmid’s inequality (1) suffers from the limitations mentioned above: it completely ignores the distribution and is vacuous if even one of the wi is infinite.1 In order to address some of these issues, Kutin (2002); Kutin and Niyogi (2002) proposed an extension of McDiarmid’s inequality to “almost everywhere” Lipschitz functions ϕ : Xn → R. To formalize this, fix an i ∈ [n] and let Xn1 ∼ µn and x′i ∼ µi be independent. Define X̃n1 = X̃n1 (i) by
+X̃j(i) =
+{
+Xj , j 6= i x′i, j = i.
+(10)
+Kutin and Niyogi define ϕ to be weakly difference-bounded by (b, c, δ) if
+P
+( |ϕ(X)− ϕ(X̃(i))| > b ) = 0 (11)
+and
+P
+( |ϕ(X)− ϕ(X̃(i))| > c ) < δ (12)
+for all 1 ≤ i ≤ n. The precise result of Kutin (2002, Theorem 1.10) is somewhat unwieldy to state — indeed, the present work was motivated in part by a desire for simpler tools. Assuming that ϕ is weakly difference-bounded by (b, c, δ) with
+δ = exp(−Ω(n)) (13) and c = O(1/n), their bound states that
+P(|ϕ− Eϕ| ≥ t) ≤ exp(−Ω(nt2)) (14) for a certain range of t and n. As noted by Rakhlin et al. (2005), the exponential decay assumption (13) is necessary in order for the Kutin-Niyogi method to yield exponential concentration. In contrast, the bounds we prove here
+(i) do not require |ϕ(X)− ϕ(X̃)| to be everywhere bounded as in (11) (ii) have a simple statement and proof, and generalize to non-iid processes
+with relative ease.
+We defer the quantitative comparisons between (14) and our results until the latter are formally stated in Section 4.
+In a different line of work, Bentkus (2008) considered an extension of Hoeffding’s inequality to unbounded random variables. His bound only holds for sums (as opposed to general Lipschitz functions) and the summands must be non-negative (i.e., unbounded only in the positive direction). An earlier notion of “effective” metric diameter in the context of concentration is that of metric space length (Schechtman, 1982). Another distribution-dependent refinement of diameter is the spread constant (Alon et al., 1998). Lecué and Mendelson (2013) gave minimax bounds for empirical risk minimization over subgaussian classes.
+1Note, though, that McDiarmid’s inequality is sharp in the sense that the constants in (1) cannot be improved in a distribution-free fashion. 4 Concentration via subgaussian diameter McDiarmid’s inequality (1) may be stated in the notation of Section 2 as follows. Let (Xi, ρi, µi), i = 1, . . . , n be a sequence of metric probability spaces and ϕ : Xn → R a 1-Lipschitz function. Then
+P(|ϕ− Eϕ| > t) ≤ 2 exp ( − 2t 2
+∑n i=1 diam(Xi)2
+)
+. (15)
+We defined the subgaussian diameter ∆SG(Xi) in Section 2, showing in Lemma 1 that it never exceeds the metric diameter. We also showed by example that the former can be finite when the latter is infinite. The main result of this section is that diam(Xi) in (15) can essentially be replaced by ∆SG(Xi): Theorem 1. If ϕ : Xn → R is 1-Lipschitz then Eϕ < ∞ and
+P(|ϕ− Eϕ| > t) ≤ 2 exp ( − t 2
+2 ∑n i=1 ∆ 2 SG (Xi)
+)
+.
+Our constant in the exponent is worse than that of (15) by a factor of 4; this appears to be an inherent artifact of our method.
+Proof. The strong integrability of ϕ — and in particular, finiteness of Eϕ — follow from exponential concentration (Ledoux, 2001). The rest of the proof will proceed via the Azuma-Hoeffding-McDiarmid method of martingale differences. Define Vi = E[ϕ |X i1]− E[ϕ |X i−11 ] and expand
+E[ϕ |X i1] = ∑
+xn i+1∈X n i+1
+P(xni+1)ϕ(X i 1x n i+1)
+E[ϕ |X i−11 ] = ∑
+xn i ∈Xn i
+P(xni )ϕ(X i−1 1 x n i ).
+Let Ṽi be Vi conditioned on X i−1 1 ; thus,
+Ṽi = ∑
+xn i+1
+P(xni+1) ∑
+xi,x′i
+P(xi)P(x ′ i) ( ϕ(X i−11 xix n i+1)− ϕ(X i−11 x′ixni+1) ) .
+Hence, by Jensen’s inequality, we have
+E[eλVi |X i−11 ] ≤ ∑
+xn i+1
+P(xni+1) ∑
+y,y′
+P(y)P(y′)eλ(ϕ(X i−1 1 yx n i+1)−ϕ(X i−1 1 y ′xni+1)).
+For fixed X i−11 ∈ X i−11 and xni+1 ∈ Xni+1, define F : Xi → R by F (y) = ϕ(X i−11 yx n i+1), and observe that F is 1-Lipschitz with respect to ρi. Since et + e−t = 2 cosh(t) and cosh(t) ≤ cosh(s) for all |t| ≤ s, we have2
+eλ(F (y)−F (y ′)) + eλ(F (y ′)−F (y)) ≤ eλρi(y,y′) + e−λρi(y,y′), 2An analogous symmetrization technique is employed in http://terrytao.wordpress.com/ 2009/06/09/talagrands-concentration-inequality as a variant of the “square and rearrange” trick.
+and hence
+∑
+y,y′∈Xi
+P(y)P(y′)eλ(F (y)−F (y ′)) (16)
+≤ 12 
+∑
+y,y′
+P(y)P(y′)eλρi(y,y ′) +
+∑
+y,y′
+P(y)P(y′)e−λρi(y,y ′) 
+= EeλΞ(Xi) ≤ exp(λ2∆2 SG (Xi)/2),
+where Ξ(Xi) is the symmetrized distance (4) and the last inequality holds by definition of subgaussian diameter (6,7). It follows that
+E[eλVi |X i−11 ] ≤ exp(λ2∆2SG(Xi)/2). (17)
+Applying the standard Markov’s inequality and exponential bounding argument, we have
+P(ϕ− Eϕ > t) = P ( n ∑
+i=1
+Vi > t
+)
+≤ e−λtE [ n ∏
+i=1
+eλVi
+]
+= e−λtE
+[
+n ∏
+i=1
+E[eλVi |X i−11 ] ]
+≤ e−λtE [ n ∏
+i=1
+exp(λ2∆2 SG (Xi)/2)
+]
+= exp
+(
+1 2 λ2
+n ∑
+i=1
+∆2 SG (Xi)− λt
+)
+. (18)
+Optimizing over λ and applying the same argument to Eϕ−ϕ yields our claim.
+Let us see how Theorem 1 compares to previous results on some examples. Consider Rn equipped with the ℓ1 metric ρ n(x, x′) = ∑
+i∈[n] |xi − x′i| and the standard Gaussian product measure µn = N(0, In). Let ϕ : R
+n → R be 1/nLipschitz. Then Theorem 1 yields (recalling the calculation in (9))
+P(|ϕ− Eϕ| > ε) ≤ 2 exp(−nε2/4), ε > 0, (19)
+whereas the inequalities of McDiarmid (1) and Kutin-Niuyogi (14) are both uninformative since the metric diameter is infinite.
+For our next example, fix an n ∈ N and put Xi = {±1,±n} with the metric ρi(x, x ′) = |x − x′| and the distribution µi(x) ∝ e−x 2
+. One may verify via a calculation analogous to (9) that ∆SG(Xi) ≤ √ 2. For independent Xi ∼ µi,
+i = 1, . . . , n, put ϕ(Xn1 ) = n −1 ∑n i=1 Xi. Then Theorem 1 implies that in this case the bound in (19) holds verbatim. On the other hand, ϕ is easily seen to be weakly difference-bounded by (1, 1/n, e−Ω(n)) and thus (14) also yields subgaussian concentration, albeit with worse constants. Applying (1) yields the much cruder estimate
+P(|ϕ− Eϕ| > ε) ≤ 2 exp(−2ε2). 5 Application to algorithmic stability We refer the reader to (Bousquet and Elisseeff, 2002; Kutin and Niyogi, 2002; Rakhlin et al., 2005) for background on algorithmic stability and supervised learning. Our metric probability space (Zi, ρi, µi) will now have the structure Zi = Xi × Yi where Xi and Yi are, respectively, the instance and label space of the ith example. Under the iid assumption, the (Zi, ρi, µi) are identical for all i ∈ N (and so we will henceforth drop the subscript i from these). A training sample is S = Zn1 ∼ µn is drawn and a learning algorithm A inputs S and outputs a hypothesis f : X → Y. The hypothesis f = A(S) will be denoted by AS . In line with the previous literature, we assume that A is symmetric (i.e., invariant under permutations of S). The loss of a hypothesis f on an example z = (x, y) is defined by
+L(f, z) = ℓ(f(x), y),
+where ℓ : Y × Y → [0,∞) is the cost function. To our knowledge, all previous work required the loss to be bounded by some constant M < ∞, which figures explicitly in the bounds; we make no such restriction.
+In the algorithmic stability setting, the empirical risk R̂n(A, S) is typically defined as
+R̂n(A, S) = 1
+n
+n ∑
+i=1
+L(AS , zi) (20)
+and the true risk R(A, S) as
+R(A, S) = Ez∼µ[L(AS , z)]. (21)
+The goal is to bound the excess risk R(A, S)− R̂n(A, S). To this end, a myriad of notions of hypothesis stability have been proposed. A variant of uniform stability in the sense of Rakhlin et al. (2005) — which is slightly more general than the homonymous notion in Bousquet and Elisseeff (2002)— may be defined as follows. The algorithm A is said to be β-uniform stable if for all z̃ ∈ Z, the function ϕz̃ : Zn → R given by ϕz̃(z) = L(Az, z̃) is β-Lipschitz with respect to the Hamming metric on Zn:
+∀z̃ ∈ Z, ∀z, z′ ∈ Zn : |ϕz̃(z)− ϕz̃(z′)| ≤ β n ∑
+i=1
+1{zi 6=z′i}.
+We define the algorithm A to be β-totally Lipschitz stable if the function ϕ : Zn+1 → R given by ϕ(zn+11 ) = L(Azn1 , zn+1) is β-Lipschitz with respect to the ℓ1 product metric on Zn+1:
+∀z, z′ ∈ Zn+1 : |ϕ(z)− ϕ(z′)| ≤ β n+1 ∑
+i=1
+ρ(zi, z ′ i). (22)
+Note that total Lipschitz stability is stronger than uniform stability since it requires the algorithm to respect the metric of Z.
+Let us bound the bias of stable algorithms.
+Lemma 2. Suppose A is a symmetric, β-totally Lipschitz stable learning algorithm over the metric probability space (Z, ρ, µ) with ∆SG(Z) < ∞. Then
+E[R(A, S)− R̂n(A, S)] ≤ 12β2∆2SG(Z).
+Proof. Observe, as in the proof of (Bousquet and Elisseeff, 2002, Lemma 7), that for all i ∈ [n],
+E[R(A, S)− R̂n(A, S)] = EZn1 ,Z̃n1 [L(AZn1 , Z̃i)− L(AZ̃n1 , Z̃i)], (23)
+where Zn1 ∼ µn and Z̃ is generated from Z via the process defined in (10). For fixed i ∈ [n] and Zi−11 ,Zni+1, define
+Wi(Zi, Z ′ i) = L(AZn1 , Z ′ i)− L(AZi−1
+1 Z′ i Zn i+1 , Z ′i)
+and note that (22) implies that |Wi(Zi, Z ′i)| ≤ βρ(Zi, Z ′i). Now rewrite (23) as
+E[R(A, S)− R̂n(A, S)] = ∑
+zi−11 ,z n i+1
+P(zi−11 )P(z n i+1)
+∑
+zi,z ′
+i
+P(zi)P(z ′ i)Wi(zi, z ′ i). (24)
+Invoking Jensen’s inequality and the argument in (16),
+exp 
+∑
+zi,z ′
+i
+P(zi)P(z ′ i)Wi(zi, z ′ i)  ≤ ∑
+zi,z ′
+i
+P(zi)P(z ′ i)e Wi(zi,z ′ i)
+= 12 
+∑
+zi,z ′
+i
+P(zi)P(z ′ i)e Wi(zi,z ′ i) + ∑
+zi,z ′
+i
+P(zi)P(z ′ i)e −Wi(zi,z ′ i) 
+≤ 12 
+∑
+zi,z ′
+i
+P(zi)P(z ′ i)e βρ(zi,z ′ i) + ∑
+zi,z ′
+i
+P(zi)P(z ′ i)e −βρ(zi,z ′ i) 
+≤ exp(12β 2∆2 SG (Z)).
+Taking logarithms yields the estimate ∑
+zi,z ′
+i
+P(zi)P(z ′ i)Wi(zi, z ′ i) ≤ 12β 2∆2 SG (Z), (25)
+which, after substituting (25) into (24), proves the claim.
+We now turn to the Lipschitz continuity of the excess risk.
+Lemma 3. Suppose A is a symmetric, β-totally Lipschitz stable learning algorithm and define the excess risk function ϕ : Zn → R by ϕ(z) = R(A, z) − R̂n(A, z). Then ϕ is 3β-Lipschitz. Proof. We examine the two summands separately. The definition (21) of R(A, ·) implies that the latter is β-Lipchitz since it is a convex combination of βLipschitz functions. Now R̂n(A, ·) defined in (20) is also a convex combination of β-Lipschitz functions, but because zi appears twice in L(Azn
+1 , zi), changing zi to
+z′i could incur a difference of up to 2βρ(zi, z ′ i). Hence, R̂n(A, ·) is 2β-Lipschitz. As Lipschitz constants are subadditive, the claim is proved.
+Combining Lemmas 2 and 3 with our concentration inequality in Theorem 1 yields the main result of this section:
+Theorem 2. Suppose A is a symmetric, β-totally Lipschitz stable learning algorithm over the metric probability space (Z, ρ, µ) with ∆SG(Z) < ∞. Then, for training samples S ∼ µn and ε > 0, we have
+P
+(
+R(A, S)− R̂n(A, S) > 12β 2∆2 SG (Z) + ε
+) ≤ exp ( − ε 2
+18β2∆2 SG (Z)n
+)
+.
+As in Bousquet and Elisseeff (2002) and related results on algorithmic stability, we require β = O(1/n) for exponential decay. Bousquet and Elisseeff showed that this is indeed the case for some popular learning algorithms, albeit in their less restrictive definition of stability. We conjecture that many of these algorithms continue to be stable in our stronger sense and plan to explore this in future work. 6 Relaxing the independence assumption In this section we generalize Theorem 1 to strongly mixing processes. To this end, we require some standard facts concerning the probability-theoretic notions of coupling and transportation (Lindvall, 2002; Villani, 2003, 2009). Given the probability measures µ, µ′ on a measurable space X , a coupling π of µ, µ′ is any probability measure on X ×X with marginals µ and µ′, respectively. Denoting by Π = Π(µ, µ′) the set of all couplings, we have
+inf π∈Π
+π( { (x, y) ∈ X 2 : x 6= y } ) = 12
+∑
+x∈X
+|µ(x) − µ′(x)|
+= ‖µ− µ′‖ TV
+(26)
+where ‖·‖ TV
+is the total variation norm. An optimal coupling is one that achieves the infimum in (26); one always exists, though it may not be unique. Another elementary property of couplings is that for any two f, g : X → R and any coupling π ∈ Π(µ, µ′), we have
+Eµf − Eµ′g = E(X,X′)∼π[f(X)− g(X ′)]. (27)
+It is possible to refine the total variation distance between µ and µ′ so as to respect the metric of X . Given a space equipped with probability measures µ, µ′ and metric ρ, define the transportation cost3 distance Tρ(µ, µ ′) by
+Tρ(µ, µ ′) = inf
+π∈Π(µ,µ′) E(X,X′)∼πρ(X,X
+′).
+It is easy to verify that Tρ is a valid metric on probability measures and that for ρ(x, x′) = 1{x 6=x′}, we have Tρ(µ, µ ′) = ‖µ− µ′‖ TV
+. As in Section 4, we consider a sequence of metric spaces (Xi, ρi), i = 1, . . . , n and their ℓ1 product (Xn, ρn). Unlike the independent case, we will allow nonproduct probability measures ν on (Xn, ρn). We will write Xn1 ∼ ν to mean that P(Xn1 ∈ A) = ν(A) for all Borel A ⊂ Xn. For 1 ≤ i ≤ j < k ≤ l ≤ n, we will use the shorthand
+P(xlk |xji ) = P ( X lk = x l k |Xji = x j i ) .
+The notation P(Xji ) means the marginal distribution ofX j i . Similarly, P(X l k |X j i = xji ) will denote the conditional distribution. For 1 ≤ i < n, and xi1 ∈ X i1 , x′i ∈ Xi define
+τi(x i 1, x ′ i) = Tρni+1(P(X n i+1 |X i1 = xi1),P(Xni+1 |X i1 = xi−11 x′i)),
+where ρni+1 is the ℓ1 product of ρi+1, . . . ρn as in (3), and
+τ̄i = sup xi1∈X i 1 ,x ′ i ∈Xi
+τi(x i 1, x ′ i),
+with τ̄n ≡ 0. In words, τi(xi1, x′i) measures the transportation cost distance between the conditional distributions induced on the “tail” Xni+1 given two prefixes that differ in the ith coordinate, and τ̄i is the maximal value of this quantity. Kontorovich (2007); Kontorovich and Ramanan (2008) discuss how to handle conditioning on measure-zero sets and other technicalities. Note that for product measures the conditional distributions are identical and hence τ̄i = 0.
+We need one more definition before stating our main result. For the prefix xi−11 , define the conditional distribution
+νi(x i−1 1 ) = P
+( Xi |X i−11 = xi−11 )
+and consider the corresponding metric probability space (Xi, ρi, νi(xi−11 )). Define its conditional subgaussian diameter by
+∆SG(Xi |xi−11 ) = ∆SG(Xi, ρi, νi(xi−11 )) 3This fundamental notion is also known as the Wasserstein, Monge-Kantorovich, or earthmover distance; see Villani (2003, 2009) for an encyclopedic treatment. The use of coupling and transportation techniques to obtain concentration for dependent random variables goes back to Marton (1996); Samson (2000); Chazottes et al. (2007).
+and the maximal subgaussian diameter by
+∆̄SG(Xi) = sup xi−11 ∈X i−1 1 ∆SG(Xi |xi−11 ). (28)
+Note that for product measures, (28) reduces to the former definition (7). With these definitions, we may state the main result of this section.
+Theorem 3. If ϕ : Xn → R is 1-Lipschitz with respect to ρn, then
+P(|ϕ− Eϕ| > t) ≤ 2 exp ( − (t−∑i≤n τ̄i)2
+2 ∑ i≤n ∆̄ 2 SG (Xi)
+)
+, t > 0.
+Observe that we recover Theorem 1 as a special case. Since typically we will take t = εn, it suffices that ∑
+i≤n τ̄i = o(n) and ∑ i≤n ∆̄ 2 SG (Xi) = O(n) to
+ensure a exponential bound with decay rate exp(−Ω(nε2)).
+Proof. We begin by considering the martingale difference
+Vi = E[ϕ |X i1 = xi1]− E[ϕ |X i−11 = xi−11 ]
+as in the proof of Theorem 1. More explicitly,
+Vi = ∑
+xni+1
+P(xni+1 |xi1)ϕ(xi1xni+1)− ∑
+xni
+P(xni |xi−11 )ϕ(xi−11 xni )
+= ∑
+x′i
+P(x′i |xi−11 ) ∑
+xni+1
+[ P(xni+1 |xi1)ϕ(xi1xni+1)− P(xni+1 |xi−11 x′i)ϕ(xi−11 x′ixni+1) ] .
+Define Ṽi to be Vi conditioned on X i−1 1 . Then
+Ṽi = ∑
+xi,x′i
+P(xi |X i−11 )P(x′i |X i−11 )· (29)
+∑
+xni+1
+[P(xni+1 |X i−11 xi)ϕ(X i−11 x′ixni+1)− P(xni+1 |X i−11 x′i)ϕ(X i−11 xixni+1)].
+Let π be an optimal coupling realizing the infimum in the transportation cost distance Tρn
+i+1 used to define τi(x i 1, x ′ i). Recalling (27), we have
+∑
+xni+1
+[ P(xni+1 |X i−11 xi)ϕ(X i−11 xixni+1)− P(xni+1 |X i−11 x′i)ϕ(X i−11 x′ixni+1) ]
+= E(Ẋn i+1 ,Ẍn i+1 )∼π
+[
+ϕ(X i−11 xiẊ n i+1)− ϕ(X i−11 x′iẌni+1)
+]
+≤ E(Ẋn i+1 ,Ẍn i+1 )∼π ϕ(X i−11 xiẊ n i+1)− ϕ(X i−11 x′iẊni+1) +
+n ∑
+j=i+1
+ρj(Ẋj , Ẍj) 
+≤ EẊn i+1 ∼P(· |Xi−11 xi)
+[
+ϕ(X i−11 xiẊ n i+1)− ϕ(X i−11 x′iẊni+1)
+]
++ τ̄i
+= F (xi)− F (x′i) + τ̄i, (30)
+where the first inequality holds by the Lipschitz property and the second by definition of τ̄i, and F : Xi → R is defined by
+F (y) = ∑
+xni+1
+P(xni+1 |X i−11 xi)ϕ(X i−11 yxni+1).
+Let us substitute (30) into (29):
+Ṽi ≤ τ̄i + ∑
+xi,x′i
+P(xi |X i−11 )P(x′i |X i−11 )(F (xi)− F (x′i)).
+Observe that F is 1-Lipschitz under ρi and apply Jensen’s inequality:
+E[eλVi |X i−11 ] ≤ eλτ̄i ∑
+xi,x′i
+P(xi |X i−11 )P(x′i |X i−11 )eλ(F (xi)−F (x ′ i))
+≤ eλτ̄i ∑
+xi,x′i
+P(xi |X i−11 )P(x′i |X i−11 ) cosh(λρ(xi, x′i))
+≤ exp ( λτ̄i + 1
+2 ∆̄2 SG (Xi)λ2
+)
+,
+where the second inequality follows from the argument in (16) and the third from the definition of ∆̄SG(Xi). Repeating the standard martingale argument in (18) yields
+P(ϕ− Eϕ > t) = P ( n ∑
+i=1
+Vi > t
+)
+≤ exp ( 1
+2 λ2
+n ∑
+i=1
+∆̄2 SG (Xi)− λt+ λ
+n ∑
+i=1
+τ̄i
+)
+.
+Optimizing over λ yields the claim. 7 Other Orlicz diameters Let us recall the notion of an Orlicz norm ‖X‖Ψ of a real random variable X (see, e.g., Rao and Ren (1991)):
+‖X‖Ψ = inf {t > 0 : E[Ψ(X/t)] ≤ 1} ,
+where Ψ : R → R is a Young function — i.e., nonnegative, even, convex and vanishing at 0. In this section, we will consider the Young functions
+ψp(x) = e |x|p − 1, p > 1,
+and their induced Orlicz norms. A random variable X is subgaussian if and only if ‖X‖ψ2 < ∞. For p 6= 2, ‖X‖ψp < ∞ implies that
+EeλX ≤ e(a|λ|)p/p, λ ∈ R, (31)
+for some a > 0, but the converse implication need not hold. An immediate consequence of Markov’s inequality is that any X for which (31) holds also satisfies
+P(|X | ≥ t) ≤ 2 exp ( −p− 1 p ( t a )p/(p−1) ) . (32)
+We define the p-Orlicz diameter of a metric probability space (X , ρ, µ), denoted ∆OR(p)(X ), as the smallest a > 0 that verifies (31) for the symmetrized distance Ξ(X ). In light of (32), Theorem 1 extends straightforwardly to finite p-Orlicz metric diameters:
+Theorem 4. Let (Xi, ρi, µi), i = 1, . . . , n be a sequence of metric probability spaces and equip Xn with the usual product measure µn and ℓ1 product metric ρn. Suppose that for some p > 1 and all i ∈ [n] we have ∆OR(p)(Xi) < ∞, and define the vector ∆ ∈ Rn by ∆i = ∆OR(p)(Xi). If ϕ : Xn → R is 1-Lipschitz then for all t > 0,
+P(|ϕ− Eϕ| > t) ≤ 2 exp
+ −p− 1 p ( t
+‖∆‖p
+)p/(p−1) 
+ . 8 Discussion We have given a concentration inequality for metric spaces with unbounded diameter, showed its applicability to algorithmic stability with unbounded losses, and gave an extension to non-independent sampling processes. Some fascinating questions remain:
+(i) How tight is Theorem 1? First there is the vexing matter of having a worse constant in the exponent (i.e., 1/2) than McDiarmid’s (optimal) constant 2. Although this gap is not of critical importance, one would like a bound that recovers McDiarmid’s in the finite-diameter case. More importantly, is it the case that finite subgaussian diameter is necessary for subgaussian concentration of all Lipschitz functions? That is, given the metric probability spaces (Xi, ρi, µi), i ∈ [n], can one always exhibit a 1-Lipschitz ϕ : Xn → R that achieves a nearly matching lower bound?
+(ii) We would like to better understand how Theorem 1 compares to the KutinNiyogi bound (14). We conjecture that for any (Xn, µn) and ϕ : Xn → R that satisfies (11) and (12), one can construct a product metric ρn for which ∑
+i∈[n] ∆ 2 SG (Xi) < ∞ and ϕ is 1-Lipschitz. This would imply that
+whenever the Kutin-Niyogi bound is nontrivial, so is Theorem 1. We have already shown by example (19) that the reverse does not hold.
+(iii) The quantity τ̄i defined in Section 6 is a rather complicated object; one desires a better handle on it in terms of the given distribution and metric.
+(iv) Perhaps the most pressing question is that of showing that some common learning algorithms such as k-nearest neighbor, kernel SVM, regularized regression are totally Lipschitz stable under our definition (22). Acknowledgements John Lafferty encouraged me to seek a distribution-dependent refinement of McDiarmid’s inequality. Thanks also to Gideon Schechtman, Shahar Mendelson, Assaf Naor, Iosif Pinelis and Csaba Szepesvári for helpful correspondence, and to Roi Weiss for carefully proofreading the manuscript.  It turns out that the various notions of stability are naturally expressed in terms of the Lipschitz continuity of the algorithm in question (Bousquet and Elisseeff, 2002; Kutin and Niyogi, 2002; Rakhlin et al., 2005; Shalev-Shwartz et al., 2010), while appropriate relaxations of the iid assumption are achieved using various kinds of strong mixing (Karandikar and Vidyasagar, 2002; Gamarnik, 2003; Rostamizadeh and Mohri, 2007; Mohri and Rostamizadeh, 2008; Steinwart and Christmann, 2009; Steinwart et al.    It turns out that the various notions of stability are naturally expressed in terms of the Lipschitz continuity of the algorithm in question (Bousquet and Elisseeff, 2002; Kutin and Niyogi, 2002; Rakhlin et al., 2005; Shalev-Shwartz et al., 2010), while appropriate relaxations of the iid assumption are achieved using various kinds of strong mixing (Karandikar and Vidyasagar, 2002; Gamarnik, 2003; Rostamizadeh and Mohri, 2007; Mohri and Rostamizadeh, 2008; Steinwart and Christmann, 2009; Steinwart et al.    , 2010), while appropriate relaxations of the iid assumption are achieved using various kinds of strong mixing (Karandikar and Vidyasagar, 2002; Gamarnik, 2003; Rostamizadeh and Mohri, 2007; Mohri and Rostamizadeh, 2008; Steinwart and Christmann, 2009; Steinwart et al., 2009; Zou et al.; Mohri and Rostamizadeh, 2010; London et al., 2012, 2013; Shalizi and Kontorovich, 2013).    , 2010), while appropriate relaxations of the iid assumption are achieved using various kinds of strong mixing (Karandikar and Vidyasagar, 2002; Gamarnik, 2003; Rostamizadeh and Mohri, 2007; Mohri and Rostamizadeh, 2008; Steinwart and Christmann, 2009; Steinwart et al., 2009; Zou et al.; Mohri and Rostamizadeh, 2010; London et al., 2012, 2013; Shalizi and Kontorovich, 2013).    An elegant and powerful work-horse driving many of the aforementioned results is McDiarmid’s inequality (McDiarmid, 1989): P(|φ− Eφ| > t) ≤ 2 exp ( − 2t 2 ∑n i=1 w 2 i )    Non-iid extensions of (1) have also been considered (Marton, 1996; Rio, 2000; Chazottes et al., 2007; Kontorovich and Ramanan, 2008).    Non-iid extensions of (1) have also been considered (Marton, 1996; Rio, 2000; Chazottes et al., 2007; Kontorovich and Ramanan, 2008).    This influential result has been invoked in a number of recent papers (El-Yaniv and Pechyony, 2006; Mukherjee et al., 2006; Hush et al., 2007; Agarwal and Niyogi, 2009; Shalev-Shwartz et al., 2010; Rubinstein and Simma, 2012).    , 2007; Kontorovich and Ramanan, 2008). The distribution-free nature of McDiarmid’s inequality makes it an attractive tool in learning theory, but also imposes inherent limitations on its applicability. Chief among these limitations is the inability of (1) to provide risk bounds for unbounded loss functions. Even in the bounded case, if the Lipschitz condition (2) holds not everywhere but only with high probability — say, with a much larger constant on a small set of exceptions — the bound in (1) still charges the full cost of the worst-case constant. To counter this difficulty, Kutin (2002); Kutin and Niyogi (2002) introduced an extension of McDiarmid’s inequality to weakly difference-bounded functions and used it to analyze the risk of “almost-everywhere” stable algorithms.    , 2007; Kontorovich and Ramanan, 2008). The distribution-free nature of McDiarmid’s inequality makes it an attractive tool in learning theory, but also imposes inherent limitations on its applicability. Chief among these limitations is the inability of (1) to provide risk bounds for unbounded loss functions. Even in the bounded case, if the Lipschitz condition (2) holds not everywhere but only with high probability — say, with a much larger constant on a small set of exceptions — the bound in (1) still charges the full cost of the worst-case constant. To counter this difficulty, Kutin (2002); Kutin and Niyogi (2002) introduced an extension of McDiarmid’s inequality to weakly difference-bounded functions and used it to analyze the risk of “almost-everywhere” stable algorithms.    In order to address some of these issues, Kutin (2002); Kutin and Niyogi (2002) proposed an extension of McDiarmid’s inequality to “almost everywhere” Lipschitz functions φ : Xn → R.    In order to address some of these issues, Kutin (2002); Kutin and Niyogi (2002) proposed an extension of McDiarmid’s inequality to “almost everywhere” Lipschitz functions φ : Xn → R.    The precise result of Kutin (2002, Theorem 1.10) is somewhat unwieldy to state — indeed, the present work was motivated in part by a desire for simpler tools. Assuming that φ is weakly difference-bounded by (b, c, δ) with δ = exp(−Ω(n)) (13) and c = O(1/n), their bound states that P(|φ− Eφ| ≥ t) ≤ exp(−Ω(nt)) (14) for a certain range of t and n. As noted by Rakhlin et al. (2005), the exponential decay assumption (13) is necessary in order for the Kutin-Niyogi method to yield exponential concentration.    The precise result of Kutin (2002, Theorem 1.10) is somewhat unwieldy to state — indeed, the present work was motivated in part by a desire for simpler tools. Assuming that φ is weakly difference-bounded by (b, c, δ) with δ = exp(−Ω(n)) (13) and c = O(1/n), their bound states that P(|φ− Eφ| ≥ t) ≤ exp(−Ω(nt)) (14) for a certain range of t and n. As noted by Rakhlin et al. (2005), the exponential decay assumption (13) is necessary in order for the Kutin-Niyogi method to yield exponential concentration. In contrast, the bounds we prove here (i) do not require |φ(X)− φ(X̃)| to be everywhere bounded as in (11) (ii) have a simple statement and proof, and generalize to non-iid processes with relative ease. We defer the quantitative comparisons between (14) and our results until the latter are formally stated in Section 4. In a different line of work, Bentkus (2008) considered an extension of Hoeffding’s inequality to unbounded random variables.    The precise result of Kutin (2002, Theorem 1.10) is somewhat unwieldy to state — indeed, the present work was motivated in part by a desire for simpler tools. Assuming that φ is weakly difference-bounded by (b, c, δ) with δ = exp(−Ω(n)) (13) and c = O(1/n), their bound states that P(|φ− Eφ| ≥ t) ≤ exp(−Ω(nt)) (14) for a certain range of t and n. As noted by Rakhlin et al. (2005), the exponential decay assumption (13) is necessary in order for the Kutin-Niyogi method to yield exponential concentration. In contrast, the bounds we prove here (i) do not require |φ(X)− φ(X̃)| to be everywhere bounded as in (11) (ii) have a simple statement and proof, and generalize to non-iid processes with relative ease. We defer the quantitative comparisons between (14) and our results until the latter are formally stated in Section 4. In a different line of work, Bentkus (2008) considered an extension of Hoeffding’s inequality to unbounded random variables. His bound only holds for sums (as opposed to general Lipschitz functions) and the summands must be non-negative (i.e., unbounded only in the positive direction). An earlier notion of “effective” metric diameter in the context of concentration is that of metric space length (Schechtman, 1982). Another distribution-dependent refinement of diameter is the spread constant (Alon et al., 1998). Lecué and Mendelson (2013) gave minimax bounds for empirical risk minimization over subgaussian classes.    The strong integrability of φ — and in particular, finiteness of Eφ — follow from exponential concentration (Ledoux, 2001).    5 Application to algorithmic stability We refer the reader to (Bousquet and Elisseeff, 2002; Kutin and Niyogi, 2002; Rakhlin et al., 2005) for background on algorithmic stability and supervised learning.    5 Application to algorithmic stability We refer the reader to (Bousquet and Elisseeff, 2002; Kutin and Niyogi, 2002; Rakhlin et al., 2005) for background on algorithmic stability and supervised learning.    A variant of uniform stability in the sense of Rakhlin et al. (2005) — which is slightly more general than the homonymous notion in Bousquet and Elisseeff (2002)— may be defined as follows.    A variant of uniform stability in the sense of Rakhlin et al. (2005) — which is slightly more general than the homonymous notion in Bousquet and Elisseeff (2002)— may be defined as follows.    Kontorovich (2007); Kontorovich and Ramanan (2008) discuss how to handle conditioning on measure-zero sets and other technicalities.    Kontorovich (2007); Kontorovich and Ramanan (2008) discuss how to handle conditioning on measure-zero sets and other technicalities.    The use of coupling and transportation techniques to obtain concentration for dependent random variables goes back to Marton (1996); Samson (2000); Chazottes et al.    The use of coupling and transportation techniques to obtain concentration for dependent random variables goes back to Marton (1996); Samson (2000); Chazottes et al.    The use of coupling and transportation techniques to obtain concentration for dependent random variables goes back to Marton (1996); Samson (2000); Chazottes et al. (2007).    We prove an extension of McDiarmid’s inequality for metric spaces with unbounded diameter. To this end, we introduce the notion of the subgaussian diameter, which is a distribution-dependent refinement of the metric diameter. Our technique provides an alternative approach to that of Kutin and Niyogi’s method of weakly difference-bounded functions, and yields nontrivial, dimension-free results in some interesting cases where the former does not. As an application, we give apparently the first generalization bound in the algorithmic stability setting that holds for unbounded loss functions. We give two extensions of the basic concentration result: to strongly mixing processes and to other Orlicz norms. dvips(k) 5.991 Copyright 2011 Radical Eye Software
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

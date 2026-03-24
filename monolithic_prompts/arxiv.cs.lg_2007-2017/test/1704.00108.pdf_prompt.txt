@@ -1,0 +1,949 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: None
+Paper Content: 1704.00108.pdf CRF     ar X
+iv :1
+70 4.
+00 10
+8v 1
+[ cs
+.L G
+] 1
+A pr
+2 01
+Õ(T 2/3), where T is the number of customers in the sales horizon. Then, we propose a UCB policy that achieves a regret Õ(T 1/2). Both regret bounds are sublinear in the number of assortments. 1 Introduction Online sales are now ubiquitous in the retail industry. During an online sale, a seller offers a handpicked assortment, i.e. a subset of products, to an arriving customer. The customer’s purchase decision crucially depends on her offered assortment. She first scrutinizes all the products in the assortment, then decides which product she likes the most. After that, she either purchases her favorite, or purchases nothing if her willingness-to-pay is below the price for her favorite. Such choice behavior is captured by the underlying choice model, which has been under intense study by the economics and operations research communities [Ben-Akiva and Lerman, 1985].
+In order to maximize the total revenue in an online sale, the seller needs to know the underlying choice model. However, the model is often not known in practice. This motivates the seller to maximize her revenue and learn the underlying choice model simultaneously. Apart from model uncertainty, the seller often faces resource constraints; when a product is sold, a certain amount of resources is consumed, and the resources cannot be replenished during the sales horizon. The seller is then forced to stop the sales process either when the sales horizon ends, or when the resources are depleted.
+In this paper, we formulate a model for the online assortment optimization problem, which encompasses choice
+model uncertainty and resource constraints. The seller aims to minimize his regret, i.e. the difference between the revenue earned by an oracle, who knows the underlying choice model, and the revenue earned by the seller, who is uncertain about the model. We assume an uncertain MultiNomial Logit (MNL) model, which is fundamental in the literature. We first propose an efficient policy ONLINE(τ) that incurs a regret Õ(T 2/3), where T is the number of customers, and τ is the length of the learning phase. Then, we propose a UCB policy with a regret of Õ( √ T ); the UCB policy is not known to be computationally efficient. Both regret bounds are sublinear in the total number of assortments, since we exploit the special structure of MNL choice model to avoid learning all the choice probabilities assortment by assortment. 2 Literature Review and Our Contributions Offline assortment optimization. TheMNL choice model is a fundamental model proposed by [McFadden, 1974], and it has been the building block for many other existing choice models [Ben-Akiva and Lerman, 1985]. Assortment optimization under the MNL choice model has been actively studied. Assuming the knowledge of the underlying MNL choice model, [Talluri and van Ryzin, 2004] propose an efficient algorithm for computing an optimal assortment when there is no resource constraint; [Liu and van Ryzin, 2008] propose an efficient algorithm for computing a mixture of assortments that achieves asymptotic optimality under resource constraints. [Bernstein et al., 2015] offer insights into the optimal assortment planning policy under resource constraints, when the product prices are equal but there are multiple types of customers.
+Online assortment optimization. Assuming uncertainty in the MNL choice model, [Rusmevichientong et al., 2010] propose an online policy that incurs an instance-dependent O(log T ) regret. [Saure and Zeevi, 2013] generalize [Rusmevichientong et al., 2010] by proposing online policies with instance-dependent O(log T ) regret bounds for a wider class of choice models. Recently, [Agrawal et al., 2016] provide a instance-independent regret Õ( √ T ) under an uncertain MNL choice model. However, these existing works do not incorporate resource constraints into their models, unlike ours. Our approach is based on establishing a confidence bound on the choice probability for every
+assortment (cf. Lemmas 5.1, 5.2), which is novel in the literature, and necessary for learning the choice model under resource constraints.
+Budgeted bandits. Our online assortment optimization problem can be cast as a budgeted bandit problem, with the arm set being the allowed assortments. For budget bandit problems, [Tran-Thanh et al., 2010] provide an instance-indepenedent regret bound with a resource constraint; [Tran-Thanh et al., 2012] and [Xia et al., 2015a] provide instance-dependent regret bounds for the cases of discrete and continuous resource consumption costs. [Xia et al., 2015b] propose a Thompson Sampling based algorithm. [Badanidiyuru et al., 2013], [Agrawal and Devanur, 2014] provide optimal instanceindependent regret bounds for the problem with general resource constraints.
+A direct application of [Badanidiyuru et al., 2013] or [Agrawal and Devanur, 2014] to our problem yields a regret linear in the number of assortments, which is often larger than the number of customers. Indeed, their policies involve testing each assortment at least once. In contrast, we exploit the special structure of the MNL choice model to achieve a regret bound sublinear in the number of assortments.
+Combinatorial bandits. Our problem can be cast as a stochastic combinatorial bandit problem with semi-bandit feedback, when we relax the resource constraints, and interpret a product and an assortment as a basic arm and a super arm respectively. [Gai et al., 2012] study the combinatorial bandit problem with linear reward (i.e. a super arm’s reward is the sum of its basic arms’ reward), which is subsequently generalized and refined by [Chen et al., 2013] to the case with non-linear reward. The optimal regret bound is obtained by [Kveton et al., 2014] in the case of linear reward. [Chen et al., 2016] consider the generalized case when the expected reward under a super arm depends on certain random variables associated with its basic arms. [Xia et al., 2016] provide an instance-dependent regret bound to the combinatorial bandit problem with a resource constraint. Recent works [Radlinski et al., 2008], [Kveton et al., 2015a], [Kveton et al., 2015b] consider the problem in the cascading-feedback setting.
+Apart from the presence of resource constraints (except [Xia et al., 2016]), our model differs from the existing combinatorial bandit literature, as our reward function is not monotonic in the super arm and the underlying parameters. Indeed, introducing more products in an assortment does not necessarily increase the expected revenue, since the customer’s attention could be diverted to less profitable products. Therefore, novel techniques are needed for achieving a sublinear regret in our setting. 3 Problem Definition We formulate the online assortment optimization problem with an unknown MultiNomial Logit (MNL) choice model. The seller has a set of products N = {1, . . . , N} for sale, and a set of resources K = {1, . . . ,K} for composing the products. The sale of one product i generates a revenue of r(i) ∈ [0, 1], but consumes a(i, k) ∈ {0, 1} units of resource
+k, for each k ∈ K. Product 0 is the “no-purchase” product; r(0) = 0 = a(0, k) for all k ∈ K. The seller starts with C(k) = Tc(k) ∈ Z+ units of resource k at period 1. For periods t = 1, . . . , T , the following sequence of six events happen. First, a customer arrives in period t. Second, the seller offers an assortment St ∈ S to the customer, where S is the family of allowed assortments. Third, the seller observes that the product It ∈ St ∪ {0} is purchased. Fourth, the seller earns a revenue of r(It). Fifth, the resources are consumed: for all k ∈ K, C(k) ← C(k)− a(It, k). Sixth, the seller proceeds to period t+ 1. A customer’s purchase decision is governed by the MNL choice probability function ϕ(·, ·|v∗) [McFadden, 1974]. v∗ ∈ RN>0 is the latent utility parameter unknown to the seller; the seller only knows that v∗(i) ∈ [1/R,R] for all i ∈ N . For i ∈ S ⊂ N and v ∈ RN>0, ϕ(i, S|v) represents the probability of a customer purchasing i when she is offered assortment S, and has utility parameter v. The probability is defined as
+ϕ(i, S|v) := v(i) 1 + ∑
+ℓ∈S v(ℓ) . (1)
+The customer purchases nothing with the complementary probability ϕ(0, S|v) = 1/(1 + ∑ℓ∈S v(ℓ)) = 1 −∑
+i∈S ϕ(i, S|v). For i ∈ N\S, S ∈ S, we defineϕ(i, S|v) = 0. The expected revenue ∑
+i∈S r(i)ϕ(i, S|v) is not monotonic in S or v, in contrary to the monotonicity of reward functions in the combinatorial bandit literature. The family of allowed assortments S is a subfamily of 2N . One common example is the cardinality constrained family S = {S ⊂ N : |S| ≤ B}. We assume that ∅ ∈ S; that is, the seller can reject a customer by offering an empty assortment, for example when the resources are depleted. We denoteB = max{|S| : S ∈ S} as the maximum assortment size; in most setting, B is much smaller than N , the number of products. Regret Minimization. The seller’s objective is to design a non-anticipatory policy that maximizes the total revenue ∑T
+t=1 r(It), subject to the resource constraints. This can be formulated as the minimization of regret, which is
+REG = TOPT(LP(v∗))− T∑
+t=1
+r (It) , (2)
+subject to the resource constraints: for all k ∈ K, ∑T
+t=1 a(It, k) ≤ Tc(k) always. Equivalently, we require C(k) ≥ 0 at every period. The purchased product It depends on the offered assortment St determined by the policy. We say that a policy is non-anticipatory if the offered assortment St depends only on the sales history as well as the seller’s randomness Ut in period t, i.e. St ∈ σ(Ut, {Ss, Is, Us}t−1s=1). For any v ∈ RN>0, the linear program LP(v) is defined as
+max ∑
+S∈S
+R(S|v)y(S)
+s.t. ∑
+S∈S A(S, k|v)y(S) ≤ c(k) ∀k ∈ K ∑
+S∈S
+y(S) = 1, y(S) ≥ 0 ∀S ∈ S.
+We use the notation R(S|v) = ∑i∈S r(i)ϕ(i, S|v) to denote the expected revenue earned by offering S in a period, and A(S, k|v) = ∑i∈S a(i, k)ϕ(i, S|v) to denote the expected amount of resource k consumed in a period. The optimal value of LP(v) is denoted as OPT(LP(v)). By interpreting y as a probability distribution over S, LP(v) is equivalent to the maximization of the expected revenue in a period, when the resource constraints hold in expectation. LP(v) is always feasible, since y(∅) = 1, y(S) = 0 for all S ∈ S \ {∅} is a feasible solution. The benchmark TOPT(LP(v∗)) upper bounds the expected optimum [Badanidiyuru et al., 2013]:
+Theorem 3.1 ([Badanidiyuru et al., 2013]). For any nonanticipatory policy π that satisfies the resource constraints with probability 1, the following inequality holds:
+TOPT(LP(v∗)) ≥ E [ T∑
+t=1
+r (Iπt )
+]
+.
+Iπt denotes the random product purchased by the period t customer under policy π. 4 Online policy ONLINE(τ) We propose the non-anticipatory policy ONLINE(τ), where τ is the length of the learning phase. ONLINE(τ) enjoys the following performance guarantee:
+Theorem 4.1. Suppose τ satisfies Assumption 4.2. The policy ONLINE(τ) satisfies all resource constraints and incurs a regret at most
+τ +O
+(
+TRB
+√
+N τ log N δ
+)
++O
+(√
+T log K + 1
+δ
+)
+(4)
+with probability 1 − δ. In particular, the choice τ = (TRB)2/3N1/3 minimizes the regret bound up to a constant factor, yielding the bound Õ((TRB)2/3N1/3).
+Our regret bound is sublinear inN,B, in deep contrast with the regret bounds by applying [Badanidiyuru et al., 2013], [Agrawal and Devanur, 2014], which are linear in |S| = Θ(NB). For our theoretical analysis, we assume the following on τ :
+Assumption 4.2. The learning phase length τ satisfies: (i) For all k ∈ K, τ √
+log 4NKδ ≤ Tc(k). (ii) For all k ∈ K, Cǫ(τ) ≤ 12c(k), where
+ǫ(τ) = 4R
+√
+N τ log 4N δ . (5)
+Assumption 4.2 (i) ensures that no resource is depleted during the learning phase, and (ii) ensures that the learning phase is long enough for estimating v∗. Assumption 4.2 is only necessary for our analysis; ONLINE(τ) can be implemented for any choice of 1 ≤ τ ≤ T . In our simulation results in §6, ONLINE(T 2/3) still converges to optimal, even when the assumption is violated for the choice τ = T 2/3. (Theorem 4.1 implies a regret of Õ(T 2/3RB √ N) if τ = T 2/3 satisfies Assumption 4.2.) We further discuss the assumption in Appendix A.
+Algorithm 1 ONLINE(τ)
+1: Initialize C(k) = Tc(k) ∀k ∈ K. 2: for i = 1, . . . , N do ⊲ Learning Phase 3: for t = (i− 1)τ/N + 1 to iτ/N do 4: Offer St = {i}, observe outcome It ∈ {i, 0}. 5: For all k ∈ K, C(k) ← C(k)− a(It, k). 6: end for 7: Compute the MLE v̂(i) ∈ argmin
+v∈[1/R,R]
+Li(v).
+8: end for 9: Solve LP(v̂) for an extreme point solution ŷ. 10: for t = τ + 1, . . . , T do ⊲ Earning Phase 11: Offer St with probability ŷ(St). 12: Observe outcome It ∈ St ∪ {0}. 13: For all k ∈ K, C(k) ← C(k) − a(It, k). 14: if ∃k ∈ K s.t. C(k) = 0 then 15: ABORT; offer S = ∅ till the end. 16: end if 17: end for
+ONLINE(τ) is presented in Algorithm 1. Periods 1 to τ are the learning phase, and periods τ + 1 to T are the earning phase. During the learning phase, the seller offers single item assortments in order to estimate {v∗(i)}i∈N . When the learning phase ends, he computes the MLE v̂(i) for each product. v̂(i) is a solution to minv∈[1/R,R] Li(v). The negative log likelihood Li(v) is
+=− log  
+iτ/N ∏
+s= (i−1)τ N +1
+( v
+1 + v
+)1(Is=i) ( 1
+1 + v
+)1(Is=0)  
+=n(i) log
+[
+1 + 1
+v
+]
++ ( τ
+N − n(i)
+)
+log [1 + v] , (6)
+where n(i) = ∑iτ/N
+s=((i−1)τ/N)+1 1(Is = i) is the number of
+product i sold during the learning phase. After that, we solve LP(v̂) for an extreme point solution ŷ, which can be interpreted as a probability distribution over S. Finally, in the earning phase, we offer S ∈ S with probability ŷ(S) each period. At the end of a period, the seller signals ABORT when some resource is depleted, i.e. C(k) = 0. Then, the seller offers empty assortments to subsequent customers, until the end of sales horizon. This ensures that the resource constraints are satisfied with probability 1. Computational Efficiency of ONLINE(τ). The most computationally onerous step in ONLINE(τ) is to solve LP(v̂), which has |S| = Θ(NB) many variables. Fortunately, by [Liu and van Ryzin, 2008], LP(v̂) can be efficiently solved by the Column Generation algorithm (CG). In each iteration of CG, we solve the reduced problem maxS∈S R̃(S|v̂) = maxS∈S ∑
+i∈S r̃(i)ϕ(i, S|v̂), where r̃(i) is a suitably defined reduced revenue coefficient for i. The reduced problem is polynomial time solvable for many choices of S, such as S = {S : |S| ≤ B} [Rusmevichientong et al., 2010]. In our simulations in § 6, CG always terminates within 50 iterations for solving LP(v̂). Finally, the support of ŷ, which is defined as
+supp(ŷ) := {S ∈ S : ŷ(S) > 0}, has size ≤ K + 1, since ŷ is an extreme point solution to LP(v). Thus, it is easy to sample St in the earning phase. A Õ( √ T ) regret policy. A Õ( √ T ) regret can be achieved by a UCB policy:
+Theorem 4.3. There exists a UCB policy that satisfies the resource constraints and achieves a regret of O (√
+TR3B5/2N log TNKδ
+)
+with probability at least 1− δ. The design and analysis of such a UCB policy is deferred to Appendices D - G. Different from ONLINE(τ), our UCB policy is not known to be empirically efficient. 5 Overview of the Proof for Theorem 4.1 To begin the proof, we consider the period tlast of last sale. Either ABORT is signaled at the end of period tlast, or tlast = T . tlast is a random variable, depending on the resource consumption in the sales horizon. Denote (4) as BOUND(τ). We analyze the regret by the following:
+P [REG ≤ BOUND(τ)]
+≥P [ TOPT(v∗)− tstop∑
+t=1
+r(It) ≤ BOUND(τ) ]
+(∗) ≥P [ TOPT(v∗)− T−ρ ∑
+t=1
+r(It) ≤ BOUND(τ), tstop > T − ρ ]
+(†) ≥P     
+{
+TOPT(v∗)− T−ρ ∑
+t=τ+1
+r(Ĩt) ≤ BOUND(τ) }
+︸ ︷︷ ︸
+EREG
+∩ K⋂
+k=1
+{
+τ +
+T−ρ ∑
+t=τ+1
+a(Ĩt, k) ≤ Tc(k) }
+︸ ︷︷ ︸
+Ek     
+(‡) ≥P [ EREG ∩ K⋂
+k=1
+Ek | Ev̂ ] P[Ev̂]. (7)
+To prove the Theorem, it suffices to show that the probability (7) is at least 1− δ. Parsing the calculation above. In step (∗), we consider the event tlast ≤ ρ, where ρ is the constant
+ρ = TCǫ(τ)
+mink∈K c(k) +
+√
+T log 4(K+1)δ
+mink∈K c(k) , (8)
+and ǫ(τ) is defined in (5). The definition of ρ is motivated in the subsequent analysis. The inequality (∗) is evidently true, since the probability does not increase when we require the additional event tstop > T − ρ to hold. To ease the analysis, we decouple the revenue and the constraints at step (†), by considering the process {S̃t, Ĩt}T−ρt=τ+1 generated in Procedure 2. The samples S̃τ+1, . . . , S̃T−ρ are
+Procedure 2 Generation of {S̃t, Ĩt}T−ρt=τ+1 1: for t = τ + 1, . . . , T − ρ do 2: Sample S̃t ∈ S according to {ŷ(S)}S∈S . 3: Sample Ĩt ∈ S̃t ∪ {0} according to {ϕ(i, S̃t|v∗)}i. 4: end for
+i.i.d., where P[S̃t = S] = ŷ(S). The samples Ĩτ+1, . . . , ĨT−ρ are independent, where P[Ĩt = i] = ϕ(i, S̃t|v∗). The process {S̃t, Ĩt}T−ρt=τ+1 is closely related to the sales process {St, It}T−ρt=τ+1 in Algorithm 1. We remark that: (i) If tlast > T−ρ, {S̃t, Ĩt}T−ρt=τ+1 and {St, It}T−ρt=τ+1 are identically distributed. (ii) Otherwise, when tlast ≤ T − ρ, ABORT is signaled before or at the end of period T − ρ. Then, St = ∅, It = 0 for t = tlast+1, . . . , T−ρ, which distribute differently from {S̃t, Ĩt}T−ρt=tlast+1. While Procedure 2 requires knowing v∗, we emphasize that these samples are only used in our analysis. In particular, Procedure 2 is not needed in Algorithm 1.
+We argue that the step (†) is true. Now, by remark (i), {S̃t, Ĩt}T−ρt=τ+1 and {St, It}T−ρt=τ+1 are identically distributed. If the event Ek holds for all k, then the amount of resource k consumed by the end of period T − ρ is at most Tc(k) for all k. This means that ABORT is not yet signaled, which implies tstop > T −ρ. By replacing {St, It} with {S̃t, Ĩt}, we can then analyze the events EREG , {Ek}Kk=1 separately, which eases our analysis.
+The step (‡) holds, since the probability does not increase when we require the additional event Ev̂ to hold. The event Ev̂ is defined as
+{∣ ∣ ∣ ∣ log v̂(i)
+v∗(i)
+∣ ∣ ∣ ∣ ≤ ǫ(τ) = 4R
+√
+N τ log 4N δ for all i.
+}
+. (9)
+The event Ev̂ implies that MLE v̂ is an accurate estimator for v∗, with the specified confidence radius. Now, we show that the probability (7) is at least 1 − δ. This is the heart of our proof for the regret bound.
+Proving that the probability (7)≥ 1− δ. This is proved by combining Lemmas 5.1-5.5. Their proofs are deferred to Appendix B. First, we argue that the MLE v̂ is sufficiently accurate, in the sense that the event Ev̂ happens with high probability:
+Lemma 5.1. For any τ ≥ N , P[Ev̂] ≥ 1− δ/2. The proof involves a change of variable v = eθ, and uses the strong convexity of Li(eθ) in θ. We next bound the probability P [ EREG ∩ ⋂K k=1 Ek | Ev̂ ] by the following four Lemmas. We translate the accuracy in estimating v∗ to the accuracy in estimating the choice probability for every assortment:
+Lemma 5.2. For all v, v′ ∈ RN>0, b ∈ [0, 1]N and S ⊂ N , the following inequality holds:
+∑
+i∈S
+b(i) (ϕ(i, S|v)− ϕ(i, S|v′)) ≤ ∑
+i∈S
+∣ ∣ ∣ ∣ log v(i)
+v′(i)
+∣ ∣ ∣ ∣ .
+Lemma 5.2 establishes the Lipschitz continuity of ϕ(i, S|v) in log v. Altogether, Lemmas 5.1, 5.2 demonstrate that the choice probability under every assortment can be learned without testing every assortment. Furthermore, the Lemmas show that |R(S|v̂)−R(S|v∗)| = O(1/√τ ) for all S ∈ S , and that |A(S, k|v̂)−A(S, k|v∗)| = O(1/√τ ) for all S ∈ S, k ∈ K. This leads to the following Lemma: Lemma 5.3. Condition on Ev̂ (cf. (9)), we have OPT(LP(v̂)) ≥ [
+1− Bǫ(τ) mink∈K{c(k)}
+]
+OPT(LP(v∗))−Bǫ(τ).
+Assumption 4.2 (ii) ensures that Bǫ(τ)
+mink∈K{c(k)} < 1. Using
+Lemma 5.3, we first prove the near optimality in revenue:
+Lemma 5.4. We have P [EREG | Ev̂] ≥ 1− δ2(K+1) . The proof involves a decomposition of the regret in revenue and applications of Chernoff inequality. Finally, we also argue that resource k are not fully consumed before period T − ρ. Lemma 5.5. We have P [Ek | Ev̂] ≥ 1− δ2(K+1) for all k ∈ K. The proof for Lemma 5.5 is similar to the proof of Lemma 5.4. Altogether, the regret bound in Theorem 4.1 is proved. 6 Numerical Experiments We evaluate the performance of ONLINE(T 2/3) with synthetic data, with varying model parameters. By Theorem 4.1, it incurs a regret Õ(T 2/3RB √ N). We define a class tuple Γ as (S, N,K,R), and consider random problems model generated based on {Γi}3i=1 and 8 sales horizon lengths {T (q)}8q=1, which are defined below:
+Γ1 = (S1(6), 10, 5, 3), Γ2 = (S1(9), 15, 6, 5),
+Γ3 = (S1(15), 25, 8, 7), T = [250, 500, 750, 1000, 1500, 2000, 5000, 10000].
+Here, we denote S1(B) = {S ⊂ N : |S| ≤ B}. The tuples Γ1,Γ2,Γ3 are ordered with increasing difficulty; the number of assortments in Γ1,Γ2,Γ3 are 210, 5005 and 3.27×106 respectively. In many cases (especially Γ3), there are more possible assortments than the number of periods, which makes the existing budgeted bandit policies (cf. § 2) infeasible. For each (Γi, T (q)), we generate 5 random problem models. Then, for each of the problem models, we run ONLINE(T (q)2/3) 200 times, over the synthetic data generated with the model. After that, for each model, we compute two quantities: (a) the average revenue-to-optimum ratio, which is the earned revenue averaged over the 200 simulation runs divided by T (q)OPT(LP(v∗)), and (b) the average regret, which is T (q)OPT(LP(v∗)) minus the earned revenue averaged over the 200 runs. Finally, for each (Γi, T (q)), we further average the quantities (a, b) over the 5 generated models. ONLINE(τ) is very efficient via the use of CG (cf. § 4). In our simulation, CG always terminates in 50 iterations, and each run can be simulated in less than 10 seconds for models from Γ3.
+To further study the convergence of our policy, we examine the how often ONLINE(T 2/3) correctly identify supp(y∗) after the learning phase. (Recall the notation supp(y) = {S ∈ S : y(S) > 0}.) In Table 1, for each class tuple and T we tabulate the fraction of instances, out of 200 runs, where supp(ŷ) = supp(y∗). This is a stringent criterion, since supp(ŷ) could be different from supp(y∗) because of multiplicity in the optimal solutions for LP(v∗), and near optimality could still be achieved without supp(ŷ) = supp(y∗). However, ONLINE(T 2/3) is still able to identify the support in small instances. Additional simulation results show similar trend of convergence and effectiveness in short sales horizon. The details are provided Appendix C. 7 Conclusion and Future Directions The online assortment optimization problem under model uncertainty and resource constraints is studied. We propose online policies, with regret bounds sublinear in the number of periods and assortments. Many interesting research directions remain to be explored. First, it is not known if the regret lower bound by [Agrawal et al., 2016] can be attained. Second, the incorporation of contextual information, similar to [Chu et al., 2011], [Agrawal and Devanur, 2016], is an exciting topic. A A Discussion on Assumption 4.2 We remark that the choices of τ = T 2/3R2/3B2/3N1/3 and τ = T 2/3 satisfy Assumption 4.2 when T is sufficiently large.
+Indeed, for the case of τ = T 2/3R2/3B2/3N1/3, Assumption 4.2 (i, ii) are equivalent to
+T ≥ R 2B2
+c(k)3 log3/2
+4NK δ , T ≥ 512R
+2B2N c(k)3 log3/2 4N δ
+for all k ∈ K. For the case of τ = T 2/3, Assumption 4.2 (i, ii) are equivalent to
+T ≥ 1 c(k)3 log3/2 4NK δ , T ≥ 512B
+3R3N3/2
+c(k)3 log3/2
+4N
+δ
+for all k ∈ K. Again for the case of τ = T 2/3, our numerical results in §6 shows that ONLINE(τ) is effective even when the assumption is violated. B Proofs for the Lemmas in Section 5  B.1 Proof of Lemma 5.1 Recall the definition of Li(v) in (6). Consider the change of variable eθ = v, and let Li(θ) = Li(eθ). We have
+Li(θ) = n(i) log [ 1 + e−θ ] + ( τ
+N − n(i)
+)
+log [ 1 + eθ ] .
+Denote θ̂ = log v̂(i), and θ∗ = log v∗(i). By a Taylor Series Expansion on f(γ) = Li(γθ ∗ + (1 − γ)θ̂), we have
+Li(θ̂) = Li(θ ∗) + L′i(θ ∗)(θ̂ − θ∗) + 0.5L′′i (θ̆)(θ̂ − θ∗)2.
+where θ̆ = γθ∗+(1−γ)θ̂ for some γ ∈ (0, 1). SinceLi(θ̂) ≤ Li(θ ∗), we have
+0 ≥ L′i(θ∗)(θ̂ − θ∗) + 0.5L′′i (θ̆)(θ̂ − θ∗)2. (10) Interestingly, the first derivative term can be bounded as follows:
+|L′i(θ∗)| = ∣ ∣ ∣ ∣ τ
+N
+eθ ∗
+1 + eθ∗ − n(i)
+∣ ∣ ∣ ∣ ≤
+√
+τ N log 4N δ (11)
+with probability at least 1 − δ/2N . (11) is by Chernoff Inequality, since N(i) is a sum of τ/N i.i.d. 0-1 random variables {1(Is = i)}τ/Ns=1 , which has expectation eθ ∗ /(1 + eθ ∗
+). Next, we bound the second derivative as follows:
+L′′i (θ̆) = τeθ̆(i) N(1 + eθ̆(i))2 ≥ R N(1 +R)2 . (12)
+Combining (10, 11, 12) and substituting v∗(i), v̂(i), we have
+τR
+2N(1 +R)2
+∣ ∣ ∣ ∣ log v̂(i)
+v∗(i)
+∣ ∣ ∣ ∣ 2 − √ τ
+N log
+4N
+δ
+∣ ∣ ∣ ∣ log v̂(i)
+v∗(i)
+∣ ∣ ∣ ∣ ≤ 0.
+with probability at least 1 − δ/2N . Finally, the Lemma is proved by taking a union bound over all products. B.2 Proof of Lemma 5.2 Consider function f : [0, 1] → R defined by f(γ) = ∑
+i∈S b(i) (ϕ(i, S| exp [θ′ + γ(θ − θ′)]), where θ′ = (θ′(i))i∈N = (log[v
+′(i)])i∈N , and θ = (θ(i))i∈N = (log[v(i)])i∈N . Let’s also define the shorthand θγ(i) =
+θ′(i)+ γ(θ(i)− θ′(i)). Note that θ0 = θ′ and θ1 = θ. By the mean value theorem,
+∑
+i∈S
+b(i) (ϕ(i, S|v)− ϕ(i, S|v′))
+=f(1)− f(0) = f ′(γ) for some γ ∈ (0, 1)
+= ∑
+i∈S
+b(i)eθγ(i)
+1 + ∑
+ℓ∈S e θγ(ℓ)
+(θ(i) − θ′(i))
+− ∑
+i∈S
+eθγ(i) ∑ j∈S b(j)e θγ(j)
+(1 + ∑
+ℓ∈S e θγ(ℓ))2
+(θ(i)− θ′(i)) (13)
+≤ ∑
+i∈S
+|θ(i)− θ′(i)| = ∑
+i∈S
+∣ ∣ ∣ ∣ log v(i)
+v′(i)
+∣ ∣ ∣ ∣ .
+The inequality (13) holds since the sum of the coefficients of (θ(i)− θ′(i)) in the two summations lies in [0, 1]. B.3 Proof of Lemma 5.3 Consider the following linear program S-LP:
+max ∑
+S∈S
+[R(S|v̂) +Bǫ(τ)] y(S) (14a)
+s.t. ∑
+S∈S
+[A(S, k|v̂)−Bǫ(τ)] y(S) ≤ c(k)−Bǫ(τ) ∀k ∈ K
+(14b) ∑
+S∈S
+y(S) = 1, y(S) ≥ 0 ∀S ∈ S,
+(14c)
+and let OPT(S-LP) denote its optimal value. We claim the following, conditional on the event Ev̂:
+OPT(LP (v̂)) +Bǫ(τ)
+=OPT(S-LP) (15) ≥ (
+1− Bǫ(τ) mink∈K {c(k)}
+)
+OPT(LP (v∗)). (16)
+Proving (15): Rearranging the constraint for resource k yields ∑
+S∈S A(S, k|v̂)y(S) ≤ c(k), which is the resource k constraint for LP(v̂). Similarly, the objective of S-LP is equal to the objective of LP(v̂) plusBǫ(τ). This proves (15).
+Proving (16): Define the shorthand κ = Bǫ(τ)mink∈K{c(k)} .
+We first claim that the solution
+y̆(S) = { (1− κ) y∗(S) if S ∈ S \ ∅ κ+ (1− κ) y∗(∅) if S = ∅
+is feasible to S-LP, where y∗ is an optimal solution to LP(v∗). Given the feasibility of y̆ to S-LP, we have
+OPT(S-LP) ≥ ∑
+S∈S
+[R(S|v̂) +Bǫ(τ)] y̆(S)
+≥ ∑
+S∈S
+R(S|v∗)y̆(S) (17)
+=
+(
+1− Bǫ(τ) mink∈K{c(k)}
+) ∑
+S∈S
+R(S|v∗)y∗(S)
+= (
+1− Bǫ(τ) mink∈K{c(k)}
+)
+OPT(LP (v∗)).
+Step (17) is justified as follows. Conditional the event Ev̂, Lemma 5.2 implies that, for all S ∈ S we have
+|R(S|v̂)−R(S|v∗)| ≤ Bǫ(τ). (18) This justifies the step (17). Finally, we return to checking the feasibility y̆. First, the constraints in (14c) hold; in particular, the equality ∑
+S∈S y̆(S) = 1 holds by our definition of y̆(∅). Note that the factor (
+1− Bǫ(τ)mink∈K{c(k)} ) is non-negative, by Assump-
+tion 4.2 (ii). To check the constraints in (14b), we have ∑
+S∈S
+[A(S|v̂)−Bǫ(τ)] y̆(S)
+=
+(
+1− Bǫ(τ) mink∈K {c(k)}
+) ∑
+S∈S
+[A(S, k|v̂)−Bǫ(τ)] y∗(S)
+≤ (
+1− Bǫ(τ) mink∈K {c(k)}
+) ∑
+S∈S
+A(S, k|v∗)y∗(S) (19)
+≤ (
+1− Bǫ(τ) mink∈K {c(k)}
+)
+c(k) (20)
+≤c(k)−Bǫ(τ), where (19) is by (18), and (20) is by the feasibility of y∗ to LP(v∗). Altogether, y̆ is feasible to S-LP, and this finishes the proof of the Lemma. B.4 Proof of Lemma 5.4 Recall the shorthand κ = Bǫ(τ)/min{c(k)} used in Appendix B.3. Conditional on Ev̂, we have:
+TOPT(LP (v∗))− T−ρ ∑
+t=τ+1
+r(Ĩt)
+≤T (OPT(LP (v̂)) + κOPT(LP (v∗)) +Bǫ(τ))− T−ρ ∑
+t=τ+1
+r(Ĩt)
+(21)
+≤ρ+ τ + (T − ρ− τ) (κOPT(LP (v∗)) +Bǫ(τ))
++ (T − ρ− τ)OPT(LP (v̂))− T−ρ ∑
+t=τ+1
+r(Ĩt)
+︸ ︷︷ ︸
+(REGRET)
+. (22)
+The inequality (21) is by Lemma 5.3. We decompose the term (REGRET) as follows:
+(REGRET) = (T − ρ− τ)OPT(LP (v̂))− T−ρ ∑
+t=τ+1 R(S̃t|v̂) ︸ ︷︷ ︸
+(♥0)
++
+T−ρ ∑
+t=τ+1
+R(S̃t|v̂)− T−ρ ∑
+t=τ+1 R(S̃t|v∗) ︸ ︷︷ ︸
+(♣0)
++
+T−ρ ∑
+t=τ+1
+R(S̃t|v∗)− T−ρ ∑
+t=τ+1
+r(Ĩt)
+︸ ︷︷ ︸
+(♦0)
+.
+We prove the following the bounds for (♥0,♣0,♦0). To bound (♥0): Recall OPT(LP(v̂)) =∑ S∈S R(S|v̂)ŷ(S). By the definition of the sampling procedure, we have P[S̃t = S] = ŷ(S). For any fixed v̂ the random variables
+{ ∑
+S∈S
+R(S|v̂)ŷ(S)−R(S̃t|v̂) }T−ρ
+t=τ+1
+are i.i.d., mean 0, and lie in the interval [−1, 1]. By Chernoff bound, we have
+P
+[
+(♥0) ≤ √ 2T log 4(K + 1)
+δ | Ev̂
+]
+≥ 1− δ 4(K + 1) .
+To bound (♣0): Recall the assumption that r(i) ∈ [0, 1], and |S̃t| ≤ B for all t. Conditional on Ev̂, we have ∣ ∣ ∣log v̂(i) v∗(i) ∣ ∣ ∣ ≤ ǫ(τ) for every product i. By applying Lemma 5.2, this implies that for all S, we have
+R(S|v̂)−R(S|v∗) ≤ Bǫ(τ). Thus, we have (♣0) ≤ TBǫ(τ). To bound (♦0): For any realized samples {S̃t}T−ρt=τ+1, the sequence {R(S̃t|v∗) − r(Ĩt)}T−ρt=τ+1 of random variables are independent, by the way Ĩt are sampled in Procedure 2. Moreover, the random variable R(S̃t|v∗) − r(Ĩt) has mean zero, and lies in the range [−1, 1]. By Chernoff inequality, we have
+P
+[
+(♦0) ≤ √ 2T log 4(K + 1)
+δ | Ev̂
+]
+≥ 1− δ 4(K + 1) .
+Finally, we derived the desired bound in the Lemma. Conditional on Ev̂ , we have
+(REGRET)
+=TOPT(LP (v∗))− T−ρ ∑
+t=r+1
+r(Ĩt)
+≤ρ+ τ + (T − ρ− τ)Bǫ(τ) ( OPT(LP (v∗))
+mink∈K{c(k)} + 1
+)
++ TBǫ(τ) + 2
+√
+2T log 4(K + 1)
+δ
+≤ρ+ τ + TBǫ(τ) (
+1
+mink∈K{c(k)} + 2
+)
++ 2
+√
+2T log 4(K + 1)
+δ
+=τ + TBǫ(τ)
+( 2
+mink∈K{c(k)} + 2
+)
++ ( 2 + 1
+mink∈K c(k)
+)√
+2T log 4(K + 1)
+δ (23)
+holds with probability 1−δ/2(K+1). The step (23) is by the definition of ρ in (8). By the definition of ǫ(τ), the Lemma is proved. B.5 Proof of Lemma 5.5 Similar to the proof for Lemma 5.4, we decompose the sum ∑T−ρ
+t=τ+1 a(Ĩt, k) into 4 terms, (♦k), (♣k), (♥k), (♠k): T−ρ ∑
+τ+1
+a(Ĩt, k) =
+T−ρ ∑
+t=τ+1 a(Ĩt, k)−A(S̃t, k|v∗) ︸ ︷︷ ︸
+(♦k)
++
+T−ρ ∑
+t=τ+1 A(S̃t, k|v∗)−A(S̃t, k|v̂) ︸ ︷︷ ︸
+(♣k)
++
+T−ρ ∑
+t=ρ+1
+A(S̃t, k|v̂)− T−ρ ∑
+t=τ+1
+∑
+S∈S A(S, k|v̂)ŷ(S) ︸ ︷︷ ︸
+(♥k)
++
+T−ρ ∑
+t=τ+1
+∑
+S∈S A(S, k|v̂)ŷ(S) ︸ ︷︷ ︸
+(♠k)
+We bound each term from above, conditional on Eθ̂, as follows: To bound (♦k): For any fixed sequence of assortments {S̃t}T−ρt=τ+1, the random variables {a(Ĩt, k) − A(S̃t, k|v∗)}T−ρt=τ+1, where Ĩt ∼ S̃t are independent. Each of the random variables a(Ĩt, k) − A(S̃t, k|v∗) has mean zero, and lies in the range [−1, 1]. By Chernoff Bound, for any {S̃t}T−ρt=τ+1 the following inequality holds with probability 1− δ4(K+1) :
+T−ρ ∑
+t=τ+1
+a(Ĩt, k)− a(S̃t, k|v∗) ≤ √ 2T log 4(K + 1)
+δ .
+In particular, this is true condition on Ev̂, hence proving that
+P
+[
+(♦k) ≤ √ 2T log 4(K + 1)
+δ | Ev̂
+]
+≥ 1− δ 4(K + 1) .
+To bound (♣k): We bound (♣k) in a similar way to the case of (♣0). Now, a(i, k) ∈ {0, 1}, and |S̃t| ≤ B for all t. Conditional on Ev̂, we have ∣ ∣ ∣log v̂(i) v∗(i) ∣ ∣ ∣ ≤ ǫ(τ). By Lemma 5.2, for all i, S we have
+A(S, k|v∗)−A(S, k|v̂) ≤ Bǫ(τ). Thus, we have (♣k) ≤ TBǫ(τ).
+To bound (♥k): Recall that P[S̃t = S] = ŷ(S) (cf. Procedure 2). For any fixed v̂ the random variables
+{
+A(S̃t, k|v̂)− ∑
+S∈S
+A(S, k|v̂)ŷ(S) }T−ρ
+t=ρ+1
+are i.i.d., mean 0, and lie in the interval [−1, 1]. By Chernoff bound, we have
+P
+[
+(♥k) ≤ √ 2T log 4(K + 1)
+δ | Ev̂
+]
+≥ 1− δ 4(K + 1) .
+To bound (♠k): Recall that (♠k) ≤ (T−ρ−τ)c(k), since ŷ is a feasible solution to LP(v̂). Altogether, conditional on Ev̂, the following holds with probability 1− δ/2(K + 1): (♥k) + (♣k) + (♦k) + (♠k)
+≤2 √ 2T log K + 1
+δ + TBǫ(τ) + (T − ρ− τ)c(k)
+≤Tc(k)− τ (24) where (24) is by the definition of ρ (cf. (8)). Altogether, the Lemma is proved. C Additional Simulation Results We evaluate the performance of ONLINE(T 2/3) with synthetic data, when the family of allowable assortments is a partition matroid. Recall that a class tuple is (S, N,K,R). Define the notation S2(p, b) = {S ⊂ N : |S ∩ Nj | ≤ b for all 1 ≤ j ≤ p}, which denotes a partition matroid assortment family. Here, {N1, . . .Np} is a partition of N into p equal size subsets, where Nj = {(N(j − 1)/p) + 1, . . . , Nj/p}. (Thus, we implicitly assume that N is divisible by p). By [Davis et al., ], the optimization problem maxS∈S2(p,b) R(S|v) is polynomial time solvable, for any v, p, b. Therefore, CG can still be efficiently implemented for ONLINE(T 2/3). (cf the discussion on the computational efficiency CG in Section 4). We consider random models generated according to the following class tuples:
+Γ4 = (S2(2, 3), 10, 5, 3), Γ5 = (S(3, 3), 15, 6, 5), Γ6 = (S2(5, 3), 25, 8, 7).
+Similar to Section 6, we evaluate the performance of ONLINE(τ) on the problem instances with the following lengths of sales horizon:
+T = [250, 500, 750, 1000, 1500, 2000, 5000, 10000]. Our evaluation procedure is completely identical to the procedure in Section 6. Figure 2 and Table 2 have the same interpretation as Figure 1 and Table 1. Evidently, the simulation performance for partition matroid assortment families is similar to the performance for cardinality constrained assortment families.
+0 2000 4000 6000 8000 10000
+Length of Sales Horizon T
+0.65
+0.7
+0.75
+0.8
+0.85
+0.9 0.95 R ev en ue to O pt im um R at io Partition Matroid Family
+Gamma4 Gamma5 Gamma6
+(a) Revenue to optimum ratios.
+103 104
+Length of Sales Horizon T
+102
+103
+R eg
+re t
+Partition Matroid Family
+Gamma4 Gamma5 Gamma6 Reference
+(b) Regret in log-log scale.
+D An Online Algorithm with Õ( √ T ) regret
+In this Appendix Section, we propose and analyze a UCB policy that achieves a Õ( √ T ) regret. The following statement is the full version of Theorem 4.3:
+TheoremD.1. Assume thatω < 1, whereω is defined in (31). Algorithm 3 satisfies the resource constraints with probability 1, and achieves a regret of O (√ TR3B5/2N log TNK
+δ
+)
+with probability at least 1− δ.
+The assumption of ω < 1 ensures that the sales horizon is long enough for sufficient learning. We further explain the rationale behind the assumption in the analysis.
+We remark that, while the regret bound for the UCB policy (Algorithm 3) has a better dependence on T than ONLINE(τ), the former has a poorer dependence on R,B,N than the latter. It is because the UCB policy estimates the underlying utility parameter v∗ with a stream of assortments S1, S2, . . . (and the corresponding purchase outcomes I1, I2, . . .) of arbitrary sizes. Thus, the UCB policy needs to disentangle the dependence between different products in each offered assortment during the estimation. This situation is in contrast to ONLINE(τ), which estimates v∗ by inferring from single item assortments (and the corresponding purchase outcome). Therefore, ONLINE(τ) does not need to go through the disentangling process, leading to a better dependence on the parameters R,B,N than our UCB policy. Nevertheless, since ONLINE(τ) separates learning from earning, its dependence on T is strictly worse than the UCB policy, which simultaneously learns and earns.
+Our UCB policy is stated in Algorithm 3. The signal ABORT ensures that the resource constraints are satisfied with probability 1.
+Algorithm 3 UCB Policy
+1: Initialize C(k) = Tc(k) ∀k ∈ K, and fixed assortments {Si}Ni=1 such that i ∈ Si ∈ S.
+2: for t = 1, . . . , N do ⊲ Warm Start 3: Offer St, and observe It. 4: For all k ∈ K, C(k) ← C(k) − a(It, k). 5: end for 6: for t = N + 1, . . . , T do 7: Compute theMLE vt in (25), based on {(Ss, Is)}t−1s=1. 8: Solve UCB-LP(vt, nt−1, ω) for an optimal ŷt. 9: Offer an assortment St ∈ S with probability ŷt(St). 10: Observe the product It purchased. 11: For all k ∈ K, C(k) ← C(k) − a(It, k). 12: if ∃k ∈ K s.t. C(k) = 0 then 13: Signal ABORT, break the for-loop and offer S =
+∅ to the remaining customers. 14: end if 15: end for
+In the first N periods, we warm-start our estimation on v∗ by offering assortments containing each of the products. Then, in each of the periods N + 1, . . . , T , we compute the MLE vt for v
+∗ using the observed sales history {(Ss, Is)}t−1s=1: vt = argmin
+v∈[1/R,R]N Lt−1(v), (25)
+where
+Lt−1(v) = t−1∑
+s=1
+− log(ϕ(Is, Ss|v)). (26)
+After that, we solve the following UCB-LP(vt, nt−1, ω)
+max ∑
+S∈S
+(
+R(S | vt) + ∑
+i∈S
+ε(nt−1(i))
+)
+y(S)
+s.t. ∑
+S∈S
+(
+A(S | vt)− ∑
+i∈S
+ε(nt−1(i))
+)
+y(S)
+≤ (1− ω)c(k) ∀k ∈ K (27a)
+∑
+S∈S
+y(S) = 1, y(S) ≥ 0 ∀S ∈ S
+(27b)
+for an optimal solution ŷt. The parameters in UCBLP(vt, nt−1, ω) are defined as follows.
+ε(n) = ( √ N + 1)Ψ√
+n , (28)
+nt−1(i) =
+t−1∑
+s=1
+1(i ∈ St), (29)
+Ψ = R(1 +BR)2 √ 6 log 2NT (K + 1)
+δ , (30)
+ω = 11ΨN
+mink∈K c(k)
+√
+B T log 4(K + 1) δ . (31)
+Procedure 4 Generation of {S̃t, Ĩt}Tt=1 1: for t = 1, · · · , N do 2: Define S̃i = Si, where Si are the fixed assortments
+defined in Line 1 in Alg 3.
+3: Sample Ĩt ∼ S̃t. 4: end for 5: for t = N + 1, · · · , T do 6: Compute theMLE ṽt in (26), based on {(S̃s, Ĩs)}t−1s=1. 7: Solve UCB-LP(ṽt, ñt−1, ω) for an optimal ỹt. 8: Select the sample assortment S̃t with prob. ỹt(S̃t).
+9: Sample Ĩt ∼ S̃t 10: end for
+By the assumption ofω < 1 in TheoremD.1, the right hand sides of the constraints (27a) are positive. The linear program UCB-LP(vt, nt−1, ω) is always feasible, since y(∅) = 1, y(S) = 0 for all S ∈ S \ {∅} is always a feasible solution. Different from LP(v̂) (which is used in ONLINE(τ)), it is not known if UCB-LP(vt, nt−1, ω) can be efficiently solved (at least empirically) by the Column Generation algorithm or any other algorithm or heuristic.
+The incorporation of confidence bounds into UCBLP(vt, nt−1, ω) is inspired by [Agrawal and Devanur, 2014] as well as the primal-dual algorithm in [Badanidiyuru et al., 2013]. However, our design of the confidence bounds and the analysis are substantially different. As remarked in the design of ONLINE(τ), We cannot afford to learn all the choice probabilities {ϕ(i, S|v∗)}i∈N ,S∈S individually, which would be the case if we just directly apply [Agrawal and Devanur, 2014][Badanidiyuru et al., 2013]. Instead, we need to first provide a confidence bound on v∗, and then translate it to corresponding confidence bounds for the choice probabilities. The curse of dimensionality in learning is thus avoided. Different from ONLINE(τ), the confidence bounds for the UCB policy is adaptively defined every period.
+In the following, we outline the proof of Theorem D.1 in Appendix E, and then prove the auxiliary Lemmas and Theorem in Appendices F - H.
+E Proving the Õ( √ T ) Regret
+First, we note that one particular challenge in analyzing the UCB policy is that it ABORTs at the random period τ when C(k) = 0. This makes the analysis of total revenue earned difficult. This is similar to the difficulty in analyzing ONLINE(τ). Thus, to facilitate the analysis, we consider the following sales process (S̃t, Ĩt) T t=1 generated by Procedure 4. In Procedure 4, the notation Ĩt ∼ S̃t denotes sampling a product Ĩt from S̃t ∪ {0} with the underlying choice probability ϕ(Ĩt, S̃t|v∗). We define ñt−1(i) = ∑t−1 s=1 1(i ∈ S̃s), similar to the definition of nt−1(i) in (29). We emphasize that (S̃t, Ĩt) T t=1 is only used for the analysis; the online algorithm does not need to know how to generate such a process. This is similar to the use of Procedure 2 for analyzing ONLINE(τ).
+Note that (S̃t, Ĩt) T t=1 is closely related to the sale process (St, It) T t=1 generated by Algorithm 3. Let tstop be the period when Algorithm 3 signals ABORT; define tstop = T if no ABORT is signaled. When Algorithm 3 does not signal ABORT, the processes (S̃t, Ĩt, ṽt, ñt) T t=1 and (St, It, vt, nt) T t=1 are identically distributed. However, if an ABORT is signaled at period tstop, then (S̃t, Ĩt, ṽt, ñt) tstop t=1 and (St, It, vt, nt) tstop t=1 are still identically distributed, but St = ∅ = It for t ≥ tstop + 1, which is in general distributed differently from (S̃t, Ĩt) T t=tstop+1. Moreover, our UCB policy satisfies the resource constraints with probability 1, i.e. ∑T
+t=1 a(It, k) ≤ Tc(k) with certainty; but ∑T
+t=1 a(Ĩt, k) > Tc(k) violate the constraints with positive (despite being exponentially small) probability. Now, we have for any target regret bound BOUND the following inequality:
+P [Regret ≤ BOUND]
+=P
+[
+TOPT(LP(v∗))− tstop∑
+t=1
+r(It) ≤ BOUND ]
+≥P [ TOPT(LP(v∗))− T∑
+t=1
+r(It) ≤ BOUND, no ABORT ]
+=P
+[{
+TOPT(LP(v∗))− T∑
+t=1
+r(Ĩt) ≤ BOUND }
+∩ { T∑
+t=1
+a(Ĩt, k) ≤ Tc(k) for all k. }] .
+To prove Theorem D.1, it suffices to prove the following two Lemmas:
+Lemma E.1. We have
+P
+[
+TOPT(LP(v∗))− T∑
+t=1
+r(Ĩt)
+= Õ (√ TR3B5/2N )]
+≥ 1− δ K + 1 .
+Lemma E.2. We have
+P
+[ T∑
+t=1
+a(Ĩt, k) ≤ Tc(k) for all k ∈ K ]
+≥ 1− Kδ K + 1 .
+The remaining exposition focuses on proving Lemmas E.1, E.2. To accomplish these tasks, we first prove the following instrumental Theorem, sheds light on the choice of parameter in UCB-LP(vt, nt−1, ω).
+Theorem E.3. Let Et denote the event that the inequality
+B(S|ṽt)− ∑
+i∈S
+ε(ñt−1(i)) ≤ B(S|v∗)
+≤ B(S|ṽt) + ∑
+i∈S
+ε(ñt−1(i)) (32)
+holds for all S ∈ S, b ∈ [0, 1]N . (We use the notation B(S|v) = ∑i∈S b(i)ϕ(i, S|v).) Then Et holds with probability at least 1− δ/(2(K + 1)T ).
+The proof of Theorem E.3 is first outlined in Appendix E.1, and the main Theorem in Appendix E.1 is proved in Appendix F. Finally, we prove Lemmas E.1, E.2 by using Theorem E.3 in Appendices F, G. E.1 Proving Theorem E.3 We prove Theorem E.3 by establishing a confidence bound for estimating v∗, using correlated samples {S̃s, Ĩs}t−1s=1 generated by Algorithm 4. Note that S̃t ∈ σ({S̃s, Ĩs}t−1s=1 ∪ Ũt), where Ũt is the randomness used to generate S̃t in Line 8
+Theorem E.4. Consider the sales process {S̃s, Ĩs}t−1s=1 generated by Algorithm 4, where t ≥ N + 1. The following inequality
+N∑
+i=1
+( √
+ñt−1(i) log ∣ ∣ ∣ ∣ ṽt(i)
+v∗(i)
+∣ ∣ ∣ ∣ −Ψ )2 ≤ NΨ2 (33)
+holds with probability at least 1− δ/2T (K + 1). The proof of TheoremE.4 is postponed to Appendix F. The proof is similar to the proof of Lemma 5.1, but the analysis in the proof of Theorem E.4 is significantly more involved, since we need to disentangle the dependence across different products for the estimation of v∗. Similar to the proof of Lemma 5.1, we consider the following change in variables v(i) = eθ(i), and the function Lt(θ) = Lt((θ(1), . . . , θ(N))) = Lt((eθ(1), . . . , eθ(N)))). The constant Ψ is an artifact of the strong convexity of Lt in θ. A crucial part of the proof involves demonstrating the concentration property of ∇Lt(θ∗), the gradient of Lt at θ∗ = (θ∗(i))i∈N = (log v
+∗(i))i∈N . However, the classical Azuma-Hoeffding or Chernoof inequality is not directly applicable, since the frequency ñt−1(i) is a random variable that correlates with {(S̃s, Ĩs)}t−1s=1. This is in contrast to the analysis in the proof of Lemma 5.1, where the number of observations on product i is fixed to be τ/N . Thus, we employ the following concentration inequality, which is commonly used in the multi-armed bandit literature:
+Lemma E.5 ([Abbasi-yadkori et al., 2011],[Bubeck et al., 2011]). Let {Ft}∞t=1 be a filtration. Let ρ(t) ∈ {0, 1} be a binary Ft−1-measurable random variable, and let η(t) be a Ft-measurable random variable that is conditionally centered and Ft−1−conditionally L-subGaussian, i.e. E[η(t) | Ft−1] = 0 a.s. and E[eλη(t) | Ft−1] ≤ e(λL)
+2/2 for all λ ∈ R. Then the confidence bound ∣ ∣ ∣ ∣ ∣ τ∑
+t=1
+ρ(t)η(t) ∣ ∣ ∣ ∣ ∣ ≤ L √ √ √ √ ( 1 + τ∑
+t=1
+ρ(t)
+) (
+1 + 2 log τ
+δ
+)
+(34)
+holds with probability at least 1− δ. The Lemma follows from either the application of Doob’s Optional Sampling Theorem with Azuma-Hoeffding inequality (for example see the proof of Lemma 15 in [Bubeck et al., 2011]), or from the theory of selfnormalizing processes (for example, see Lemma 6 in [Abbasi-yadkori et al., 2011])
+In particular, Theorem E.4 implies that the confidence bound ∣
+∣ ∣ ∣ log ṽt(i)
+v∗(i)
+∣ ∣ ∣ ∣ ≤ ε(ñt−1(i)) (35)
+holds for all product i ∈ N with probability at least 1 − δ/2T (K + 1). Finally, combining (35) with Lemma 5.2, Theorem E.3 is proved. F Proof of Theorem E.4 Recall that Lt−1(v) in the Theorem is the negative loglikelihood under the samples {S̃s, Ĩs}t−1s=1 generated by Procedure 4. (cf. (26)) Consider the the following change of variables and transformation on the likelihood function:
+For all i ∈ N , θ(i) = log v(i),
+Lt(θ) = Lt((θ(1), . . . , θ(N))) = Lt((eθ(1), . . . , eθ(N)))). Also, we denote θ̃t = (log ṽt(i)) N i=1, and θ
+∗ = (log v∗(i))Ni=1. By Taylor approximation, we know that there exists γ ∈ [0, 1] such that
+Lt−1(θ̃t) = Lt−1(θ ∗) +∇Lt−1(θ∗)T (θ̃t − θ∗)
++ 1
+2 (θ̃t − θ∗)THt−1(θ∗ + γ(θ̃t − θ∗))(θ̃t − θ∗), (36)
+where
+∇Lt−1(θ∗) = ( ∂Lt−1(θ)
+∂θ(i)
+)N
+i=1 ∣ ∣ ∣ ∣ ∣ θ=θ∗
+is the gradient at θ∗, and
+Ht−1(θ ∗+γ(θ̃t−θ∗)) =
+( ∂2Lt−1(θ)
+∂θ(i)∂θ(j)
+)
+1≤i,j≤N ∣ ∣ ∣ ∣ ∣ θ=θ∗+γ(θ̃t−θ∗)
+is the Hessian matrix.
+Now, we know that Lt−1(θ ∗) ≥ Lt−1(θ̃t), since ṽt mini-
+mizes Lt. This yields:
+∇Lt−1(θ∗)T (θ̃t − θ∗)
++ 1
+2 (θ̃t − θ∗)THt−1(θ∗ + s(θ̃t − θ∗))(θ̃t − θ∗) ≤ 0.
+(37)
+Now, we claim the following two inequalities:
+1. With probability at least 1− δ/(2T (K + 1)), we have ∣ ∣ ∣ ∣ ∂Lt ∂θ(i) ∣ ∣ ∣ ∣ θ=θ∗ ≤ √ 6ñt−1(i) log 2T (K + 1)N δ (38)
+for all i ∈ N . 2. We have
+Ht−1(θ) 1
+R(1 +BR)2 ×
+       nt−1(1) 0 0 0 0 0 nt−1(2) 0 0 0 0 0 . . . 0 0
+0 0 0 . . . 0 0 0 0 0 nt−1(N)      
+(39)
+for all θ ∈ [− logR, logR]N . The notation A B means that A−B is positive semi-definite.
+If (38), (39) hold, then we have the following from (37)
+1
+R(1 +BR)2
+N∑
+i=1
+(√ ñt−1(i)(θ̃t(i)− θ∗(i)) )2
+− √ 6 log 2(K + 1)TN
+δ
+N∑
+i=1
+√ ñt−1(i) ∣ ∣ ∣θ̃t(i)− θ∗(i) ∣ ∣ ∣ ≤ 0.
+This leads to
+N∑
+i=1
+(√ ñt−1(i)(θ̃t(i)− θ∗(i)) )2
+− 2Ψ N∑
+i=1
+√ ñt−1(i) ∣ ∣ ∣θ̃t(i)− θ∗(i) ∣ ∣ ∣+ N∑
+i=1
+Ψ2 ≤ NΨ2,
+where we recall that Ψ = R(1 + BR)2 √
+6 log 2N(K+1)Tδ .
+This is what we are required to prove. To complete the proof, we prove (38), (39). Proving (38). The partial derivative has the following expression:
+∂Lt ∂θ(i) ∣ ∣ ∣ ∣ θ=θ∗ = ∑
+s∈{1,...,t−1}:
+S̃s∋i
+ϕ(i, S̃s|v∗)− 1(Ĩs = i)
+=
+t−1∑
+s=1
+ρs(i) ( ϕ(i, S̃s|v∗)− 1(Ĩs = i) ) ,
+where ρs(i) = 1(S̃s ∋ i) is the indicator random variable of product i being in the assortment S̃s in the s th period. Now, define the filtration Fs−1 = σ({(S̃τ , Ĩτ )}s−1τ=1 ∪ {S̃s}), the σ-algebra generated by {(S̃τ , Ĩτ )}s−1τ=1 ∪ {S̃s}. Then the indicator ρs(i) and the probability ϕ(i, S̃s|v∗) are Fs−1-measurable, and the purchased product Ĩs at period s is Fs-measurable. Now, we have E[1(Ĩs = i)|Fs−1] = ϕ(i, S̃s|v∗), and clearly ϕ(i, S̃s|v∗) − 1(Ĩs = i) is 1- subGaussian. Thus, by applying Lemma E.5, we have
+∣ ∣ ∣ ∣ ∂Lt ∂θ(i) ∣ ∣ ∣ ∣ θ=θ∗ = ∣ ∣ ∣ ∣ ∣ t−1∑
+s=1
+ρs(i) ( ϕ(i, S̃s|v∗)− 1(Ĩs = i) ) ∣ ∣ ∣ ∣ ∣
+≤ √
+(1 + ñt−1(i))
+(
+1 + 2 log 2TN(K + 1)
+δ
+)
+≤ √ 6ñt−1(i) log 2TN(K + 1)
+δ (40)
+for all i ∈ N with probability at least 1 − δ/(2T (K + 1)), and the inequality (40) is by the assumption that ñt−1(i) ≥ 1 for all i ∈ N . Proving (39). First we express the second derivatives for Lt−1 for any θ ∈ RN . For i 6= j, ∂2Lt−1
+∂θ(i)∂θ(j) = −
+∑
+s∈{1,··· ,t−1}:
+S̃s∋i,j
+eθ(i)eθ(j) ( 1 + ∑
+ℓ∈S̃t eθ(ℓ)
+)2 . (41)
+∂2Lt−1 ∂θ(i)2 = ∑
+s∈{1,··· ,t−1}:
+S̃s∋i
+eθ(i) + ∑
+ℓ∈S̃t\i eθ(i)eθ(ℓ)
+( 1 + ∑
+ℓ∈S̃t eθ(ℓ)
+)2 . (42)
+Now, we focus on the Hessian matrix hs(θ) for the s th period sample (S̃s, Ĩs). (We have Ht−1(θ) = ∑t−1
+s=1 hs(θ).) By (41), (42), the Hessian matrix hs(θ) can be expressed as follows:
+hs(θ) = 1
+(1 + ∑
+i∈S̃s eθ(i))2 × 
+      
+eθ(1)1(1 ∈ S̃s) 0 0 0 0 0 eθ(2)1(2 ∈ S̃s) 0 0 0 0 0 . . . 0 0
+0 0 0 . . . 0 0 0 0 0 eθ(N)1(N ∈ S̃s)       
++ ∑
+1≤i<j≤N : i,j∈S̃s
+eθ(i)+θ(j)uTi,jui,j ,
+where the vector ui,j = ei−ej, and ei is the ith standard basis vector. Now, each term in the second summation is positive semi-definite. Applying the bound v = eθ(i) ∈ [−R,R] for all i ∈ N , and the model assumption that |S| ≤ B for all S ∈ S, we have
+hs(θ) 1
+R(1 +BR)2 ×       
+1(1 ∈ S̃s) 0 0 0 0 0 1(2 ∈ S̃s) 0 0 0 0 0 . . . 0 0
+0 0 0 . . . 0 0 0 0 0 1(N ∈ S̃s)        ,
+(43)
+and summing the inequality (43) over 1 ≤ s ≤ t − 1 yields (39). This concludes the proof of Theorem E.4. G Proofs of Lemmas E.1, E.2  G.1 Proof of Lemma E.1 To upper bound the regret, we first have the following:
+(1− ω)(T −N)OPT(LP(v∗))− T∑
+t=N+1
+r(Ĩt)
+≤ T∑
+t=N+1
+∑
+S∈S
+( ∑
+i∈S
+r(i)ϕ(i, S|ṽt) + ε(ñt−1(i)) ) ỹt(S)
+− T∑
+t=N+1
+r(Ĩt) (44)
+=
+T∑
+t=N+1
+∑
+S∈S
+( ∑
+i∈S
+r(i)ϕ(i, S|ṽt) + ε(ñt−1(i)) ) ỹt(S)
+− T∑
+t=N+1
+∑
+i∈S̃t
+r(i)ϕ(i, S̃t|ṽt) + ε(ñt−1(i))
+︸ ︷︷ ︸
+(♦0)
++
+T∑
+t=N+1
+∑
+i∈S̃t
+r(i)ϕ(i, S̃t|ṽt) + ε(ñt−1(i))
+− T∑
+t=N+1
+∑
+i∈S̃t
+r(i)ϕ(i, S̃t|v∗)
+︸ ︷︷ ︸
+(♣0)
++
+T∑
+t=N+1
+∑
+i∈S̃t
+r(i)ϕ(i, S̃t|θ∗)− T∑
+t=N+1
+r(Ĩt)
+︸ ︷︷ ︸
+(♥0)
+.
+The inequality (44) is by the following Claim:
+Claim G.1. Conditional on the eventEt (recallEt from Theorem E.3), we have
+OPT(UCB-LP(ṽt, ñt−1, ω)) ≥ (1− ω)OPT(LP(v∗)) (45) The proof of Claim G.1 is given in Appendix H. It is similar to the proof of Lemma 5.3. The claim shows that our UCB policy can indeed be seen as an optimism-in-face-ofuncertainty algorithm. To bound (♥0): By our model assumption, r(i) ∈ [0, 1] for all i ∈ N . Observe that the tth summand Revt =∑ i∈S̃t
+r(i)ϕ(i, S̃t|v∗) − r(Ĩt) ∈ [−1, 1] is a martingale difference with respect to the filtration Ft = σ({(S̃s, Ĩs)}ts=1 ∪ {S̃t+1}), in the sense that Revt is Ft measurable, and E[Revt|Ft−1] = 0. By applying Azuma-Hoeffding inequality, we have
+(♥0) ≤ √ 2T log 4(K + 1)
+δ (46)
+with probability at least 1− δ/4(K + 1). To bound (♣0): We have the following bound:
+(♣0) ≤ 2 T∑
+t=N+1
+∑
+i∈S̃t
+ε(ñt−1(i)) w. p. ≥ 1− δ
+2(K + 1)
+(47)
+≤ 2Ψ( √ N + 1) N∑
+i=1
+ñT (i)∑
+n=1
+1√ n
+(48)
+≤ 4Ψ( √ N + 1) N∑
+i=1
+√
+ñT (i)
+≤ 4Ψ( √ N + 1) √ √ √ √N N∑
+i=1
+ñT (i) (49)
+≤ 4Ψ( √ N + 1) √ NBT < 8 √ TΨ √ BN. (50)
+The inequality (47) holds with probability at least 1 − δ/2(K +1), by Theorem E.3 and a union bound over the periods. All inequalities apart from (47) hold with probability 1. The inequality (48) is based on the following observation. Fix a particular product i, and let S̃t1 , · · · , S̃tm be the assortments that includes i from period N + 1 to period T , where N + 1 ≤ t1 < t2 < · · · < tm. The summand ε(ñt−1(i)) appears in (47) at each of the time indexes tj , and it is clear that ñtj+1−1(i) = ñtj−1(i) + 1. The inequality (49) is by Jensen’s Inequality. Finally, the inequality (50) is by the fact that at most B products can be included in each of the T assortments. To bound (♦0): By the definition of ε in (28), we have∣ ∣ ∑
+i∈S r(i)ϕ(i, S|ṽt) + ε(ñt−1(i)) ∣ ∣ ≤ 2B
+√ NΨ for all i ∈
+S ∈ S and all t. 1 Observe that the tth summand revt = ∑
+S∈S
+(∑ i∈S r(i)ϕ(i, S|ṽt) + ε(ñt−1(i)) ) ỹt(S) −
+∑
+i∈S̃t r(i)ϕ(i, S̃t|ṽt)+ε(ñt−1(i)) is a martingale difference with respect to the filtration Et = σ({(S̃s, Ĩs)}ts=1). This is because revt is Et measurable (ñt−1(i), ỹt are Et measurable), and E[revt|Et−1] = 0. By applying Azuma-Hoeffding inequality, we have
+(♦0) ≤ 2 √ NBΨ
+√
+2T log 4(K + 1)
+δ
+≤2NΨ √ 2BT log 4(K + 1)
+δ with probability at least 1− δ/4(K + 1). So the regret in the revenue is at most
+N + ωTOPT(LP(v∗)) + (♦0) + (♣0) + (♥0)
+<11ΨN
+√
+BT log 4(K + 1)
+δ
+(
+1 + 1
+mink∈K c(k)
+)
+(51)
+=O (√ TR3B5/2N log NTK
+δ
+)
+.
+with probability at least 1− δ/(K + 1). H Proof of Claim G.1 Let y∗ be an optimal solution to LP(v∗), and consider the solution ȳ = (1−ω)y∗+ω1∅. That is ȳ(S) = (1−ω)y∗(S) for S ∈ S \ {∅}, and ȳ(∅) = (1 − ω)y∗(S) + ω. First, it is clear that ȳ is feasible to UCB-LP(ṽt, ñt−1, ω). Clearly, ȳ ≥ 0, and ∑S∈S ȳ(S) = (1 − ω) ∑ S∈S y ∗(S) + ω = 1. Moreover, for each resource k ∈ K, we have ∑
+S∈S
+( ∑
+i∈S
+a(i, k)ϕ(i, S | ṽt)− ε(ñt−1(i)) ) ȳ(S)
+1Better bound can be proved, but it does not affect the overall regret in the analysis.
+=(1− ω) ∑
+S∈S
+( ∑
+i∈S
+a(i, k)ϕ(i, S | ṽt)− ε(ñt−1(i)) ) y∗(S)
+(52)
+≤(1− ω) ∑
+S∈S
+( ∑
+i∈S
+a(i, k)ϕ(i, S | ṽt)− ε(ñt−1(i)) ) y∗(S)
+(53)
+≤(1− ω)c(k),
+where inequality(52) is by the fact that a(0, k) = 0 for all k ∈ K, inequality (53) is by the definition of eventEt. (Recall Et from Theorem E.3) Since ỹt is optimal for UCB-LP(ṽt, ñt−1, ω), we have
+OPT(UCB-LP(ṽt, ñt−1, ω))
+= ∑
+S∈S
+( ∑
+i∈S
+r(i)ϕ(i, S | ṽt) + ε(ñt−1(i)) ) ỹt(S)
+≥ ∑
+S∈S
+( ∑
+i∈S
+r(i)ϕ(i, S | ṽt) + ε(ñt−1(i)) ) ȳ(S) (54)
+≥ ∑
+S∈S
+∑
+i∈S
+r(i)ϕ(i, S | v∗)ȳ(S) (55)
+=(1− ω)OPT(LP(v∗)).
+Inequality (54) is by the feasibility of ȳ to UCBLP(ṽt, ñt−1, ω), and inequality (55) is by the definition of Et. This proves the Theorem. H.1 Proof of Lemma E.2 For each k ∈ K, we have the following: T∑
+N+1
+a(Ĩt, k)
+= T∑
+t=N+1
+a(Ĩt, k)− T∑
+t=N+1
+∑
+i∈S̃t
+a(i, k)ϕ(i, S̃t|v∗)
+︸ ︷︷ ︸
+(♥k)
++ T∑
+t=N+1
+∑
+i∈S̃t
+a(i, k)ϕ(i, S̃t|v∗)
+− T∑
+t=N+1
+∑
+i∈S̃t
+a(i, k)ϕ(i, S̃t|ṽt)− ε(ñt−1(i))
+︸ ︷︷ ︸
+(♣k)
++
+T∑
+t=N+1
+∑
+i∈S̃t
+a(i, k)ϕ(i, S̃t|ṽt)− ε(ñt−1(i))
+− T∑
+t=N+1
+∑
+S∈S
+( ∑
+i∈S
+a(i, k)ϕ(i, S|ṽt)− ε(ñt−1(i)) ) ỹt(S)
+︸ ︷︷ ︸
+(♦k)
++
+T∑
+t=N+1
+∑
+S∈S
+( ∑
+i∈S
+a(i, k)ϕ(i, S|ṽt)− ε(ñt−1(i)) ) ỹt(S)
+︸ ︷︷ ︸
+(♠k)
+To bound (♥k): By our model assumption, a(i, k) ∈ {0, 1} for all i ∈ N , k ∈ K. Observe that the tth summand At = a(Ĩt, k) − ∑
+i∈S̃t a(i, k)ϕ(i, S̃t|v∗) ∈ [−1, 1], and the
+summands {At}Tt=N+1 is a martingale difference sequence with respect to the filtrationFt = σ({(S̃s, Ĩs)}ts=1∪{S̃t+1}), in the sense that At is Ft measurable, and E[At|Ft−1] = 0. By applying Azuma-Hoeffding inequality, we have
+(♥k) ≤ √ 2T log 4(K + 1)
+δ (56)
+with probability at least 1− δ/(4(K + 1)). To bound (♣k): We have
+(♣k) ≤ 2 T∑
+t=N+1
+∑
+i∈S̃t
+ε(ñt−1(i)) < 8ΨN √ BT,
+with probability at least 1 − δ/(2(K + 1)), where the first inequality is by Theorem E.4 and our model assumption that a(i, k) ∈ {0, 1} for all i ∈ N , k ∈ K, and the second inequality follows exactly the same reasoning as in (♣0). To bound (♦k): By the definition of ε in (28), we have ∣ ∣ ∑
+i∈S a(i, k)ϕ(i, S|ṽt)− ε(ñt−1(i)) ∣ ∣ ≤ 2B
+√ NΨ
+for all i ∈ S ∈ S and all t. Observe that the tth summand at = ∑
+i∈S̃t a(i, k)ϕ(i, S̃t|ṽt) − ε(ñt−1(i)) −
+∑
+S∈S
+(∑ i∈S a(i, k)ϕ(i, S|ṽt)− ε(ñt−1(i)) ) ỹt(S) is
+a martingale difference with respect to the filtration Et = σ({(S̃s, Ĩs)}ts=1). This is because at is Et-measurable (ñt−1(i), ỹt are Et-measurable), and E[at|Et−1] = 0. By applying Azuma-Hoeffding inequality, we have
+(♦k) ≤ 2 √ NBΨ
+√
+2T log 4(K + 1)
+δ
+≤2NΨ √ 2BT log 4(K + 1)
+δ
+with probability at least 1− δ/(4(K + 1)). Total amount
+∑T t=1 a(Ĩt, k) of resource k consumed from
+Period 1 to period T is at most
+N + (♦k) + (♣k) + (♥k) + (♠k)
+<11ΦN
+√
+BT log 4(K + 1)
+δ + (♠k)
+<11ΦN
+√
+BT log 4(K + 1)
+δ + T (1− ω)c(k) ≤ Tc(k).
+with probability at least 1 − δ/(K + 1). That is C(k) > 0 for all k ∈ K and for all periods with probability at least 1−Kδ/(K + 1). Thus the Lemma is proved.  Such choice behavior is captured by the underlying choice model, which has been under intense study by the economics and operations research communities [Ben-Akiva and Lerman, 1985].    TheMNL choice model is a fundamental model proposed by [McFadden, 1974], and it has been the building block for many other existing choice models [Ben-Akiva and Lerman, 1985].    TheMNL choice model is a fundamental model proposed by [McFadden, 1974], and it has been the building block for many other existing choice models [Ben-Akiva and Lerman, 1985].    Assuming the knowledge of the underlying MNL choice model, [Talluri and van Ryzin, 2004] propose an efficient algorithm for computing an optimal assortment when there is no resource constraint; [Liu and van Ryzin, 2008] propose an efficient algorithm for computing a mixture of assortments that achieves asymptotic optimality under resource constraints.    Assuming the knowledge of the underlying MNL choice model, [Talluri and van Ryzin, 2004] propose an efficient algorithm for computing an optimal assortment when there is no resource constraint; [Liu and van Ryzin, 2008] propose an efficient algorithm for computing a mixture of assortments that achieves asymptotic optimality under resource constraints.    [Bernstein et al., 2015] offer insights into the optimal assortment planning policy under resource constraints, when the product prices are equal but there are multiple types of customers.    Assuming uncertainty in the MNL choice model, [Rusmevichientong et al., 2010] propose an online policy that incurs an instance-dependent O(log T ) regret.    [Saure and Zeevi, 2013] generalize [Rusmevichientong et al.    [Saure and Zeevi, 2013] generalize [Rusmevichientong et al., 2010] by proposing online policies with instance-dependent O(log T ) regret bounds for a wider class of choice models.    Recently, [Agrawal et al., 2016] provide a instance-independent regret Õ( √ T ) under an uncertain MNL choice model.    For budget bandit problems, [Tran-Thanh et al., 2010] provide an instance-indepenedent regret bound with a resource constraint; [Tran-Thanh et al.    , 2012] and [Xia et al., 2015a] provide instance-dependent regret bounds for the cases of discrete and continuous resource consumption costs.    [Badanidiyuru et al., 2013], [Agrawal and Devanur, 2014] provide optimal instanceindependent regret bounds for the problem with general resource constraints.    , 2013], [Agrawal and Devanur, 2014] provide optimal instanceindependent regret bounds for the problem with general resource constraints.    A direct application of [Badanidiyuru et al., 2013] or [Agrawal and Devanur, 2014] to our problem yields a regret linear in the number of assortments, which is often larger than the number of customers.    , 2013] or [Agrawal and Devanur, 2014] to our problem yields a regret linear in the number of assortments, which is often larger than the number of customers.    [Gai et al., 2012] study the combinatorial bandit problem with linear reward (i.    a super arm’s reward is the sum of its basic arms’ reward), which is subsequently generalized and refined by [Chen et al., 2013] to the case with non-linear reward.    The optimal regret bound is obtained by [Kveton et al., 2014] in the case of linear reward.    [Chen et al., 2016] consider the generalized case when the expected reward under a super arm depends on certain random variables associated with its basic arms.    Recent works [Radlinski et al., 2008], [Kveton et al.    , 2008], [Kveton et al., 2015a], [Kveton et al.    , 2015a], [Kveton et al., 2015b] consider the problem in the cascading-feedback setting.    A customer’s purchase decision is governed by the MNL choice probability function φ(·, ·|v∗) [McFadden, 1974].    The benchmark TOPT(LP(v)) upper bounds the expected optimum [Badanidiyuru et al., 2013]: Theorem 3.    1 ([Badanidiyuru et al., 2013]).    Our regret bound is sublinear inN,B, in deep contrast with the regret bounds by applying [Badanidiyuru et al., 2013], [Agrawal and Devanur, 2014], which are linear in |S| = Θ(N).    , 2013], [Agrawal and Devanur, 2014], which are linear in |S| = Θ(N).    Fortunately, by [Liu and van Ryzin, 2008], LP(v̂) can be efficiently solved by the Column Generation algorithm (CG).    The reduced problem is polynomial time solvable for many choices of S, such as S = {S : |S| ≤ B} [Rusmevichientong et al., 2010].    First, it is not known if the regret lower bound by [Agrawal et al., 2016] can be attained.    Second, the incorporation of contextual information, similar to [Chu et al., 2011], [Agrawal and Devanur, 2016], is an exciting topic.    The incorporation of confidence bounds into UCBLP(vt, nt−1, ω) is inspired by [Agrawal and Devanur, 2014] as well as the primal-dual algorithm in [Badanidiyuru et al.    The incorporation of confidence bounds into UCBLP(vt, nt−1, ω) is inspired by [Agrawal and Devanur, 2014] as well as the primal-dual algorithm in [Badanidiyuru et al., 2013].    As remarked in the design of ONLINE(τ), We cannot afford to learn all the choice probabilities {φ(i, S|v)}i∈N ,S∈S individually, which would be the case if we just directly apply [Agrawal and Devanur, 2014][Badanidiyuru et al.    As remarked in the design of ONLINE(τ), We cannot afford to learn all the choice probabilities {φ(i, S|v)}i∈N ,S∈S individually, which would be the case if we just directly apply [Agrawal and Devanur, 2014][Badanidiyuru et al., 2013].    5 ([Abbasi-yadkori et al., 2011],[Bubeck et al.    , 2011],[Bubeck et al., 2011]).    The Lemma follows from either the application of Doob’s Optional Sampling Theorem with Azuma-Hoeffding inequality (for example see the proof of Lemma 15 in [Bubeck et al., 2011]), or from the theory of selfnormalizing processes (for example, see Lemma 6 in [Abbasi-yadkori et al.    , 2011]), or from the theory of selfnormalizing processes (for example, see Lemma 6 in [Abbasi-yadkori et al., 2011]) In particular, Theorem E.    Motivated by e-commerce, we study the online assortment optimization problem. The seller offers an assortment, i.e. a subset of products, to each arriving customer, who then purchases one or no product from her offered assortment. A customer’s purchase decision is governed by the underlyingMultiNomial Logit (MNL) choice model. The seller aims to maximize the total revenue in a finite sales horizon, subject to resource constraints and uncertainty in the MNL choice model. We first propose an efficient online policy which incurs a regret Õ(T ), where T is the number of customers in the sales horizon. Then, we propose a UCB policy that achieves a regret Õ(T ). Both regret bounds are sublinear in the number of assortments. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

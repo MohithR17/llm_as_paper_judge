@@ -1,0 +1,273 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: On the Sample Complexity of Reinforcement Learning with a Generative Model 
+Paper Content: 1206.6461.pdf META On the Sample Complexity of Reinforcement Learning with a Generative Model  Mohammad Gheshlaghi Azar Rémi Munos m.azar@science.ru.nl remi.munos@inria.fr b.kappen@science.ru.nl  ( N log(N/δ)/ ( (1 − γ)3ε2 ))
+samples are required to find an ε-optimal estimation of the action-value function with the probability 1 − δ. We also prove a matching lower bound of Θ ( N log(N/δ)/ ( (1 − γ)3ε2 )) on the sample complexity of estimating the optimal action-value function by every RL algorithm. To the best of our knowledge, this is the first matching result on the sample complexity of estimating the optimal (action) value function in which the upper bound matches the lower bound of RL in terms ofN , ε, δ and 1/(1−γ). Also, both our lower bound and our upper bound significantly improve on the state-of-the-art in terms of 1/(1− γ). 1. Introduction Model-based value iteration (VI) (Kearns & Singh, 1999; Buş,oniu et al., 2010) is a well-known reinforcement learning (RL) (Szepesvári, 2010; Sutton & Barto, 1998) algorithm which relies on an empirical estimate of the state-transition dis-
+Appearing in Proceedings of the 29 th International Conference on Machine Learning, Edinburgh, Scotland, UK, 2012. Copyright 2012 by the author(s)/owner(s).
+tributions to estimate the optimal (action-)value function through the Bellman recursion. In the finite state-action problems, it has been shown that an action-value based variant of VI, model-based Q-value iteration (QVI), finds an ε-optimal estimate of the action-value function with high probability using only T = Õ(N/ ( (1 − γ)4ε2 ) ) samples (Kearns & Singh, 1999; Kakade, 2004, chap. 9.1), where N and γ denote the size of state-action space and the discount factor, respectively.1 Although this bound matches the best existing upper bound on the sample complexity of estimating the action-value function (Azar et al., 2011a), it has not been clear, so far, whether this bound is a tight bound on the performance of QVI or it can be improved by a more careful analysis of QVI algorithm. This is mainly due to the fact that there is a gap of order 1/(1− γ)2 between the upper bound of QVI and the state-of-the-art result for lower bound, which is of Ω ( N/ ( (1− γ)2ε2 )) (Azar et al., 2011b).
+In this paper, we focus on the problems which are formulated as finite state-action discounted infinitehorizon Markov decision processes (MDPs), and prove a new tight bound of O ( N log(N/δ)/ ( (1− γ)3ε2 )) on the sample complexity of the QVI algorithm. The new upper bound improves on the existing bound of QVI by an order of 1/(1−γ).2 We also present a new matching lower bound of Θ ( N log(N/δ)/ ( (1−γ)3ε2 )) , which also improves on the best existing lower bound of RL by an order of 1/(1− γ). The new results, which close
+1The notation g = Õ(f) implies that there are constants c1 and c2 such that g ≤ c1f logc2(f).
+2In this paper, to keep the presentation succinct, we only consider the value iteration algorithm. However, one can prove upper-bounds of a same order for other modelbased methods such as policy iteration and linear programming using the results of this paper.
+the above-mentioned gap between the lower bound and the upper bound of RL, guarantee that no learning method, given a generative model of the MDP, can be significantly more efficient than QVI in terms of the sample complexity of estimating the action-value function.
+The main idea to improve the upper bound of QVI is to express the performance loss of QVI in terms of the variance of the sum of discounted rewards as opposed to the maximum Vmax = Rmax/(1− γ) in the previous results. For this we make use of Bernstein’s concentration inequality (Cesa-Bianchi & Lugosi, 2006, appendix, pg. 361), which bounds the estimation error in terms of the variance of the value function. We also rely on the fact that the variance of the sum of discounted rewards, like the expected value of the sum (value function), satisfies a Bellman-like equation, in which the variance of the value function plays the role of the instant reward (Munos & Moore, 1999; Sobel, 1982), to derive a sharp bound on the variance of the value function. In the case of lower bound, we improve on the result of Azar et al. (2011b) by adding some structure to the class of MDPs for which we prove the lower bound: In the new model, there is a high probability for transition from every intermediate state to itself. This adds to the difficulty of estimating the value function, since even a small estimation error may propagate throughout the recursive structure of the MDP and inflict a big performance loss especially for γ’s close to 1.
+The rest of the paper is organized as follows. After introducing the notation used in the paper in Section 2, we describe the model-based Q-value iteration (QVI) algorithm in Subsection 2.1. We then state our main theoretical results, which are in the form of PAC sample complexity bounds in Section 3. Section 4 contains the detailed proofs of the results of Sections 3, i.e., sample complexity bound of QVI and a general new lower bound for RL. Finally, we conclude the paper and propose some directions for the future work in Section 5. 2. Background In this section, we review some standard concepts and definitions from the theory of Markov decision processes (MDPs). We then present the modelbased Q-value iteration algorithm of Kearns & Singh (1999). We consider the standard reinforcement learning (RL) framework (Bertsekas & Tsitsiklis, 1996; Sutton & Barto, 1998) in which a learning agent interacts with a stochastic environment and this interaction is modeled as a discrete-time discounted MDP. A dis-
+counted MDP is a quintuple (X,A, P,R, γ), where X and A are the set of states and actions, P is the state transition distribution, R is the reward function, and γ ∈ (0, 1) is a discount factor. We denote by P (·|x, a) and r(x, a) the probability distribution over the next state and the immediate reward of taking action a at state x, respectively.
+Remark 1. To keep the representation succinct, in the sequel, we use the notation Z for the joint stateaction space X×A. We also make use of the shorthand notations z and β for the state-action pair (x, a) and 1/(1− γ), respectively. Assumption 1 (MDP Regularity). We assume Z and, subsequently, X and A are finite sets with cardinalities N , |X| and |A|, respectively. We also assume that the immediate reward r(x, a) is taken from the interval [0, 1].
+A mapping π : X → A is called a stationary and deterministic Markovian policy, or just a policy in short. Following a policy π in an MDP means that at each time step t the control action At ∈ A is given by At = π(Xt), where Xt ∈ X. The value and the action-value functions of a policy π, denoted respectively by V π : X → R and Qπ : Z → R, are defined as the expected sum of discounted rewards that are encountered when the policy π is executed. Given an MDP, the goal is to find a policy that attains the best possible values, V ∗(x) , supπ V
+π(x), ∀x ∈ X. Function V ∗ is called the optimal value function. Similarly the optimal action-value function is defined as Q∗(x, a) = supπ Q
+π(x, a). We say that a policy π∗ is optimal if it attains the optimal V ∗(x) for all x ∈ X. The policy π defines the state transition kernel Pπ as: Pπ(y|x) , P (y|x, π(x)) for all x ∈ X. The right-linear operators Pπ·, P · and Pπ· are then defined as (PπQ)(z) , ∑ y∈XP (y|z)Q(y, π(y)), (PV )(z) , ∑
+y∈XP (y|z)V (y) for all z ∈ Z and (PπV )(x) , ∑ y∈X Pπ(y|x)V (y) for all x ∈ X, respectively. Finally, ‖ · ‖ shall denote the supremum (ℓ∞) norm which is defined as ‖g‖ , maxy∈Y |g(y)|, where Y is a finite set and g : Y → R is a real-valued function.3 2.1. Model-based Q-value Iteration (QVI) The algorithm makes n transition samples from each state-action pair z ∈ Z for which it makes n calls to the generative model.4 It then builds an empirical model of the transition probabilities as: P̂ (y|z) , m(y, z)/n,
+3For ease of exposition, in the sequel, we remove the dependence on z and x , e.g., writing Q for Q(z) and V for V (x), when there is no possible confusion.
+4The total number of calls to the generative model is given by T = nN .
+where m(y, z) denotes the number of times that the state y ∈ X has been reached from z ∈ Z. The algorithm then makes an empirical estimate of the optimal action-value function Q∗ by iterating some actionvalue function Qk, with the initial value of Q0, through the empirical Bellman optimality operator T̂.5 3. Main Results Our main results are in the form of PAC (probably approximately correct) bounds on the ℓ∞-norm of the difference of the optimal action-value function Q∗ and its sample estimate:
+Theorem 1 (PAC-bound for model-based Q-value iteration). Let Assumption 1 hold and T be a positive integer. Then, there exist some constants c and c0 such that for all ε ∈ (0, 1) and δ ∈ (0, 1) a total sampling budget of
+T = ⌈cβ 3N
+ε2 log
+c0N
+δ ⌉,
+suffices for the uniform approximation error ‖Q∗ − Qk‖ ≤ ε, w.p. (with the probability) at least 1 − δ, after only k = ⌈log(6β/ε)/ log(1/γ)⌉ iteration of QVI algorithm.6 In particular, one may choose c = 68 and c0 = 12.
+The following general result provides a tight lower bound on the number of transitions T for every RL algorithm to achieve an ε-optimal estimate of the actionvalue function w.p. 1 − δ, under the assumption that the algorithm is (ε, δ, T )-correct:
+Definition 1 ((ε, δ, T )-correct algorithm). Let QAT be the estimate of Q∗ by an RL algorithm A after observing T ≥ 0 transition samples. We say that A is (ε, δ, T )-correct on the class of MDPs M if∥∥Q∗ −QAT
+∥∥ ≤ ε with probability at least 1 − δ for all M ∈ M.7 Theorem 2 (Lower bound on the sample complexity of estimating the optimal action-value function). There exists some constants ε0, δ0, c1, c2, and a class of MDPs M, such that for all ε ∈ (0, ε0), δ ∈ (0, δ0/N), and every (ε, δ, T )-correct RL algorithm A on the class of MDPs M the number of transitions needs to be at least
+T = ⌈β 3N
+c1ε2 log
+N
+c2δ ⌉.
+5The operator T̂ is defined on the action-value function Q, for all z ∈ Z, by T̂Q(z) = r(z)+γP̂V (z), where V (x) = maxa∈A(Q(x, a)) for all x ∈ X.
+6For every real number u, ⌈u⌉ is defined as the smallest integer number not less than u.
+7The algorithm A, unlike QVI, does not need to generate a same number of transition samples for every stateaction pair and can generate samples in an arbitrarily way. 4. Analysis In this section, we first provide the full proof of the finite-time PAC bound of QVI, reported in Theorem 1, in Subsection 4.1. We then prove Theorem 2, the RL lower bound, in Subsection 4.2. Also, we need to emphasize that we discard some of the proofs of the technical lemmas due to the lack of space. We provide those results in a long version of this paper. 4.1. Poof of Theorem 1 We begin by introducing some new notation. Consider the stationary policy π. We define Vπ(z) , E[| ∑ t≥0γ tr(Zt) − Qπ(z)|2] as the variance of the sum of discounted rewards starting from z ∈ Z under the policy π. Also, define σπ(z) , γ2 ∑ y∈ZP π(y|z)|Qπ(y) − PπQπ(z)|2 as the immediate variance at z ∈ Z, i.e., γ2VY∼Pπ(·|z)[Qπ(Y )]. Also, we shall denote vπ and v∗ as the immediate variance of the value function V π and V ∗ defined as vπ(z) , γ2VY∼P (·|z)[V π(Y )] and v∗(z) , γ2VY∼P (·|z)[V ∗(Y )], for all z ∈ Z, respectively. Further, we denote the immediate variance of the action-value function Q̂π, V̂ π and V̂ ∗ by σ̂π, v̂π and v̂∗, respectively.
+We now state our first result which indicates that Qk is very close to Q̂∗ up to an order of O(γk). Therefore, to prove bound on ‖Q∗−Qk‖, one only needs to bound ‖Q∗ − Q̂∗‖ in high probability. Lemma 1. Let Assumption 1 hold and Q0(z) be in the interval [0, β] for all z ∈ Z. Then we have
+‖Qk − Q̂∗‖ ≤ γkβ.
+In the rest of this subsection, we focus on proving a high probability bound on ‖Q∗ − Q̂∗‖. One can prove a crude bound of Õ(β2/ √ n) on ‖Q∗ − Q̂∗‖ by first proving that ‖Q∗ − Q̂∗‖ ≤ β‖(P − P̂ )V ∗‖ and then using the Hoeffding’s tail inequality (Cesa-Bianchi & Lugosi, 2006, appendix, pg. 359) to bound the random variable ‖(P − P̂ )V ∗‖ in high probability. Here, we follow a different and more subtle approach to bound ‖Q∗ − Q̂∗‖, which leads to a tight bound of Õ(β1.5/ √ n): (i) We prove in Lemma 2 component-wise upper and lower bounds on the error Q∗ − Q̂∗ which are expressed in terms of (I−γP̂π∗)−1 [ P − P̂ ] V ∗ and (I−γP̂ π̂∗)−1 [ P − P̂ ] V ∗, respectively. (ii) We make use of the sharp result of Bernstein’s inequality to bound [ P − P̂ ] V ∗ in terms of the squared root of the variance of V ∗ in high probability. (iii) We prove the key result of this subsection (Lemma 5) which shows that the variance of the sum of discounted rewards satisfies a Bellman-like recursion, in which the instant reward r(z) is replaced by
+σπ(z). Based on this result we prove an upper-bound of order O(β1.5) on (I − γPπ)−1 √ V(Qπ) for any policy π, which combined with the previous steps leads to the sharp upper bound of Õ(β1.5/ √ n) on ‖Q∗ − Q̂∗‖.
+We proceed by the following lemma which boundsQ∗− Q̂∗ from above and below:
+Lemma 2 (Component-wise bounds on Q∗ − Q̂∗ ).
+Q∗ − Q̂∗ ≤ γ(I − γP̂π∗)−1 [ P − P̂ ] V ∗, (1) Q∗ − Q̂∗ ≥ γ(I − γP̂ π̂∗)−1 [ P − P̂ ] V ∗. (2)
+We now concentrate on bounding the RHS (right hand sides) of (1) and (2). We first state the following technical result which relates v∗ to σ̂π ∗ and σ̂∗.
+Lemma 3. Let Assumption 1 hold and 0 < δ < 1. Then, w.p. at least 1− δ:
+v∗ ≤ σ̂π∗ + bv1, (3) v∗ ≤ σ̂∗ + bv1, (4)
+where bv is defined as
+bv ,
+√ 18γ4β4 log 3Nδ
+n + 4γ2β4 log 3Nδ n ,
+and 1 is a function which assigns 1 to all z ∈ Z.
+Based on Lemma 3 we prove the following sharp bound on γ(P − P̂ )V ∗, for which we also rely on Bernstein’s inequality (Cesa-Bianchi & Lugosi, 2006, appendix, pg. 361).
+Lemma 4. Let Assumption 1 hold and 0 < δ < 1. Define cpv , 2 log(2N/δ) and bpv as:
+bpv ,
+( 6(γβ)4/3 log 6Nδ
+n
+)3/4 +
+5γβ2 log 6Nδ n .
+Then w.p. 1− δ we have
+γ(P − P̂ )V ∗ ≤ √ cpvσ̂π ∗
+n + bpv1, (5)
+γ(P − P̂ )V ∗ ≥ − √ cpvσ̂∗
+n − bpv1. (6)
+Proof. For all z ∈ Z and all 0 < δ < 1, Bernstein’s inequality implies that w.p. at least 1− δ:
+(P − P̂ )V ∗(z) ≤
+√ 2v∗(z) log 1δ
+γ2n + 2β log 1δ 3n ,
+(P − P̂ )V ∗(z) ≥ −
+√ 2v∗(z) log 1δ
+γ2n − 2β log
+1 δ
+3n .
+We deduce (using a union bound):
+γ(P − P̂ )V ∗ ≤ √ c′pv v∗
+n + b′pv1, (7)
+γ(P − P̂ )V ∗ ≥ − √ c′pv v∗
+n − b′pv1, (8)
+where c′pv , 2 log(N/δ) and b ′ pv , 2γβ log(N/δ)/3n. The result then follows by plugging (3) and (4) into (7) and (8), respectively, and then taking a union bound.
+We now state the key lemma of this section which shows that for any policy π the variance Vπ satisfies the following Bellman-like recursion. Later, we use this result, in Lemma 6, to bound (I − γPπ)−1σπ. Lemma 5. Vπ satisfies the Bellman equation
+V π = σπ + γ2PπVπ.
+Proof. For all z ∈ Z we have
+V π(z) = E [∣∣∣∣ ∑
+t≥0
+γtr(Zt)−Qπ(z) ∣∣∣∣ 2]
+= EZ1∼Pπ(.|z)E [∣∣∣∣ ∑
+t≥1
+γtr(Zt)− γQπ(Z1)
+− (Qπ(z)− r(z)− γQπ(Z1)) ∣∣∣∣ 2]
+= γ2EZ1∼Pπ(.|z)E [∣∣∣∣ ∑
+t≥1
+γt−1r(Zt)−Qπ(Z1) ∣∣∣∣ 2]
+− 2EZ1∼Pπ(.|z) [ (Qπ(z)− r(z)− γQπ(Z1)) × E (∑
+t≥1
+γtr(Zt)− γQπ(Z1) ∣∣∣∣Z1 )]
++ EZ1∼Pπ(·|z)(|Qπ(z)− r(z)− γQπ(Z1)|2)
+= γ2EZ1∼Pπ(.|z)E [∣∣∣∣ ∑
+t≥1
+γt−1r(Zt)−Qπ(Z1) ∣∣∣∣ 2]
++ γ2VZ1∼Pπ(·|z)(Q π(Z1))
+= γ2 ∑
+y∈Z
+Pπ(y|z)Vπ(y) + σπ(z),
+in which we rely on E( ∑
+t≥1 γ tr(Zt)− γQπ(Z1)|Z1) =
+0.
+Based on Lemma 5, one can prove the following result on the immediate variance.
+Lemma 6.
+‖(I − γ2Pπ)−1σπ‖ ≤ β2, (9) ‖(I − γPπ)−1 √ σπ‖ ≤ 2 log(2)β1.5. (10)
+Proof. The first inequality follows from Lemma 5 by solving (5) in terms of Vπ and taking the sup-norm over both sides of the resulted equation. In the case of Eq.(10) we have 8
+‖(I − γPπ)−1 √ σπ‖ = ∥∥∥∥∥∥ ∑
+k≥0
+(γPπ)k √ σπ ∥∥∥∥∥∥
+= ∥∥∥∥∥∥ ∑
+l≥0
+(γPπ)tl t−1∑
+j=0
+(γPπ)j √ σπ ∥∥∥∥∥∥
+≤ ∑
+l≥0
+(γt)l ∥∥∥∥∥∥ t−1∑
+j=0
+(γPπ)j √ σπ ∥∥∥∥∥∥
+= 1
+1− γt ∥∥∥∥∥∥ t−1∑
+j=0
+(γPπ)j √ σπ ∥∥∥∥∥∥ ,
+(11) in which we write k = tl + j with t is a positive integer. We now prove a bound on ∥∥∑ t−1 j=0(γP π)j √ σπ ∥∥ by making use of Jensen’s inequality as well as CauchySchwarz inequality:
+∥∥∥∥∥∥ t−1∑
+j=0
+(γPπ)j √ σπ ∥∥∥∥∥∥ ≤ ∥∥∥∥∥∥ t−1∑
+j=0
+γj √ (Pπ)jσπ ∥∥∥∥∥∥
+≤ √ t ∥∥∥∥∥∥ √√√√ t−1∑
+j=0
+(γ2Pπ)jσπ ∥∥∥∥∥∥
+≤ √ t ∥∥∥ √ (I − γ2Pπ)−1σπ ∥∥∥ ≤ β √ t,
+(12)
+where in the last step we rely on (9). The result then follows by plugging (12) into (11) and optimizing the bound in terms of t to achieve the best dependency on β.
+Now we make use of Lemma 6 and Lemma 4 to bound ‖Q∗ − Q̂∗‖ in high probability. Lemma 7. Let Assumption 1 hold. Then, for any 0 < δ < 1: ‖Q∗ − Q̂∗‖ ≤ ε′, w.p. 1− δ, where ε′ is defined as:
+ε′ ,
+√ 17β3 log 4Nδ
+n +
+( 6(γβ2)4/3 log 12Nδ
+n
+)3/4
++ 5γβ3 log 12Nδ
+n .
+(13)
+8 For any real-valued function f , √ f is defined as a
+component wise squared-root operator on f .
+Proof. By incorporating the result of Lemma 4 and Lemma 6 into Lemma 2, we deduce that:
+Q∗ − Q̂∗ ≤ b1, Q∗ − Q̂∗ ≥ −b1,
+w.p. 1− δ. The scalar b is given by:
+b ,
+√ 17β3 log 2Nδ
+n +
+( 6(γβ2)4/3 log 6Nδ
+n
+)3/4
++ 5γβ3 log 6Nδ
+n .
+The result then follows by combining these two bounds and taking the ℓ∞ norm.
+Proof of Theorem 1. We combine the proof of Lemma 7 and Lemma 1 in order to bound Q∗ − Qk in high probability. We then solve the resulted bound w.r.t. n and k.9 4.2. Proof of the Lower-bound In this section, we provide the proof of Theorem 2. In our analysis, we rely on the likelihood-ratio method, which has been previously used to prove a lower bound for multi-armed bandits (Mannor & Tsitsiklis, 2004), and extend this approach to RL and MDPs. We begin by defining a class of MDPs for which the proposed lower bound will be obtained (see Figure 1). We define the class of MDPs M as the set of all MDPs with the state-action space of cardinality N = 3KL, where K and L are positive integers. Also, we assume that for all M ∈ M, the state space X consists of three smaller sets S, Y1 and Y2. The set S includes K states, each of those states corresponds with the set of actions A = {a1, a2, . . . , aL}, whereas the states in Y1 and Y2 are single-action states. By taking the action a ∈ A from every state x ∈ S, we move to the next state y(z) ∈ Y1 with the probability 1, where z = (x, a). The transition probability from Y1 is characterized by the transition probability pM from every y(z) ∈ Y1 to itself and with the probability 1 − pM to the corresponding y(z) ∈ Y2.10 Further, for all M ∈ M, Y2 consists of only absorbing states, i.e., for all y ∈ Y2, P (x|x) = 1. The instant reward r is set to 1 for every state in Y1 and 0 elsewhere. For this class of MDPs, the optimal action-value function Q∗ can be solved in close form from the Bellman equation:
+Q∗(z) = γV ∗(y(z)) = γ
+1− γpM , ∀z ∈ S×A,
+9Note that the total number of samples is then computed by T = Nn.
+10Every state y ∈ Y2 is only connected to one state in Y1 and S, i.e., there is no overlapping path in the MDP.
+In the rest of the proof, we concentrate on proving the lower bound for ‖Q∗ − QAT ‖ for all z ∈ S×A. Now, let us consider a set of two MDPs M∗ = {M0,M1} in M with the transition probabilities
+pM =
+{ p M = M0,
+p+ α M = M1,
+where α and p are some positive numbers such that 0 < p < p + α ≤ 1, which will be quantified later in this section. We assume that the discount factor γ is bounded from below by some positive constant γ0 for the class of MDP M∗. We denote by Em ad Pm the expectation and the probability under the model Mm in the rest of this section.
+We follow the following steps in the proof: (i) we prove a lower bound on the sample-complexity of learning the value function for every state y ∈ Y on the class of MDP M∗ (ii) we then make use of the fact that the estimates of Q∗(z) for different z ∈ S×A are independent of each others to combine these bounds and prove the tight result of Theorem 2.
+We now introduce some new notation: Let QAt (z) be an empirical estimate of the action-value function Q∗(z) by the RL algorithm A using t > 0 transition
+samples from the state y(z) ∈ Y1 for z ∈ X×A. We define the event E1(z) , {|Q∗0(z) − QAt (z)| ≤ ε} for all z ∈ S×A, where Q∗0 , γ/(1 − γp) is the optimal action-value function for all z ∈ S×A under the MDP M0. We then define k , r1 + r2 + · · ·+ rt as the sum of rewards of making t transitions from y(z) ∈ Y1. We also introduce the event E2(z), for all z ∈ S×A as:
+E2(z) ,
+{ pt− k ≤ √ 2p(1− p)t log c ′ 2
+2θ
+} .
+Further, we define E(z) , E1(z)∩E2(z). We then state the following lemmas required for our analysis.
+We begin our analysis of the lower bound by the following lemma: Lemma 8. Define θ , exp ( −c′1α2t/(p(1−p)) ) . Then, for every RL algorithm A, there exists an MDP Mm ∈ M
+∗ and constants c′1 > 0 and c ′ 2 > 0 such that
+Pm(|Q∗(z)−QAt (z)|) > ε) > θ
+c′2 , (14)
+by the choice of α = 2(1− γp)2ε/(γ2).
+Proof. To prove this result we make use of a contradiction argument, i.e., we assume that there exists an algorithm A for which:
+Pm((|Q∗(z)−QAt (z)|) > ε) ≤ θ
+c′2 , or
+Pm((|Q∗(z)−QAt (z)|) ≤ ε) ≥ 1− θ
+c′2 ,
+(15)
+for all Mm ∈ M∗ and show that this assumption leads to a contradiction. We now state the following technical lemmas required for the proof:
+Lemma 9. For all p > 12 :
+P0(E2(z)) > 1− 2θ
+c′2 .
+Now, by the assumption that Pm(|Q∗(z) −QAt (z)|) > ε) ≤ θ/c′2 for all Mm ∈ M∗, we have P0(E1(z)) ≥ 1−θ/c′2 ≥ 1−1/c′2. This combined with Lemma 9 and with the choice of c′2 = 6 implies that P0(E(z)) > 1/2, for all z ∈ S×A. Lemma 10. Let ε ≤ 1−p4γ2(1−γp)2 . Then, for all z ∈ S×A: P1(E1(z)) > θ/c′2.
+Now by the choice of α = 2(1 − γp)2ε/(γ2), we have that Q∗1(z) − Q∗0(z) = γ1−γ(p+α) − γ 1−γp > 2ε, thus Q∗0(z) + ε < Q ∗ 1(z) − ε. In words, the random event
+{|Q∗0(z)−QAt (z)| ≤ ε} does not overlap with the event {|Q∗1(z)−QAt (z)| ≤ ε}. Now let us return to the assumption of Eq. (15), which states that for all Mm ∈ M∗, Pm(|Q∗(z) − QAt (z)|) ≤ ε) ≥ 1−θ/c′2 under Algorithm A. Based on Lemma 10 we have P1(|Q∗0(z) − QAt (z)| ≤ ε) > θ/c′2. This combined with the fact that {|Q∗0(y) − QAt (z)|} and {|Q∗1(z) − QAt (z)|} do not overlap implies that P1(|Q∗(z)−QAt (z)|) ≤ ε) ≤ 1−θ/c′2, which violates the assumption of Eq. (15). The contradiction between the result of Lemma 10 and the assumption which leads to this result proves the lower bound of Eq. (14).
+Now by the choice of p = 4γ−13γ and c1 = 8100, we have that for every ε ∈ (0, 3] and for all 0.4 = γ0 ≤ γ < 1 there exists an MDP Mm ∈ M∗ such that
+Pm(|Q∗(z)−QATz (z)|) > ε) > 1
+c′2 e
+−c1Tzε 2
+6β3 ,
+This result implies that for any state-action z ∈ S×A, the probability of making an estimation error of ε is at least δ onM0 orM1 whenever the number of transition samples Tz from z ∈ Z is less that ξ(ε, δ) , 6β 3
+c1ε2 log 1c′ 2 δ .
+We now extend this result to the whole state-action space S×A. Lemma 11. Assume that for every algorithm A, for every state-action z ∈ S×A we have11
+Pm(|Q∗(z)−QATz (z)| > ε|Tz = tz) > δ, (16) Then for any δ′ ∈ (0, 1/2), for any algorithm A using a total number of transition samples less than T = N 6 ξ ( ε, 12δ ′ N ) , there exists an MDP Mm ∈ M∗ such that
+Pm ( ‖Q∗ −QAT ‖ > ε ) > δ′, (17)
+where QAT denotes the empirical estimate of the optimal action-value function Q∗ by A using T transition samples.
+Proof. First note that if the total number of observed transitions is less than KL/2ξ(ε, δ) = (N/6)ξ(ε, δ), then there exists at least KL/2 = N/6 state-action pairs that are sampled at most ξ(ε, δ) times. Indeed, if this was not the case, then the total number of transitions would be strictly larger than N/6ξ(ε, δ), which implies a contradiction). Now let us denote those states as z(1), . . . , z(N/6).
+We consider the specific class of MDPs described in Figure 1. In order to prove that (17) holds for any algorithm, it is sufficient to prove it for the class of algorithms that return an estimate QATz (z) for each stateaction z based on the transition samples observed from
+11Note that we allow Tz to be random.
+z only (indeed, since the samples from z and z′ are independent, the samples collected from z′ do not bring more information about Q∗(z) than the information brought by the samples collected from z). Thus, by defining Q(z) , {|Q∗(z)−QATz (z)| > ε}, we have that for such algorithms, the events Q(z) and Q(z′) are conditionally independent given Tz and Tz′ . Thus, there exists an MDP Mm ∈ M∗ such that:
+Pm ( {Q(z(i))c}1≤i≤N
+6 ∩ {Tz(i) ≤ ξ(ε, δ)}1≤i≤N 6
+)
+=
+ξ(ε,δ)∑
+t1=0
+· · · ξ(ε,δ)∑
+tN/6=0
+Pm ( {Tz(i) = ti}1≤i≤N
+6
+)
+Pm ( {Q(z(i))c}1≤i≤N/6 ∩ {Tz(i) = ti}1≤i≤N
+6
+)
+=
+ξ(ε,δ)∑
+t1=0
+· · · ξ(ε,δ)∑
+tN/6=0
+Pm ( {Tz(i) = ti}1≤i≤N
+6
+)
+∏
+1≤i≤N/6
+Pm ( Q(z(i)) c ∩ Tz(i) = ti )
+≤ ξ(ε,δ)∑
+t1=0
+· · · ξ(ε,δ)∑
+tN/6=0
+Pm ( {Tz(i) = ti}1≤i≤N
+6
+) (1− δ)N6 ,
+from Eq. (16), thus
+Pm ( {Q(z(i))c}1≤i≤N/6 ∣∣{Tz(i) ≤ ξ(ε, δ)}1≤i≤N/6 )
+≤(1− δ)N/6.
+We finally deduce that if the total number of transition samples is less than N6 ξ(ε, δ), then
+Pm(‖Q∗ −QAT ‖ > ε ) ≥ Pm ( ⋃
+z∈S×A
+Q(z) )
+≥ 1− Pm ( {Q(z(i))c}1≤i≤N
+6 ∣∣{Tz(i) ≤ ξ(ε, δ)}1≤i≤N 6
+)
+≥ 1− (1− δ)N6 ≥ δN 12 ,
+whenever δN6 ≤ 1. Setting δ′ = δN12 , we obtain the desired result.
+Lemma 11 implies that if the total number of samples T is less than β3N/(c1ε
+2) log(N/(c2δ)), with the choice of c1 = 8100 and c2 = 72, then the probability of ‖Q∗−QAT ‖ ≤ ε is at maximum 1−δ on either M0 or M1. This is equivalent to the statement that for every RL algorithm A to be (ε, δ, T )-correct on the set M∗, and subsequently on the class of MDPs M, the total number of transitions T needs to satisfy the inequality T > β3N/(c1ε
+2) log(N/(c2δ)), which concludes the proof of Theorem 2. 5. Conclusion and Future Works In this paper, we have presented the first minimax bound on the sample complexity of estimating the optimal action-value function in discounted reward MDPs. We have proven that the model-based Q-value iteration algorithm (QVI) is an optimal learning algorithm since it minimizes the dependencies on 1/ε, N , δ and β. Also, our results have significantly improved on the state-of-the-art in terms of dependency on β. Overall, we conclude that QVI is an efficient RL algorithm which completely closes the gap between the lower and upper bound of the sample complexity of RL in the presence of a generative model of the MDP.
+In this work, we are only interested in the estimation of the optimal action-value function and not the problem of exploration. Therefore, we did not compare our results with the-state-of-the-art of PAC-MDP (Strehl et al., 2009; Szita & Szepesvári, 2010) and upper-confidence bound based algorithms (Bartlett & Tewari, 2009; Jaksch et al., 2010), in which the choice of the exploration policy has an influence on the behavior of the learning algorithm. However, we believe that it would be possible to improve on the state-of-the-art in PAC-MDP, based on the results of this paper. This is mainly due to the fact that most PAC-MDP algorithms rely on an extended variant of model-based Q-value iteration to estimate the action-value function, but they use the naive result of Hoeffding’s inequality for concentration of measure which leads to non-tight sample complexity results. One can improve on those results, in terms of dependency on β, using the improved analysis of this paper which makes use of the sharp result of Bernstein’s inequality as opposed to the Hoeffding’s inequality in the previous works. Also, we believe that the existing lower bound on the sample complexity of exploration of any reinforcement learning algorithm (Strehl et al., 2009) can be significantly improved in terms of dependency on β using the new “hard” class of MDPs presented in this paper. Acknowledgments The authors appreciate supports from the European Community’s Seventh Framework Programme (FP7/2007-2013) under grant agreement no 231495. We also thank Bruno Scherrer for useful discussion and the anonymous reviewers for their valuable comments.  We also rely on the fact that the variance of the sum of discounted rewards, like the expected value of the sum (value function), satisfies a Bellman-like equation, in which the variance of the value function plays the role of the instant reward (Munos & Moore, 1999; Sobel, 1982), to derive a sharp bound on the variance of the value function.    In the case of lower bound, we improve on the result of Azar et al. (2011b) by adding some structure to the class of MDPs for which we prove the lower bound: In the new model, there is a high probability for transition from every intermediate state to itself.    Therefore, we did not compare our results with the-state-of-the-art of PAC-MDP (Strehl et al., 2009; Szita & Szepesvári, 2010) and upper-confidence bound based algorithms (Bartlett & Tewari, 2009; Jaksch et al.    , 2009; Szita & Szepesvári, 2010) and upper-confidence bound based algorithms (Bartlett & Tewari, 2009; Jaksch et al., 2010), in which the choice of the exploration policy has an influence on the behavior of the learning algorithm.    Also, we believe that the existing lower bound on the sample complexity of exploration of any reinforcement learning algorithm (Strehl et al., 2009) can be significantly improved in terms of dependency on β using the new “hard” class of MDPs presented in this paper.    We consider the problem of learning the optimal action-value function in the discountedreward Markov decision processes (MDPs). We prove a new PAC bound on the samplecomplexity of model-based value iteration algorithm in the presence of the generative model, which indicates that for an MDP with N state-action pairs and the discount factor γ ∈ [0, 1) only O ( N log(N/δ)/ ( (1 − γ)ε )) samples are required to find an ε-optimal estimation of the action-value function with the probability 1 − δ. We also prove a matching lower bound of Θ ( N log(N/δ)/ ( (1 − γ)ε )) on the sample complexity of estimating the optimal action-value function by every RL algorithm. To the best of our knowledge, this is the first matching result on the sample complexity of estimating the optimal (action) value function in which the upper bound matches the lower bound of RL in terms ofN , ε, δ and 1/(1−γ). Also, both our lower bound and our upper bound significantly improve on the state-of-the-art in terms of 1/(1− γ). LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

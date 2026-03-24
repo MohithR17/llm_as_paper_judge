@@ -1,0 +1,556 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Robust PCA via Outlier Pursuit
+Paper Content: 1010.4237.pdf CRF Robust PCA via Outlier Pursuit Huan Xu Constantine Caramanis   ar X
+iv :1
+01 0.
+42 37
+v1 [
+cs .L
+G ]
+2 0
+O ct
+2 01
+0 1
+We present an efficient convex optimization-based algorithm we call Outlier Pursuit, that under some mild assumptions on the uncorrupted points (satisfied, e.g., by the standard generative assumption in PCA problems) recovers the exact optimal low-dimensional subspace, and identifies the corrupted points. Such identification of corrupted points that do not conform to the low-dimensional approximation, is of paramount interest in bioinformatics and financial applications, and beyond. Our techniques involve matrix decomposition using nuclear norm minimization, however, our results, setup, and approach, necessarily differ considerably from the existing line of work in matrix completion and matrix decomposition, since we develop an approach to recover the correct column space of the uncorrupted matrix, rather than the exact matrix itself.
+I. INTRODUCTION
+This paper is about the following problem: suppose we are given a large data matrix M , and we know it can be decomposed as
+M = L0 + C0,
+where L0 is a low-rank matrix, and C0 is non-zero in only a fraction of the columns. Aside from these broad restrictions, both components are arbitrary. In particular we do not know the rank (or the row/column space) of L0, or the number and positions of the non-zero columns of C0. Can we recover the column-space of the low-rank matrix L0, and the identities of the non-zero columns of C0, exactly and efficiently?
+We are primarily motivated by Principal Component Analysis (PCA), arguably the most widely used technique for dimensionality reduction in statistical data analysis. The canonical PCA problem [1], seeks to find the best (in the least-square-error sense) low-dimensional subspace approximation to high-dimensional points. Using the Singular Value Decomposition (SVD), PCA finds the lower-dimensional approximating subspace by forming a low-rank approximation to the data matrix, formed by considering each point as a column; the output of PCA is the (low-dimensional) column space of this low-rank approximation.
+It is well known (e.g., [2]–[4]) that standard PCA is extremely fragile to the presence of outliers: even a single corrupted point can arbitrarily alter the quality of the approximation. Such non-probabilistic or persistent data corruption may stem from sensor failures, malicious tampering, or the simple fact that some of the available data may not conform to the presumed low-dimensional source / model. In terms of the data matrix, this means that most of the column vectors will lie in a low-dimensional space – and hence the corresponding matrix L0 will be low-rank – while the remaining columns will be outliers – corresponding to the column-sparse matrix C. The natural question in this setting is to ask if we can still (exactly or near-exactly) recover the column space of the uncorrupted points, and the identities of the outliers. This is precisely our problem.
+Recent years have seen a lot of work on both robust PCA [3], [5]–[12], and on the use of convex optimization for recovering low-dimensional structure [4], [13]–[15]. Our work lies at the intersection of these two fields, but has several significant differences from work in either space. We compare and relate our work to existing literature, and expand on the differences, in Section III-C.
+The authors are with the Department of Electrical and Computer Engineering, The University of Texas at Austin, Austin, TX 78712 USA email: (huan.xu@mail.utexas.edu; caramanis@mail.utexas.edu; sanghavi@mail.utexas.edu)
+2 II. PROBLEM SETUP
+The precise PCA with outlier problem that we consider is as follows: we are given n points in pdimensional space. A fraction 1 − γ of the points lie on a r-dimensional true subspace of the ambient R
+p, while the remaining γn points are arbitrarily located – we call these outliers/corrupted points. We do not have any prior information about the true subspace or its dimension r. Given the set of points, we would like to learn (a) the true subspace and (b) the identities of the outliers.
+As is common practice, we collate the points into a p× n data matrix M , each of whose columns is one of the points, and each of whose rows is one of the p coordinates. It is then clear that the data matrix can be decomposed as
+M = L0 + C0.
+Here L0 is the matrix corresponding to the non-outliers; thus rank(L0) = r. Consider its Singular Value Decomposition (SVD)
+L0 = U0Σ0V ⊤ 0 . (1)
+The columns of U0 form an orthonormal basis for the r-dimensional subspace we wish to recover. At most (1 − γ)n of the columns of L0 are non-zero (the rest correspond to the outliers). C0 is the matrix corresponding to the non-outliers; we will denote the set of non-zero columns of C0 by I0, with |I0| = γn. These non-zero columns are completely arbitrary.
+With this notation, out intent is to exactly recover the column space of L0, and the set of outliers I0. Clearly, this is not always going to be possible (regardless of the algorithm used) and thus we need to impose a few weak additional assumptions. We develop these in Section II-A below.
+We are also interested in the noisy case, where
+M = L0 + C0 +W,
+and W corresponds to any additional noise. In this case we are interested in approximate identification of both the true subspace and the outliers.
+A. Incoherence: When does exact recovery make sense?
+In general, our objective of splitting a low-rank matrix from a column-sparse one is not always a well defined one. As an extreme example, consider the case where the data matrix M is non-zero in only one column. Such a matrix is both low-rank and column-sparse, thus the problem is unidentifiable. To make the problem meaningful, we need to impose that the low-rank matrix L0 cannot itself be column-sparse as well. This is done via the following incoherence condition.
+Definition: A matrix L ∈ Rp×n with SVD L = UΣV ⊤, and (1− γ)n of whose columns are non-zero, is said to be column-incoherent with parameter µ if
+max i
+‖V ⊤ei‖2 ≤ µr
+(1− γ)n where {ei} are the coordinate unit vectors.
+Thus if V has a column aligned with a coordinate axis, then µ = (1−γ)n/r. Similarly, if V is perfectly incoherent (e.g. if r = 1 and every non-zero entry of V has magnitude 1/ √
+(1− γ)n) then µ = 1. In the standard PCA setup, if the points are generated by some low-dimensional isometric Gaussian distribution, then with high probability, one will have µ = O(max(1, log(n)/r)) [16]. Alternatively, if the points are generated by a uniform distribution over a bounded set, then µ = Θ(1).
+A small incoherence parameter µ essentially enforces that the matrix L0 will have column support that is spread out. Note that this is quite natural from the application perspective. Indeed, if the left hand side is as big as 1, it essentially means that one of the directions of the column space which we wish to recover, is defined by only a single observation. Given the regime of a constant fraction of arbitrarily chosen and arbitrarily corrupted points, such a setting is not meaningful. Having a small incoherence
+3 µ is an assumption made in all methods based on nuclear norm minimization up-to-date [4], [15]–[17]. Also unidentifiable is the setting where a corrupted point lies in the true subspace. Thus, in matrix terms, we require that every column of C0 does not lie in the column space of L0.
+The parameters µ and γ are not required for the execution of the algorithm, and do not need to be known a priori. They only arise in the analysis of our algorithm’s performance.
+Other Notation and Preliminaries: Capital letters such as A are used to represent matrices, and accordingly, Ai denotes the ith column vector. Letters U , V , I and their variants (complements, subscripts, etc.) are reserved for column space, row space and column support respectively. There are four associated projection operators we use throughout. The projection onto the column space, U , is denoted by PU and given by PU(A) = UU⊤A, and similarly for the row-space PV (A) = AV V ⊤. The matrix PI(A) is obtained from A by setting column Ai to zero for all i 6∈ I. Finally, PT is the projection to the space spanned by U and V , and given by PT (·) = PU(·) + PV (·)−PUPV (·). Note that PT depends on U and V , and we suppress this notation wherever it is clear which U and V we are using. The complementary operators, PU⊥ ,PV ⊥ , PT⊥ and PIc are defined as usual. The same notation is also used to represent a subspace of matrices: e.g., we write A ∈ PU for any matrix A that satisfies PU(A) = A. Five matrix norms are used: ‖A‖∗ is the nuclear norm, ‖A‖ is the spectral norm, ‖A‖1,2 is the sum of ℓ2 norm of the columns Ai, ‖A‖∞,2 is the largest ℓ2 norm of the columns, and ‖A‖F is the Frobenius norm. The only vector norm used is ‖ · ‖2, the ℓ2 norm. Depending on the context, I is either the unit matrix, or the identity operator; ei is the ith base vector. The SVD of L0 is U0Σ0V0. The rank of L0 is denoted as r, and we have γ , |I0|/n, i.e., the fraction of outliers.
+III. MAIN RESULTS AND CONSEQUENCES
+While we do not recover the matrix L0, we show that the goal of PCA can be attained: even under our strong corruption model, with a constant fraction of points corrupted, we show that we can – under mild assumptions – exactly recover both the column space of L0 (i.e the low-dimensional space the uncorrupted points lie on) and the column support of C0 (i.e. the identities of the outliers), from M . If there is additional noise corrupting the data matrix, i.e. if we have M = L0 + C0 +W , a natural variant of our approach finds a good approximation. A. Algorithm Given data matrix M , our algorithm, called Outlier Pursuit, generates (a) a matrix Û , with orthonormal rows, that spans the low-dimensional true subspace we want to recover, and (b) a set of column indices Î corresponding to the outlier points.
+Algorithm 1 Outlier Pursuit
+Find (L̂, Ĉ), the optimum of the following convex optimization program
+Minimize: ‖L‖∗ + λ‖C‖1,2 Subject to: M = L+ C
+(2)
+Compute SVD L̂ = U1Σ1V ⊤1 and output Û = U1. Output the set of non-zero columns of Ĉ, i.e. Î = {j : ĉij 6= 0 for some i}
+While in the noiseless case there are simple algorithms with similar performance, the benefit of the algorithm, and of the analysis, is extension to more realistic and interesting situations where in addition to gross corruption of some samples, there is additional noise. Adapting the Outlier Pursuit algorithm, we have the following variant for the noisy case.
+Noisy Outlier Pursuit: Minimize: ‖L‖∗ + λ‖C‖1,2 Subject to: ‖M − (L+ C)‖F ≤ ε (3)
+4 Outlier Pursuit (and its noisy variant) is a convex surrogate for the following natural (but combinatorial and intractable) first approach to the recovery problem:
+Minimize: rank(L) + λ‖C‖0,c Subject to: M = L+ C
+(4)
+where ‖ · ‖0,c stands for the number of non-zero columns of a matrix. B. Performance We show that under rather weak assumptions, Outlier Pursuit exactly recovers the column space of the low-rank matrix L0, and the identities of the non-zero columns of outlier matrix C0. The formal statement appears below.
+Theorem 1 (Noiseless Case): Suppose we observe M = L0+C0, where L0 has rank r and incoherence parameter µ. Suppose further that C0 is supported on at most γn columns. Any output to Outlier Pursuit recovers the column space exactly, and identifies exactly the indices of columns corresponding to outliers not lying in the recovered column space, as long as the fraction of corrupted points, γ, satisfies
+γ 1− γ ≤ c1 µr , (5)
+where c1 = 9121 . This can be achieved by setting the parameter λ in outlier pursuit to be 3 7 √ γn – in fact it holds for any λ in a specific range which we provide below.
+For the case where in addition to the corrupted points, we have noisy observations, M̃ = M +N , we have the following result.
+Theorem 2 (Noisy Case): Suppose we observe M̃ = M +N = L0 + C0 +N , where γ
+1− γ ≤ c2 µr
+(6)
+with c2 = 91024 , and ‖N‖F ≤ ε. Let the output of Noisy Outlier Pursuit be L′, C ′. Then there exists L̃, C̃ such that M = L̃+ C̃, L̃ has the correct column space, and C̃ the correct column support, and
+‖L′ − L̃‖F ≤ 10 √ nε; ‖C ′ − C̃‖F ≤ 9 √ nε; .
+The conditions in this theorem are essentially tight in the following scaling sense (i.e., up to universal constants). If there is no additional structure imposed, beyond what we have stated above, then up to scaling, in the noiseless case, Outlier Pursuit can recover from as many outliers (i.e., the same fraction) as any possible algorithm of arbitrary complexity. In particular, it is easy to see that if the rank of the matrix L0 is r, and the fraction of outliers satisfies γ ≥ 1/(r + 1), then the problem is not identifiable, i.e., no algorithm can separate authentic and corrupted points. In the presence of stronger assumptions, e.g., isometric distribution, on the authentic points, better recovery guarantees are possible [12]. C. Related Work Robust PCA has a long history (e.g., [3], [5]–[11]). Each of these algorithms either performs standard PCA on a robust estimate of the covariance matrix, or finds directions that maximize a robust estimate of the variance of the projected data. These algorithms seek to approximately recover the column space, and moreover, no existing approach attempts to identify the set of outliers. This outlier identification, while outside the scope of traditional PCA algorithms, is important in a variety of applications such as finance, bio-informatics, and more.
+Many existing robust PCA algorithms suffer two pitfalls: performance degradation with dimension increase, and computational intractability. To wit, [18] shows several robust PCA algorithms including M-estimator [19], Convex Peeling [20], Ellipsoidal Peeling [21], Classical Outlier Rejection [22], Iterative Deletion [23] and Iterative Trimming [24] have breakdown points proportional to the inverse of dimensionality, and hence are useless in the high dimensional regime we consider.
+5 Algorithms with non-diminishing breakdown point, such as Projection-Pursuit [25] are non-convex or even combinatorial, and hence computationally intractable (NP-hard) as the size of the problem scales. In contrast to these, the performance of Outlier Pursuit does not depend on p, and can be solved in polynomial time.
+Algorithms based on nuclear norm minimization to recover low rank matrices are now standard, since the seminal paper [14]. Recent work [4], [15] has taken the nuclear norm minimization approach to the decomposition of a low-rank matrix and an overall sparse matrix. At a high level, these papers are close in spirit to ours. However, there are critical differences in the problem setup, the results, and in key analysis techniques. First, these algorithms fail in our setting as they cannot handle outliers – entire columns where every entry is corrupted. Second, from a technical and proof perspective, all the above works investigate exact signal recovery – the intended outcome is known ahead of time, and one just needs to investigate the conditions needed for success. In our setting however, the convex optimization cannot recover L0 itself exactly. This requires an auxiliary “oracle problem” as well as different analysis techniques on which we elaborate below.
+IV. PROOF OF THEOREM 1
+In this section and the next section, we prove Theorem 1 and Theorem 2. Past matrix recovery papers, including [4], [15], [16], sought exact recovery. As such, the generic (and successful) roadmap for the proof technique was to identify the first-order necessary and sufficient conditions for a feasible solution to be optimal, and then show that a subgradient certifying optimality of the desired solution exists under the given assumptions. In our setting, the outliers, C0, preclude exact recovery of L0. In fact, the optimum L̂ of (2) will be non-zero in every column of C0 that is not orthogonal to L0’s column space – that is, Outlier Pursuit (2) cannot recover L0 on the columns corresponding to the outliers (intuitively, no method can – there is nothing left to recover once the entire point is corrupted). Instead, we seek to recover a pair (L̂, Ĉ) where L̂ has the correct column space and Ĉ the correct column support. The challenge is that we do not know, a priori, what that pair will be, and hence cannot follow the standard road map to write optimality conditions for a specific pair. The main new ingredient of the proof of correctness and the analysis of the algorithm, is the introduction of an oracle problem with additional side constraints, that produces a solution with the correct column space and support.
+Before going into technical details, we list some technical preliminaries that we use multiple times in the sequel. The following lemma is well-known, and gives the subgradient of the norms we consider.
+Lemma 1: For any column space U , row space V and column support I: 1) Let the SVD of a matrix A be UΣV ⊤. Then the subgradient to ‖ · ‖∗ at A is {UV ⊤+W |PT (W ) =
+0, ‖W‖ ≤ 1}. 2) Let the column support of a matrix A be I. Then the subgradient to ‖·‖1,2 at A is {H+Z|PI(H) =
+H,Hi = Ai/‖Ai‖2; PI(Z) = 0, ‖Z‖∞,2 ≤ 1}. 3) For any A, B, we have PI(AB) = API(B); for any A, PUPI(A) = PIPU(A). Lemma 2: If a matrix H̃ satisfies ‖H̃‖∞,2 ≤ 1 and is supported on I, then ‖H̃‖ ≤ √
+|I|. Proof: Using the variational form of the operator norm, we have
+‖H̃‖ = max ‖x‖2≤1,‖y‖2≤1 x⊤H̃y
+= max ‖x‖2≤1 ‖x⊤H̃‖2 = max ‖x‖2≤1
+√ √ √ √ n ∑
+i=1
+(x⊤H̃i)2 ≤ √ ∑
+i∈I 1 =
+√
+|I|.
+The inequality holds because ‖H̃i‖2 = 1 when i ∈ I, and equals zero otherwise. Lemma 3: Given a matrix Ṽ ∈ Rr×n, then ‖UṼ ⊤‖∞,2 = maxi ‖Ṽ ⊤ei‖2.
+Proof: By definition we have
+‖UṼ ⊤‖∞,2 = max i ‖UṼ ⊤i ‖2 (a) = max i ‖Ṽ ⊤i ‖2 = max i ‖Ṽ ⊤ei‖2.
+6 Here (a) holds since U is orthonormal. A. Oracle Problem and Optimality Conditions As discussed, the true solution (L0, C0) generally cannot be recovered by the Outlier Pursuit algorithm. Instead, our goal is to recover a pair (L̂, Ĉ) so that L̂ has the correct column space, and Ĉ the correct column support.
+We develop our candidate solution (L̂, Ĉ) by considering the alternate optimization problem where we add constraints to (2) based on what we hope its optimum should be. In particular, recall the SVD of the true L0 = U0Σ0V ⊤0 and define for any matrix X the projection onto the space of all matrices with column space contained in U0 as PU0(X) := U0U⊤0 X . Similarly for the column support I0 of the true C0, define the projection PI0(X) to be the matrix that results when all the columns in Ic0 are set to 0.
+Note that U0 and I0 above correspond to the truth. Thus, with this notation, we would like the optimum of (2) to satisfy PU0(L̂) = L̂, as this is nothing but the fact that L̂ has recovered the true subspace. Similarly, having Ĉ satisfy PI0(Ĉ) = Ĉ means that we have succeeded in identifying the outliers. The oracle problem arises by imposing these as additional constraints in (2):
+Oracle Problem: Minimize: ‖L‖∗ + λ‖C‖1,2 Subject to: M = L+ C; PU0(L) = L; PI0(C) = C.
+(7)
+The problem is of course bounded (by zero), and is feasible, as (L0, C0) is a feasible solution. Thus, an optimal solution, denoted as L̂, Ĉ exists. We show that (L̂, Ĉ) is an optimal solution to Outlier Pursuit.
+The key is in developing subgradient optimality conditions for a pair that satisfies the additional side constraints of the oracle problem (7). Because of the additional constraints, there are more potential subgradients certifying optimality. The next lemma and definition, are key to the development of our optimality conditions.
+Lemma 4: Let the pair (L′, C ′) satsify L′ + C ′ = M , PU0(L′) = L′, and PI0(C ′) = C ′. Denote the SVD of L′ as L′ = U ′ΣV ′⊤, and the column support of C ′ as I ′. Then U ′U ′⊤ = U0U⊤0 , and I ′ ⊆ I0. Proof: The only thing we need to prove is that L′ has a rank no smaller than U0. However, since PI0(C ′) = C ′, we must have PIc0(L′) = PIc0(M), and thus the rank of L′ is at least as large as PIc0(M), hence L′ has a rank no smaller than U0.
+Next we define two operators that are closely related to the subgradient of ‖L′‖∗ and ‖C ′‖1,2. Definition 1: Let (L′, C ′) satisfy L′ + C ′ = M , PU0(L′) = L′, and PI0(C ′) = C ′. We define the
+following:
+N(L′) , U ′V ′⊤;
+G(C ′) ,
+{ H ∈ Rm×n ∣ ∣ ∣
+∣ PIc 0 (H) = 0; ∀i ∈ I ′ : Hi = C ′i ‖C ′i‖2 ; ∀i ∈ I0 ∩ (I ′)c : ‖Hi‖2 ≤ 1 } ,
+where the SVD of L′ is L′ = U ′ΣV ′⊤, and the column support of C ′ is I ′. Further define the operator PT (L′)(·) : Rm×n → Rm×n as
+PT (L′)(X) = PU ′(X) + PV ′(X)−PU ′PV ′(X). Now we present and prove the optimality condition (to Outlier Pursuit) for solutions (L,C) that have the correct column space and support for L and C, respectively. Theorem 3: Let (L′, C ′) satisfy L′ + C ′ = M , PU0(L′) = L′, and PI0(C ′) = C ′. Then (L′, C ′) is an optimal solution of Outlier Pursuit if there exists Q ∈ Rm×n that satisfies (a) PT (L′)(Q) = N(L′); (b) ‖PT (L′)⊥(Q)‖ ≤ 1; (c) PI0(Q)/λ ∈ G(C ′); (d) ‖PIc 0 (Q)‖∞,2 ≤ λ. (8)
+7 If both inequalities are strict (dubbed Q strictly satisfies (8)), and PI0 ∩ PV ′ = {0}, then any optimal solution will have the right column space, and column support. Proof: By standard convexity arguments [26], a feasible pair (L′, C ′) is an optimal solution of Outlier Pursuit, if there exists a Q′ such that
+Q′ ∈ ∂‖L′‖∗; Q′ ∈ λ∂‖C ′‖1,2. Note that (a) and (b) imply that Q ∈ ∂‖L′‖∗. Furthermore, letting I ′ be the support of C ′, then by Lemma 4, I ′ ⊆ I0. Therefore (c) and (d) imply that
+Qi = λC ′i ‖C ′i‖2 ; ∀i ∈ I ′;
+and ‖Qi‖2 ≤ λ; ∀i 6∈ I ′,
+which implies that Q ∈ λ∂‖C ′‖1,2. Thus, (L′, C ′) is an optimal solution. The rest of the proof establishes that when (b) and (d) are strict, then any optimal solution (L′′, C ′′) satisfies PU0(L′′) = L′′, and PI0(C ′′) = C ′′. We show that for any fixed ∆ 6= 0, (L′+∆, C ′−∆) is strictly worse than (L′, C ′), unless ∆ ∈ PU0∩PI0 . Let W be such that ‖W‖ = 1, 〈W,PT (L′)⊥(∆)〉 = ‖PT (L′)⊥∆‖∗, and PT (L′)W = 0. Let F be such that
+Fi = { −∆i ‖∆i‖2 if i 6∈ I0, and ∆i 6= 0 0 otherwise.
+Then PT (L′)(Q) +W is a subgradient of ‖L′‖∗ and PI0(Q)/λ+ F is a subgradient of ‖C ′‖1,2. Then we have
+‖L′ +∆‖∗ + λ‖C ′ −∆‖1,2 ≥‖L′‖∗ + λ‖C ′‖1,2+ < PT (L′)(Q) +W,∆ > −λ < PI0(Q)/λ+ F,∆ > =‖L′‖∗ + λ‖C ′‖1,2 + ‖PT (L′)⊥(∆)‖∗ + λ‖PIc0(∆)‖1,2+ < PT (L′)(Q)− PI0(Q),∆ > =‖L′‖∗ + λ‖C ′‖1,2 + ‖PT (L′)⊥(∆)‖∗ + λ‖PIc0(∆)‖1,2+ < Q−PT (L′)⊥(Q)− (Q− PIc0(Q)),∆ > =‖L′‖∗ + λ‖C ′‖1,2 + ‖PT (L′)⊥(∆)‖∗ + λ‖PIc0(∆)‖1,2+ < −PT (L′)⊥(Q),∆ > + < PIc0(Q),∆ > ≥‖L′‖∗ + λ‖C ′‖1,2 + (1− ‖PT (L′)⊥(Q)‖)‖PT (L′)⊥(∆)‖∗ + (λ− ‖PIc0(Q)‖∞,2)‖PIc0(∆)‖1,2 ≥‖L′‖∗ + λ‖C ′‖1,2,
+where the last inequality is strict unless
+‖PT (L′)⊥(∆)‖∗ = ‖PIc0(∆)‖1,2 = 0. (9) Note that (9) implies that PT (L′)(∆) = ∆ and PI0(∆) = ∆. Furthermore
+PI0(∆) = ∆ = PT (L′)(∆) = PU ′(∆) + PV ′PU ′⊥(∆) = PI0PU ′(∆) + PV ′PU ′⊥(∆), where the last equality holds because we can write PI0(∆) = ∆. This leads to
+PI0PU ′⊥(∆) = PV ′PU ′⊥(∆). Lemma 4 implies PU ′ = PU0 , which means PU⊥(∆) ∈ PI0∩PV ′ , and hence equal 0. Thus, ∆ ∈ PI0∩PU0 , which completes the proof.
+Thus, the oracle problem determines a solution pair, (L̂, Ĉ), and then using this, Theorem 3 above, gives the conditions a dual certificate must satisfy. The rest of the proof seeks to build a dual certificate for the pair (L̂, Ĉ). To this end, The following two results are quite helpful in what follows. For the remainder of the paper, we use (L̂, Ĉ) to denote the dual pair that is the output of the oracle problem, and we assume that the SVD of L̂ is given as L̂ = Û Σ̂V̂ ⊤.
+8 Lemma 5: There exists an orthonormal matrix V ∈ Rr×n such that Û V̂ ⊤ = U0V ⊤ .
+In addition, PT̂ (·) , PÛ(·) + PV̂ (·)− PÛPV̂ (·) = PU0(·) + PV (·)− PU0PV (·).
+Proof: Due to Lemma 4, we have U0U⊤0 = Û Û ⊤, hence U0 = Û Û⊤U0. Letting V = V̂ Û⊤U0, we
+have Û V̂ ⊤ = U0V ⊤ , and V V ⊤ = V̂ V̂ ⊤. Note that U0U⊤0 = Û Û ⊤ leads to PU = PÛ , and V V ⊤ = V̂ V̂ ⊤ leads to PV = PV̂ , so the second claim follows. Since L̂, Ĉ is an optimal solution to Oracle Problem (7), there exists Q1, Q2, A′ and B′ such that
+Q1 + PU⊥ 0 (A′) = Q2 + PIc 0 (B′),
+where Q1, Q2 are subgradients to ‖L̂‖∗ and to λ‖Ĉ‖1,2, respectively. This means that Q1 = U0V ⊤ +W for some orthonormal V and W such that PT̂ (W ) = 0, and Q2 = λ(Ĥ + Z) for some Ĥ ∈ G(Ĉ), and Z such that PI0(Z) = 0. Letting A = W + A′, B = λZ +B′, we have
+U0V ⊤ + PU⊥
+0
+(A) = λĤ + PIc 0 (B). (10)
+Recall that Ĥ ∈ G(Ĉ) means PI0(Ĥ) = Ĥ and ‖Ĥ‖∞,2 ≤ 1. Lemma 6: We have
+U0PI0(V ⊤ ) = λPU0(Ĥ).
+Proof: We have
+PU0PI0(U0V ⊤ + PU⊥
+0
+(A)) = PU0PI0(U0V ⊤ ) + PU0PI0(PU⊥
+0
+(A))
+= U0PI0(V ⊤ ) + PU0PU⊥
+0 PI0(A) = U0PI0(V ⊤ ).
+Furthermore, we have PU0PI0(λĤ + PIc0(B)) = λPU0(Ĥ).
+The lemma follows from (10). B. Obtaining Dual Certificates for Outlier Pursuit In this section we complete the proof of Theorem 1 by constructing a dual certificate to (L̂, Ĉ), the solution to the oracle problem. The conditions the dual certificate must satisfy are spelled out in Theorem 3. To understand the flow of the proof, it is instructive to consider the simpler case where the corrupted columns are assumed to be orthogonal to the column space of L0 which we seek to recover. Indeed, in that setting, we have V = V̂ = V , and moreover, straightforward algebra shows that we automatically satisfy the condition PI0 ∩ PV = {0}. In the general case, however, we require an addition condition to be satisfied, in order to recover the same property. Moreover, considering that the columns of H are either zero, or defined as normalizations of the columns of matrix C (i.e., normalizations of outliers), that PU(H) = PV (H) = PT (H) = 0, is immediate, as is the condition that PI0(UV ⊤) = 0. As a result, it is not hard to verify that the dual certificate for the orthogonal case is:
+Q = U0V ⊤ 0 + λH.
+While not required for the proof of our main results, we include the proof of the orthogonal case in Appendix I, as there we get a stronger necessary and sufficient condition for recovery.
+For the general, non-orthogonal case, however, this certificate does not satisfy the conditions of Theorem 3. For instance, PV0(H) need no longer be zero, and hence checking PT (Q) = U0V ⊤0 may no longer
+9 hold. We correct for the effect of the non-orthogonality by modifying Q with matrices ∆1 and ∆2, which we define below.
+Recalling the definition of V from Lemma 5, define matrix G ∈ Rr×r as
+G , PI0(V ⊤ )(PI0(V ⊤ ))⊤.
+Then we have
+G = ∑
+i∈I0
+[(V ⊤ )i][(V ⊤ )i]
+⊤ n ∑
+i=1
+[(V ⊤ )i][(V ⊤ )i] ⊤ = V ⊤ V = I,
+and hence ‖G‖ ≤ 1. The following lemma bounds ‖G‖ away from 1. Lemma 7: Let c = ‖G‖ and define
+µ = max i∈Ic
+0
+|Ic0| r ‖PIc 0 (V ⊤ )ei‖2.
+We have the following: (1) c ≤ λ2γn; (2) µ ≤ µ. Proof: We have
+c = ‖U0PI0(V ⊤ )(PI0(V ⊤ ))⊤U⊤0 ‖ = ‖[U0PI0(V ⊤ )][U0PI0(V ⊤ )]⊤‖,
+due to the fact that U0 is orthonormal. By Lemma 6, this implies
+c = ‖[λPU0(Ĥ)][λPU0(Ĥ)]⊤‖ = λ2‖ ∑
+i∈I0
+PU0(Ĥi)PU0(Ĥi)⊤‖ ≤ λ2|I0|.
+Here, the inequality holds because ‖PU0(Ĥi)‖2 ≤ 1 implies ‖PU0(Ĥi)PU0(Ĥi)⊤‖ ≤ 1. Thus, we proved the first claim.
+Recall L0 = U0Σ0V ⊤0 , and
+µ = max i∈Ic
+0
+|Ic0| r ‖PIc 0 (V ⊤0 )ei‖2.
+Thus it suffices to show that for fixed i ∈ I0 the following holds
+‖PIc 0 (V ⊤ )ei‖ ≤ ‖PIc 0 (V ⊤0 )ei‖.
+Note that PIc 0 (V ⊤ ) and PIc 0 (V ⊤0 ) span the same row space. Thus, due to the fact that PIc0(V ⊤0 ) is orthonormal, we have PIc 0 (V ⊤ ) is row-wise full rank. Since 0 PIc 0 (V ⊤ )PIc 0 (V ⊤ )⊤ = I − G, there exists a symmetric, invertible matrix N ∈ Rr×r, such that
+‖N‖ ≤ 1; and N2 = PIc 0 (V ⊤ )PIc 0 (V ⊤ )⊤,
+which implies that N−1PIc 0 (V ⊤ ) is orthonormal and span the same row space as PIc 0 (V ⊤ ), and hence span the same row space as PIc 0 (V ⊤0 ). Note that PIc0(V ⊤0 ) is also orthonormal, which implies there exists an orthonormal matrix M ∈ Rr×r, such that MN−1PIc
+0 (V
+⊤ ) = PIc 0 (V ⊤0 ).
+We have
+‖PIc 0 (V ⊤ )ei‖2 = ‖M⊤NPIc 0 (V ⊤0 )ei‖2 ≤ ‖M⊤‖‖N‖‖PIc0(V ⊤0 )ei‖2 ≤ ‖PIc0(V ⊤0 )ei‖2.
+The second claim is thus established. Lemma 8: If c < 1, then the following operation PVPIc0PV is an injection from PV to PV , and its inverse operation is I + ∑∞
+i=1(PVPI0PV )i.
+10
+Proof: Fix matrix X ∈ Rm×n such that ‖X‖ = 1, we have that PVPI0PV (X)
+=PVPI0(XV V ⊤ ) =PV (XV PI0(V ⊤ )) =XV PI0(V ⊤ )V V ⊤ =XV (PI0(V ⊤ )V )V ⊤ =XVGV ⊤ ,
+which leads to ‖PVPI0PV (X)‖ ≤ c. Since c < 1, [I + ∑∞ i=1(PVPI0PV )i](X) is well defined, and has a spectral norm not larger than 1/(1− c).
+Note that we have PVPIc0PV = PV (I −PV PI0PV ),
+thus for any X ∈ PV the following holds
+PVPIc0PV [I + ∞ ∑
+i=1
+(PVPI0PV )i](X)
+=PV (I − PVPI0PV )[I + ∞ ∑
+i=1
+(PV PI0PV )i](X)
+=PV (X) = X, which establishes the lemma.
+Now we define the matrices ∆1 and ∆2 used to construct the dual certificate. As the proof reveals, they are designed precisely as “corrections” to guarantee that the dual certificate satisfies the required constraints of Theorem 3.
+Define ∆1 and ∆2 as follows:
+∆1 , λPU0(H) = U0PI0(V ⊤ ); (11)
+∆2 , PU⊥ 0 PIc 0 PV [I +
+∞ ∑
+i=1
+(PVPI0PV )i]PV (λĤ)
+= PIc 0 PV [I +
+∞ ∑
+i=1
+(PVPI0PV )i]PV PU⊥ 0 (λĤ). (12)
+Note here the equality holds since PV ,PI0 ,PIc0 are all right multiplying a matrix, while PU⊥0 is left multiplying a matrix.
+Theorem 4: Assume c < 1. Let
+Q , U0V ⊤ + λĤ −∆1 −∆2.
+If γ
+1− γ ≤ (1− c)2 (3− c)2µr ,
+and (1− c) √ µr
+1−γ √ n(1− c− √ γ 1−γµr) ≤ λ ≤ 1− c (2− c)√nγ ,
+11
+then Q satisfies Condition (8) (i.e., it is the dual certificate). If all inequalities hold strictly, then Q strictly satisfies (8). Proof: Note that c < 1 implies PV ∩ PI0 = {0}. Hence it suffices to show that Q simultaneously satisfies
+PÛ(Q) = Û V̂ ⊤; PV̂ (Q) = Û V̂ ⊤; PI0(Q) = λĤ ; ‖PT̂⊥(Q)‖ ≤ 1; ‖PIc 0 (Q)‖∞,2 ≤ λ.
+Step 1: We have
+PÛ(Q) = PU0(Q) = PU0(U0V ⊤ + λĤ −∆1 −∆2)
+= UV ⊤ + λPU0(Ĥ)−PU0(∆1)−PU0(∆2) = UV ⊤ = Û V̂ ⊤.
+Step 2: We have
+PV̂ (Q) = PV (Q) = PV (U0V ⊤ + λĤ −∆1 −∆2)
+= U0V ⊤ + PV (λĤ)− PV (λPU0(Ĥ))− PV (PV [I +
+∞ ∑
+i=1
+(PV PIPV )i]PVPU⊥ 0 (λĤ))
+= U0V ⊤ + PV (PU⊥
+0
+(λĤ))−PV PIc0PV [I + ∞ ∑
+i=1
+(PVPIPV )i]PVPU⊥ 0 (λĤ)
+(a) = U0V ⊤ + PV (PU⊥
+0 (λĤ))− PV (PU⊥ 0
+(λĤ)) = U0V ⊤ = Û V̂ ⊤.
+Here, (a) holds since on PV , [I + ∑∞ i=1(PVPIPV )i] is the inverse operation of PVPIc0PV . Step 3: We have
+PI0(Q) =PI0(U0V ⊤ + λĤ −∆1 −∆2)
+=U0PI0(V ⊤ ) + λĤ − PI0(U0PI0(V ⊤ ))− PI0PIc0PV [I +
+∞ ∑
+i=1
+(PVPIPV )i]PVPU⊥ 0 (λĤ)
+=λĤ.
+Step 4: We need a lemma first. Lemma 9: Given X ∈ Rm×n such that ‖X‖ = 1, we have ‖PIc 0 PV (X)‖ ≤ 1.
+Proof: By definition PIc 0 PV (X) = XV PIc0(V ⊤ ).
+For any z ∈ Rn such that ‖z‖2 = 1, we have
+‖XV PIc 0 (V ⊤ )z‖2 = ‖XV V ⊤PIc 0 (z)‖2 ≤ ‖X‖‖V V ⊤‖‖PIc 0 (z)‖2 ≤ 1,
+where PIc 0 (z) represents that for i ∈ I set zi to zero, and in the last inequality we used the fact that ‖X‖ = 1. Note that this holds for any z, hence by the definition of spectral norm (as the ℓ2 operator norm), we establish the lemma.
+12
+Now we continue on Step 4. We have
+PT̂⊥(Q) =PT̂⊥(U0V ⊤ + λĤ −∆1 −∆2)
+=P V ⊥PU⊥ 0 (λĤ)− P V ⊥PU⊥ 0 (PIc 0 PV [I +
+∞ ∑
+i=1
+(PVPIPV )i]PVPU⊥ 0 (λĤ))
+=P V ⊥PU⊥ 0 (λĤ)− PU⊥ 0 P V ⊥PIc 0 PV [I +
+∞ ∑
+i=1
+(PVPIPV )i]PV (λĤ).
+Let v = ‖λĤ‖. Recall that we have shown v ≤ λ √ |I0|. Thus we have ‖PV ⊥PU⊥0 (λĤ)‖ ≤ v. Furthermore, we have the following
+‖PV (λĤ)‖ ≤ v; ‖[I + ∞ ∑
+i=1
+(PVPI0PV )i]PV (λĤ)‖ ≤ v/(1− c);
+‖PIc 0 PV [I +
+∞ ∑
+i=1
+(PVPI0PV )i]PV (λĤ)‖ ≤ v/(1− c);
+‖PU⊥ 0 P V ⊥PIc 0 PV [I +
+∞ ∑
+i=1
+(PVPI0PV )i]PV (λĤ)‖ ≤ v/(1− c);
+Thus we have that ‖PT̂⊥(Q)‖ ≤ 2− c 1− cλ √ |I0|.
+Note that since λ ≤ 1− c
+(2− c)√nγ ,
+we have ‖PT̂⊥(Q)‖ ≤ 1.
+The inequality will be strict if
+λ < 1− c
+(2− c)√nγ .
+Step 5: Recall from the proof of Lemma 8 that
+PVPI0PV (X) = XVGV ⊤ .
+Hence note that (PVPI0PV )i = (PVPI0PV )(PVPI0PV )i−1 and V ⊤ V = I , by induction we have
+(PVPI0PV )i(X) = XVGiV ⊤ .
+Now we expand ∆2:
+∆2 = PU⊥PIc0PV [I + ∞ ∑
+i=1
+(PVPI0PV )i]PV (λĤ)
+=(I − U0U⊤0 )(λĤ)V V ⊤ [1 +
+∞ ∑
+i=1
+V GiV ⊤ ]V PIc
+0 (V
+⊤ ).
+13
+Thus, we have
+‖∆2ei‖2
+≤‖(I − U0U⊤0 )‖‖(λH)‖‖V V ⊤‖‖1 +
+∞ ∑
+i=1
+V GiV ⊤‖‖V ‖‖PIc
+0 (V
+⊤ )ei‖2
+≤‖λH‖ 1 1− c
+√
+µr
+n− |I0|
+≤ λ √ |I0| √ µr n−|I0|
+1− c ,
+which implies
+‖∆2‖∞,2 ≤ λ √ |I0| √ µr n−|I0|
+1− c .
+Notice that
+‖PIc 0 (Q)‖∞,2 =‖PIc 0 (U0V ⊤ + λĤ −∆1 −∆2)‖∞,2
+=‖U0PIc 0 (V ⊤ )−∆2‖∞,2 ≤‖U0PIc 0 (V ⊤ )‖∞,2 + ‖∆2‖∞,2
+≤ √ µr
+n− |I0| +
+λ √ |I0| √ µr
+n−|I0|
+1− c .
+Note that solving
+√
+µr
+n− |I0| +
+λ √ |I0| √ µr
+n−|I0|
+1− c ≤ λ
+⇐⇒ λ 1−
+√
+γ
+1−γµr
+1− c
+  ≥ √
+µr
+n(1− γ)
+⇐⇒ λ ≥ (1− c)
+√
+µr
+1−γ √ n(1− c− √ γ 1−γµr) ,
+as long as 1−c− √ γ
+1−γµr > 0 (which will be proved in step 6). Again if the last inequality holds strictly,
+we then have ‖PIc 0 (Q)‖∞,2 < λ.
+Step 6: Finally we show that such λ is possible, which is equivalent to show that
+(1− c) √ µr
+1−γ √ n(1− c− √ γ 1−γµr) ≤ 1− c (2− c)√nγ
+⇐⇒ (2− c) √ γ 1− γµr ≤ 1− c− √ γ 1− γµr
+⇐⇒ γ 1− γ ≤ (1− c)2 (3− c)2µr .
+14
+Observe that under this condition, 1−c− √ γ
+1−γµr > 0 holds. Note that if the last inequality holds strictly,
+then so does the first. With the construction of the dual certificate complete, we can establish Theorem 1 from the following corollary. Corollary 1: Let γ ≤ γ∗, then Outlier Pursuit, with λ = 3
+7 √ γ∗n , strictly succeeds if
+γ∗
+1− γ∗ ≤ 9 121µr .
+Proof: First note that λ = 3 7 √ γ∗n and γ ≤ γ∗ imply that
+λ ≤ 3 7 √ γn ,
+which by Lemma 7 leads to
+c ≤ λ2γn < 1 4 .
+Thus, it suffices to check that γ and λ satisfies the conditions of Theorem 4, namely
+γ 1− γ < (1− c)2 (3− c)2µr ,
+and (1− c) √ µr
+1−γ √ n(1− c− √ γ 1−γµr) < λ < 1− c (2− c)√nγ .
+Since c < 1/4, we have
+γ 1− γ ≤ γ∗ 1− γ∗ ≤ 9 121µr = (1− 1/4)2 (3− 1/4)2µr < (1− c)2 (3− c)2µr ,
+which proves the first condition.
+Next observe that (1−c)
+√ µr
+1−γ√ n(1−c−
+√ γ
+1−γ µr)
+, as a function of c, γ, (µr) is strictly increasing in c, (µr), and γ;
+and µr ≤ (1−c)2(1−γ) (3−c)2γ thus
+(1− c) √ µr
+1−γ √ n(1− c− √ γ 1−γµr) <
+(1− c) √ (1−c)2 (3−c)2γ√
+n(1− c− 1−c 3−c)
+= 3 √ 1 + γ/(1− γ) 7 √ n ≤ 3 √ 1 + γ∗/(1− γ∗) 7 √ n = λ.
+Similarly, 1−c (2−c)√nγ is strictly decreasing in c and γ, which implies that
+1− c (2− c)√nγ > 1− 1/4 (2− 1/4)√nγ∗ = λ.
+15
+V. PROOF OF THEOREM 2
+In practice, the observed matrix may be a noisy copy of M . In this section we investigate this noisy case and show that the proposed method, with minor modification, is robust to noise. Specifically, we observe M ′ = M+N for some unknown N , and we want to approximately recover U0 and I0. This leads to the following formulation that replaces the equality constraint M = L+ C with a norm inequality.
+Minimize: ‖L‖∗ + λ‖C‖1,2; Subject to: ‖M ′ − L− C‖ ≤ ǫ. (13) In fact, under the essentially equivalent condition as that of the noiseless case, the optimal solution of (13), will be “close” to a pair that has the correct column space and column support.
+Theorem 5: Let L′, C ′ be an optimal solution of (13). Suppose ‖N‖F ≤ ǫ, λ < 1, and c < 1/4. Let M = L̂+ Ĉ where PU(L̂) = L̂ and PI0(Ĉ) = Ĉ. If there exists a Q such that
+PT (L̂)(Q) = N(L̂); ‖PT (L̂)⊥(Q)‖ ≤ 1/2; PI0(Q)/λ ∈ G(Ĉ); ‖PIc0(Q)‖∞,2 ≤ λ/2. (14) then there exists a pair (L̃, C̃) such that M = L̃+ C̃, L̃ ∈ PU0 , C̃ ∈ PI0 and
+‖L′ − L̃‖F ≤ 20 √ nǫ; ‖C ′ − C̃‖F ≤ 18 √ nǫ.
+Proof: Let V be as defined before. We establish the following lemma first. Lemma 10: Recall that c = ‖G‖ where G = PI0(V ⊤ )PI0(V ⊤ )⊤. We have
+‖PI0PVPI0(X)‖F ≤ c‖X‖F . Proof: Let T ∈ Rn×n be such that
+Tij =
+{
+1 if i = j, i ∈ I; 0 otherwise.
+We then expand PI0PVPI0(X), which equals XTV V ⊤ T = XTV V ⊤ T⊤ = X(TV )(TV )⊤ = XPI0(V ⊤ )⊤PI0(V ⊤ ). The last equality follows from (TV )⊤ = PI0(V ⊤ ). Since c = ‖G‖ where G = PI0(V ⊤ )PI0(V ⊤ )⊤, we have ‖PI0(V ⊤ )⊤PI0(V ⊤ )‖ = ‖PI0(V ⊤ )PI0(V ⊤ )⊤‖ = c. Now consider the ith row of X , denoted as xi. Since ‖PI0(V ⊤ )⊤PI0(V ⊤ )‖ = c, we have
+‖xiPI0(V ⊤ )⊤PI0(V ⊤ )‖22 ≤ c2‖xi‖22.
+The lemma holds from the following inequality. ‖PI0PVPI0(X)‖2F = ‖XPI0(V ⊤ )⊤PI0(V ⊤ )‖2F = ∑
+i
+‖xiPI0(V ⊤ )⊤PI0(V ⊤ )‖22 ≤ c2 ∑ ‖xi‖22 = c2‖X‖2F .
+Let NL = L′ − L̂, and NC = C ′ − Ĉ. Thus N = NC +NL, and recall that ‖N‖F ≤ ǫ. Further, define N+L = NL − PI0PU0(NL), N+C = NC − PI0PU0(NC), and N+ = N − PI0PU0(N). Observe that for any A, ‖(I −PI0PU0)(A)‖F ≤ ‖A‖F .
+Choosing same W and F as in the proof of Theorem 3, we have
+‖L̂‖∗ + λ‖Ĉ‖1,2 ≥‖L′‖∗ + λ‖C ′‖1,2 ≥‖L̂‖∗ + λ‖Ĉ‖1,2 + 〈PT (L̂)(Q) +W,NL〉+ λ〈PI0(Q)/λ+ F,NC〉 =‖L̂‖∗ + λ‖Ĉ‖1,2 + ‖PT (L̂)⊥(NL)‖∗ + λ‖PIc0(NC)‖1,2 + 〈PT (L̂)(Q), NL〉+ 〈PI0(Q), NC〉 =‖L̂‖∗ + λ‖Ĉ‖1,2 + ‖PT (L̂)⊥(NL)‖∗ + λ‖PIc0(NC)‖1,2 − 〈PT (L̂)⊥(Q), NL〉 − 〈PIc0(Q), NC〉+ 〈Q,NL +NC〉 ≥‖L̂‖∗ + λ‖Ĉ‖1,2 + (1− ‖PT (L̂)⊥(Q)‖)‖PT (L̂)⊥(NL)‖∗ + (λ− ‖PIc0(Q)‖∞,2)‖PIc0(NC)‖1,2 + 〈Q,N〉 ≥‖L̂‖∗ + λ‖Ĉ‖1,2 + (1/2)‖PT (L̂)⊥(NL)‖∗ + (λ/2)‖PIc0(NC)‖1,2 − ǫ‖Q‖F .
+16
+Note that ‖Q‖∞,2 ≤ λ, hence ‖Q‖F ≤ √ nλ. Thus we have
+‖P T (L̂) ⊥(NL)‖F ≤ ‖PT (L̂)⊥(NL)‖∗ ≤ 2λ √ nǫ; ‖PIc 0 (NC)‖F ≤ ‖PIc 0 (NC)‖1,2 ≤ 2 √ nǫ.
+(15)
+Furthermore
+PI0(N+C ) =PI0(NC)− PI0PU0PI0(NC) =PI0(N)−PI0PT (L̂)⊥(NL)−PI0PT (L̂)(NL)−PI0PU0PI0(NC) =PI0(N)−PI0PT (L̂)⊥(NL)−PI0PT (∆) + PI0PT (L̂)(NC)− PI0PU0PI0(NC) =PI0(N)−PI0PT (L̂)⊥(NL)−PI0PT (L̂)(∆) + PI0PT (L̂)PIc0(NC)
++ PI0PT (L̂)PI0(NC)− PI0PU0PI0(NC) (a) =PI0(N)−PI0PT (L̂)⊥(NL)−PI0PT (L̂)(∆) + PI0PT (L̂)PIc0(NC) + PI0PT (L̂)PI0(N + C )
+(b) =PI0(N)−PI0PT (L̂)⊥(NL)−PI0PT (L̂)(∆) + PI0PT (L̂)PIc0(NC) + PI0PVPI0(N + C ).
+(16)
+Here (a) holds due to the following
+PI0PT (L̂)PI0(N+C ) = PI0PT (L̂)PI0(NC)−PI0PT (L̂)PI0(PI0PU0(NC)) = PI0PT (L̂)PI0(NC)−PI0PU0PI0(NC), and (b) holds since by definition, each column of N+C is orthogonal to U , hence PU0PI0(N+C ) = 0. Thus, Equation (16) leads to
+‖PI0(N+C )‖F ≤‖PI0(N)− PI0PT (L̂)(N)‖F + ‖PI0PT (L̂)⊥(NL)‖F + ‖PI0PT (L̂)PIc0(NC)‖F + ‖PI0PVPI0(N + C )‖F ≤‖N‖F + ‖PT (L̂)⊥(NL)‖F + ‖PIc0(NC)‖F + c‖PI0(N + C )‖F
+≤(1 + 2λ√n+ 2√n)ǫ+ c‖PI0(N+C )‖F . This implies that
+‖PI0(N+C )‖F ≤ (1 + 2λ √ n + 2 √ n)ǫ/(1− c).
+Now using the fact that λ < 1, and c < 1/4, we have
+‖N+C ‖F = ‖PIc0(NC) + PI0(N+C )‖F ≤ ‖PIc0(NC)‖F + ‖PI0(N+C )‖F ≤ 9 √ nǫ.
+Note that N+C = (I−PI0PU0)(C ′− Ĉ) = C ′− [Ĉ +PI0PU0(C ′− Ĉ)]. Letting C̃ = Ĉ+PI0PU0(C ′− Ĉ), we have C̃ ∈ PI0 and ‖C−C̃‖F ≤ 9 √ nǫ. Let L̃ = L̂−PI0PU0(C ′−Ĉ), we have that L̃, C̃ is a successful decomposition, and ‖L′ − L̃‖F ≤ ‖N‖F + ‖C ′ − C̃‖F ≤ 10 √ nǫ.
+Remark: From the proof of Theorem 4, we have that the Condition (14) holds when
+γ 1− γ ≤ (1− c)2
+(9− 4c)2µ0r and
+2(1− c) √ µ0r
+1−γ √ n(1− c− √ γ 1−γµ0r) ≤ λ ≤ 1− c 2(2− c)√nγ .
+For example, one can take
+λ =
+√ 9 + 1024µ0r
+14 √ n
+,
+17
+and all conditions of Theorem 5 hold when γ
+1− γ ≤ 9 1024µ0r .
+This establishes Theorem 2.
+VI. IMPLEMENTATION ISSUE AND NUMERICAL EXPERIMENTS
+While minimizing the nuclear norm is known to be a semi-definite program, and can be solved using a general purpose SDP solver such as Yalmip or Sedumi, such a method does not scale well to large data-sets. In fact, the computational time becomes prohibitive even for modest problem sizes as small as hundreds of variables. Recently, a family of optimization algorithms known as proximal gradient algorithms have been proposed to solve optimization problems of the form
+minimize: g(x), subject to: A(x) = b, of which Outlier Pursuit is a special case. It is known that such algorithms converges with a rate of O(k−2), and significantly outperform interior point methods for solving SDPs in practice. Following this paradigm, we solve Outlier Pursuit with the following algorithm. The validity of the algorithm follows easily form [27], [28], see also [29].
+Input: M ∈ Rm×n, λ, δ := 10−5, η := 0.9, µ0 := 0.99‖M‖F . 1) L−1, L0 := 0m×n; C−1, C0 := 0m×n, t−1, t0 := 1; µ̄ = δµ; 2) while not converged do 3) Y Lk := Lk + tk−1−1 tk
+(Lk − Lk−1), Y Ck := Ck + tk−1−1tk (Ck − Ck−1); 4) GLk := Y L k − 12 ( Y Lk + Y C k −M ) ; GCk := Y C k − 12 ( Y Lk + Y C k −M )
+; 5) (U, S, V ) := svd(GLk ); Lk+1 := ULµk
+2 (S)V ; 6) Ck+1 := Cλµk
+2
+(GCk );
+7) tk+1 := 1+ √ 4t2 k +1
+2 ; µk+1 := max(ηµk.µ̄); k ++;
+8) end while Output: L := Lk, C = Ck.
+Here, Lǫ(S) is the diagonal soft-thresholding operator: i.e., if |Sii| ≤ ǫ, then it is set to zero, otherwise, let Sii := Sii − ǫ · sgn(Sii). Similarly, Cǫ(C) is the column-wise thresholding operator: i.e., set Ci to zero if ‖Ci‖2 ≤ ǫ, otherwise let Ci := Ci − ǫCi/‖Ci‖2.
+We explore the performance of Outlier Pursuit on some synthetic and real-world data, and find that its performance is quite promising.1 Our first experiment investigates the phase-transition property of Outlier Pursuit, using randomly generated synthetic data. Fix n = p = 400. For different r and number of outliers γn, we generated matrices A ∈ Rp×r and B ∈ R(n−γn)×r where each entry is an independent N (0, 1) random variable, and then set L∗ := A×B⊤ (the “clean” part of M). Outliers, C∗ ∈ Rγn×p are generated either neutrally, where each entry of C∗ is iid N (0, 1), or adversarial, where every column is an identical copy of a random Gaussian vector. Outlier Pursuit succeeds if Ĉ ∈ PI , and L̂ ∈ PU .
+Figure 1 shows the phase transition property. We represent success in gray scale, with white denoting success, and black failure. When outliers are random (easier case) Outlier Pursuit succeeds even when r = 20 with 100 outliers. In the adversarial case, Outlier Pursuit succeeds when r × γ ≤ c, and fails otherwise, consistent with our theory’s predictions. We then fix r = γn = 5 and examine the outlier identification ability of Outlier Pursuit with noisy observations. We scale each outlier so that the ℓ2 distance of the outlier to the span of true samples equals a pre-determined value s. Each true sample is thus corrupted with a Gaussian random vector with an ℓ2 magnitude σ. We perform (noiseless) Outlier
+1We have learned that [30] has also performed some numerical experiments minimizing ‖ · ‖∗ + λ‖ · ‖1,2, and found promising results.
+18
+Pursuit on this noisy observation matrix, and claim that the algorithm successfully identifies outliers if for the resulting Ĉ matrix, ‖Ĉj‖2 < ‖Ĉi‖2 for all j 6∈ I and i ∈ I, i.e., there exists a threshold value to separate out outliers. Figure 1 (c) shows the result: when σ/s ≤ 0.3 for the identical outlier case, and σ/s ≤ 0.7 for the random outlier case, Outlier Pursuit correctly identifies the outliers.
+We further study the case of decomposing M under incomplete observation, which is motivated by robust collaborative filtering: we generate M as before, but only observe each entry with a given probability (independently). Letting Ω be the set of observed entries, we solve
+Minimize: ‖L‖∗ + λ‖C‖1,2; Subject to: PΩ(L+ C) = PΩ(M). (17) The same success condition is used. Figure 2 shows a very promising result: the successful decomposition rate under incomplete observation is close the the complete observation case even only 30% of entries are observed. Given this empirical result, a natural direction of future research is to understand theoretical guarantee of (17) in the incomplete observation case.
+Next we report some experimental results on the USPS digit data-set. The goal of this experiment is to show that Outlier Pursuit can be used to identify anomalies within the dataset. We use the data from [31], and construct the observation matrix M as containing the first 220 samples of digit “1” and the last 11 samples of “7”. The learning objective is to correctly identify all the “7’s”. Note that throughout the experiment, label information is unavailable to the algorithm, i.e., there is no training stage. Since the columns of digit “1” are not exactly low rank, an exact decomposition is not possible. Hence, we use the ℓ2 norm of each column in the resulting C matrix to identify the outliers: a larger ℓ2 norm means that the sample is more likely to be an outlier — essentially, we apply thresholding after C is obtained.
+19
+Figure 3(a) shows the ℓ2 norm of each column of the resulting C matrix. We see that all “7’s” are indeed identified. However, two “1” samples (columns 71 and 137) are also identified as outliers, due to the fact that these two samples are written in a way that is different from the rest “1’s” as showed in Figure 4. Under the same setup, we also simulate the case where only 80% of entries are observed. As Figure 3 (b) and (c) show, similar results as that of the complete observation case are obtained, i.e., all true “7’s” and also “1’s” No 71, No 177 are identified.
+(a) Complete Observation (b) Partial Obs. (one run) (c) Partial Obs. (average)
+VII. CONCLUSION AND FUTURE DIRECTION
+This paper considers robust PCA from a matrix decomposition approach, and develops the algorithm: Outlier Pursuit. Under some mild conditions, we show that Outlier Pursuit can exactly recover the column support, and exactly identify outliers. This result is new, differing both from results in Robust PCA, and also from results using nuclear-norm approaches for matrix completion and matrix reconstruction. One central innovation we introduce is the use of an oracle problem. Whenever the recovery concept (in this case, column space) does not uniquely correspond to a single matrix (we believe many, if not most cases of interest, fit this description), the use of such a tool will be quite useful. Immediate goals for future work include considering specific applications, in particular, robust collaborative filtering (here, the goal is to decompose a partially observed column-corrupted matrix) and also obtaining tight bounds for outlier identification in the noisy case.
+20
+REFERENCES [1] I. T. Jolliffe. Principal Component Analysis. Springer Series in Statistics, Berlin: Springer, 1986. [2] P. J. Huber. Robust Statistics. John Wiley & Sons, New York, 1981. [3] L. Xu and A. L. Yuille. Robust principal component analysis by self-organizing rules based on statistical physics approach. IEEE
+Transactions on Neural Networks, 6(1):131–143, 1995. [4] E. Candès, X. Li, Y. Ma, and J. Wright. Robust pricipal component analysis? ArXiv:0912.3599, 2009. [5] S. J. Devlin, R. Gnanadesikan, and J. R. Kettenring. Robust estimation of dispersion matrices and principal components. Journal of
+the American Statistical Association, 76(374):354–362, 1981. [6] T. N. Yang and S. D. Wang. Robust algorithms for principal component analysis. Pattern Recognition Letters, 20(9):927–933, 1999. [7] C. Croux and G. Hasebroeck. Principal component analysis based on robust estimators of the covariance or correlation matrix: Influence
+functions and efficiencies. Biometrika, 87(3):603–618, 2000. [8] F. De la Torre and M. J. Black. Robust principal component analysis for computer vision. In Proceedings of the Eighth International
+Conference on Computer Vision (ICCV’01), pages 362–369, 2001. [9] F. De la Torre and M. J. Black. A framework for robust subspace learning. International Journal of Computer Vision, 54(1/2/3):117–142,
+2003. [10] C. Croux, P. Filzmoser, and M. Oliveira. Algorithms for Projection−Pursuit robust principal component analysis. Chemometrics and Intelligent Laboratory Systems, 87(2):218–225, 2007. [11] S. C. Brubaker. Robust PCA and clustering on noisy mixtures. In Proceedings of the Nineteenth Annual ACM -SIAM Symposium on Discrete Algorithms, pages 1078–1087, 2009. [12] H. Xu, C. Caramanis, and S. Mannor. Principal component analysis with contaminated data: The high dimensional case. In Proceeding of the Twenty-third Annual Conference on Learning Theory, pages 490–502, 2010. [13] E. J. Candès, J. Romberg, and T. Tao. Robust uncertainty principles: Exact signal reconstruction from highly incomplete frequency information. IEEE Transactions on Information Theory, 52(2):489–509, 2006. [14] B. Recht, M. Fazel, and P. Parrilo. Guaranteed minimum rank solutions to linear matrix equations via nuclear norm minimization. To appear in SIAM Review, 2010. [15] V. Chandrasekaran, S. Sanghavi, P. Parrilo, and A. Willsky. Rank-sparsity incoherence for matrix decomposition. ArXiv:0906.2220, 2009. [16] E. Candès and B. Recht. Exact matrix completion via convex optimization. Foundations of Computational Mathematics, 9:717–772, 2009. [17] E. Candès and T. Tao. The power of convex relaxation: Near-optimal matrix completion. IEEE Transactions on Information Theory, 56(2053-2080), 2010. [18] D. L. Donoho. Breakdown properties of multivariate location estimators. Qualifying paper, Harvard University, 1982. [19] R. Maronna. Robust M-estimators of multivariate location and scatter. The Annals of Statistics, 4:51–67, 1976. [20] V. Barnett. The ordering of multivariate data. Journal of Royal Statistics Society Series, A, 138:318–344, 1976. [21] D. Titterington. Estimation of correlation coefficients by ellipsoidal trimming. Applied Statistics, 27:227–234, 1978. [22] V. Barnett and T. Lewis. Outliers in Statistical Data. Wiley, New York, 1978. [23] A. Dempster and M. Gasko-Green. New tools for residual analysis. The Annals of Statistics, 9(5):945–959, 1981. [24] S. J. Devlin, R. Gnanadesikan, and J. R. Kettenring. Robust estimation and outlier detection with correlation coefficients. Biometrika, 62:531–545, 1975. [25] G. Li and Z. Chen. Projection-pursuit approach to robust dispersion matrices and principal components: Primary theory and monte carlo. Journal of the American Statistical Association, 80(391):759–766, 1985. [26] R.T. Rockafellar. Convex Analysis. Princeton University Press, Princeton, N.J., 1970. [27] P. Tsang. On accelerated proximal gradient methods for convex-concave optimization. Submitted to SIAM Journal on Optimizatio, 2008. [28] Y. Nesterov. A method of solving a convex programming problem with convergence rate o(1/k2). Soviet Mathematics Doklady, 27(372-376), 1983. [29] J-F. Cai, E. Candès, and Z. Shen. A singular value thresholding algorithm for matrix completion. SIAM Journal on Optimization, 20:1956–1982, 2008. [30] M. McCoy and J. Tropp. Personal Correspondence, October 2010. [31] C. Rasmussen and C. Williams. Gaussian Processes for Machine Learning. the MIT Press, 2006.
+APPENDIX I ORTHOGONAL CASE
+This section investigates the special case where each outlier is orthogonal to the span of true samples, as stated in the following assumption.
+Assumption 1: For i ∈ I0, j 6∈ I0, we have M⊤i Mj = 0. In the orthogonal case, we are able to derive a necessary and sufficient condition of Outlier Pursuit to succeed. Such condition is of course a necessary condition for Outlier Pursuit to succeed in the more general (non-orthogonal) case. Let
+H0 =
+{ (C0)i ‖(C0)i‖2 , if i ∈ I0;
+0 otherwise.
+21
+Theorem 6: Under Assumption 1, Outlier Pursuit succeeds if and only if
+‖H0‖ ≤ 1/λ; ‖U0V ⊤0 ‖∞,2 ≤ λ. (18) If both inequalities hold strictly, then Outlier Pursuit strictly succeeds.
+Corollary 2: If the outliers are generated adversarial, and Assumption 1 holds, then Outlier Pursuit succeeds (for some λ∗) if and only if
+γ 1− γ ≤ 1 µr .
+Specifically, we can choose λ∗ = √
+µr+1 n . A. Proof of Theorem 6 The proof consists of three steps. We first show that if Outlier Pursuit succeeds, then (L0, C0) must be an optimal solution to Outlier Pursuit. Then using subgradient condition of optimal solutions to convex programming, we show that the necessary and sufficient condition for (L0, C0) being optimal solution is the existence of a dual certificate Q. Finally, we show that the existence of Q is equivalent to Condition (18) holds. We devote a subsection for each step.
+1) Step 1: We need a technical lemma first. Lemma 11: Given A ∈ Rm×n, we have
+‖PIc 0 (A)‖∗ ≤ ‖A‖∗.
+Proof: Fix r ≥ rank(A). It is known that ‖A‖∗ has the following variational form (Lemma 5.1 of [14]):
+‖A‖∗ = Minimize:X∈Rm×r ,Y ∈Rn×r 1
+2 (‖X‖2F + ‖Y ‖2F )
+Subject to: XY ⊤ = A. (19)
+Note that for any XY ⊤ = A, we have
+XY ⊤ = X(PIc 0 (Y ⊤)) = PIc(A),
+where Y is the matrix resulted by setting all rows of Y in I to zero. Thus, by variational form of ‖PIc 0 (A)‖∗, and note that rank(PIc 0 (A)) ≤ r, we have
+‖PIc 0 (A)‖∗ ≤
+1 2 [‖X‖2F + ‖Y ‖2F ] ≤ 1 2 [‖X‖2F + ‖Y ‖2F ].
+Note this holds for any X, Y such that XY ⊤ = A, the lemma follows from (19). Theorem 7: Under Assumption 1, for any L′, C ′ such that L′+C ′ = M , PI0(C ′) = C ′, and PU0(L′) = L′, we have ‖L0‖∗ + λ‖C0‖1,2 ≤ ‖L′‖∗ + λ‖C ′‖1,2,
+with the equality holds only when L′ = L0 and C ′ = C0. Proof: Write L′ = L0 + ∆ and C ′ = C0 − ∆. Since PU0(L′) = L′, we have that for i ∈ I0, PU0∆i = ∆i, which implies that for i ∈ I0 C⊤0i∆i = (C ⊤ 0iU)U
+⊤∆i = 0× U⊤∆i, where the last equality holds from Assumption 1 and the definition of C0 (recall that C0i is the ith column of C0). Thus, ‖C0‖1,2 = ∑ i∈I ‖C0i‖2 ≤ ∑ i∈I0 ‖C0i+∆i‖2 ≤ ∑n
+i=1 ‖C0i +∆i‖2 = ‖C ′‖1,2, with equality only holds when ∆ = 0.
+Further note that PI0(C ′) = C ′ implies that PI0(∆) = ∆, which by definition of L0 leads to L0 = PIc 0 L′.
+Thus, Lemma 11 implies ‖L0‖∗ ≤ ‖L′‖∗. The theorem thus follows.
+22 2) Step 2: Theorem 8: Under Assumption 1, (L0, C0) is an optimal solution to Outlier Pursuit if and only if there
+exists Q such that
+(a) PT0(Q) = U0V ⊤0 ; (b) ‖PT⊥
+0 (Q)‖ ≤ 1; (c) PI0(Q) = λH0; (d) ‖PIc 0 (Q)‖∞,2 ≤ λ.
+(20)
+Here PT0(·) , PT (L0)(·). In addition, if both inequalities are strict, then (L0, C0) is the unique optimal solution. Proof: Standard convex analysis yields that (L0, C0) is an optimal solution to Outlier Pursuit if and only if there exists a dual matrix Q such that
+Q ∈ ∂‖L0‖∗; Q ∈ ∂λ‖C0‖1,2. Note that a matrix Q is a subgradient of ‖ · ‖∗ evaluated at L0 if and only if it satisfies
+PT0(Q) = U0V ⊤0 ; and ‖PT⊥ 0 (Q)‖ ≤ 1. Similarly, Q is a subgradient of λ‖ · ‖1,2 evaluated at C0 if and only if
+PI0(Q) = λH0; and ‖PIc0(Q)‖∞,2 ≤ λ. Thus, we proved the first part of the theorem, i.e., the necessary and sufficient condition of (L0, C0) being an optimal solution.
+Next we show that if both inequalities are strict, then (L0, C0) is the unique optimal solution. Fix ∆ 6= 0, we show that (L0 + ∆, C0 − ∆) is strictly worse than (L0, C0). Let W be such that ‖W‖ = 1, 〈W,PT⊥
+0 (∆)〉 = ‖PT⊥ 0 ∆‖∗, and PT0W = 0. Let F be such that such that
+Fi = { −∆i ‖∆i‖2 if i 6∈ I0, and ∆i 6= 0 0 otherwise.
+Then U0V ⊤0 +W is a subgradient of ‖ · ‖∗ at L0 and H0 + F is a subgradient of ‖ · ‖1,2 at C0. Then we have
+‖L0 +∆‖∗ + λ‖C0 −∆‖1,2 ≥ ‖L0‖∗ + λ‖C0‖1,2+ < U0V ⊤0 +W,∆ > −λ < H0 + F,∆ > = ‖L0‖∗ + λ‖C0‖1,2 + ‖PT⊥
+0
+(∆)‖∗ + λ‖PIc 0 (∆)‖1,2+ < U0V ⊤0 − λH0,∆ >
+= ‖L0‖∗ + λ‖C0‖1,2 + ‖PT⊥ 0 (∆)‖∗ + λ‖PIc 0 (∆)‖1,2+ < Q− PT⊥ 0 (Q)− (Q− PIc 0 (Q)),∆ > = ‖L0‖∗ + λ‖C0‖1,2 + ‖PT⊥ 0 (∆)‖∗ + λ‖PIc 0 (∆)‖1,2+ < −PT⊥ 0 (Q),∆ > + < PIc 0 (Q),∆ > ≥ ‖L0‖∗ + λ‖C0‖1,2 + (1− ‖PT⊥ 0 (Q)‖)‖PT⊥ 0 (∆)‖∗ + (λ− ‖PIc 0 (Q)‖∞,2)‖PIc 0 (∆)‖1,2
+≥ ‖L0‖∗ + λ‖C0‖1,2, where the last inequality is strict unless
+‖PT⊥ 0 (∆)‖∗ = ‖PIc 0 (∆)‖1,2 = 0. (21)
+We next show that Condition (21) also implies a strict increase of the objective function to complete the proof. Note that Equation (21) is equivalent to ∆ = PT0(∆) = PI0(∆), and note that
+PU0(∆) = PT0(∆)− PV0(∆) + PU0PV0(∆) = ∆− (I −PU0)PV0∆. Since PI0(V ⊤0 ) = 0, PI0(∆) = ∆ implies that PV0(∆) = 0, which means ∆ = PU0(∆) = PI0(∆). Thus, PU0(L0+∆) = L0+∆, and PI0(C0−∆) = C0−∆. By Theorem 7, ‖L0+∆‖∗+λ‖C0−∆‖1,2 > ‖L0‖∗ + λ‖C0‖1,2, which completes the proof.
+23 3) Step 3: Theorem 9: Under Assumption 1, if there exists any matrix Q that satisfies Condition (18), then U0V ⊤0 + λH0 satisfies (18). Proof: Denote Q0 , U0V ⊤0 + λH0. We first show that the two equalities of Condition (18) hold. Note that
+PT0(Q0) = PT0(U0V ⊤0 ) + λPT0(H0) = U0V ⊤0 + λ[PU0(H0) + PV0(H0)− PU0PV0(H0)]. Further note that PU0(H0) = U0(U⊤0 H0) = 0 due to Assumption 1, and PV0(H0) = 0 because PI0H0 = H0 and PI0(V ⊤0 ) = 0 lead to H0V0 = 0. Hence
+PT0(Q0) = U0V ⊤0 . Furthermore, PI0(Q0) = PI0(U0V ⊤0 ) + λPI0(H0) = U0PI0(V ⊤0 ) + λH0 = λH0. Here, the last equality holds because PI0(V ⊤0 ) = 0. Note that this also implies that
+PT⊥ 0 (H0) = H0; PIc 0 (U0V ⊤ 0 ) = U0V ⊤ 0 . (22)
+Now consider any matrix Q that also satisfies the two equalities. Let Q = U0V ⊤0 + λH0 +∆, note that Q satisfies PI0(Q) = λH0 and PT0(Q) = U0V ⊤0 , which leads to
+PI0(∆) = 0; and PT0(∆) = 0. Thus,
+PIc 0 (Q) = U0V ⊤ 0 +∆; and PT ⊥
+0
+(Q) = λH0 +∆.
+Note that
+‖U0V ⊤0 +∆‖∞,2 = max i ‖U0(V ⊤0 )i +∆i‖2 ≥max
+i ‖U0(V ⊤0 )i‖2 = ‖U0V ⊤0 ‖∞,2.
+Here, the inequality holds because PT0(∆) = 0 implies that ∆i are orthogonal to the span of U . Note that the inequality is strict when ∆ 6= 0.
+On the other hand
+‖λH0‖ = max ‖x‖≤1,‖y‖≤1 x⊤(λH0)y (a) = max
+‖x‖≤1,‖y‖≤1,PIc 0 (y⊤)=0
+x⊤(λH0)y
+(b) = max
+‖x‖≤1,‖y‖≤1,PIc 0 (y⊤)=0
+x⊤(λH0 +∆)y ≤ max ‖x‖≤1,‖y‖≤1 x⊤(λH0 +∆)y = ‖λH0 +∆‖.
+Here, (a) holds because PI0H0 = H0, thus for any y, set all yi = 0 for i 6∈ I0 does not change x⊤(λH0)y; while (b) holds since PIc
+0 ∆ = ∆.
+Thus, if Q satisfies the two inequalities, then so does Q0, which completes the proof. Note that by Equation 22 we have
+PT⊥ 0 (H0) = H0; PIc 0 (U0V ⊤ 0 ) = U0V ⊤ 0 .
+Thus, Theorem 7, Theorem 8 and Theorem 9 together establish Theorem 6.
+24 B. Proof of Corollary 2 Corollary 2 holds due to the following lemma that tightly bounds ‖H0‖ and ‖U0V ⊤0 ‖∞,2. Lemma 12: We have (I) ‖H0‖ ≤ √γn, and the inequality is tight. (II) ‖U0V ⊤0 ‖∞,2 = maxi ‖V ⊤0 ei‖2 =
+√
+µr
+(1−γ)n .
+Proof: Following the variational form of the operator norm, we have
+‖H0‖ = max ‖x‖2≤1,‖y‖2≤1 x⊤H0y = max ‖x‖2≤1 ‖x⊤H0‖2 = max ‖x‖2≤1
+√ √ √ √ n ∑
+i=1
+(x⊤Hi)2 ≤ √ ∑
+i∈I0
+1 = √ |I0| = √ γn.
+The inequality holds because ‖(H0)i‖2 = 1 when i ∈ I0, and equals zero otherwise. Note that if we let (H0)i all be the same, such as taking identical outliers, the inequality is tight.
+By definition we have ‖U0V ⊤0 ‖∞,2 = maxi ‖U0(V ⊤0 )i‖2 (a) = maxi ‖(V ⊤0 )i‖2 = maxi ‖V ⊤0 ei‖2. Here (a)
+holds since U0 is orthonormal. The second claim hence follows from definition of µ.   Singular Value Decomposition (and Principal Component Analysis) is one of the most widely used techniques<lb>for dimensionality reduction: successful and efficiently computable, it is nevertheless plagued by a well-known,<lb>well-documented sensitivity to outliers. Recent work has considered the setting where each point has a few arbitrarily<lb>corrupted components. Yet, in applications of SVD or PCA such as robust collaborative filtering or bioinformatics,<lb>malicious agents, defective genes, or simply corrupted or contaminated experiments may effectively yield entire<lb>points that are completely corrupted.<lb>We present an efficient convex optimization-based algorithm we call Outlier Pursuit, that under some mild<lb>assumptions on the uncorrupted points (satisfied, e.g., by the standard generative assumption in PCA problems)<lb>recovers the exact optimal low-dimensional subspace, and identifies the corrupted points. Such identification of<lb>corrupted points that do not conform to the low-dimensional approximation, is of paramount interest in bioinfor-<lb>matics and financial applications, and beyond. Our techniques involve matrix decomposition using nuclear norm<lb>minimization, however, our results, setup, and approach, necessarily differ considerably from the existing line of<lb>work in matrix completion and matrix decomposition, since we develop an approach to recover the correct column<lb>space of the uncorrupted matrix, rather than the exact matrix itself. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

@@ -1,0 +1,280 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: MAP Estimation, Message Passing, and Perfect Graphs
+Paper Content: 1205.2639.pdf CRF MAP Estimation, Message Passing, and Perfect Graphs Tony Jebara jebara@cs.columbia.edu  Efficiently finding the maximum a posteriori (MAP) configuration of a graphical model is an important problem which is often implemented using message passing algorithms. The optimality of such algorithms is only well established for singly-connected graphs and other limited settings. This article extends the set of graphs where MAP estimation is in P and where message passing recovers the exact solution to so-called perfect graphs. This result leverages recent progress in defining perfect graphs (the strong perfect graph theorem), linear programming relaxations of MAP estimation and recent convergent message passing schemes. The article converts graphical models into nand Markov random fields which are straightforward to relax into linear programs. Therein, integrality can be established in general by testing for graph perfection. This perfection test is performed efficiently using a polynomial time algorithm. Alternatively, known decomposition tools from perfect graph theory may be used to prove perfection for certain families of graphs. Thus, a general graph framework is provided for determining when MAP estimation in any graphical model is in P, has an integral linear programming relaxation and is exactly recoverable by message passing. 1 INTRODUCTION Recovering the maximum a posteriori (MAP) configuration of random variables in a graphical model is an important problem with applications ranging from protein folding to image processing. Graphical models (which include Bayesian networks and Markov random fields) use a graph over dependent random vari-
+ables to compactly express a probability density function as a product of functions over maximal cliques in the graph. For a general graphical model, the MAP problem is NP-hard (Shimony, 1994). A popular algorithm for approximating the MAP solution is max-product belief propagation and its variants (Weiss, 2000; Globerson & Jaakkola, 2007) which operate by sending messages between neighboring cliques until convergence. It is known that max-product belief propagation converges to the optimum on singlylinked graphs and junction-trees (Pearl, 1988; Wainwright & Jordan, 2008). Less is known about its formal properties when graphs contain loops. In practice, however, there are multiple applied cases in the literature where the the max-product algorithm performs extremely well on graphs with loops. For example, turbo codes, one of the top performing error correcting coding schemes to date, can be successfully implemented via max-product on a loopy graph (Weiss & Freeman, 2001). Recently, formal guarantees for such algorithms have been found for graphs with a single loop (Weiss, 2000), maximum weight bipartite matching graphs (Bayati et al., 2005), and maximum weight bipartite b-matching graphs (Huang & Jebara, 2007). In these settings, since the graphs contain loops, message passing algorithms are often referred to as loopy belief propagation or loopy message passing. While the single loop case is of limited practical use, the matching and b-matching message passing algorithms have many applications and lead to competitive methods for solving large-scale matching problems. Subsequently, additional results for matching and b-matching problems (Sanghavi et al., 2008; Bayati et al., 2008) were produced by examining the linear program (LP) relaxation (Santos, 1991; Wainwright et al., 2005; Weiss et al., 2007) of the integer problem being solved during MAP estimation. Loosely speaking, if the LP relaxation of the matching problem has an integral solution, message passing converges to the MAP solution. In principle, this extends convergence arguments for matching from bipartite settings
+to some unipartite settings if the LP relaxation has integral solution. Of course, matchings and b-matchings are exactly solvable for both the bipartite and the more general unipartite case in polynomial time using Edmonds’ Blossom algorithm (Edmonds, 1965). However, belief propagation methods may be faster and, under mild assumptions, find maximum weight matchings in no more than O(n2) time (Salez & Shah, 2009).
+This article will identify general conditions on loopy graphical models such that a) the LP relaxation is integral and b) message passing will always converge to the MAP solution1. This extends the current list of graphical models where MAP is known to be efficient (and message passing is known to be exact) to the broader family of perfect graphs. Perfect graphs subsume trees, bipartite matchings and b-matchings and lead to a generalization of König’s theorem: the socalled weak perfect graph theorem which states that a graph is perfect if and only if its complement is perfect (Lovász, 1972). Recently, a further generalization was proved: the strong perfect graph theorem which states that all perfect graphs are Berge graphs (Chudnovsky et al., 2006). Furthermore, a polynomial time algorithm was identified that verifies if a graph is perfect or not (Chudnovsky et al., 2005). To exploit these results from the combinatorics community, this article converts any graphical model into an alternative form referred to as a nand Markov random field. Therein, the integrality of the LP relaxation can be easily verified by recognizing perfect graphs. This makes it possible to precisely characterize which loopy graphs have the appropriate topology for exact MAP estimation via linear programming or message passing.
+This article is organized as follows. Section 2 describes the factorization properties of graphical models and Section 3 shows a conversion into an equivalent form called a nand Markov random field (NMRF). Section 4 shows how the LP relaxation of the NMRF produces a so-called set packing linear program whose integrality properties are well characterized by the perfection of the associated graph. Section 5 defines perfect graphs as well as discusses tools and polynomial time algorithms for recognizing perfect graphs. Perfection ensures that the LP is integral and achieves the MAP estimate. Section 6 provides some pruning procedures for NMRF graphs that can make perfection tests and LP solutions more widely applicable. Section 7 uses message passing as a faster alternative to linear programming for obtaining the MAP estimate. We conclude with experiments and a brief discussion.
+1For brevity, this article does not discuss cases where multiple MAP solutions (i.e. ties) are possible. Any such solution is assumed acceptable as a MAP estimate. 2 GRAPHICAL MODELS A graphical model is an undirected graph used to represent the factorization of a probability distribution (Wainwright & Jordan, 2008). Consider an undirected graph G = (V,E) with vertices V = {v1, . . . , vn} and edges E : V × V → B. Denote the set of vertices by V(G) and the neighbors of a node vi by Ne(vi) or Ne(i). The graph G describes the dependencies between a set of random variablesX = {x1, . . . , xn} where each variable xi is associated with a vertex vi in the graph
+2. We will assume that each xi ∈ Z is a discrete variable3 with |xi| settings
+4. For example, if xi is a binary variable, 0 ≤ xi < 2 and |xi| = 2. A graphical model describes a probability density over all random variables p(X) which obeys the following factorization:
+p(X) = 1
+Z
+∏
+c∈C
+ψc(Xc) (1)
+where Z is a partition function (a scalar that normalizes the density), C is the set of maximal cliques in the graph C ⊆ G and ψc(Xc) are positive compatibility functions over variables in each clique c. In other words, Xc = {xi|i ∈ c}. Clearly, this representation of p(X) is exponential in the cardinality of the cliques5. Without loss of generality, this article assumes all ψc(Xc) are uniformly scaled such that ψc(Xc) > 1 (and Z is scaled appropriately for normalization) as follows:
+ψc(Xc) ← ψc(Xc)
+minXc ψc(Xc) + ǫ
+where ǫ is an infinitesimal quantity.
+It is possible to convert Equation 1 into an equivalent pairwise Markov random field (MRF) over binary variables (Ravikumar & Lafferty, 2006; Yedidia et al., 2001) at the expense of increasing the state space. Section 3 follows such an approach but restricts the conversion further by requiring that all potential functions enforce nand relationships among binary variables. 3 NAND MARKOV RANDOM FIELDS Any generic graphical model with graph G in Equation 1 can be converted into an equivalent graphical
+2In this article, the variable xi, the node vi and the index i will be used interchangeably when the meaning is evident from the context.
+3While graphical models can handle cases where xi are scalars, this article only deals with discrete xi.
+4Here, | · | is the cardinality of a variable or a set. 5This article focuses on polynomial efficiency in the number of cliques and will not address problems related to exponential dependence on maximum clique size.
+model with graph G which will be referred to as a nand Markov random field (NMRF). In this form, all clique functions involve a nand operation over binary variables as ψc(Xc) = δ( ∑
+x∈Xc x ≤ 1) where we take
+the function δ ∈ B to equal 1 if the statement inside is true and 0 otherwise. Clearly, these clique functions factorize into a product over pairwise edges since ψc(Xc) = ∏
+xi 6=xj∈Xc δ(xi + xj ≤ 1). Indeed, graphi-
+cal models for solving maximum weight matchings are usually in this form (Sanghavi et al., 2008; Bayati et al., 2008). The NMRF form helps produce linear programming relaxations of the MAP problem which have desirable properties as detailed in Section 4.
+Consider forming an NMRF from G which represents a distribution over a set X of N binary variables x ∈ B. For each clique c ∈ C in the original graph G, introduce binary variables xc,k for each configuration of the arguments of the clique function ψc(Xc). In other words, for clique Xc, define a set of binary variables Xc = {xc,1, . . . ,xc,|Xc|} with |Xc| = ∏
+i∈c |xi|. The NMRF represents a distribution over all such variables X = ∪c∈CXc and, since all Xc are disjoint (with redundant instantiations of the variables in each clique Xc), the state space of the NMRF has cardinality
+|X| = ∑
+c∈C
+(
+∏
+i∈c
+|xi|
+)
+= N. (2)
+Given a setting of X = {x1, . . . , xn}, the corresponding setting of X = {x1, . . . ,xN} is given by:
+xc,k =
+{
+1 if k = 1 + ∑
+i∈c xi
+(
+∏i−1 j=1 |xi|
+δ(j∈c) )
+0 otherwise. (3)
+This is a mapping from X to a setting ofX as an injection since some settings of X yield invalid settings of X if they involve disagreement in the clique configurations. The expression (which is admittedly inelegant) merely states that when Xc is in its k
+th configuration from among its total of ∏
+i∈c |xi| possible configurations, we must have xc,k = 1 in the NMRF.
+It is now possible to write an equivalent function ρ(X) which mimics Equation 1. This need not be a normalized probability density function over the space X since we are only interested in its maximization for the MAP estimate. The function ρ(X) is as follows
+ρ(X)= ∏
+c∈C
+Ψc(Xc)
+|Xc| ∏
+k=1
+efc,kxc,k ∏
+d∈C d 6=c
+|Xd| ∏
+l=1
+Φ(xc,k,xd,l) zc,k,d,l
+(4) where, once again, C is the set of maximal cliques in the graph C ⊆ G and Ψc(Xc) are compatibility functions over sets of binary variables. Furthermore,
+zc,k,d,l variables are binary switches to be defined subsequently. To mimic the original p(X), the factorization contains a product over exp(fc,kxc,k) involving non-negative scalars
+fc,k = logψc(Xc)
+where the appropriate configuration for Xc is recovered from (c, k) as determined by the relationship in Equation 3. Note that all fc,k > 0 since ψc(Xc) > 1. Finally, the factorization contains additional potential functions Φ(xc,k,xd,l) for each pair of variables xc,k and xd,l if the binary variable zc,k,d,l equals unity (otherwise, the functions are taken to the power of 0 and disappear from the product). The important difference with this model and the one in Equation 1 is that all its non-singleton clique potential functions Ψc(Xc) and pairwise functions Φ(xc,k,xd,l) accept binary values and produce binary outputs as nand operations:
+Ψc(Xc) =
+{
+1 if ∑
+k xc,k ≤ 1 0 otherwise
+Φ(xc,k,xd,l) =
+{
+1 if xc,k + xd,l ≤ 1 0 otherwise.
+The binary variable zc,k,d,l indicates a potential disagreement between xc,k and xd,l over settings of the variables in Xc ∩Xd that they are both jointly implicated in. This is defined more formally as follows:
+zc,k,d,l = 1−
+n ∏
+i=1
+δ
+(
+mod
+(⌊
+k − 1 ∏i−1
+j=1 |xj | δ(j∈c)
+⌋
+, |xi|
+)
+=
+mod
+(⌊
+l − 1 ∏i−1
+j=1 |xj | δ(j∈d)
+⌋
+, |xi|
+))δ(i∈c)δ(i∈d)
+where it is understood that 00 = 1.
+It is now straightforward to consider the undirected graph G = (V , E) implied by Equation 4 which is recovered from the original graph G = (V,E). This graph contains nodes V = {vc,k : ∀c ∈ C, k = 1, . . . , |Xc|} where each node vc,k is associated with a corresponding variable xc,k. The graph G then has edges between all pairs of nodes vc,k corresponding to variables in the cliqueXc for c ∈ C. Furthermore, for all pairs of nodes vc,k and vd,l are connected if zc,k,d,l = 1. The formula for the set of edges in G simplifies as:
+E(vc,k,vd,l) = max (δ(c = d)δ(k 6= l), zc,k,d,l)
+= zc,k,d,l.
+This results in an undirected graph G of pairwise nand functions and Equation 4 can be written as:
+ρ(X)= ∏
+c∈C
+|Xc| ∏
+k=1
+efc,kxc,k ∏
+d∈C
+|Xd| ∏
+l=1
+Φ(xc,k,xd,l) zc,k,d,l
+although Equation 4 more clearly distinguishes between intra-clique edges arising from Xc and interclique edges arising from Xc ∩ Xd. Thus, the NMRF contains nand edges between all pairs of binary variables that cannot be jointly instantiated without causing a disagreement. For each edge, only one or fewer of the vertices adjacent6 to it may be instantiated (equal to unity); hence the term nand Markov random field. For instance, the functions Ψc(Xc) place edges between all variables corresponding to differing configurations of Xc, at most one of which may be active (i.e. equal to one) at any time. Thus, all the potential functions in this graphical model are acting as nand gates and all edges in the graph enforce a nand relationship between the nodes they are adjacent to. This graphical model is reminiscent of the MRF used in (Ravikumar & Lafferty, 2006) which had xor potential functions requiring that the variables inside cliques sum strictly to 1. The NMRF, on the other hand, requires a nand relationship: pairs of variables sum to ≤ 1. Figure 1 displays a graphical model and its corresponding NMRF.
+It remains to show that the MAP estimate X∗ of ρ(X) corresponds to a valid MAP estimate X∗ of p(X) despite the surjective relationship between X and X. Since the variables in X correspond to possibly disagreeing settings ofX , only some binary configurations are admissible in X. This is because every clique Xc must be in one configuration and overlapping cliques may not disagree in their configurations. However, the constraints in Equation 4 only require ∑
+k xc,k ≤ 1. This permits the possibility that some cliques will simply not be assigned a configuration when the MAP estimate is recovered from Equation 4. In other words, it may be the case that ∑
+k xc,k = 0. The next theorem shows that the MAP estimate X∗ will always produce ∑
+k xc,k = 1 for all c ∈ C.
+Theorem 1 Given the maximum a posteriori estimate X∗ = {x∗1, . . . ,x ∗ |X|} of Equation 4, all variables in cliques c ∈ C satisfy ∑
+k x ∗ c,k = 1.
+6Adjacent vertices are vertices connected by an edge.
+Proof 1 The MAP solution involves binary settings x∗c,k ∈ {0, 1} for all variables in X
+∗. Setting X to all zeros produces a value ρ(X) = 1 since all functions Ψ and Φ are satisfied and all the values of fc,k are multiplied by zero prior to exponentiation. Therefore, assume that the maximizer is not the all-zeros configuration and that ρ(X∗) > 1, since, otherwise, all settings of X trivially produce a MAP estimate. Requiring ρ(X∗) > 1 corresponds to having at least one nonzero setting in X∗. Choose this binary variable as x∗
+ĉ,k̂ = 1 which now satisfies
+∑
+k x ∗ ĉ,k = 1 to pro-
+duce ρ(X∗) > 1 since fc,k > 0 and exp(fc,kxc,k) > 1. Subsequently, there can be no disagreement between the configurations of overlapping cliques since pairwise potential functions Φ(xc,k,xd,l) exist between all pairs of binary variables when zc,k,d,l = 1 and setting binary variables corresponding to conflicting assignments for Xc and Xd would force ρ(X) = 0. Thus, there can be no disagreement in the configurations of the cliques. If ρ(X∗) > 1, it must be the case that either of the following holds: ∑
+k xc,k = 1 or ∑
+k xc,k = 0 for each c 6= ĉ. Consider finding a clique c̃ ∈ C \ ĉ where the latter case is true. There, c̃ has no assigned configuration for its variables Xc̃ and ∑
+k xc̃,k = 0. For any such clique c̃ there is always a configuration that may be selected which agrees with neighboring cliques. Since every value of fc̃,k > 0, it is always possible to preserve agreement and set one of the xc̃,k to unity to strictly increase ρ(X) while preserving agreement. Repeating this line of reasoning on all remaining cliques only further increases ρ(X) until all cliques satisfy ∑
+k xc,k = 1. Thus, the NMRF produces a MAP estimate satisfying ∑
+k x ∗ c,k = 1 for all cliques c ∈ C.
+Lemma 1 The MAP estimate of Equation 4 corresponds to the MAP estimate of Equation 1.
+Proof 2 Since all configurations are in agreement and ∑
+k xc,k = 1, the maximizer X ∗ of Equation 4 corresponds to a valid setting of X∗ and we can associate X∗ with X∗. It is straightforward to see that ρ(X∗)/Z = p(X∗). Since ρ(X∗) ≥ ρ(X) for all X and X spans a strict superset of the configurations of X, it must be the case that p(X∗) ≥ p(X) for all X.
+The next section will show that, when G corresponds to a perfect graph, the LP relaxation of Equation 4 is integral. In those settings the MAP estimate can be recovered by linear programming. 4 PACKING LINEAR PROGRAMS Consider the LP relaxation of the MAP estimation problem on the NMRF in Equation 4 (which was shown to be equivalent to MAP estimation with the graphical model in Equation 1). A linear program is an
+optimization over a vector of variables ~x ∈ RN which are used as surrogates for the binary variablesX in the MAP problem on the NMRF. If the LP is tight and gives back an integral solution, then ~x recovers the exact MAP estimate. Denote the all-ones vector ~1 ∈ RN . In general, linear programming (or any convex optimization problem) can be solved in time cubic in the number of variables. The following theorem strictly characterizes when an LP in known specifically as a set packing linear program (which explores the set packing polytope) yields integral solutions ~x∗ ∈ {0, 1}N .
+Theorem 2 (Lovász, 1972; Chvátal, 1975) For every non-negative vector ~f ∈ RN , the linear program
+β = max ~x∈RN
+~f⊤~x subject to ~x ≥ 0 andA~x ≤ ~1
+recovers a vector ~x which is integral if and only if the (undominated) rows of A form the vertex versus maximal cliques incidence matrix of some perfect graph.
+We say the dth row of a matrix A is undominated if there is no row index c 6= d such that Acj ≤ Adj for all j = 1, . . . , N . Let G be a graph with vertices V = {v1,v2, . . . ,vN} and {V1, . . . ,V|C|} its (inclusion-wise) maximal cliques. We define the incidence matrix of G as A ∈ B|C|×N where Acj = 1 if vj ∈ Vc and Acj = 0 otherwise.
+Theorem 2 describes when the above LP will yield an integer solution. For general graphs G and general Markov random fields G, the MAP estimate is NP (Shimony, 1994). Remarkably, by examining the topology of the graph G, it is possible to characterize exactly when the linear programming relaxation will be integral (or otherwise) for any NMRF G. If the graph G is a perfect graph, then its LP relaxation is integral and the MAP estimate can be recovered in polynomial (at most cubic) time. This is summarized in the following theorem.
+Theorem 3 The MAP estimate of the nand Markov random field in Equation 4 is in P if the graph G is perfect and MAP estimation takes at most O(|V(G)|3) by linear programming if G is perfect.
+Proof 3 The LP relaxation of the MAP estimate of the nand Markov random field produces a packing linear program. Given the graph G, it is straightforward to recover its corresponding vertex versus maximal cliques incidence matrix A. Taking the logarithm of Equation 4 shows that the MAP optimization is exactly equivalent to the LP in Theorem 2. The LP is a direct relaxation of the binary variables in Equation 4 and the matrix A corresponds to the graph G, the vector ~x = vec(X) is the concatenation of all the binary
+random variables and the vector ~f is defined elementwise as the logarithm of the clique functions for every clique and every configuration:
+~f = [log(ψc(Xc)) : ∀c ∈ C, ∀Xc] ⊤ .
+Recall that log(ψ(Xc)) is always positive since all clique potential functions satisfy ψ(Xc) > 1 in the original graph G. Therefore, Equation 4 corresponds to the LP in Theorem 2. If G is a perfect graph, the integrality of the LP is established via Theorem 2 and linear programming achieves the MAP estimate.
+The essential test is to show that G is (or is not) a perfect graph, which, in turn, determines conclusively if the LP is (or is not) integral. It is then possible to relate the result on the NMRF above to general graphical models via the following corollary.
+Corollary 1 The MAP estimate of any graphical model with cliques c ∈ C over variables {x1, . . . , xn} that produces a nand Markov random field as in Equation 4 with a perfect graph G is in P and can be computed in at most O ( ( ∑
+c∈C
+( ∏ i∈c |xi| ))3
+)
+.
+Proof 4 Theorem 1 ensures that the MAP estimate of the nand Markov random field produces the MAP estimate of the graphical model. Theorem 3 shows that recovering the MAP estimate of the NMRF is in P and is cubic in the number of vertices. The number of vertices of the NMRF is given by Equation 2.
+In summary, if graph G is a perfect graph, the LP relaxation is integral and recovers the MAP estimate of the NMRF in Equation 4 as well as the MAP estimate of the graphical model in Equation 1. Linear programming is cubic in the number of variables. However, Section 7 discusses message passing algorithms which often yield better efficiency in practice. First, however, we discuss perfect graphs and their construction and, in particular, a polynomial time algorithm that answers if a graph is perfect or is not. 5 PERFECT GRAPHS A perfect graph (Berge, 1963; Lovász, 1983) is a graph where every induced subgraph has chromatic number equal to its clique number. The clique number of a graph G is denoted ω(G) and is the size of the maximum clique (fully connected subgraph) of G. The chromatic number of G, χ(G), is the minimum number of colors needed to label vertices such that no two adjacent vertices have the same color. Perfect graphs have the remarkable property, ω(H) = χ(H) for every induced subgraph H ⊆ G. Perfect graphs also have computational properties (Grötschel et al., 1988). For
+instance, in all perfect graphs, potentially intractable problems such as graph coloring, maximum clique and maximum independent set are in P.
+In recent work (Chudnovsky et al., 2006), the strong perfect graph conjecture as described in (Berge, 1963; Berge & Ramı́rez-Alfonśın, 2001) was proved. Namely, a graph is perfect if an only if it is Berge. A Berge graph is a graph that contains no odd hole and whose complement also contains no odd hole; both terms are defined below.
+Definition 1 (Graph Complement) The complement Ḡ of a graph G is a graph with the same vertex set V(G) as G, where distinct vertices u, v ∈ V(G) are adjacent in Ḡ just when they are not adjacent in G. The complement of the complement of a graph gives back the original graph.
+Definition 2 (Hole) A hole of a graph G is an induced subgraph of G which is a chordless cycle of length at least 5. An odd (even) hole is a chordless cycle with odd (even) length.
+The proof of the strong perfect graph conjecture (Chudnovsky et al., 2006) conclusively showed that a graph is perfect if and only if it is a Berge graph. The proof also specifies that any Berge graph must belong to one of the following basic classes of Berge graph:
+• bipartite graphs
+• complements of bipartite graphs
+• line graphs of bipartite graphs
+• complements of line graphs of bipartite graphs
+• double split graphs
+or admit one of four structural decompositions:
+• a 2-join
+• a 2-join in the complement
+• an M -join
+• a balanced skew partition.
+These decompositions are ways of breaking up the graph such that the remaining parts may eventually be recognized as basic Berge graphs. Note, a line graph L(G) of a graph G is a graph which contains a vertex for each edge of G and where two vertices of L(G) are adjacent if and only if they correspond to two edges of G with a common end vertex.
+The family of perfect graphs makes it possible to precisely characterize if a graphical model G (or more precisely, its equivalent nand Markov random field G) admits efficient MAP estimation. Also, remarkably, automatically verifying if any graph is perfect is efficient. Recently, a polynomial time algorithm (in the number of vertices of the graph) was introduced to test if a graph is perfect.
+Theorem 4 (Chudnovsky et al., 2005) Determining if graph G is perfect is P and takes at most O(|V(G)|9).
+Given a graph G, the algorithm decides either that G is not Berge or that G contains no odd hole. To test Bergeness, the algorithm is run on G and again on Ḡ. The key computational bottleneck is the detection of so-called pyramid structures by enumerating all nonuples (leading to a ninth order polynomial run-time) of vertices and considering various shortest paths between them. Further details of the algorithm are omitted in this article for space considerations but implementation is straightforward. This polynomial time algorithm leads to the following straightforward corollary for graphical models (via the conversion to NMRFs).
+Corollary 2 Verifying if MAP estimation is efficient for any graphical model with cliques c ∈ C over variables {x1, . . . , xn} is in P and takes at most O ( ( ∑
+c∈C
+( ∏ i∈c |xi| ))9
+)
+time.
+Therefore, an automatic framework is possible for verifying if MAP estimation of any graphical model is in P. The model is first converted into a nand Markov random field with a graph G = (V , E) and then the resulting graph is efficiently tested using the algorithm of (Chudnovsky et al., 2005). If the resulting graph is perfect, the LP relaxation efficiently recovers the MAP estimate. Unfortunately, the current running time of the perfect graph verification algorithm prohibits practical application. Only small graphical models G can be efficiently tested to date: those that map to a corresponding NMRF graph G with less than 20 nodes. It may be helpful to consider the faster heuristic algorithm of (Nikolopoulos & Palios, 2004) which only requires O(|V| + |E|2). This algorithm only verifies if a graph contains any hole or chordless cycle with 5 or more nodes. Thus, if the graph and its complement contain no holes (even or odd), the algorithm can quickly confirm that G is perfect. However, if the graph contains holes, it is still unclear whether these are exclusively even holes or if there are some odd holes in the graph. Therefore, (Chudnovsky et al., 2005) becomes necessary as the conclusive test for graph perfection.
+Clearly, the above algorithms may be impractical for large scale problems. Fortunately, a variety of decomposition and construction tools are also available from perfect graph theory which may be useful to formally prove perfection without cumbersome computation. These include the replication lemma (Lovász, 1972), the 2-join decomposition theorem (Cornuéjols & Cunningham, 2001), the M -join decomposition and the skew-partition decomposition theorem (Chudnovsky
+et al., 2006). In the remainder of this section, a direct proof approach is used to investigate popular graphical models where MAP estimation is known to be easy to see if these indeed produce NMRFs with perfect graphs.
+Consider the following tool from perfect graph theory known as the replication lemma.
+Lemma 2 (Lovász, 1972) Let G be a perfect graph and let v ∈ V(G). Define a graph G′ by adding a new vertex v′ and joining it to v and all the neighbors of v. Then G′ is perfect.
+This tool will be useful for investigating graphical models where G is a tree (Pearl, 1988).
+Lemma 3 A graphical model with a tree graph G produces an NMRF with a perfect graph G.
+Proof 5 First consider the simplest case where the input tree graph is merely a star graph. A star graph Gv consists of leaf nodes {v1, . . . , v|C|}, a single internal node v present in a total of |C| 2-cliques Xc = {vc, v}. Construct a new graph from Gv as follows. Introduce a node yc,j for each clique Xc for each of the j = 0, . . . , |v| − 1 configurations of v for the settings vc = 0. Connect all nodes pairwise if they correspond to different configurations of v. The resulting graph is a complete |v|-partite graph which is known to be perfect (Berge & Chvátal, 1984). To obtain the NMRF from the current complete |v|-partite graph, sequentially introduce additional nodes yc,i|v|+j for each Xc for each of the j = 0, . . . , |v| − 1 configurations of v as well as for each of the remaining i = 1, . . . , |vc| − 1 settings of vc. Each sequentially introduced node is connected to the corresponding node yc,0+j that is already in the graph as well as all its neighbors. By Lemma 2, this sequential introduction of additional nodes and edges maintains graph perfection. Once all nodes are added, the resulting graph is precisely the graph Gv obtained by converting a star graph Gv into its equivalent NMRF form. Therefore, Gv is perfect. Applying induction on the star graph extends the perfect graph argument to the more general case where G is a tree. Consider two star graphs: the first star Gv contains nodes {v1, . . . , v|C|} with internal node v and the second star Gw contains nodes {w1, . . . , w|D|} with internal node w. Consider merging these two stars by merging node v1 with node w, merging node w1 with node v and merging edge {w,w1} and edge {v, v1} into a single edge {v, w}. Clearly, the resulting merged graph, denoted Gv+w forms a tree. The stars Gv and Gw separately give rise to NMRFs Gv and Gw which have already been shown to be perfect. The tree Gv+w gives rise to an NMRF denoted Gv+w. Since V(Gv) ∩ V(Gw) = {v, w}, it is clear that the
+isolated NMRFs overlap only over the configuration nodes for the edge {v, w}. Consequently, the vertices V(Gv) ∩ V(Gw) form a fully-connected clique in Gv, in Gw and in Gv+w. Therefore, the merged NMRF Gv+w introduces no additional cycles beyond the ones in Gv and Gw in isolation. This gluing of NMRF graphs on cliques is a special case of Chvátal’s skew-partition decomposition which is known to preserve graph perfection (Chudnovsky et al., 2006). Since Gv and Gw are perfect graphs, Gv+w must then also be a perfect graph. By induction, merging additional stars in this manner to sequentially construct any tree G produces an NMRF G which must be a perfect graph.
+Next consider the case where the graphical model G corresponds to a maximum weight bipartite matching problem (Bayati et al., 2005; Huang & Jebara, 2007; Sanghavi et al., 2008) which is known to produce integral linear programming relaxations.
+Lemma 4 The LP relaxation of the graphical model for maximum weight bipartite matching
+p(X) = n ∏
+i=1
+δ 
+n ∑
+j=1
+xij ≤ 1  δ 
+n ∑
+j=1
+xji ≤ 1 
+n ∏
+k=1
+efikxik
+with non-negative fij ≥ 0 and binary xij for all i, j = 1, . . . , n is integral and produces the MAP estimate.
+Proof 6 The graphical model is in NMRF form so G and G are equivalent. G is the line graph of a (complete) bipartite graph (i.e. a Rook’s graph). Therefore, G is perfect, the LP is integral and recovers the MAP estimate via Theorem 2.
+A generalization of the bipartite matching problem is the unipartite matching problem. It is known that the standard LP relaxation for such problems is not always integral7. However, (Sanghavi et al., 2008) shows that belief propagation produces the MAP estimate in the unipartite case if the LP relaxation is integral. It is now possible to show when the LP is integral by recognizing perfect graphs and guaranteeing the convergence of belief propagation a priori.
+Lemma 5 The LP relaxation of the graphical model G = (V,E) for maximum weight unipartite matching
+p(X) = ∏
+i∈V
+δ 
+n ∑
+j∈Ne(i)
+xij ≤ 1 
+∏
+ij∈E
+efijxij
+7The nonintegrality of the LP in unipartite matching is why additional Blossom inequalities constraints are imposed in Edmonds’ algorithm (Edmonds, 1965). To ensure integrality for any graph, one introduces an exponential number of Blossom inequalities: for every set of edges between an odd sized set of vertices and the remaining vertices, the sum over the set of edge weights is at least 1.
+with non-negative fij ≥ 0 and binary xij for all ij ∈ E is integral and produces the MAP estimate if G is a perfect graph.
+Proof 7 The graphical model is in NMRF form and graphs G and G are equivalent. By Theorem 2, the LP relaxation is integral and recovers the MAP estimate if G is a perfect graph. 6 PRUNING NMRFs Clearly, as was the case in the previous two lemmas, if the original graphical model G has some clique functions that are already nand functions (as in matching problems), then re-expanding these into NMRFs by the method in Section 3 is redundant. Therefore, only when the variables are involved in clique functions that are not nand-structured, should the conversion from Xc to Xc be implemented.
+In addition, we provide the following two procedures which are useful for pruning the NMRF prior to verifying perfection of the graph and/or MAP estimation. The procedures are Disconnect and Merge. We emphasize that these can be applied to G optionally. Both are efficient and may simplify the NMRF hopefully converting an otherwise imperfect graph NMRF into an equivalent perfect graph NMRF (for example by exploiting additional structure in the values of the clique functions) thereby allowing exact MAP estimation. Also, the subsequent perfect graph recognition algorithm and MAP linear program can only be sped up by these procedures.
+First, we obtain a graph Disconnect(G) from G by applying the Disconnect procedure to all nodes in the NMRF that correspond to the minimal configurations of each clique ψc(Xc). In other words, for each c ∈ C, denote the minimal configurations of c as the set of nodes {xc,k} such that fc,k = minκ fc,κ = log(1+ǫ). Disconnect removes the edges between these nodes and all other nodes in the clique Xc. This is because the minimal configurations, if asserted (set to unity) or otherwise, will have no significant effect on the MAP score. Therefore, if they violate the nand relationship with other variables in Ψc(Xc) and are set to unity in addition to the other variables in Xc, an equivalent MAP estimate can be found by setting these variables to zero while preserving a MAP estimate. In other words, given the MAP X∗ estimate of ρ(X) in the graph Disconnect(G), if more than one setting in X∗c is active, only the maximal setting is preserved as a post-processing. Since minimal configurations are allowed to be redundantly asserted by the Disconnect procedure and may conflict with the true assignment, these are set to zero by a final post processing proce-
+dure. After MAP estimation, given all asserted variables in X∗c , only one xc,k is kept asserted: the one which corresponds to the largest fc,k and all others which have fc,k = log(1 + ǫ) get set to zero. This does not change the score of the MAP estimate. The Disconnect procedure only requires O(|V(G)|).
+Second, we apply another procedure to the current NMRF which is calledMerge. This procedure returns a graph where nodes in the input graph are merged. For any pair of disconnected nodes xc,k and xd,l in the NMRF that have the same connectivity to the rest of the graph Ne(xc,k) = Ne(xd,l), Merge combines them into a single equivalent variable xc,k with the same connectivity and updates its corresponding weight as fc,k ← fc,k + fd,l. Then, following MAP estimation, the setting for xd,l is recovered simply by setting it to the value of xc,k. It is straightforward to see that the procedure Merge requires no more than O(|V(G)|3). Thus, once the NMRF G is obtained via Section 3, we obtain G′ = Merge(Disconnect(G)) which potentially can be more readily tested for perfection and admits more efficient MAP estimation due to the simplification of the graph. Given the MAP estimate from G′, it is straightforward to recover the MAP estimate for G and then reconstruct the MAP estimate of G. 7 MESSAGE PASSING While linear programming can be used to solve for the MAP configuration whenever the NMRF involves a perfect graph, a faster approach is to perform message passing since such algorithms exploit the sparse graph topology more directly. Guarantees for the exactness and convergence of max-product belief propagation are known in the case of singly linked graphs, junction trees, single loop graphs and matching problems (Wainwright & Jordan, 2008). A more convergent algorithm was recently proposed in (Globerson & Jaakkola, 2007) which is known as convergent message passing. For binary MAP problems, it recovers the solution to the LP relaxation. It is thus investigated here as a natural competitor to linear programming for MAP estimation on the NMRF. To apply this method to an NMRF with graph G = (V , E), it helps to rewrite the objective as follows:
+log ρ(X) = ∑
+ij∈E
+θij(xi,xj).
+Here we have defined the following potential functions:
+θij(xi,xj) = xifi
+|Ne(i)| + xjfj |Ne(j)| + log δ(xi + xj ≤ 1)
+where Ne(i) indicates all neighbors of the node i. Thus, all clique functions for an NMRF have the form
+θij(xi,xj) =
+xj = 0 xj = 1
+xi = 0 0 fj
+|Ne(j)|
+xi = 1 fi
+|Ne(i)| −∞
+and, to avoid numerical problems, each value of −∞ should be replaced with a large negative constant in practice. The convergent message passing algorithm is outlined below.
+Convergent Message Passing: Input: Graph G = (V , E) and θij for ij ∈ E . 1. Initialize all messages to any value. 2. For each ij ∈ E , simultaneously update λji(xi) ← − 1 2 ∑ k∈Ne(i)\j λki(xi)
++ 12 maxxj
+[
+∑ k∈Ne(j)\i λkj(xj) + θij(xi,xj) ]
+λij(xj) ← − 1 2
+∑
+k∈Ne(j)\i λkj(xj)
++ 12 maxxi
+[
+∑ k∈Ne(i)\j λki(xi) + θij(xi,xj) ]
+3. Repeat 2 until convergence. 4. Find b(xi) = ∑ j∈Ne(i) λji(xi) for all i ∈ V . 5. Output x̂i = argmaxxi b(xi) for all i ∈ V .
+The algorithm iterates until convergence and produces the approximate solution denoted X̂ = {x̂1, . . . , x̂N}. A key property of the algorithm is that it recovers the same solution as the LP when the variables are binary.
+Theorem 5 (Globerson & Jaakkola, 2007) With binary variables xi, fixed points of convergent message passing recover the optimum of the LP.
+Thus, for binary problems, instead of solving the LP, it is possible to simply run message passing. We previously showed that when the graph G is a perfect graph the LP is integral and thus, in such settings, message passing recovers the MAP assignment. This permits the following corollary.
+Corollary 3 Convergent message passing on an NMRF with a perfect graph finds the MAP estimate.
+The above thus generalizes the possible settings in which message passing converges to the MAP estimate from singly linked graphs, single loop graphs and matching graphs to the broader set of perfect graphs. 8 EXPERIMENTS To evaluate the optimality of message passing, we investigate convergence on the following basic Berge graphs: bipartite graphs, complements of bipartite graphs, line graphs of bipartite graphs and complements of these line graphs. We also consider arbitrary
+random graphs which may or may not be perfect. Message passing was used to solve unipartite matching as in Lemma 5 on these graphs with random edge weights sampled uniformly between [0, 1]. To show convergence to the MAP problem, the message passing (i.e. LP) estimate is compared to the exact solution using Edmonds’ algorithm. Figure 2 show the scores obtained by message passing on the vertical axis and by exact MAP estimation on the horizontal axis. Clearly, the four subfamilies of perfect graphs obtained the MAP estimate via message passing (or LP) while suboptimal solutions were recovered on arbitrary graphs (which need not be perfect). 9 DISCUSSION A procedure was provided to convert any graphical model into a nand Markov random field. The NMRF graph can then be efficiently diagnosed to determine if it is perfect. If it (or a pruned version of the NMRF) is perfect, MAP estimation is in P and can be solved efficiently via linear programming (or via message passing). This extends MAP estimation and message passing guarantees to a wider range of graphical models.
+If the resulting NMRF is not a perfect graph, it may be useful to explore slight modifications to the MAP problem to produce a perfect graph. Replacing otherwise intractable MAP estimation with exact MAP estimation (via linear programming or message passing) on a surrogate problem is a direction of ongoing interest. Furthermore, due to the particular nature of nand Markov random fields, it may be the case that simpler variants of message passing (for instance, its predecessor, the max product algorithm (Globerson & Jaakkola, 2007)) may also have convergence guaran-
+tees. One direction for future work is the conjecture that max product on NMRFs with perfect graphs also recovers the MAP estimate. 10 ACKNOWLEDGMENTS The author thanks M. Chudnovsky and D. Dueck for discussions and the anonymous referees for helpful suggestions. Bayati, M., Borgs, C., Chayes, J., & Zecchina, R. (2008). On the exactness of the cavity method for weighted bmatchings on arbitrary graphs and its relation to linear programs. Journal of Statistical Mechanics: Theory and Experiment, 2008, L06001 (10pp). Bayati, M., Shah, D., & Sharma, M. (2005). Maximum weight matching via max-product belief propagation. IEEE International Symposium on Information Theory.
+Berge, C. (1963). Six papers on graph theory, chapter Perfect graphs, 1–21. Calcutta: Indian Statistical Institute.
+Berge, C., & Chvátal, V. (Eds.). (1984). Topics on perfect graphs. North-Holland, Amsterdam.
+Berge, C., & Ramı́rez-Alfonśın, J. (2001). Perfect graphs, chapter Origins and genesis, 1–12. Wiley. Chudnovsky, M., Cornuéjols, G., Liu, X., Seymour, P., & Vusković, K. (2005). Recognizing Berge graphs. Combinatorica, 25, 143–186. Chudnovsky, M., Robertson, N., Seymour, P., & Thomas, R. (2006). The strong perfect graph theorem. Ann. Math, 164, 51–229.
+Chvátal, V. (1975). On certain polytopes associated with graphs. Journal of Combinatorial Theory, Series B, 13, 138–154. Cornuéjols, M., & Cunningham, W. (2001). Composition for perfect graphs. Discrete Mathematics, 55, 245–254.
+Edmonds, J. (1965). Paths, trees and flowers. Canadian Journal of Mathematics, 17. Globerson, A., & Jaakkola, T. (2007). Fixing max-product: Convergent message passing algorithms for MAP LPrelaxations. Neural Information Processing Systems.
+Grötschel, M., Lovász, L., & Schrijver, A. (1988). Geometric algorithms and combinatorial optimization, chapter Stable sets in graphs. Springer-Verlag.
+Huang, B., & Jebara, T. (2007). Loopy belief propagation for bipartite maximum weight b-matching. Artificial Intelligence and Statistics.
+Lovász, L. (1972). Normal hypergraphs and the weak perfect graph conjecture. Discrete Math., 2, 253–267.
+Lovász, L. (1983). Selected topics in graph theory, volume 2, chapter Perfect graphs, 55–87. Academic Press. Nikolopoulos, S., & Palios, L. (2004). Hole and antihole detection in graphs. Symposium on Discrete Algorithms.
+Pearl, J. (1988). Probabilistic reasoning in intelligent systems: Networks of plausible inference. Morgan Kaufmann.
+Ravikumar, P., & Lafferty, J. (2006). Quadratic programming relaxations for metric labeling and Markov random field MAP estimation. International Conference on Machine Learning.
+Salez, J., & Shah, D. (2009). Optimality of belief propagation for random assignment problem. Symposium on Discrete Algorithms.
+Sanghavi, S., Malioutov, D., & Willsky, A. (2008). Linear programming analysis of loopy belief propagation for weighted matching. Neural Information Processing Systems.
+Santos, E. (1991). On the generation of alternative explanations with implications for belief revision. Uncertainty in Artificial Intelligence.
+Shimony, Y. (1994). Finding the MAPs for belief networks is NP-hard. Aritifical Intelligence, 68, 399–410. Wainwright, M., Jaakkola, T., & Willsky, A. (2005). MAP estimation via agreement on trees: message-passing and linear programming. IEEE Transactions on Information Theory, 51, 3697–3717. Wainwright, M., & Jordan, M. (2008). Graphical models, exponential families and variational inference. Foundations and Trends in Machine Learning, 1, 1–305.
+Weiss, Y. (2000). Correctness of local probability propagation in graphical models with loops. Neural Computation, 12, 1–41.
+Weiss, Y., & Freeman, W. (2001). On the optimality of solutions of the max-productbelief-propagation algorithm in arbitrary graphs. IEEE Transactions on Information Theory, 47, 736–744.
+Weiss, Y., Yanover, C., & Meltzer, T. (2007). MAP estimation, linear programming and belief propagation with convex free energies. Uncertainty in Artificial Intelligence.
+Yedidia, J., Freeman, W., & Weiss, Y. (2001). Understanding belief propagation and its generalizations. International Joint Conference on Artificial Intelligence, Distinguished Lecture Track.  For a general graphical model, the MAP problem is NP-hard (Shimony, 1994).    A popular algorithm for approximating the MAP solution is max-product belief propagation and its variants (Weiss, 2000; Globerson & Jaakkola, 2007) which operate by sending messages between neighboring cliques until convergence.    It is known that max-product belief propagation converges to the optimum on singlylinked graphs and junction-trees (Pearl, 1988; Wainwright & Jordan, 2008).    Recently, formal guarantees for such algorithms have been found for graphs with a single loop (Weiss, 2000), maximum weight bipartite matching graphs (Bayati et al.    Recently, formal guarantees for such algorithms have been found for graphs with a single loop (Weiss, 2000), maximum weight bipartite matching graphs (Bayati et al., 2005), and maximum weight bipartite b-matching graphs (Huang & Jebara, 2007).    Subsequently, additional results for matching and b-matching problems (Sanghavi et al., 2008; Bayati et al., 2008) were produced by examining the linear program (LP) relaxation (Santos, 1991; Wainwright et al.    Subsequently, additional results for matching and b-matching problems (Sanghavi et al., 2008; Bayati et al., 2008) were produced by examining the linear program (LP) relaxation (Santos, 1991; Wainwright et al.    , 2008) were produced by examining the linear program (LP) relaxation (Santos, 1991; Wainwright et al., 2005; Weiss et al., 2007) of the integer problem being solved during MAP estimation.    , 2008) were produced by examining the linear program (LP) relaxation (Santos, 1991; Wainwright et al., 2005; Weiss et al., 2007) of the integer problem being solved during MAP estimation.    , 2008) were produced by examining the linear program (LP) relaxation (Santos, 1991; Wainwright et al., 2005; Weiss et al., 2007) of the integer problem being solved during MAP estimation.    Of course, matchings and b-matchings are exactly solvable for both the bipartite and the more general unipartite case in polynomial time using Edmonds’ Blossom algorithm (Edmonds, 1965).    Perfect graphs subsume trees, bipartite matchings and b-matchings and lead to a generalization of König’s theorem: the socalled weak perfect graph theorem which states that a graph is perfect if and only if its complement is perfect (Lovász, 1972).    Recently, a further generalization was proved: the strong perfect graph theorem which states that all perfect graphs are Berge graphs (Chudnovsky et al., 2006).    It is possible to convert Equation 1 into an equivalent pairwise Markov random field (MRF) over binary variables (Ravikumar & Lafferty, 2006; Yedidia et al., 2001) at the expense of increasing the state space.    Indeed, graphical models for solving maximum weight matchings are usually in this form (Sanghavi et al., 2008; Bayati et al., 2008).    Indeed, graphical models for solving maximum weight matchings are usually in this form (Sanghavi et al., 2008; Bayati et al., 2008).    Theorem 2 (Lovász, 1972; Chvátal, 1975) For every non-negative vector ~ f ∈ R , the linear program    Theorem 2 (Lovász, 1972; Chvátal, 1975) For every non-negative vector ~ f ∈ R , the linear program    For general graphs G and general Markov random fields G, the MAP estimate is NP (Shimony, 1994).    A perfect graph (Berge, 1963; Lovász, 1983) is a graph where every induced subgraph has chromatic number equal to its clique number.    A perfect graph (Berge, 1963; Lovász, 1983) is a graph where every induced subgraph has chromatic number equal to its clique number.    Perfect graphs also have computational properties (Grötschel et al., 1988).    In recent work (Chudnovsky et al., 2006), the strong perfect graph conjecture as described in (Berge, 1963; Berge & Ramı́rez-Alfonśın, 2001) was proved.    , 2006), the strong perfect graph conjecture as described in (Berge, 1963; Berge & Ramı́rez-Alfonśın, 2001) was proved.    The proof of the strong perfect graph conjecture (Chudnovsky et al., 2006) conclusively showed that a graph is perfect if and only if it is a Berge graph.    These include the replication lemma (Lovász, 1972), the 2-join decomposition theorem (Cornuéjols & Cunningham, 2001), the M -join decomposition and the skew-partition decomposition theorem (Chudnovsky JEBARA UAI 2009 263    Lemma 2 (Lovász, 1972) Let G be a perfect graph and let v ∈ V(G).    This tool will be useful for investigating graphical models where G is a tree (Pearl, 1988).    This gluing of NMRF graphs on cliques is a special case of Chvátal’s skew-partition decomposition which is known to preserve graph perfection (Chudnovsky et al., 2006).    Next consider the case where the graphical model G corresponds to a maximum weight bipartite matching problem (Bayati et al., 2005; Huang & Jebara, 2007; Sanghavi et al., 2008) which is known to produce integral linear programming relaxations.    Next consider the case where the graphical model G corresponds to a maximum weight bipartite matching problem (Bayati et al., 2005; Huang & Jebara, 2007; Sanghavi et al., 2008) which is known to produce integral linear programming relaxations.    However, (Sanghavi et al., 2008) shows that belief propagation produces the MAP estimate in the unipartite case if the LP relaxation is integral.    The nonintegrality of the LP in unipartite matching is why additional Blossom inequalities constraints are imposed in Edmonds’ algorithm (Edmonds, 1965).    Efficiently finding the maximum a posteriori (MAP) configuration of a graphical model is an important problem which is often implemented using message passing algorithms. The optimality of such algorithms is only well established for singly-connected graphs and other limited settings. This article extends the set of graphs where MAP estimation is in P and where message passing recovers the exact solution to so-called perfect graphs. This result leverages recent progress in defining perfect graphs (the strong perfect graph theorem), linear programming relaxations of MAP estimation and recent convergent message passing schemes. The article converts graphical models into nand Markov random fields which are straightforward to relax into linear programs. Therein, integrality can be established in general by testing for graph perfection. This perfection test is performed efficiently using a polynomial time algorithm. Alternatively, known decomposition tools from perfect graph theory may be used to prove perfection for certain families of graphs. Thus, a general graph framework is provided for determining when MAP estimation in any graphical model is in P, has an integral linear programming relaxation and is exactly recoverable by message passing. dvips(k) 5.96 Copyright 2005 Radical Eye Software
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

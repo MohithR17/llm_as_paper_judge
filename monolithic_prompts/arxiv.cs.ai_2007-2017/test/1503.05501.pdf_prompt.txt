@@ -1,0 +1,545 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Probabilistic Argumentation. An Equational Approach
+Paper Content: 1503.05501.pdf CRF Probabilistic Argumentation. An Equational Approach D. Gabbay dov.gabbay@kcl.ac.uk odinaldo.rodrigues@kcl.ac.uk  In the case where the system is argumentation and the feature is probabilistic we have the following. The basic units are: a. the nature of the arguments involved; b. the membership relation in the set S of arguments; c. the attack relation; and d. the choice of extensions.
+Generically to add a new aspect (probabilistic, or fuzzy, or temporal, etc) to an argumentation network 〈S,R〉 can be done by adding this feature to each component a–d. This is a brute-force method and may yield a non-intuitive or meaningful result.
+A better way is to meaningfully translate the object system into another target system which does have the aspect required and then let the target system endow the aspect on the initial system. In our case we translate argumentation into classical propositional logic and get probabilistic argumentation from the translation.
+Of course what we get depends on how we translate. In fact, in this paper we introduce probabilistic semantics to abstract argumentation theory based on the equational approach to argumentation networks. We then compare our semantics with existing proposals in the literature including the approaches by M. Thimm and by A. Hunter. Our methodology in general is discussed in the conclusion.
+ar X
+iv :1
+50 3.
+05 50
+1v 1 1 Introduction The objective of this paper is to provide some orientation to underpin probabilistic semantics for abstract argumentation. We feel that a properly developed probabilistic argumentation framework cannot be obtained by simply imposing an arbitrary probability distribution on the components of an argumentation system that does not agree with the dynamic aspects of these networks. We need to find a probability distribution that is compatible with their underlying motivation.
+We shall use the methodology of “Logic by Translation”, which works as follows: Given a new area for which we want to study certain aspect properties AP, we translate this area to classical logic, study AP in classical logic and then translate back and evaluate what we have obtained.
+Let us start by looking at interpretations of an abstract argumentation network 〈S,R〉, S 6= ∅, R ⊆ S×S, into logics which already have probabilistic versions. This way we can import the probability aspect from there and it will have a meaning. We begin with translating abstract argumentation frames into classical propositional logic. In the abstract form, the elements of S are just atoms waiting to be instantiated as arguments coming from another application system. R may be defined using the source application system or may represent additional constraints. At any rate, in this abstract form, S is just a set of atoms and all we have about it is R. In translating 〈S,R〉 into classical propositional logic, we view S as a set of atomic propositions and we use R to generate a classical theory ∆〈S,R〉. Consider Figure 1, which describes the basic attack formation of all the attackers Att(x) = {y ∈ S | (y, x) ∈ R} = {y1, . . . , yn} of the node x in a network 〈S,R〉.
+The essential logic translation of the attack on each node x is given by (E1) below, where x, yi are propositional symbols representing the elements x, yi ∈ S:
+x↔ ∧ i ¬yi (E1)
+So 〈S,R〉 corresponds to a classical propositional theory ∆〈S,R〉 = {x ↔∧ i ¬yi | x ∈ S}.1 Note that in classical logic, this theory may be inconsistent and have no models. For example, if S contains a single node x and R is
+1If there is a logical relationship between the arguments of S that can be captured by formulae, then we can alternatively instantiate x 7−→ ϕx, giving ∆〈S,R〉 = {ϕx ↔∧
+i ¬ϕy | x, y ∈ S}.
+{(x, x)}, i.e., the network has a single self-attacking node, then the associated theory is {x ↔ ¬x}, which has no model. For this reason it is convenient to regard these theories as theories of Kleene three-valued logic, with values in {0, 12 , 1}. In this 3-valued semantics, a valuation would satisfy x ↔ ¬x if and only if it gives the value 12 to x. 2
+If we consider the equational approach [5], then we can write x = ∧ i ¬yi (E2)
+where (E2) is a numerical equation over the real interval [0, 1], with conjunction and negation interpreted as numerical functions expressing the correspondence of the values of the two sides.
+A complete extension of 〈S,R〉 is a solution to the equations of the form of (E2) when they are viewed as a set of Boolean equations in Kleene’s 3-valued logic with values { 0, 12 , 1 } , where
+x = 0 means that x = out (at least one attacker yi = in) (1)
+x = 1 means that x = in (all attackers yi = out) (2)
+x = 1
+2 means that x = und (no attacker yi = in and at least (3)
+one attacker yj = und)
+The acceptability semantics above can be re-written in terms of the semantics of Kleene’s logic as
+v(x) = min{1− v(yi)}
+which in equational form can be simplified to
+x = 1−max{yi} (E2*)
+The reader should note that we actually solve the equations over the unit interval [0, 1] and project onto Kleene’s 3-valued logic by letting
+x = 0 mean x = out (at least one attacker yi = in)
+0 < x < 1 mean x = und (no attacker yi = in and at least
+one attacker yj = und)
+x = 1 mean x = in (all attackers yi = out)
+Now there are probabilistic approaches to two-valued classical logic. The simplest two methods are described in Gabbay’s book Logic for Artificial Intelligence and Information Technology [4]. Our idea is to bring the probabilistic approach through the above translation into argumentation theory.
+Let us start with a description of the probabilistic approaches to classical propositional logic.
+2In Kleene’s logic, one can interpret ¬ as complement to 1; ∧ as min; and ∨ as max. Thus, if the values of A,B are v(A), v(B), then v(¬A) = 1 − v(A), v(A ∧ B) = min(v(A), v(B)) and v(A ∨B) = max(v(A), v(B)).
+Method 1: Syntactic. Impose probability P (q) on the atoms q of the language and propagate this probability to arbitrary well-formed formulas (wffs). So if ϕ(q1, . . . , qm) is built up from the atoms q1, . . . , qm, we can calculate P (ϕ) if we know P (qi), i = 1, . . . ,m.
+Method 2: Semantic. Impose probability on the models of the language of {q1, . . . , qm}. The totality of models is the space W of all {0, 1}-vectors in 2m. We give values P (ε), for any ε ∈ 2m, with the restriction that Σε∈2mP (ε) = 1. The probability of any wff ϕ is then
+P (ϕ) = Σε ϕP (ε) (P1)
+The motivation for the syntactical Method 1 is that the atoms {q1, . . . , qm} are all independent. So for example, the date of birth of a person (p) is independent of whether it is going to rain heavily on that person’s 21st birthday (q). However, if we want to hold a birthday party r in the garden on the 21st birthday, then we have that q attacks r.
+If, on the other hand, we have:
+a = John comes to the party
+b = Mary comes to the party
+then a and b may be dependent, especially if some relationship exists between John and Mary. We may decide that the probability of a ∧ b is 0, but the probabilities of ¬a ∧ b and of a ∧ ¬b are 14 each and the probability of ¬a ∧ ¬b is 12 . Assigning probability in this way depends on the likelihood we attach to a particular situation (model). This is the semantic approach.
+Example 1.1 shows that these two methods are orthogonal.
+Example 1.1 What can ∆〈S,R〉 mean in classical logic? It is a generalisation of the “Liar’s paradox”. x attacking itself is like x saying “I am lying”: x = > if and only if x = ⊥. Figure 1 represents yi saying x is a lie. ∆〈S,R〉 represents a system of lying accusations: a community liar paradox.
+Similarly, S can represent people possibly invited to a birthday party. y → x means y saying “if I come, x cannot come”. So Figure 1 is saying “invite x if and only if you do not invite any of the yi”.
+Suppose we instantiate x 7−→ ϕx. Then we must have P (ϕx) = P ( ∧ i ¬ϕyi). However, there may be also a connection between ϕx and some ϕyk , e.g., ϕx ` ϕyk . This will impose further restrictions on P (ϕx) and P (ϕyk), and it may be the case that no such probability function exists.
+Remark 1.2 The two approaches are of course, connected. If we are given a probability on each qi, then we get probability on each ε ∈ 2m by letting
+P (ε) = Πε qP (q)×Πε ¬q(1− P (q)) (P2)
+The qi’s are considered independent, so the probability of ∧ i±qi is the product
+of the probabilities P ( ∧ i±qi) = ΠiP (±qi)
+where P (¬qi) = 1− P (qi) and the probability of A ∨B is
+P (A ∨B) = P (A) + P (B)
+when ¬(A ∧B), as is the case with disjuncts in a disjunctive normal form. So, for example
+P ((a ∧ b) ∨ (a ∧ ¬b)) = P (a ∧ b) + P (a ∧ ¬b) = P (a)P (b) + P (a)(1− P (b)) = P (a)(P (b) + 1− P (b)) = P (a). 2 The syntactical approach (Method 1) Let us investigate the use of the syntactical approach. Let 〈S,R〉 be an argumentation network. In the equational approach, according to the syntactical Method 1, we assign probabilities to all the atoms and are required to solve the equation (E3) below for each x, where Att(x) = {yi} and x and all yi are numbers in [0, 1]:
+P (x) = P ( ∧ i ¬yi), (E3)
+Since in Method 1, all atoms are independent, (E3) is equivalent to (E3*):
+P (x) = Πi(1− P (yi)). (E3*)
+Such equations always have a solution. Let us check whether this makes sense. Let us try to identify the argument
+x equationally with its probability, namely we let P (x) = x.
+If x = in, let P (x) = 1
+If x = out, let P (x) = 0.
+If x = und, let 0 < P (x) < 1
+to be determined by the solution to the equations. Equation (E3*) becomes, under P (x) = x, the following:
+x = Π(1− yi) for x ∈ S. (E4)
+This is the Eqinv equation in the equational approach (see [5]). The following definition will be useful in the interpretation of values from
+[0, 1] and their counterparts in Caminada’s labelling functions.
+Definition 2.1 A valuation function f can be mapped into a labelling function λ(f) as follows.
+f(x) = 1 → λ(f)(x) = in f(x) = 0 → λ(f)(x) = out
+f(x) ∈ (0, 1) → λ(f)(x) = und
+What do we know about Eqinv? We quote the following from [5].
+Theorem 2.2 Let f be a solution to equations (E4). Then λ(f) defined according to Definition 2.1 is a legal Caminada labelling (see [1]) and leads to a complete extension.
+Theorem 2.3 Let λ0 be a legal Caminada labelling leading to a preferred extension. Then there exists a solution f0, such that λ0 = λ(f0).
+Remark 2.4 There are (complete) extensions λ′ such that there does not exist an f ′ with λ′ = λ(f ′).
+For example, in Figure 2, the extension a = b = und cannot be obtained by any f . Only b = in, a = out can be obtained as a solution to equations (E4).3
+Example 2.5 Let 〈S,R〉 be given and let λ be a complete extension which is not preferred! The reason that λ is not preferred, is that we have by definition, a λ1 extending λ, which gives more {in,out} values to points z, for which λ gives the value und. Therefore, we can prevent the existence of such an extension λ1, if we force such points z to be undecided. This we do by attacking such points z by a new self-attacking point u. The construction is therefore as follows. We are given 〈S,R〉 and a complete extension λ, which is not preferred. We now construct a new 〈S′, R′〉 which is dependent on λ. Consider 〈S′, R′〉 where S′ = S ∪ {u}, where u 6∈ S, is a new point. Let R′ be
+R′ = R ∪ {(u, u)} ∪ {(u, v) | v ∈ S and λ(v) = und}. 3The equations are
+1. a = (1− a)× (1− b) 2. b = 1− a.
+From the above two equations we get
+3. a = (1− a)× a The only possibility is a = 0.
+Then λ′ = λ ∪ {(u,und)} is a preferred extension of 〈S′, R′〉 and can therefore be obtained from a function f ′ using the equations (E4).
+Let us see what the construction above does to our example in Figure 2, and let us look at the extension λ(a) = λ(b) = und.
+Consider the network in Figure 3. Its equations (E4) are:
+1. u = 1− u
+2. a = (1− u)(1− a)(1− b)
+3. b = (1− u)(1− a) From (1) we get u = 12 . So we have:
+2. a = 12 (1− a)(1− b) 3. b = 12 (1− a)
+1− b = 1− 12 (1− a) = 2−1+a2
+= 1+a2 therefore substituting in (1) we get
+a = 12 (1− a)( 1+a 2 )
+= 14 (1− a 2)
+4a+ a2 − 1 = 0
+(a+ 2)2 − 4− 1 = 0
+(a+ 2)2 = 5
+a = √ 5− 2 ≈ 0.236
+b = 12 (1− a)
+= 12 (1− √ 5 + 2) = 3− √ 5
+2 ≈ 0.382.
+The extension of the network is a = b = und.
+Summary of the results so far for the syntactical probabilistic method. Given an argumentation network 〈S,R〉, we can find all Method 1 complete probabilistic extensions for it by solving all Eqinv equations. Such complete probabilistic extensions will also be complete extensions in the traditional sense (i.e., Dung’s), which will also include all preferred extensions (Theorems 2.2 and 2.3).4
+However, not all complete extensions can be obtained in this manner (i.e., by Method 1, see remark 2.4 and compare with Example 3.6).
+We can, nevertheless, for any complete extension E which cannot be obtained by Method 1, obtain it from the solutions of the equations generated for a larger network 〈S′, R′〉 as shown in Example 2.5.
+We shall say more about this in a later section.
+Remark 2.6 Evaluation of the results so far for the syntactical probabilistic method.
+1. We discovered a formal mathematical connection between the syntactical probabilistic approach (Method 1) and the Equational Eqinv approach. Is this just a formal similarity or is there also a conceptual connection?
+The traditional view of an abstract argumentation frame 〈S,R〉, is that the arguments are abstract, some of them abstractly attack each other. We do not know the reason, but we seek complete extensions of arguments that can co-exist (i.e., being attack-free), and that protect themselves. The equational approach is an equational way of finding such extensions. Each solution f to the equations give rise to a complete extension. The numbers we get from such solutions f of the equational approach can be interpreted as giving the degree of being in the complete extension (associated with f) or being out of it.
+Due to the mathematical similarity with the probability approach, these numbers are now interpreted as probabilities.
+To what extent is this justified? Can we do this at all?
+Let us recall the syntactical probabilistic method. We start with an abstract argumentation framework 〈S,R〉 and add the probability P (x) for each x ∈ S. We can interpret P (x) as the probability that x “is a player” to be considered (this is a vague statement which could mean anything but is sufficient for our purpose). The problem is how do we take into account the attack relation? Our choice was to require equation (E3). It is this
+4Note that in traditional Dung semantics a preferred extension E is maximal in the sense that there is no extension E′ such that
+1. If x is considered in (resp. out) by E then x is also considered in (resp. out) by E′. 2. There exists at least one node considered in (resp. out) by E′ and considered und by E.
+The above definition holds for numerical or probabilistic semantics, where the value 1 (resp. 0) is understood as in (resp. out) and values in (0, 1) are understood as und.
+choice that allowed the connection between the syntactical probabilistic approach and the Equational approach with Eqinv.
+So our syntactical probabilistic approach should work as follows.
+Let P be the independent probability on each x ∈ S. This is an arbitrary number in [0, 1]. Such a P cannot be used for calculating extensions because it does not take into consideration the attack relation R. So modify P to a P ′ which does respect R via Equation (E3).
+How do we modify P to find P ′?
+Well, we can use a numerical iteration method. The details are not important here, the importance is in the idea, which can be applied to the traditional notion of extensions as well. Given 〈S,R〉 and an arbitrary desired assignment E of elements that are in (and consequently also determining elements that are out) for S, this E may not be legitimate in taking into account R, so we need to modify it to get the best proper extension E′ nearest to E (cf. [2, 6]).
+So our syntactical probabilistic approach yielding a P satisfying Equation (E3) can be interpreted as Eqinv extensions obtained from initial values which are probabilities (as opposed to, say, initial values being a result of voting) corrected via iteration procedures using R.
+Alternatively, we can look at the Eqinv equations as a mathematical means of finding all those syntactical probabilities P which respect the attack relation R (via Equation (E3)).
+Or we can see the solutions of the Eqinv as giving probabilities for being included or excluded in the complete extension defined by these solutions (as opposed to the interpretation of the degree of being in or out).
+2. The discussion in item 1. above hinged upon the choice we made to take account of R by respecting Equation (E3). There are other alternatives for taking R into account. We can give direct, well-motivated definitions of how to propagate probabilities along attack arrows. This is similar to the well-known problem of how to propagate probabilities along proofs (provability support arrows, or modus ponens, etc). Such an analysis is required anyway for instantiated networks, for example in ASPIC+ style [10]). We shall deal with this in a subsequent paper. 3 The semantical approach (Method 2) Let us now check what can be obtained if we use Method 2, i.e., giving probability to the models of the language. In this case the equation (for {yi} = Att(x)) (E3) P (x) = P ( ∧ i ¬yi) still holds, but the ¬yi are not independent. So we cannot write equation (E3*) for them and get Eqinv. Instead we need to use the schema P (A∨B) = P (A)+P (B)−P (A∧B). We begin with a key lemma, which will enable us to compare later with the work of M. Thimm, see [13].
+Lemma 3.1 Let 〈S,R〉 be a network and let P be a probability measure on the space W of all models of the language whose set of atoms is S. For x ∈ S, let the following hold
+P (x) = P ( n∧ i=1 ¬yi)
+where Att(x) = {y1, . . . , yn}. Then we have
+1. P (x) ≤ P (¬yi), 1 ≤ i ≤ n
+2. P (x) ≥ 1− Σni=1P (yi)
+Proof. By induction on n.
+1. If x = ¬y then P (x) = 1− P (y) and the above holds. 2. Assume the above holds for m, show for m+1. Let z = ∨m i=1 yi, y = ym+1.
+Then x = ¬z ∧ ¬y. We have by the induction hypothesis
+• P (¬z) ≤ P (¬yi), i = 1, . . . ,m • P (¬z) ≥ 1− Σmi=1P (yi)
+Consider now:
+P (¬z ∧ ¬y) = 1− P (y ∨ z) = 1− (P (y) + P (z)− P (y ∧ z)) = 1− P (y)− P (z) + P (y ∧ z) = 1− P (y)− (P (z)− P (y ∧ z))
+But P (A ∧B) ≤ P (B) is always true. So
+P (¬z ∧ ¬y) ≤ 1− P (y) = P (¬y)
+On the other hand, by our assumption
+1− P (z) = P (¬z) ≥ 1− Σmi=1P (yi)
+So P (¬z ∧ ¬y) = 1− P (y)− P (z) + P (y ∧ z)
+(1− P (z))− P (y) + P (y ∧ z) ≥ 1− ΣP (yi)− P (y) + P (y ∧ z) ≥ 1− Σm+1i=1 P (yi)
+Remark 3.2 The converse of Lemma 3.1 does not hold, as we shall see in Example 3.5 below.
+Let us look at some examples illustrating the use of Method 2.
+Example 3.3 Consider the network in Figure 4. This figure is taken from Thimm’s “A probabilistic semantics for abstract argumentation” [13, Figure 1]. We include it here for two reasons:
+1. To illustrate or probabilistic semantic approach.
+2. To use it later to compare our work with Thimm’s approach.
+Let us apply Method 2 to it and assign probabilities to the models of the propositional language with the atoms {a1, a2, a3, a4, a5}. We assign P as follows.
+P (a1 ∧ ¬a2 ∧ a3 ∧ ¬a4 ∧ a5) = 0.3 P (a1 ∧ ¬a2 ∧ ¬a3 ∧ a4 ∧ ¬a5) = 0.45 P (¬a1 ∧ a2 ∧ ¬a3 ∧ ¬a4 ∧ a5) = 0.1 P (¬a1 ∧ a2 ∧ ¬a3 ∧ a4 ∧ ¬a5) = 0.15 P (any other conjunctive model) = 0.
+Let us compute P (ai), for i = 1, . . . , 5. We have P (X) = ∑ ε X P (ε).
+We get P (a1) = 0.3 + 0.45 = 0.75
+P (a2) = 0.1 + 0.15 = 0.25
+P (a3) = 0.3
+P (a4) = 0.45 + 0.15 = 0.6
+P (a5) = 0.3 + 0.1 = 0.4.
+To be a legitimate probabilistic model P must satisfy equation (E3) relating to the attack relation of Figure 4. Namely we must have
+P (X) = P ( ∧
+Y ∈Att(X)
+¬Y ) (E3)
+Therefore P (a1) = P (¬a2) P (a2) = P (¬a1) P (a3) = P (¬a2 ∧ ¬a5) P (a4) = P (¬a3 ∧ ¬a5) P (a5) = P (¬a4)
+Let us calculate the P in the right hand side of the above equations.
+P (¬a2) = 1− 0.25 = 0.75 P (¬a1) = 1− 0.75 = 0.25 P (¬a2 ∧ ¬a5) = 0.45 P (¬a3 ∧ ¬a5) = 0.45 + 0.15 = 0.6 P (¬a4) = 0.4
+We see that P (a3) = 0.3 6= P (¬a2 ∧ ¬a5) = 0.45.
+Therefore this distribution P is not legitimate according to our Method 2. It does not satisfy equations (E3) because
+P (a3) 6= P (¬a2 ∧ ¬a5)
+Therefore Lemma 3.1 does not apply and indeed, condition (2) of Lemma 3.1 does not hold for a3. We have P (a3) = 0.3 but 1− P (a2)− P (a5) = 0.35.
+Example 3.4 Let us look at Figure 5. This is also taken from Thimm’s paper [13, Figure 2]. It shall be used later to compare our methods with Thimm’s.
+1. We use Method 2. Consider the following probability distribution on models
+P (a1 ∧ ¬a2 ∧ ¬a3) = 0.5 P (a1 ∧ ¬a2 ∧ a3) = 0 P (a1 ∧ a2 ∧ ¬a3) = 0 P (a1 ∧ a2 ∧ a3) = 0 P (¬a1 ∧ a2 ∧ a3) = 0 P (¬a1 ∧ a2 ∧ ¬a3) = 0.5 P (¬a1 ∧ ¬a2 ∧ a3) = 0 P (¬a1 ∧ ¬a2 ∧ ¬a3) = 0.
+In this model we get P (a1) = 0.5
+P (a2) = 0.5
+P (a3) = 0
+Let us check whether this probability distribution satisfies equation (E3), namely P (X) = P ( ∧
+Y ∈Att(X)
+¬Y ) (E3)
+We need to have P (a1) = P (¬a2) P (a2) = P (¬a1) P (a3) = P (¬a2 ∧ ¬a2)
+Indeed P (¬a1) = 1− P (a1) = 0.5 P (¬a2) = 1− P (a2) = 0.5 P (¬a1 ∧ ¬a2) = 0.
+Thus we have a legitimate model.
+2. We use Method 1. Let us use Eqinv on this figure, namely we try and solve the equations
+a1 = 1− a2 a2 = 1− a1 a3 = (1− a1)(1− a2)
+Let us use a parameter 0 ≤ x ≤ 1 and let
+a1 = x,
+a2 = 1− x, a3 = x(1− x)
+The probabilities we get with parameter x as well as for x = 0.5 are given below.
+P (a1 ∧ a2 ∧ a3) = x2(1− x)2 = 116 P (a1 ∧ a2 ∧ ¬a3) = x(1− x)(1− x(1− x)) = 316 P (a1 ∧ ¬a2 ∧ a3) = x3(1− x) = 116 P (a1 ∧ ¬a2 ∧ ¬a3) = x2(1− x(1− x)) = 316 P (¬a1 ∧ a2 ∧ a3) = x(1− x)3 = 116 P (¬a1 ∧ a2 ∧ ¬a3) = (1− x)2(1− x(1− x)) = 316 P (¬a1 ∧ ¬a2 ∧ a3) = x2(1− x)2 = 116 P (¬a1 ∧ ¬a2 ∧ ¬a3) = x(1− x)(1− x(1− x)) = 316
+If we choose x = 0.5 we get P (a1) = P (a2) = 0.5 and P (a3) = 1 4 .
+Example 3.5 This example shows that the converse of Lemma 3.1 does not hold. Consider the network in Figure 6.
+Any legitimate probability assigned to models would be required to satisfy the following
+P (a) = P (¬a ∧ ¬b) P (b) = P (¬a ∧ ¬b)
+Case 1. Try the following probability P1.
+P1(a ∧ b) = P1(a ∧ ¬b) = P1(¬a ∧ b) = P1(¬a ∧ ¬b) = 0.25.
+Therefore P1(a) = 0.5
+P1(b) = 0.5
+Note that we also have
+P1(a) = 1 2 ≤ 1− P1(b) = 1 2 P1(a) = 1 2 ≤ 1− P1(a) = 1 2 .
+Similarly for P1(b) by symmetry. Also
+P1(a) = 1
+2 ≥ 1− P1(a)− P1(b) = 1−
+1 2 − 1 2 = 0.
+Thus the conditions of the conclusions of Lemma 3.1 hold. However the assumptions of Lemma 3.1 do not hold, because
+P1(a) = 1
+2 6= P1(¬a ∧ ¬b) =
+1 4 .
+Case 2. Let us check whether we can find a probability P2 which is indeed acceptable to Method 2. Let us try with variables y, z and create equations and solve them:
+P2(a ∧ b) = y P2(¬a ∧ b) = z.
+Therefore P2(b) = y + z.
+P2(¬a ∧ ¬b) = y + z
+and what is left is P2(a ∧ ¬b) = 1− 2y − 2z
+but we must also have P2(a) = P2(¬a ∧ ¬b)
+and hence we must have
+P2(a) = 1− 2y − 2z + y = P2(¬a ∧ ¬b) = y + z.
+So we get the equation 1− 2y − 3z = 0 2y + 3z = 1
+y = (1−3z)2
+Since 0 ≤ y, z ≤ 1 so z must be less than 13 . Let us choose z = 0.2 and so y = 0.2. We get, for example
+P2(a ∧ b) = 0.2 P2(¬a ∧ b) = 0.2 P2(¬a ∧ ¬b) = 0.4 P2(a ∧ ¬b) = 0.2
+We could also have chosen z = 13 and y = 0. This would give P3, where
+P3(a ∧ b) = 0 P3(¬a ∧ b) = 13 P3(¬a ∧ ¬b) = 13 P3(a ∧ ¬b) = 13
+So we get P3(b) = P (a) = 1 3
+P3(¬a ∧ ¬b) = 13 .
+Example 3.6 Consider the network of Figure 2. Let us try to find a probabilistic semantics for it according to Method 2. Assume we have
+P (a ∧ b) = x1 P (a ∧ ¬b) = x2 P (¬a ∧ b) = x3 P (¬a ∧ ¬b) = 1− x1 − x2 − x3.
+We need to satisfy P (a) = P (¬a ∧ ¬b) P (b) = P (¬a)
+This means we need to solve the following equations.
+1. x1 + x2 = 1− x1 − x2 − x3
+2. x1 + x3 = 1− x1 − x2.
+By adding x1 + x2 to both sides (1) can be written as
+2(x1 + x2) = 1− x3,
+and by swapping x3 to the right and −x1 − x2 to the left (2) can be written as
+2x1 + x2 = 1− x3.
+Thus we get
+3. 2x1 + x2 = 2x1 + 2x2.
+Therefore x2 = 0. There remains, therefore
+4. 2x1 = 1− x3.
+We can choose values for x3.
+Sample choice 1. x3 = 1, so x1 = 0. We get P1(a ∧ b) = P (a ∧ ¬b) = P1(¬a ∧ ¬b) = 0 and P1(¬a ∧ b) = 1. This yields P (a) = 0, P (b) = 1. This is also the Eqinv solution to
+b = 1− a a = (1− a)(1− b)
+Sample choice 2. x3 = 1 2 . So x1 = 1 4 and the probabilities are
+P2(a ∧ b) = 14 P2(a ∧ ¬b) = 0 P2(¬a ∧ b) = 12 P2(¬a ∧ ¬b) = 14 .
+P2 is a Method 2 probability, which cannot be given by Method 1.
+Sample choice 3. x3 = 0. Then x1 = 1 2 . We get
+P3(a ∧ b) = 12 P3(a ∧ ¬b) = 0 P3(¬a ∧ b) = 0 P3(¬a ∧ ¬b) = 12 .
+Therefore P3(a) = P3(b) = 1 2 .
+Lemma 3.7 Let 〈S,R〉 be a network and let P be a semantic probability (Method 2) for 〈S,R〉. Let x ∈ S and let {yi} = Att(x). Then
+1. If for some yi, P (yi) = 1 then P (x) = 0.
+2. If for all yi, P (yi) = 0 then P (x) = 1.
+Proof. Let us use Figure 1 where {yi} = Att(x).
+Case 1. Assume that P (y1) = 1. We need to show that P (x) = 0. We have: P (x) = P ( ∧ i ¬yi) (E3)
+We also have P (A) = ∑ ε A P (ε) (P1)
+Therefore P (x) = ∑ ε ∧ i ¬yi P (ε)
+P (x) = ∑
+ε ¬y1∧ ∧n j=1 ¬yj P (ε) (i)
+but P (y1) = ∑ ε y1 P (ε) = 1 Therefore we have ∑ ε ¬y1 P (ε) = 0 (ii)
+From (i) and (ii) we get that P (x) = 0.
+Case 2. We assume that for all i, P (yi) = 0 and we need to show that P (x) = 1.
+We have P (x) = P ( ∧ ¬yi)
+P (x) = 1− P ( ∨ yi) (iii)
+We also have P ( ∨ yi) = Σε ∨ yiP (ε) (iv)
+Suppose for some ε′ such that ε′ ∨ yi we have P (ε ′) > 0. But ε′ ∨ yi implies ε′ yi, for some i. Say i = 1. Thus we have ε′ y1 and P (y1) = 0 and P (ε′) > 0. This is impossible since
+P (y1) = ∑ ε y1 P (ε) (v)
+Therefore for all ε such that ε ∨ yi we have that P (ε) = 0. Therefore by (iii) and (iv) we get P (x) = 1.
+Remark 3.8 Let 〈S,R〉 be a network and let P be a semantic probability for 〈S,R〉 (Method 2).
+Let λ be defined as follows, for x ∈ S.
+λ(x) =  in, if P (x) = 1 out, if P (x) = 0
+und, if 0 < P (x) < 1
+The perceptive reader might expect us to say that λ is a legitimate Caminada labelling, especially in view of Lemma 3.7. This is not the case as Example 3.9 shows.
+Example 3.9 This example shows that in the probabilistic semantics it is possible to have P (x) = 0, while for all attackers y of x we have 0 < P (y) < 1. Thus the nature of the probabilistic attack is different from the traditional Dung one. If Att(x) is the set of all attackers of x and P ( ∨ y∈Att(x) y) = 1, then, and only then P (x) = 0. Thus the attackers of x can attack with joint probability. The example we give is the network of Figure 7. This has a Method 1 probability of P1(a) = 1 2 , P1(b) = 1 4 and P1(x) = 1 4 .
+Thus for any model m = ±a ∧ ±b ∧ x we have
+P1(m) = 1 2 × 1 2 × 1 4 = 1 16
+and for any model m′ = ±a ∧ ± ∧ ¬x
+we have
+P1(m) = 1 2 × 1 2 × 3 4 = 3 16 .
+Figure 7 also has a Method 2 probability model. We can have
+P2(a) = P2(b) = 1 2
+P2(x) = 0.
+Let us check what values to give to the models. The models are:
+m1 = x ∧ a ∧ b m2 = x ∧ a ∧ ¬b m3 = x ∧ ¬a ∧ b m4 = x ∧ ¬a ∧ ¬b m5 = ¬x ∧ a ∧ b m6 = ¬x ∧ a ∧ ¬b m7 = ¬x ∧ ¬a ∧ b m8 = ¬x ∧ ¬a ∧ ¬b.
+We want the following equations to be satisfied.
+1. P2(x) = 0. This means we need to let
+P2(mi) = 0, i = 1, . . . , 4.
+2. P2(a) = 1 2 . This means we need to let
+P2(m5) + P2(m6) = 1 2 P2(m7) + P2(m8) = 1 2 .
+3. P2(b) = 1 2 , yields the equations
+P2(m5) + P2(m7) = 1 2 P2(m6) + P2(m8) = 1 2 .
+4. We also need to have the equation
+0 = P2(x) = P2(¬a ∧ ¬b)
+Therefore P2(m8) = 0.
+We thus have the following equations left
+(a) P2(m5) + P2(m6) = 1 2 (b) P2(m7) = 1 2 (c) P2(m5) + P2(m7) = 1 2 (d) P2(m6) = 1 2 .
+From (b) and ( c) we get P2(m5) = 0. This makes P2(m6) = 1 2 . Thus we get the following solution:
+P2(mi) = 0, for i = 1, 2, 3, 4, 5, 8 P2(m6) = P2(m7) = 1 2 .
+Note that the equations (E3) hold for P1 and P2:
+P (a) = 1− P (a) P (b) = 1− P (b)
+hold of both P1 and P2. As for P (x) = P (¬a ∧ ¬b) we check 1 4 = P1(x) = P1(¬a ∧ ¬b)
+= P1(¬a)× P1(¬b) = 14 .
+For P2 we have
+0 = P2(x) = P2(¬a ∧ ¬b) P2(¬(a ∨ b) = 1− P2(a ∨ b)
+P2(a ∨ b) = P2(m1) + P2(m2) +P2(m3) + P2(m5) + P2(m6)
++P2(m7) = 0 + 0 + 0 + 1 2 + 1 2 = 1.
+Thus P2(¬a ∧ ¬b) = 0. So P1 and P2 are legitimate probabilities on Figure 7. P1 is a Method 1 probability and P2 is a Method 2 probability.
+Definition 3.10 We now define the Gabbay–Rodrigues Probabilistic Labelling Π on a network 〈S,R〉. Π is a {in, out, und}-labelling satisfying the following.
+There exists a semantic probability P on 〈S,R〉 such that for all x ∈ S 1. Π(x) = in, if P ( ∨ Att(x)) = 0
+2. Π(x) = out, if P ( ∨ Att(x)) = 1
+3. Π(x) = und, if 0 < P ( ∨ Att(x)) < 1
+Example 3.11 This example is due to M. Thimm, oral communication, 24th October 2014. Consider Figure 8.
+This figure contains Figure 7 and its mirror image. We saw that in Figure 7 (as well as in this Figure 8) any probability on the figures must yield
+P (a) = P (b) = 1
+2 .
+Figure 7 allowed for two possibilities for x. P1(x) = 1 4 and P2(x) = 0. Let us try P for our Figure 8 with
+P (x1) = 1
+4 and P (x2) = 0.
+This is not possible because we must have
+P (xi) = P (¬a ∧ ¬b).
+So P (x1) must be equal to P (x2). This example will show in the comparison with the literature section that our probability semantics is different from that of M. Thimm in [13]. See also Example 3.5.
+Theorem 3.12 Let 〈S,R〉 be a network and let λ be a legitimate Caminada labelling on S, giving rise to a complete extension. Then there exists a probability Pλ on the models (Method 2 probabilistic semantics) such that for all x ∈ S:
+• Pλ(x) = 1, if λ(x) = in
+• Pλ(x) = 0, if λ(x) = out
+• Pλ(x) = 12 , if λ(x) = und.
+Proof. (We use an idea from M. Thimm [13]) Let S = {s1, . . . , sk}. Then when we regard the elements of S as atomic propositions in classical propositional logic, there are 2k models based on S. Each of these models gives values 0 (false) or 1 (true) to each atomic proposition. Each such a model can be represented by a conjunction of the form α = ∧ i±si. α represents the model which gives value 1 to si if +si appears in α and gives value 0 to si if −si appears in α. Given a model we can construct the respective α for it. Let
+α1 = ∧
+λ(s)=in
+s; α0 = ∧
+λ(s)=out
+¬s; α 1 2
+= ∧
+λ(s)=und
+s; and β 1 2
+= ∧
+λ(s)=und
+¬s.
+We now define a Method 2 probability Pλ on the models.
+1. Pλ(α1 ∧ α0 ∧ α 1 2 ) = 12
+2. Pλ(α1 ∧ α0 ∧ β 1 2 ) = 12
+3. Pλ(m) = 0, for any other model, m different from the above.
+Clearly Pλ is a probability. We examine its properties
+(i) Let x be such that λ(x) = in.
+Then Pλ(x) = ∑ m x Pλ(m).
+Only (1) and (2) can contribute to Pλ(x), so the value is 1.
+(ii) Let λ(x) = out.
+The only two models that can contribute to Pλ(x) are in (1) and (2) above, but they prove ¬x. So Pλ(x) = 0.
+(iii) Let Pλ(x) = und.
+Then clearly Pλ(x) gets a contribution from (1) only. We get Pλ(x) = 1 2 .
+We now need to verify that Pλ actually satisfies the equations of (E3). Let x ∈ S and let yi be its attackers. We want to show that
+Pλ(x) = Pλ( ∧ i ¬yi)
+or Pλ(x) = 1− Pλ( ∨ i yi).
+(iv) Assume Pλ(x) = 1. Then Pλ(x) gets contributions from both (1) and (2). The only option is that then λ(x) = in, and so all attackers of yi of x are out, so α0 ∧ ¬yi and so Pλ( ∧ i ¬yi) = 1, because it gets contributions
+from both (1) and (2).
+(v) Assume Pλ(x) = 0.
+Thus neither (1) nor (2) contribute to Pλ(x). Therefore α0 x and so λ(x) = out and so for some attacker yi, λ(yi) = in and so α1 yi and so Pλ( ∧ i ¬yi) cannot get any contribution either from (1) or from (2) and
+so Pλ( ∧ i ¬yi) = 0.
+(vi) Assume that Pλ(x) = 1 2 .
+So Pλ(x) can get a contribution either from (1) or from (2), but not from both. So λ(x) must be undecided.
+So the attackers yi of x are either out (with Pλ(yi) = 0)) or und (with Pλ(yi) = 1 2 ), and we have that at least one attacker y of x is und.
+Let y0i be the attackers that are out and let y 1 2 j be the undecided attackers.
+Consider e = ∧ i ¬y0i ∧ ∧ j ¬y 1 2 j .
+The only model which can both contribute to Pλ(e) is α1 ∧ α0 ∧ β 1 2 and thus Pλ(e) = 1 2 .
+Thus from (iv), (v) and (vi) we get that (E3) holds for Pλ.
+Remark 3.13 Note that the Pλ of Theorem 3.12 is strictly Method 2 probability. For example we saw that the network of Figure 2.3 with a = b = und cannot solve Method 1 probability. The next section will see how far we can go with Method 1 probability.
+Summary of the results so far for the semantical probabilistic Method 2. We saw that Dung’s traditional complete extensions strictly contain the probabilistic Method 1 extensions and is strictly contained in the probabilistic Method 2 extensions. 4 Approximating the semantic probability by syntactic probability
+We have seen in Theorem 3.12 that the Method 2 probabilistic semantics can give us all the traditional Dung complete extensions. This result, together with the probabilistic semantics P2 of Example 3.9 would show that Method 2 semantics is stronger than traditional Dung complete extensions semantics.
+This section examines how far we can stretch the applicability of the syntactical probability approach (Method 1). We know from the “all-undecided” extension for the network in Figure 2 that there are cases where we cannot give Method 1 probability. We ask in this section, can we approximate such extensions by Method 1 probabilities?
+We find that the answer is yes. Let 〈S,R〉 be a network. Let λ be a legitimate Caminada labelling giving rise to a complete extension E = Eλ. If the extension is a preferred extension, then there exists a solution f to the Eqinv equations which yield λ and f is actually a Method 1 (and here also a Method 2) probabilistic semantics for 〈S,R〉. The question remains as to what happens in the case where λ is not a preferred extension. In this case we are not sure whether λ can be realised by a solution f of the
+Eqinv equations. In fact there are examples of networks where no such f exists. We know from Theorem 3.12 that there exists a probability function Pλ on models that would yield λ according to Definition 3.10. We seek an Eqinv function which approximates this probability.
+We shall use the ideas of Example 2.5.
+Remark 4.1 We need to use some special networks.
+1. Consider Figure 9, which we shall call Un. n = 1, 2, 3, . . ..
+The Eqinv equations solve for this figure as ui = 1 2 , i = 1, . . . , n.
+u = 1
+2n
+Thus if u attacks any node x, its “impact” on x is the multiplicative value 1− 12n . For n very large, the attack is almost negligible.
+2. Let 〈S,R〉 be any network. Let u be a node not in S. If we add u to S and let it attack all elements of S, we can assume in view of (1) above that the Eqinv value of u is 1 2n . Figure 10 depicts this scenario.
+We suppress {u1, . . . , un} and just record that u = 12n .
+Construction 4.2 Let 〈S,R〉 be given and let λ be a legitimate Caminada labelling giving rise to a non-preferred extension.
+Let u 6∈ S be a new point and assume in view of Remark 4.1 that the value of u is very very small. Let
+S′ = S ∪ {u}
+and let R′ = R ∪ {(u, v)|λ(v) = und}.
+Let λ′ = λ ∪ {(u,und)}. Let Att(x) be the set of all attackers of x in 〈S,R〉 and let Att′(x) be the set
+of all attackers of x in 〈S′, R′〉. We have if λ′(x) ∈ {in, out}, then u 6∈ Att′(x). If λ′(x) = und, then y ∈ Att′(u). Consider the following set of equations on 〈S′, R′〉.
+x = 1, if λ′(x) = in (EQ1)
+x = 0, if λ′(x) = out (EQ0)
+x = Π(1− y)y∈Att′(x)in 〈S′, R′〉, if λ ′(x) = und (EQU)
+This set of equations has a solution f. We claim the following
+1. λ(f) is a complete extension
+2. λ(f) = λ′
+It is clear that λ(f)(x) = λ′(x), for λ′(x) ∈ {in, out}. Does λ(f) agree with λ′ on undecided points of λ′? The answer is that it must be so, because λ′ is a preferred extension. So λ(f) cannot be an extension with more zeros and ones than λ′.
+Remark 4.3 The perceptive reader might ask why do we use those particular equations in Construction 4.2 (page 24)? The answer can be seen from Figure 11.
+Consider λ(a) = in, λ(b) = out, λ(c) = λ(d) = und.
+We create Figure 12. We take the equation
+a = 1, b = 0
+c = (1− d)(1− u) d = (1− c)(1− u) u = 1− u.
+The solution for the equations for c, d and u are
+u = 12 c = d = 13
+We have to insist on a = 1, b = 0. If we do not insist and write the usual equations
+a = 1− b b = 1− a,
+we might get a different solution, e.g.
+b = 1, a = 0.
+This not the original λ.
+Remark 4.4 This remark motivates and proves the next Theorem 4.5. We need some notation. Let Q be a set of atoms. By the models of Q (based on
+Q) we mean all conjunction normal forms of atoms from Q or their negations. So, for example, if Q = {a, b, c}, we get 8 models, namely
+m1 = a ∧ b ∧ c ...
+m8 = ¬a ∧ ¬b ∧ ¬c.
+If we have atoms Q1 = {ai}, Q2 = {bj}, Q3 = {ck}
+where Qi are pairwise disjoint we can write the models of Q1 ∪Q2 ∪Q3 in the form
+α ∧ β ∧ γ
+where α is a model of Q1, β of Q2 and γ of Q3. For example
+α1 ∧ β1 ∧ γ1 = (a1 ∧ a2 ∧ . . .) ∧ (¬b1 ∧ b2 ∧ . . .) ∧ (c2 ∧ . . .).
+Now let 〈S,R〉 and λ be as in Construction 4.2. Remember we assume that the value of u is very very small, and so the attack value (1− u) is very close to 1. Consider λ′ and f and λ(f) again as in Construction 4.2. f is a solution of Eqinv equations (EQ1), (EQ0) and (EQU). Therefore any model of S
+′, say α = ±s1∧±s2∧± . . .∧±sk∧±u where S = {s1, . . . , sk} will have its probability semantics as
+Pf (α = Π k i=1f(±sk)))× f(±u) (∗)
+where f(+s) = f(s)
+f(−s) = 1− f(s). In particular, we have the following:
+1. Let E+ = {e+1 , . . .} be the subset of S such that λ(e + i ) = in. Let E − = {e−j } be the subset of S such that λ(e − j ) = out. Let Eund = {bk} be the
+set of all nodes in S such that λ(bk) = und. We therefore have that any model δ of S′ has the form
+δ = ∧ i±e + i ∧ ∧ i±e − j ∧ ∧ k ±bk ∧ ±u
+= α ∧ β ± u
+where α is a model of E+ ∪ E− and β is a model of Eund. Let α1,0 be the particular conjunction
+α1,0 = ∧ i e+i ∧ ∧ j ¬e−j .
+Let β be any model of Eund. Consider Pf (δ), δ = α ∧ β ∧ ±u. Then by (*) we have that
+Pf (δ) = 0, if α 6= α1,0. (∗∗)
+Since Pf is a probability, we have for any s ∈ S′
+Pf (s) = Pf ( ∧
+y∈Att′(s)
+¬y).
+Note that for s ∈ S, s 6= u such that λ(s) ∈ {in, out}, u does not attack s, and so we have
+Pf (s) = P (f)( ∧ y∈Att(s) ¬y)
+= Πy∈Att(s)(1− f(y)) (]1)
+For u we have that u is very small and so Pf (u) = 1 2n . For s ∈ S such that λ(s) = und, we have that u attacks s and so
+Pf (s) = Pf ( ∧ y∈Att′(s) ¬y)
+= (Πy∈Att(s)(1− f(y))× (1− 12n ) (]2)
+The (1− 12n ) is the attack of u.
+We ask what are the attackers of s ∈ Eund? They cannot be nodes x such that λ(x) = in, because then s would be out. So the value of f(y), (for y ∈ Att(s)) is either 0 or a value in (0, 1).
+So we can continue and write
+Pf (s) = (1− 1
+2n )Πy ∈ Att(s)
+λ(y) = und
+(1− f(y)) (]3)
+Note that 0 < Pf (s) < 1, because all the f(y), for λ(y) = und, satisfy 0 < f(y) < 1.
+We also have ∑ all models m Pf (m) = 1. (]4)
+Since(**) holds, we need consider only models m of the form α1,0 ∧ β ∧ ±u. We can write 1 = ∑ β∧±u Pf (α1,0 ∧ β ∧ ±u) (]5)
+where β is a model of Eund. Let us analyse (]5) a bit more. Assume β = ∧ k ±bk.
+So Pf (α0,1 ∧ β ∧ u) + Pf (α0,1 ∧ β ∧ ¬u) = Πkf(±bk). (]6)
+We thus get that: ∑ β Πkf(±bk) = 1. (]7)
+(]7) says something very interesting. It says that f restricted to Eund gives a proper probability distribution on the models of Eund.
+This combined with (]3) gives us the following result.
+Consider (Eund, Rund) where Rund = R Eund. Then f Eund is a proper probability distribution on (Eund, Rund).
+Does it satisfy the proper equations? Let s ∈ Eund. Do we have
+Pund(s) ? = Pund( ∧ y ∈ Eund yRx ¬y)
+Let us check. The real equation is
+Pund(s) = Pund( ∧
+y′ ∈ Eund yRx
+¬y)× (1− u) (]8)
+Since u is very small, we have a very good approximation.5
+We can now define a probability P on 〈S,R〉. Let m = α ∧ β be a model, where α is a model for E+ ∪ E− and β is a model for Eund.
+Then define P as follows
+P (α ∧ β) = 0, if α = ¬α1,0 P (α ∧ β) = Pund(β), if α = α1,0
+We need to show that approximately P (s) = P ( ∧
+y∈Att(s)
+¬y)
+If s ∈ E+ ∪ E− this follows from (]1). If s ∈ Eund, this follows from (]3) and (]8). Note that since the f involved came from Eqinv equations, P satisfies the following on 〈S,R〉.
+P (s) = 0, if some y ∈ Att(s)P (y) = 1 P (s) = 1, if for all y ∈ Att(s), P (y) = 0 P (s) = undecided, otherwise.
+(]9)
+Theorem 4.5
+5The perceptive reader might ask what happens if we let u converge to 0? The answer is that we get a proper Eqinv extension. However, this may be an all undecided extension (which is what we do want), or it may be a complete extension properly containing all the undecided extensions (which is not what we want!).
+We may decide to do what physicists do to their equations. Write the equations in full and simply neglect any item containing higher order u, i.e., u2, u3, etc. This is reasonable when the value of each node is small.
+1. Let 〈S,R〉 be a network and let λ be a legitimate Caminada labelling on S. Then there exists a Method 1 probability distribution Pλ, which almost satisfies equation (E3), namely for every ε, there exists a Method 1 probability Pλ depending on ε, such that for every x and its attackers yi, we have |Pλ(x)− Pλ(∧¬yi)| < ε, such that
+λ(x) = in, if Pλ(x) = 1
+λ(x) = out, if Pλ(x) = 0
+λ(x) = und, if 0 < Pλ(x) < 1.
+2. P is obtained as follows
+Case 1. λ is a preferred extension. Then let f be a solution of Eqinv for 〈S,R〉. Let Pλ = f .
+Case 2. λ is not a preferred extension. Let Eλund = {x|λ(x) = und}. Consider 〈S′, R′〉, where S′ = Eλund ∪ {u}, where u is a new point not in S with value almost 0.
+R′ = R Eλund ∪ {u} × Eλund.
+Then 〈S′, R′〉 has only one extension (all undecided). Let f ′ be a solution to Eqinv on 〈S′, R′〉. We now define Pλ on 〈S,R〉. Let α1,0 = ∧ λ(x)= in x ∧ ∧ λ(y)= out ¬y. Let m = α∧β be an arbitrary model of S, where α is a model of {x|λ(x) ∈ {in, out} and β is a model of Eλund. Define Pλ(α ∧ β) to be
+Pλ(α ∧ β = 0 if α 6= α1,0 Pλ(α1,0 ∧ β) = f ′(β) where β = ∧ s∈Eλund
+±s and f(β) = Π±s in βf(±s).
+Proof. Follows from the considerations of Remark 4.4.
+Example 4.6 Let us show how Theorem 4.5 works by doing a few examples.
+1. Consider the network of Figure 11 and the extension λ mentioned there, namely λ(a) = in, λ(b) = out, λ(c) = λ(d) = und.
+Following our algorithms we look at the {c, d, u} part of Figure 12 and solve the equations. We get u = 12 , c = d = 1 3 . The probability Pλ will be as follows:
+Pλ(α ∧ β) = 0 if α 6= a ∧ ¬b.
+Now look at Pλ(a ∧ ¬b ∧ c ∧ d) = 13 × 1 3 = 1 9
+Pλ(a ∧ ¬b ∧ c ∧ ¬d) = 13 × 2 3 = 2 9 Pλ(a ∧ ¬b ∧ ¬c ∧ d) = 23 × 1 3 = 2 9 Pλ(a ∧ ¬b ∧ ¬c ∧ ¬d) = 23 × 2 3 = 4 9 .
+2. Let us look at Figure 13.
+With λ(a) = in, λ(b) = out, λ(c) = λ(d) = und.
+The {c, d} part is Figure 2. Here we solve the equations on the {c, d, u} part associated with {c, d}, which is the same as Figure 3. The solution is found in Example 2.5, with u = 12 . We get u = 12 ; c = 0.36, 1 − c = 0.764, d = 0.382, 1 − d = 0.618. The probability Pλ of this case is Pλ(α ∧ β) = 0, if α 6= a ∧ ¬b.
+Pλ(a ∧ ¬b ∧ c ∧ d) = 0.236× 0.382 = 0.09 Pλ(a ∧ ¬b ∧ c ∧ ¬d) = 0.236× 0618 = 0.146 Pλ(a ∧ ¬b ∧ ¬c ∧ d) = 0.764× 0.382 = 0.292 Pλ(a ∧ ¬b ∧ ¬c ∧ ¬d) = 0.764× 0.618 = 0.472.
+Indeed 0.09 + 0.146 + 0.292 + 0.472 = 1.000.
+We now discuss imposing probability on instantiated networks such as ASPIC+. We begin with simple instantiations into classical propositional logic.
+Definition 4.7 1. An abstract instantiated network (into classical propositional logic) has the form A = 〈S,R, I〉, where 〈S,R〉 is an abstract argumentation network and I is a mapping associating with each x ∈ S, a well-formed formula I(x) = ϕx of classical propositional logic.
+2. For any A as in 1, we associate the theory ∆A = {ϕx ↔ ∧(y,x)∈R¬ϕy | x ∈ S}.
+3. A semantic probability model P on A is a probability distribution on the models based on S such that for all x ∈ S, we have:
+P (ϕx) = P (∧(y,x)∈R¬ϕy)
+Example 4.8 Consider Figure 14 where part (b) is an instatiation of part (a) with I(x) = a1 ∨ a2 and I(a3) = a3. The equations any probability assignment needs to satisfy are
+P (a1 ∨ a2) = 1
+P (a3) = P (¬(a1 ∨ a2))
+= P (¬a1 ∧ ¬a2)
+= 0.
+If we let P (a1) = x, P (a2) = 1− x, P (a3) = 0, with x ∈ [0, 1], then P satisfies the equations. Compare with Example 3.4. 5 Comparison with the literature There are several probabilistic argumentation papers around. This is a hot topic in 2014. We highlight two main points of view. The external and the internal views.
+Let 〈S,R〉 be a network and let f be a function from S to [0, 1]. We can regard f as giving a probability number to each x ∈ S. The internal probability is where the above numbers signify the value of the argument. Its truth, its reliability, its probability of being effective, etc., or whatever measure we attach to it as an argument. Figure 15 represents in this case the Eqinv solution (and hence probability) of the network of Figures 2 and 3. The external view is to think of f(x) as the probability of the predicate “x ∈ S”. That is, the probability that the argument x is present in S. Consider again Figure 15.
+The probability that a is in the network is 0.236 and the probability that b is in the network is 0.382. Therefore, the probability that the network contains
+both {a, b} is 0.236 × 0.388 = 0.09. The probability that the network contains only a is 0.236×(1−0.382) = 0.1458. The probability that the network contains only b is 0.382 × (1 − 0.236) = 0.292 and the probability that the network is empty is (1 − 0.236) × (1 − 0.382) = 0.472. It is clear why we are calling this view an external probability view. It imposes probability externally expressing uncertainty on what the network graph is. This is done either by giving the probability to points or more generally by giving probability directly to subsets G of S, expressing the probability that the graph is really that subset of S with R restricted to G. This external view has value in dialogue argumentation or negotiation when we try to estimate what network our opponent is reasoning with. The problem with this external view is how to connect with the attack relation. Note that mathematically in the external view we have probabilities on points in S or probabilities on subsets of S, which are the same options as in our internal view, but the understanding of them is different. We in the internal view considered the subset as a classical model, while the external view considers it as a subnetwork. When we use the internal view, we can connect it with the attack relation via the equational approach (Equation (E3)), but how would the external view connect with the attack relation? We can ask, for example, how to get a value for a single point to be “in” an extension? Intuitively, looking back at Figure 15, we can say the point a for example is “in” in case the network is {a} and is also “in” in one of the three extensions in case the network is {a, b}. So we might take the “in” value to be 0.1458 + 0.09/3 = 0.1458 + 0.03 = 0.1758. The connection with the attack relation can be done perhaps through the probabilities for admissible sets, since being admissible is connected with the attack relation. There are problems, however, with this approach.
+Hunter [7] was trying to lay some foundations for this view, following the papers [3, 9]. See also a good summary in Hunter[8]. Hunter was trying to find a connection between the external probability view and some reasonable values we can give to admissible subsets. He proposes restrictions on the probability function on S. We are not going to discuss or reproduce Hunter’s arguments here. It suffices to say that possibly a subsequent paper of ours will critically examine the external view and compare with the internal view.
+Let us now compare our work with that of M. Thimm, [13], whose approach is also internal. We quote from [13]:
+“In this paper we use another interpretation for probability, that of subjective probability [11]. There, a probability P (X) for some X ∈ X denotes the degree of belief we put into X. Then a probability function P can be seen as an epistemic state of some agent that
+has uncertain beliefs with respect to X . In probabilistic reasoning [11, 12], this interpretation of probability is widely used to model uncertain knowledge representation and reasoning.
+In the following, we consider probability functions on sets of arguments of an abstract argumentation frameworks. Let AF = (Arg, →) be some fixed abstract argumentation framework and let E = 2Arg be the set of all sets of arguments. Let now PAF be the set of probability functions of the form P : 2ε → [0, 1]. A probability function P ∈ PAF assigns to each set of possible extensions of AF a probability, i.e. P (e) for e ∈ E is the probability that e is an extension and P (E) for E ⊆ E is the probability that any of the sets in E is an extension. In particular, note the difference between e.g. P ({A,B}) = P ({{A,B}}) and P ({{A}, {B}}) for arguments A,B. While the former denotes the probability that {A,B} is an extension the latter denotes the probability that {A} or {B} is an extension. In general, it holds P ({A,B}) 6= P ({{A}, {B}}) .
+For P ∈ PAF and A ∈ Arg we abbreviate P (A) = ∑
+A∈e⊆Arg
+P (e).
+Given some probability function P , the probability P (A) represents the degree of belief that A is in an extension (according to P ), i.e. P (A) is the sum of the probabilities of all possible extensions that contain A. The set PAF contains all possible views one can take on the arguments of an abstract argumentation framework AF. Example 4. We continue Ex. 1. (Comment by Gabbay and Rodrigues: This is the network of our Figure 4.) Consider the function P ∈ PAF defined via P ({A1,A3,A5}) = 03, P ({A1,A4}) = 0.45, P ({A5,A2}) = 0.1, P ({A2,A4}) = 0.15, and P (3) = 0 for all remaining e ∈ E . Due to Prop. 1 the function P is well-defined as in, e.g.,
+P ({{A5,A2}, {A2,A4}, {A3}}) = P ({A5,A2}) + P ({A2,A4}) + P ({A3}) = 0.1 + 0.15 + 0 = 0.25.
+Therefore, P is a probability function according to Def. 3. According to P the probabilities to reach argument of AF compute to P (A1) = 0.75, P (A2) = 0.25, P (A3 = 0.3, P (A4) = 0.6, and P (A5) = 0.4.
+In the following, we are only interested in those probability functions of PAF that agree with our intuition on the interrelationships of arguments and attack. For example, if an argument A is not attacked we should completely believe in its validity if no further information is available. We propose the following notion of justifiability to describe this intuition. Definition 4. A probability function P ∈ PAF is called p-justifiable wrt. AF, denoted by P J AF, if it satisfies for all A ∈ Arg.
+1. P (A) ≤ 1− P (B) for all B,∈ Arg with B → A and 2. P (A) ≥ 1− ∑ B∈F P (B) where F = {B|B → A}.
+Let PJAF be the set of all p-justifiable probability functions wrt. AF. The notion of p-justifiability generalizes the concept of complete semantics to the probabilistic setting. Property 1.) says that the degree of belief we assign to an argument A is bounded from above by the complement to 1 of the degrees of belief we put into the attackers of A. As a special case, note that if we completely believe in an attacker of A, i.e., P (B) = 1 for some B with B → A, then it follows P (A) = 0. This corresponds to property 1.) of a complete labelling (see Section 2). Property 2.) of Def. 4 says that the degree of belief we assign to an argument A is bounded from below by the inverse of the sum of the degrees of belief we put into the attacks of A. As a special case, note that if we completely disbelieve in all attackers of A, i.e. P (B) = 0 for all B with B → A, then it follows P (A) = 1. This corresponds to property 2.) of a complete labeling, see Section 2. The following proposition establishes the probabilistic analogue of the third property of a complete labelling. Proposition 2. Let P be p-justifiable and A ∈ Arg. If P (A) ∈ (0, 1) then
+1. there is no B ∈ Arg with B → A and P (B) = 1 and 2. there is a B′ ∈ Arg with B′ → A and P (B′) > 0.
+From our point of view, Thimm’s approach is a variant of our semantic Method 2 approach without the strong equation (E3) but the weaker Definition 4 of Thimm. Thus Thimm will allow for different values for nodes x1 and x2 in our Figure 8, while we would not (see Example 3.5).
+Although Thimm’s approach is mathematically close to us, conceptually we are far apart. Thimm motivates his approach as a degree of belief in a subset E ⊆ S, considering E as an extension. We consider E as representing a classical model m of the classical propositional logic with atoms S
+m = ∧ s∈E s ∧ ∧ s6∈E ¬s
+and assign probability to it and then we export this probability to argumentation via the equational approach, equation (E3).
+This is an instance of our methodology of “Logic by Translation”, From our point of view, equations (E3) are essential, conceptual and non-technical. For Thimm, the inequalities of his Definition 4 appear to be technical to enable the probabilities to work of ground extension.
+Our point of view also leads us to the Eqinv Method 1 probabilities and to the approximation results of Section 4.
+In Thimm’s conceptual approach, this way of thinking does not even arise. To summarise, this paper presented an internal view of probabilistic argu-
+mentation. There is a need for two subsequent research papers
+1. The external view done coherently and its connection to the internal view
+2. A conditional probability view and its connection with Bayesian Networks views as Argumentation Networks 6 Conclusions This section explains and sets our approach in a general generic context. Suppose we are given a system S such as an argumentation system 〈S,R〉 and we want to add to it some aspect A. There is a generic way to add any new feature to a system. It involves 1) identifying the basic units which build up the system and 2) introducing the new feature to each of these basic units. In the case where the system is argumentation and the feature is probabilistic we have the following: the basic units are a. the nature of the arguments involved; b. the membership relation in the set S of arguments;6 c. the attack relation; and d. the choice of extensions.
+Generically to add a new aspect (probabilistic, or fuzzy, or temporal, etc) to an argumentation network 〈S,R〉 can be done by adding this feature to each component. a. We make the effective strength of the argument probabilistic; b. we give probability to whether an argument is included in S;7 c. we make the attack relation probabilistic; and d. we put probability on the extensions.
+These features interact and need to be chosen with care and coordination. We need a methodological approach to make our choices. One such methodology is what we called logic by translation.
+We meaningfully translate the argumentation system into classical logic which does have probabilistic models and then let probabilistic classical logic endow the probability on the argumentation system. As we mentioned, this of course depends on how we translate.
+We gave in this paper an object-level translation. The arguments of S became atoms of classical propositional logic, we then used probability on the models of classical logic and used the attack relation R to express equational restrictions on the probabilities. In this kind of translation, the attack relation did not become probabilistic.
+We could have used a meta-level translation into classical predicate logic, using a binary relation R for expressing in classical logic the attack relation and using unary predicates to express that an argument x is “in”, x is “out”, etc., with suitable coordinating axioms. In this case all predicates would have become probabilistic including the attack relation R. As far as we know nobody has done this to R.
+In this context of possible options what we have done is one systematic approach and we compared it with other approaches. It should be noted that we could have followed the same steps to get fuzzy argumentation networks;
+6Note that the set S itself may not be fully or accurately known, especially modelling an opponent in dialogue systems.
+7a. and b. are distinct, because a. represents how effective an argument is, whereas b. is the decision of whether or not to include an argument for consideration. An argument may be deemed very effective but not included for consideration for completely different reasons.
+temporal argumentation networks; or indeed any other feature available for classical propositional logic.  If we consider the equational approach [5], then we can write    where (E2) is a numerical equation over the real interval [0, 1], with conjunction and negation interpreted as numerical functions expressing the correspondence of the values of the two sides.    The reader should note that we actually solve the equations over the unit interval [0, 1] and project onto Kleene’s 3-valued logic by letting    The simplest two methods are described in Gabbay’s book Logic for Artificial Intelligence and Information Technology [4].    In the equational approach, according to the syntactical Method 1, we assign probabilities to all the atoms and are required to solve the equation (E3) below for each x, where Att(x) = {yi} and x and all yi are numbers in [0, 1]:    This is the Eqinv equation in the equational approach (see [5]).    The following definition will be useful in the interpretation of values from [0, 1] and their counterparts in Caminada’s labelling functions.    What do we know about Eqinv? We quote the following from [5].    1 is a legal Caminada labelling (see [1]) and leads to a complete extension.    This is an arbitrary number in [0, 1].    [2, 6]).    [2, 6]).    Such an analysis is required anyway for instantiated networks, for example in ASPIC+ style [10]).    Thimm, see [13].    Figure 4: Figure 1 of “A probabilistic semantics for abstract argumentation” [13].    Figure 5: Figure 2 of “A probabilistic semantics for abstract argumentation” [13].    Thimm in [13].    Thimm [13]) Let S = {s1, .    If we let P (a1) = x, P (a2) = 1− x, P (a3) = 0, with x ∈ [0, 1], then P satisfies the equations.    Let 〈S,R〉 be a network and let f be a function from S to [0, 1].    Hunter [7] was trying to lay some foundations for this view, following the papers [3, 9].    Hunter [7] was trying to lay some foundations for this view, following the papers [3, 9].    Hunter [7] was trying to lay some foundations for this view, following the papers [3, 9].    See also a good summary in Hunter[8].    Thimm, [13], whose approach is also internal.    We quote from [13]:    “In this paper we use another interpretation for probability, that of subjective probability [11].    In probabilistic reasoning [11, 12], this interpretation of probability is widely used to model uncertain knowledge representation and reasoning.    In probabilistic reasoning [11, 12], this interpretation of probability is widely used to model uncertain knowledge representation and reasoning.    Let now PAF be the set of probability functions of the form P : 2 → [0, 1].    There is a generic way to add any new feature to a system. It involves 1) identifying the basic units which build up the system and 2) introducing the new feature to each of these basic units. In the case where the system is argumentation and the feature is probabilistic we have the following. The basic units are: a. the nature of the arguments involved; b. the membership relation in the set S of arguments; c. the attack relation; and d. the choice of extensions. Generically to add a new aspect (probabilistic, or fuzzy, or temporal, etc) to an argumentation network 〈S,R〉 can be done by adding this feature to each component a–d. This is a brute-force method and may yield a non-intuitive or meaningful result. A better way is to meaningfully translate the object system into another target system which does have the aspect required and then let the target system endow the aspect on the initial system. In our case we translate argumentation into classical propositional logic and get probabilistic argumentation from the translation. Of course what we get depends on how we translate. In fact, in this paper we introduce probabilistic semantics to abstract argumentation theory based on the equational approach to argumentation networks. We then compare our semantics with existing proposals in the literature including the approaches by M. Thimm and by A. Hunter. Our methodology in general is discussed in the conclusion. 1 ar X iv :1 50 3. 05 50 1v 1 [ cs .A I] 1 8 M ar 2 01 5 LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

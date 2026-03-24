@@ -1,0 +1,670 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Provable Alternating Gradient Descent for Non-negative Matrix Factorization with Strong Correlations
+Paper Content: 1706.04097.pdf META Provable Alternating Gradient Descent for Non-negative Matrix Factorization with Strong Correlations Yuanzhi Li Yingyu Liang <yuanzhil@cs.princeton.edu>, <yingyul@cs.princeton.edu>. 1. Introduction Non-negative matrix factorization (NMF) is an important tool in data analysis and is widely used in image processing, text mining, and hyperspectral imaging (e.g., (Lee & Seung, 1997; Blei et al., 2003; Yang & Leskovec, 2013)). Given a set of observations Y = {y(1), y(2), . . . , y(n)}, the goal of NMF is to find a feature matrix A = {a1, a2, . . . , aD} and a non-negative weight matrix X = {x(1), x(2), . . . , x(n)} such that y(i) ≈ Ax(i) for any i, or Y ≈ AX for short. The intuition of NMF is to write each data point as a non-negative combination of the features.
+Authors listed in alphabetic order. 1Princeton University, Princeton, NJ, USA. Correspondence to: Yuanzhi Li <yuanzhil@cs.princeton.edu>, Yingyu Liang <yingyul@cs.princeton.edu>.
+Proceedings of the 34 th International Conference on Machine Learning, Sydney, Australia, PMLR 70, 2017. Copyright 2017 by the author(s).
+By doing so, one can avoid cancellation of different features and improve interpretability by thinking of each x(i) as a (unnormalized) probability distribution over the features. It is also observed empirically that the non-negativity constraint on the coefficients can lead to better features and improved downstream performance of the learned features.
+Unlike the counterpart which factorizes Y ≈ AX without assuming non-negativity of X, NMF is usually much harder to solve, and can even by NP-hard in the worse case (Arora et al., 2012b). This explains why, despite all the practical success, NMF largely remains a mystery in theory. Moreover, many of the theoretical results for NMF were based on very technical tools such has algebraic geometry (e.g., (Arora et al., 2012b)) or tensor decomposition (e.g. (Anandkumar et al., 2012)), which undermine their applicability in practice. Arguably, the most widely used algorithms for NMF use the alternative minimization scheme: In each iteration, the algorithm alternatively keeps A or X as fixed and tries to minimize some distance between Y and AX. Algorithms in this framework, such as multiplicative update (Lee & Seung, 2001) and alternative non-negative least square (Kim & Park, 2008), usually perform well on real world data. However, alternative minimization algorithms are usually notoriously difficult to analyze. This problem is poorly understood, with only a few provable guarantees known (Awasthi & Risteski, 2015; Li et al., 2016). Most importantly, these results are only for the case when the coordinates of the weights are from essentially independent distributions, while in practice they are known to be correlated, for example, in correlated topic models (Blei & Lafferty, 2006). As far as we know, there exists no rigorous analysis of practical algorithms for the case with strong correlations.
+In this paper, we provide a theoretical analysis of a natural algorithm AND (Alternative Non-negative gradient Descent) that belongs to the practical framework, and show that it probably recovers the ground-truth given a mild initialization. It works under general conditions on the feature matrix and the weights, in particular, allowing strong correlations. It also has multiple favorable features that are unique to its success. We further complement our theoretical analysis by experiments on semi-synthetic data, demon-
+ar X
+iv :1
+70 6.
+04 09
+7v 1
+[ cs
+.L G
+] 1
+3 Ju
+n 20
+17
+strating that the algorithm converges faster to the groundtruth than several existing practical algorithms, and providing positive support for some of the unique features of our algorithm. Our contributions are detailed below. 1.1. Contributions In this paper, we assume a generative model of the data points, given the ground-truth feature matrix A∗. In each round, we are given y = A∗x,1 where x is sampled i.i.d. from some unknown distribution µ and the goal is to recover the ground-truth feature matrix A∗. We give an algorithm named AND that starts from a mild initialization matrix and provably converges to A∗ in polynomial time. We also justify the convergence through a sequence of experiments. Our algorithm has the following favorable characteristics. 1.1.1. SIMPLE GRADIENT DESCENT ALGORITHM The algorithm AND runs in stages and keeps a working matrix A(t) in each stage. At the t-th iteration in a stage, after getting one sample y, it performs the following:
+(Decode) z = φα ( (A(0))†y ) ,
+(Update) A(t+1) = A(t) + η ( yz> −A(t)zz> ) ,
+where α is a threshold parameter,
+φα(x) = { x if x ≥ α, 0 otherwise,
+(A(0))† is the Moore-Penrose pesudo-inverse of A(0), and η is the update step size. The decode step aims at recovering the corresponding weight for the data point, and the update step uses the decoded weight to update the feature matrix. The final working matrix at one stage will be used as the A(0) in the next stage. See Algorithm 1 for the details.
+At a high level, our update step to the feature matrix can be thought of as a gradient descent version of alternative nonnegative least square (Kim & Park, 2008), which at each iteration alternatively minimizes L(A,Z) = ‖Y −AZ‖2F by fixing A or Z. Our algorithm, instead of performing an complete minimization, performs only a stochastic gradient descent step on the feature matrix. To see this, consider one data point y and consider minimizing L(A, z) = ‖y − Az‖2F with z fixed. Then the gradient of A is just −∇L(A) = (y−Az)z>, which is exactly the update of our feature matrix in each iteration.
+As to the decode step, when α = 0, our decoding can be regarded as a one-shot approach minimizing ‖Y −AZ‖2F
+1We also consider the noisy case; see 1.1.5.
+restricted to Z ≥ 0. Indeed, if for example projected gradient descent is used to minimize ‖Y − AZ‖2F , then the projection step is exactly applying φα to Z with α = 0. A key ingredient of our algorithm is choosing α to be larger than zero and then decreasing it, which allows us to outperform the standard algorithms.
+Perhaps worth noting, our decoding only uses A(0). Ideally, we would like to use (A(t))† as the decoding matrix in each iteration. However, such decoding method requires computing the pseudo-inverse of A(t) at every step, which is extremely slow. Instead, we divide the algorithm into stages and in each stage, we only use the starting matrix in the decoding, thus the pseudo-inverse only needs to be computed once per stage and can be used across all iterations inside. We can show that our algorithm converges in polylogarithmic many stages, thus gives us to a much better running time. These are made clear when we formally present the algorithm in Section 4 and the theorems in Section 5 and 6. 1.1.2. HANDLING STRONG CORRELATIONS The most notable property of AND is that it can provably deal with highly correlated distribution µ on the weight x, meaning that the coordinates of x can have very strong correlations with each other. This is important since such correlated x naturally shows up in practice. For example, when a document contains the topic “machine learning”, it is more likely to contain the topic “computer science” than “geography” (Blei & Lafferty, 2006).
+Most of the previous theoretical approaches for analyzing alternating between decoding and encoding, such as (Awasthi & Risteski, 2015; Li et al., 2016; Arora et al., 2015), require the coordinates of x to be pairwiseindependent, or almost pairwise-independent (meaning Eµ[xixj ] ≈ Eµ[xi]Eµ[xj ]). In this paper, we show that algorithm AND can recover A∗ even when the coordinates are highly correlated. As one implication of our result, when the sparsity of x is O(1) and each entry of x is in {0, 1}, AND can recover A∗ even if each Eµ[xixj ] = Ω(min{Eµ[xi],Eµ[xj ]}), matching (up to constant) the highest correlation possible. Moreover, we do not assume any prior knowledge about the distribution µ, and the result also extends to general sparsities as well. 1.1.3. PSEUDO-INVERSE DECODING One of the feature of our algorithm is to use Moore-Penrose pesudo-inverse in decoding. Inverse decoding was also used in (Li et al., 2016; Arora et al., 2015; 2016). However, their algorithms require carefully finding an inverse such that certain norm is minimized, which is not as efficient as the vanilla Moore-Penrose pesudo-inverse. It was also observed in (Arora et al., 2016) that Moore-Penrose
+pesudo-inverse works equally well in practice, but the experiment was done only when A = A∗. In this paper, we show that Moore-Penrose pesudo-inverse also works well when A 6= A∗, both theoretically and empirically.
+1.1.4. THRESHOLDING AT DIFFERENT α
+Thresholding at a value α > 0 is a common trick used in many algorithms. However, many of them still only consider a fixed α throughout the entire algorithm. Our contribution is a new method of thresholding that first sets α to be high, and gradually decreases α as the algorithm goes. Our analysis naturally provides the explicit rate at which we decrease α, and shows that our algorithm, following this scheme, can provably converge to the ground-truth A∗ in polynomial time. Moreover, we also provide experimental support for these choices. 1.1.5. ROBUSTNESS TO NOISE We further show that the algorithm is robust to noise. In particular, we consider the model y = A∗x + ζ, where ζ is the noise. The algorithm can tolerate a general family of noise with bounded moments; we present in the main body the result for a simplified case with Gaussian noise and provide the general result in the appendix. The algorithm can recover the ground-truth matrix up to a small blow-up factor times the noise level in each example, when the groundtruth has a good condition number. This robustness is also supported by our experiments. 2. Related Work Practical algorithms. Non-negative matrix factorization has a rich empirical history, starting with the practical algorithms of (Lee & Seung, 1997; 1999; 2001). It has been widely used in applications and there exist various methods for NMF, e.g., (Kim & Park, 2008; Lee & Seung, 2001; Cichocki et al., 2007; Ding et al., 2013; 2014). However, they do not have provable recovery guarantees.
+Theoretical analysis. For theoretical analysis, (Arora et al., 2012b) provided a fixed-parameter tractable algorithm for NMF using algebraic equations. They also provided matching hardness results: namely they show there is no algorithm running in time (mW )o(D) unless there is a sub-exponential running time algorithm for 3-SAT. (Arora et al., 2012b) also studied NMF under separability assumptions about the features, and (Bhattacharyya et al., 2016) studied NMF under related assumptions. The most related work is (Li et al., 2016), which analyzed an alternating minimization type algorithm. However, the result only holds with strong assumptions about the distribution of the weight x, in particular, with the assumption that the coordinates of x are independent.
+Topic modeling. Topic modeling is a popular generative model for text data (Blei et al., 2003; Blei, 2012). Usually, the model results in NMF type optimization problems with ‖x‖1 = 1, and a popular heuristic is variational inference, which can be regarded as alternating minimization in KL-divergence. Recently, there is a line of theoretical work analyzing tensor decomposition (Arora et al., 2012a; 2013; Anandkumar et al., 2013) or combinatorial methods (Awasthi & Risteski, 2015). These either need strong structural assumptions on the word-topic matrix A∗, or need to know the distribution of the weight x, which is usually infeasible in applications. 3. Problem and Definitions We use ‖M‖2 to denote the 2-norm of a matrix M. ‖x‖1 is the 1-norm of a vector x. We use [M]i to denote the ith row and [M]i to denote the i-th column of a matrix M. σmax(M)(σmin(M)) stands for the maximum (minimal) singular value of M, respectively. We consider a generative model for non-negative matrix factorization, where the data y is generated from2
+y = A∗x, A∗ ∈ RW×D
+where A∗ is the ground-truth feature matrix, and x is a nonnegative random vector drawn from an unknown distribution µ. The goal is to recover the ground-truth A∗ from i.i.d. samples of the observation y.
+Since the general non-negative matrix factorization is NPhard (Arora et al., 2012b), some assumptions on the distribution of x need to be made. In this paper, we would like to allow distributions as general as possible, especially those with strong correlations. Therefore, we introduce the following notion called (r, k,m, λ)-general correlation conditions (GCC) for the distribution of x.
+Definition 1 (General Correlation Conditions, GCC). Let ∆ := E[xx>] denote the second moment matrix.
+1. ‖x‖1 ≤ r and xi ∈ [0, 1],∀i ∈ [D].
+2. ∆i,i ≤ 2kD ,∀i ∈ [D].
+3. ∆i,j ≤ mD2 ,∀i 6= j ∈ [D].
+4. ∆ kDλI.
+The first condition regularizes the sparsity of x.3 The second condition regularizes each coordinate of xi so that there is no xi being large too often. The third condition
+2Section 6.2 considers the noisy case. 3Throughout this paper, the sparsity of x refers to the `1 norm, which is much weaker than the `0 norm (the support sparsity). For example, in LDA, the `1 norm of x is always 1.
+regularizes the maximum pairwise correlation between xi and xj . The fourth condition always holds for λ = 0 since E[xx>] is a PSD matrix. Later we will assume this condition holds for some λ > 0 to avoid degenerate cases. Note that we put the weight k/D before λ such that λ defined in this way will be a positive constant in many interesting examples discussed below.
+To get a sense of what are the ranges of k,m, and λ given sparsity r, we consider the following most commonly studied non-negative random variables.
+Proposition 1 (Examples of GCC).
+1. If x is chosen uniformly over s-sparse random vectors with {0, 1} entries, then k = r = s, m = s2 and λ = 1− 1s .
+2. If x is uniformly chosen from Dirichlet distribution with parameter αi = sD , then r = k = 1 andm = 1 sD
+with λ = 1− 1s .
+For these examples, the result in this paper shows that we can recover A∗ for aforementioned random variables x as long as s = O(D1/6). In general, there is a wide range of parameters (r, k,m, λ) such that learning A∗ is doable with polynomially many samples of y and in polynomial time.
+However, just the GCC condition is not enough for recovering A∗. We will also need a mild initialization.
+Definition 2 (`-initialization). The initial matrix A0 satisfies for some ` ∈ [0, 1),
+1. A0 = A∗(Σ + E), for some diagonal matrix Σ and off-diagonal matrix E.
+2. ‖E‖2 ≤ `, ‖Σ− I‖2 ≤ 14 .
+The condition means that the initialization is not too far away from the ground-truth A∗. For any i ∈ [D], the ith column [A0]i = Σi,i[A∗]i + ∑ j 6=i Ej,i[A
+∗]j . So the condition means that each feature [A0]i has a large fraction of the ground-truth feature [A∗]i and a small fraction of the other features. Σ can be regarded as the magnitude of the component from the ground-truth in the initialization, while E can be regarded as the magnitude of the error terms. In particular, when Σ = I and E = 0, we have A0 = A
+∗. The initialization allows Σ to be a constant away from I, and the error term E to be ` (in our theorems ` can be as large as a constant).
+In practice, such an initialization is typically achieved by setting the columns of A0 to reasonable “pure” data points that contain one major feature and a small fraction of some others (e.g. (lda, 2016; Awasthi & Risteski, 2015)).
+Algorithm 1 Alternating Non-negative gradient Descent (AND) Input: Threshold values {α0, α1, . . . , αs}, T , A0
+1: A(0) ← A0 2: for j = 0, 1, . . . , s do 3: for t = 0, 1, . . . , T do 4: On getting sample y(t), do: 5: z(t) ← φαj ( (A(0))†y(t)
+) 6: A(t+1) ← A(t) + η ( y(t) −A(t)z(t) ) (z(t))> 7: end for 8: A(0) ← A(T+1) 9: end for
+Output: A← A(T+1) 4. Algorithm The algorithm is formally describe in Algorithm 1. It runs in s stages, and in the j-th stage, uses the same threshold αj and the same matrix A(0) for decoding, where A(0) is either the input initialization matrix or the working matrix obtained at the end of the last stage. Each stage consists of T iterations, and each iteration decodes one data point and uses the decoded result to update the working matrix. It can use a batch of data points instead of one data point, and our analysis still holds.
+By running in stages, we save most of the cost of computing (A(0))†, as our results show that only polylogarithmic stages are needed. For the simple case where x ∈ {0, 1}D, the algorithm can use the same threshold value α = 1/4 for all stages (see Theorem 1), while for the general case, it needs decreasing threshold values across the stages (see Theorem 4). Our analysis provides the hint for setting the threshold; see the discussion after Theorem 4, and Section 7 for how to set the threshold in practice. 5. Result for A Simplified Case In this section, we consider the following simplified case:
+y = A∗x, x ∈ {0, 1}D. (5.1)
+That is, the weight coordinates xi’s are binary. Theorem 1 (Main, binary). For the generative model (5.1), there exists ` = Ω(1) such that for every (r, k,m, λ)GCC x and every > 0, Algorithm AND with T = poly(D, 1 ), η =
+1 poly(D, 1 ) , {αi}si=1 = { 14} s i=1 for s =
+polylog(D, 1 ) and an ` initialization matrix A0, outputs a matrix A such that there exists a diagonal matrix Σ 12I with ‖A −A∗Σ‖2 ≤ using poly(D, 1 ) samples and iterations, as long as
+m = O
+( kDλ4
+r5
+) .
+Therefore, our algorithm recovers the ground-truth A∗ up to scaling. The scaling in unavoidable since there is no assumption on A∗, so we cannot, for example, distinguish A∗ from 2A∗. Indeed, if we in addition assume each column of A∗ has norm 1 as typical in applications, then we can recover A∗ directly. In particular, by normalizing each column of A to have norm 1, we can guarantee that ‖A−A∗‖2 ≤ O( ).
+In many interesting applications (for example, those in Proposition 1), k, r, λ are constants. The theorem implies that the algorithm can recover A∗ even when m = O(D). In this case, Eµ[xixj ] can be as large as O(1/D), the same order as min{Eµ[xi],Eµ[xj ]}, which is the highest possible correlation. 5.1. Intuition The intuition comes from assuming that we have the “correct decoding”, that is, suppose magically for every y(t), our decoding z(t) = φαj (A
+†y(t)) = x(t). Here and in this subsection, A is a shorthand for A(0). The gradient descent is then A(t+1) = A(t) + η(y(t) −A(t)x(t))(x(t))>. Subtracting A∗ on both side, we will get
+(A(t+1) −A∗) = (A(t) −A∗)(I− ηx(t)(x(t))>)
+Since x(t)(x(t))> is positive semidefinite, as long as E[x(t)(x(t))>] 0 and η is sufficiently small, A(t) will converge to A∗ eventually.
+However, this simple argument does not work when A 6= A∗ and thus we do not have the correct decoding. For example, if we just let the decoding be z̃(t) = A†y(t), we will have y(t)−Az̃(t) = y(t)−A†Ay(t) = (I−A†A)A∗x(t). Thus, using this decoding, the algorithm can never make any progress once A and A∗ are in the same subspace.
+The most important piece of our proof is to show that after thresholding, z(t) = φα(A†y(t)) is much closer to x(t) than z̃(t). Since A and A∗ are in the same subspace, inspired by (Li et al., 2016) we can write A∗ as A(Σ + E) for a diagonal matrix Σ and an off-diagonal matrix E, and thus the decoding becomes z(t) = φα(Σx(t) + Ex(t)). Let us focus on one coordinate of z(t), that is, z(t)i = φα(Σi,ix (t) i + Eix
+(t)), where Ei is the i-th row of Ei. The term Σi,ix (t) i is a nice term since it is just a rescaling of x (t) i , while Eix
+(t) mixes different coordinates of x(t). For simplicity, we just assume for now that x(t)i ∈ {0, 1} and Σi,i = 1. In our proof, we will show that the threshold will remove a large fraction of Eix(t) when x (t) i = 0, and keep a large fraction of Σi,ix (t) i when x (t) i = 1. Thus, our decoding is much more accurate than without thresholding. To show this, we maintain a crucial property that for our decoding matrix, we always have ‖Ei‖2 = O(1). Assuming
+this, we first consider two extreme cases of Ei.
+1. Ultra dense: all coordinates of Ei are in the order of 1√ d . Since the sparsity of x(t) is r, as long as r =
+o( √ d)α, Eix(t) will not pass α and thus z (t) i will be decoded to zero when x(t)i = 0.
+2. Ultra sparse: Ei only has few coordinate equal to Ω(1) and the rest are zero. Unless x(t) has those exact coordinates equal to 1 (which happens not so often), then z (t) i will still be zero when x (t) i = 0.
+Of course, the real Ei can be anywhere in between these two extremes, and thus we need more delicate decoding lemmas, as shown in the complete proof.
+Furthermore, more complication arises when each x(t)i is not just in {0, 1} but can take fractional values. To handle this case, we will set our threshold α to be large at the beginning and then keep shrinking after each stage. The intuition here is that we first decode the coordinates that we are most confident in, so we do not decode z(t)i to be nonzero when x(t)i = 0. Thus, we will still be able to remove a large fraction of error caused by Eix(t). However, by setting the threshold α so high, we may introduce more errors to the nice term Σi,ix (t) i as well, since Σi,ix (t) i might not be larger than αwhen x(t)i 6= 0. Our main contribution is to show that there is a nice trade-off between the errors in Ei terms and those in Σi,i terms such that as we gradually decreases α, the algorithm can converge to the ground-truth. 5.2. Proof Sketch For simplicity, we only focus on one stage and the expected update. The expected update of A(t) is given by
+A(t+1) = A(t) + η(E[yz>]−A(t)E[zz>]).
+Let us write A(0) = A∗(Σ0 + E0) where Σ0 is diagonal and E0 is off-diagonal. Then the decoding is given by
+z = φα((A (0))†y) = φα((Σ0 + E0) −1x).
+Let Σ,E be the diagonal part and the off-diagonal part of (Σ0 + E0) −1.
+The key lemma for decoding says that under suitable conditions, z will be close to Σx in the following sense. Lemma 2 (Decoding, informal). Suppose E is small and Σ ≈ I. Then with a proper threshold value α, we have
+E[Σxx>] ≈ E[zx>], E[Σxz>] ≈ E[zz>].
+Now, let us write A(t) = A∗(Σt + Et). Then applying the above decoding lemma, the expected update of Σt + Et is
+Σt+1+Et+1 = (Σt+Et)(I−Σ∆Σ)+Σ−1(Σ∆Σ)+Rt
+where ∆ = E[xx>] and Rt is a small error term.
+Our second key lemma is about this update.
+Lemma 3 (Update, informal). Suppose the update rule is
+Σt+1 + Et+1 = (Σt + Et)(1− ηΛ) + ηQΛ + ηRt
+for some PSD matrix Λ and ‖Rt‖2 ≤ C ′′. Then
+‖Σt + Et −Q‖2 ≤ ‖Σ0 + E0 −Q‖2(1− ηλmin(Λ))t
++ C ′′
+λmin(Λ) .
+Applying this on our update rule with Q = Σ−1 and Λ = Σ∆Σ, we know that when the error term is sufficiently small, we can make progress on ‖Σt+Et−Σ−1‖2. Furthermore, by using the fact that Σ0 ≈ I and E0 is small, and the fact that Σ is the diagonal part of (Σ0 +E0)−1, we can show that after sufficiently many iterations, ‖Σt − I‖2 blows up slightly, while ‖Et‖2 is reduced significantly. Repeating this for multiple stages completes the proof.
+We note that most technical details are hidden, especially for the proofs of the decoding lemma, which need to show that the error term Rt is small. This crucially relies on the choice of α, and relies on bounding the effect of the correlation. These then give the setting of α and the bound on the parameter m in the final theorem. 6. More General Results  6.1. Result for General x This subsection considers the general case where x ∈ [0, 1]D. Then the GCC condition is not enough for recovery, even for k, r,m = O(1) and λ = Ω(1). For example, GCC does not rule out the case that x is drawn uniformly over (r − 1)-sparse random vectors with { 1D , 1} entries, when one cannot recover even a reasonable approximation of A∗ since a common vector 1D ∑ i[A ∗]i shows up in all the samples. This example shows that the difficulty arises if each xi constantly shows up with a small value. To avoid this, a general and natural way is to assume that each xi, once being non-zero, has to take a large value with sufficient probability. This is formalized as follows.
+Definition 3 (Decay condition). A distribution of x satisfies the order-q decay condition for some constant q ≥ 1, if for all i ∈ [D], xi satisfies that for every α > 0,
+Pr[xi ≤ α | xi 6= 0] ≤ αq.
+When q = 1, each xi, once being non-zero, is uniformly distributed in the interval [0, 1]. When q gets larger, each xi, once being non-zero, will be more likely to take larger
+values. We will show that our algorithm has a better guarantee for larger q. In the extreme case when q =∞, xi will only take {0, 1} values, which reduces to the binary case.
+In this paper, we show that this simple decay condition, combined with the GCC conditions and an initialization with constant error, is sufficient for recovering A∗.
+Theorem 4 (Main). There exists ` = Ω(1) such that for every (r, k,m, λ)-GCC x satisfying the order-q condition, every > 0, there exists T, η and a sequence of {αi} 4 such that Algorithm AND, with `-initialization matrix A0, outputs a matrix A such that there exists a diagonal matrix Σ 12I with ‖A −A
+∗Σ‖2 ≤ with poly(D, 1 ) samples and iterations, as long as
+m = O
+( kD1− 1 q λ4+ 4 q
+r5+ 6 q+1
+) .
+As mentioned, in many interesting applications, k = r = λ = Θ(1), where our algorithm can recover A∗ as long as m = O(D1− 1 q+1 ). This means Eµ[xixj ] = O(D−1− 1 q+1 ), a factor of D− 1 q+1 away from the highest possible correlation min{Eµ[xi],Eµ[xj ]} = O(1/D). Then, the larger q, the higher correlation it can tolerate. As q goes to infinity, we recover the result for the case x ∈ {0, 1}D, allowing the highest order correlation.
+The analysis also shows that the decoding threshold should be α = ( λ‖E0‖2
+r
+) 2 q+1
+where E0 is the error matrix at the beginning of the stage. Since the error decreases exponentially with stages, this suggests to decrease α exponentially with stages. This is crucial for AND to recover the groundtruth; see Section 7 for the experimental results. 6.2. Robustness to Noise We now consider the case when the data is generated from y = A∗x+ ζ, where ζ is the noise. For the sake of demonstration, we will just focus on the case when xi ∈ {0, 1} and ζ is random Gaussian noise ζ ∼ γN ( 0, 1W I ) . 5 A more general theorem can be found in the appendix.
+Definition 4 ((`, ρ)-initialization). The initial matrix A0 satisfies for some `, ρ ∈ [0, 1),
+1. A0 = A∗(Σ + E) + N, for some diagonal matrix Σ and off-diagonal matrix E.
+2. ‖E‖2 ≤ `, ‖Σ− I‖2 ≤ 14 , ‖N‖2 ≤ ρ.
+Theorem 5 (Noise, binary). Suppose each xi ∈ {0, 1}. There exists ` = Ω(1) such that for every (r, k,m, λ)-GCC x, every > 0, Algorithm AND with T = poly(D, 1 ), η =
+4In fact, we will make the choice explicit in the proof. 5we make this scaling so ‖ζ‖2 ≈ γ.
+1 poly(D, 1 ) , {αi}si=1 = { 14} 4 i=1 and an (`, ρ)-initialization A0 for ρ = O(σmin(A∗)), outputs A such that there exists a diagonal matrix Σ 12I with
+‖A−A∗Σ‖2 ≤ O ( + r σmax(A ∗)
+σmin(A∗)λ γ ) using poly(D, 1 ) iterations, as long as m = O ( kDλ4
+r5
+) .
+The theorem implies that the algorithm can recover the ground-truth up to r σmax(A
+∗) σmin(A∗)λ
+times γ, the noise level in each sample. Although stated here for Gaussian noise for simplicity, the analysis applies to a much larger class of noises, including adversarial ones. In particular, we only need to the noise ζ have sufficiently bounded ‖E[ζζ>]‖2; see the appendix for the details. For the special case of Gaussian noise, by exploiting its properties, it is possible to improve the error term with a more careful calculation, though not done here. 7. Experiments To demonstrate the advantage of AND, we complement the theoretical analysis with empirical study on semi-synthetic datasets, where we have ground-truth feature matrices and can thus verify the convergence. We then provide support for the benefit of using decreasing thresholds, and test its robustness to noise. In the appendix, we further test its robust to initialization and sparsity of x, and provide qualitative results in some real world applications. 6
+Setup. Our work focuses on convergence of the solution to the ground-truth feature matrix. However, realworld datasets in general do not have ground-truth. So we construct semi-synthetic datasets in topic modeling: first take the word-topic matrix learned by some topic modeling method as the ground-truth A∗, and then draw x from some specific distribution µ. For fair comparison, we use one not learned by any algorithm evaluated here. In particular, we used the matrix with 100 topics computed by the algorithm in (Arora et al., 2013) on the NIPS papers dataset (about 1500 documents, average length about 1000). Based on this we build two semi-synthetic datasets:
+1. DIR. Construct a 100 × 5000 matrix X, whose columns are from a Dirichlet distribution with parameters (0.05, 0.05, . . . , 0.05). Then the dataset is Y = A∗X.
+2. CTM. The matrix X is of the same size as above, while each column is drawn from the logistic normal prior in the correlated topic model (Blei & Lafferty, 2006). This leads to a dataset with strong correlations.
+6The code is public on https://github.com/ PrincetonML/AND4NMF.
+Note that the word-topic matrix is non-negative. While some competitor algorithms require a non-negative feature matrix, AND does not need such a condition. To demonstrate this, we generate the following synthetic data:
+3. NEG. The entries of the matrix A∗ are i.i.d. samples from the uniform distribution on [−0.5, 0.5). The matrix X is the same as in CTM.
+Finally, the following dataset is for testing the robustness of AND to the noise:
+4. NOISE. A∗ and X are the same as in CTM, but Y = A∗X + N where N is the noise matrix with columns drawn from γN ( 0, 1W I ) with the noise level γ.
+Competitors. We compare the algorithm AND to the following popular methods: Alternating Non-negative Least Square (ANLS (Kim & Park, 2008)), multiplicative update (MU (Lee & Seung, 2001)), LDA (online version (Hoffman et al., 2010)),7 and Hierarchical Alternating Least Square (HALS (Cichocki et al., 2007)).
+Evaluation criterion. Given the output matrix A and the ground truth matrix A∗, the correlation error of the i-th column is given by
+εi(A,A ∗) = min j∈[D],σ∈R {‖[A∗]i − σ[A]j‖2}.
+Thus, the error measures how well the i-th column of A∗ is covered by the best column of A up to scaling. We find the best column since in some competitor algorithms, the columns of the solution A may only correspond to a permutation of the columns of A∗.8
+We also define the total correlation error as
+ε(A,A∗) = D∑ i=1 εi(A,A ∗).
+We report the total correlation error in all the experiments.
+Initialization. In all the experiments, the initialization matrix A0 is set to A0 = A∗(I + U) where I is the identity matrix and U is a matrix whose entries are i.i.d. samples from the uniform distribution on [−0.05, 0.05). Note that this is a very weak initialization, since [A0]i = (1 + Ui,i)[A ∗]i + ∑ j 6=i Uj,i[A
+∗]j and the magnitude of the noise component ∑ j 6=i Uj,i[A
+∗]j can be larger than the signal part (1 + Ui,i)[A∗]i.
+7We use the implementation in the sklearn package (http: //scikit-learn.org/)
+8In the Algorithm AND, the columns of A correspond to the columns of A∗ without permutation.
+Hyperparameters and Implementations. For most experiments of AND, we used T = 50 iterations for each stage, and thresholds αi = 0.1/(1.1)i−1. For experiments on the robustness to noise, we found T = 100 leads to better performance. Furthermore, for all the experiments, instead of using one data point at each step, we used the whole dataset for update. 7.1. Convergence to the Ground-Truth Figure 1 shows the convergence rate of the algorithms on the three datasets. AND converges in linear rate on all three datasets (note that the y-axis is in log-scale). HALS converges on the DIR and CTM datasets, but the convergence is in slower rates. Also, on CTM, the error oscillates. Furthermore, it doesn’t converge on NEG where the groundtruth matrix has negative entries. ANLS converges on DIR and CTM at a very slow speed due to the non-negative least square computation in each iteration. 9 All the other algo-
+9We also note that even the thresholding of HALS and ALNS designed for non-negative feature matrices is removed, they still
+rithms do not converge to the ground-truth, suggesting that they do not have recovery guarantees. 7.2. The Threshold Schemes Figure 2(a) shows the results of using different thresholding schemes on DIR, while Figure 2(b) shows that those on CTM. When using a constant threshold for all iterations, the error only decreases for the first few steps and then stop decreasing. This aligns with our analysis and is in strong contrast to the case with decreasing thresholds. 7.3. Robustness to Noise Figure 2(c) shows the performance of AND on the NOISE dataset with various noise levels γ. The error drops at the first few steps, but then stabilizes around a constant related to the noise level, as predicted by our analysis. This shows that it can recover the ground-truth to good accuracy, even when the data have a significant amount of noise.
+do not converge on NEG. Acknowledgements This work was supported in part by NSF grants CCF1527371, DMS-1317308, Simons Investigator Award, Simons Collaboration Grant, and ONR-N00014-16-1-2329. This work was done when Yingyu Liang was visiting the Simons Institute. A. Complete Proofs We now recall the proof sketch.
+For simplicity, we only focus on one stage and the expected update. The expected update of A(t) is given by
+A(t+1) = A(t) + η(E[yz>]−A(t)E[zz>]).
+Let us write A = A∗(Σ0 + E0) where Σ0 is diagonal and E0 is off-diagonal. Then the decoding is given by
+z = φα(A †x) = φα((Σ0 + E0) −1x).
+Let Σ,E be the diagonal part and the off-diagonal part of (Σ0 + E0)−1.
+The first step of our analysis is a key lemma for decoding. It says that under suitable conditions, z will be close to Σx in the following sense: E[Σxx>] ≈ E[zx>], E[Σxz>] ≈ E[zz>]. This key decoding lemma is formally stated in Lemma 6 (for the simplified case where x ∈ {0, 1}D) and Lemma 8 (for the general case where x ∈ [0, 1]D).
+Now, let us write A(t) = A∗(Σt + Et). Then applying the above decoding lemma, the expected update of Σt + Et is
+Σt+1 + Et+1 = (Σt + Et)(I−Σ∆Σ) + Σ−1(Σ∆Σ) + Rt
+where Rt is a small error term.
+The second step is a key lemma for updating the feature matrix: for the update rule
+Σt+1 + Et+1 = (Σt + Et)(1− ηΛ) + ηQΛ + ηRt
+where Λ is a PSD matrix and ‖Rt‖2 ≤ C ′′, we have
+‖Σt + Et −Q‖2 ≤ ‖Σ0 + E0 −Q‖2(1− ηλmin(Λ))t + C ′′
+λmin(Λ) .
+This key updating lemma is formally stated in Lemma 10.
+Applying this on our update rule with Q = Σ−1 and Λ = Σ∆Σ, we know that when the error term is sufficiently small, we can make progress on ‖Σt + Et −Σ−1‖2. Then, by using the fact that Σ0 ≈ I and E0 is small, and the fact that Σ is the diagonal part of (Σ0 + E0)−1, we can show that after sufficiently many iterations, ‖Σt − I‖2 blows up slightly, while ‖Et‖2 is reduced significantly (See Lemma 11 for the formal statement). Repeating this for multiple stages completes the proof.
+Organization. Following the proof sketch, we first present the decoding lemmas in Section A.1, and then the update lemmas in Section A.2. Section A.3 then uses these lemmas to prove the main theorems (Theorem 1 and Theorem 4). Proving the decoding lemmas is highly non-trivial, and we collect the lemmas needed in Section A.4.
+Finally, the analysis for the robustness to noise follows a similar proof sketch. It is presented in Section A.5. A.1. Decoding A.1.1. xi ∈ {0, 1}
+Here we present the following decoding Lemma when xi ∈ {0, 1}. Lemma 6 (Decoding). For every ` ∈ [0, 1), every off-diagonal matrix E′ such that ‖E′‖2 ≤ ` and every diagonal matrix Σ′ such that ‖Σ′ − I‖2 ≤ 12 , let z = φα((Σ ′ + E′)x) for α ≤ 14 . Then for every β ∈ (0, 1/2],
+‖E[(Σ′x− z)x>]‖2, ‖E[(Σ′x− z)z>]‖2 = O(C1)
+where
+C1 = kr D + m`4r2 α3D2 + `2 √ kmr1.5 D1.5β + `4r3m β2D2 + `5r2.5m D2α2β .
+Proof of Lemma 6. We will prove the bound on ‖E[(Σ′x − z)z>]‖2, and a simlar argument holds for that on ‖E[(Σ′x − z)x>]‖2.
+First consider the term |Σ′i,ixi − zi| for a fixed i ∈ [D]. Due to the decoding, we have zi = φα([(Σ′ + E′)]ix) = φα(Σ ′ i,ixi + 〈ei, x〉) where ei is the i-th row of E′.
+Claim 7.
+Σ′i,ixi − zi = ax,1φα(−〈ei, x〉) + ax,2φα(〈ei, x〉)− 〈ei, x〉xi (A.1)
+where ax,1, ax,2 ∈ [−1, 1] that depends on x.
+Proof. To see this, we split into two cases:
+1. When xi = 0, then |Σ′i,ixi − zi| = |zi| ≤ φα(〈ei, x〉).
+2. When xi = 1, then zi = 0 only when −〈ei, x〉 ≥ 12 − α ≥ α, which implies that |Σ ′ i,ixi − zi + 〈ei, x〉| ≤ α ≤
+φα(−〈ei, x〉). When Σ′i,ixi − zi + 〈ei, x〉 6= 0, then Σ′i,ixi − zi = −〈ei, x〉.
+Putting everything together, we always have:
+|Σ′i,ixi − zi + 〈ei, x〉xi| ≤ φα(|〈ei, x〉|)
+which means that there exists ax,1, ax,2 ∈ [−1, 1] that depend on x such that
+Σ′i,ixi − zi = ax,1φα(−〈ei, x〉) + ax,2φα(〈ei, x〉)− 〈ei, x〉xi.
+Consider the term 〈ei, x〉xi, we know that for every β ≥ 0,
+|〈ei, x〉 − φβ(〈ei, x〉) + φβ(−〈ei, x〉)| ≤ β.
+Therefore, there exists bx ∈ [−β, β] that depends on x such that
+〈ei, x〉xi = φβ(〈ei, x〉)− φβ(−〈ei, x〉)− bxxi.
+Putting into (A.1), we get:
+Σ′i,ixi − zi = ax,1φα(−〈ei, x〉) + ax,2φα(〈ei, x〉)− φβ(〈ei, x〉)xi + φβ(−〈ei, x〉)xi + bxxi.
+For notation simplicity, let us now write zi = (Σ ′ i,i − bx)xi + ai + bi
+where ai = −ax,1φα(−〈ei, x〉)− ax,2φα(〈ei, x〉), bi = φβ(〈ei, x〉)xi − φβ(−〈ei, x〉)xi.
+We then have (Σ′i,ixi − zi)zj = (bxxi − ai − bi)((Σ′j,j − bx)xj + aj + bj).
+Let us now construct matrix M1, · · ·M9, whose entries are given by
+1. (M1)i,j = bxxi(Σ′j,j − bx)xj
+2. (M2)i,j = bxxiaj
+3. (M3)i,j = bxxibj
+4. (M4)i,j = −ai(Σ′j,j − bx)xj
+5. (M5)i,j = −aiaj
+6. (M6)i,j = −aibj
+7. (M7)i,j = −bi(Σ′j,j − bx)xj
+8. (M8)i,j = −biaj
+9. (M9)i,j = −bibj
+Thus, we know that E[(Σ′x−z)z>] = ∑9 i=1 E[Mi]. It is sufficient to bound the spectral norm of each matrices separately, as we discuss below.
+1. M2,M4: these matrices can be bounded by Lemma 14, term 1.
+2. M5: this matrix can be bounded by Lemma 14, term 2.
+3. M6,M8: these matrices can be bounded by Lemma 15, term 3.
+4. M3,M7: these matrices can be bounded by Lemma 15, term 2.
+5. M9: this matrix can be bounded by Lemma 15, term 1.
+6. E[M1]: this matrix is of the form E[bxx(x dx)>], where dx is a vector whose j-th entry is (Σ′j,j − bx). To bound the this term, we have that for any u, v such that ‖u‖2 = ‖v‖2 = 1,
+u>E[bxx(x dx)>]v = E[bx〈u, x〉〈v, x dx〉].
+When β ≤ 12 , since x is non-negative, we know that the maximum of E[bx〈u, x〉〈v, x dx〉] is obtained when bx = β, dx = (2, · · · , 2) and u, v are all non-negative, which gives us
+E[bx〈u, x〉〈v, x dx〉] ≤ 2β‖E[xx>]‖2 ≤ √ ‖E[xx>]‖1‖E[xx>]‖∞ = ‖E[xx>]‖1.
+Now, for each row of ‖E[xx>]‖1, we know that [E[xx>]]i ≤ E[xi ∑ j xj ] ≤ 2rk D , which gives us
+‖E[M1]‖2 ≤ 4βrk
+D .
+Putting everything together gives the bound on ‖E[(Σ′x − z)z>]‖2. A similar proof holds for the bound on ‖E[(Σ′x − z)x>]‖2.
+A.1.2. GENERAL xi
+We have the following decoding lemma for the general case when xi ∈ [0, 1] and the distribution of x satisfies the order-q decay condition.
+Lemma 8 (Decoding II). For every ` ∈ [0, 1), every off-diagonal matrix E′ such that ‖E′‖2 ≤ ` and every diagonal matrix Σ′ such that ‖Σ′ − I‖2 ≤ 12 , let z = φα((Σ ′ + E′)x) for α ≤ 14 . Then for every β ∈ (0, α],
+‖E[(Σ′x− z)x>]‖2, ‖E[(Σ′x− z)z>]‖2 = O(C2)
+where
+C2 = `4r3m αβ2D2 + `5r2.5m D2α2.5β + `2kr Dβ ( m Dk ) q 2q+2 + `3r2 √ km D1.5α2 + `6r4m α4D2 + kβ ( r D ) 2q+1 2q+2 + kr D α q+1 2 .
+Proof of Lemma 8. We consider the bound on ‖E[(Σ′x − z)z>]‖2, and that on E[(Σ′x − z)x>]‖2 can be proved by a similar argument.
+Again, we still have zi = φα([(Σ ′ + E′)]ix) = φα(Σ ′ i,ixi + 〈ei, x〉).
+However, this time even when xi 6= 0, xi can be smaller than α. Therefore, we need the following inequality.
+Claim 9. |Σ′i,ixi − zi + 〈ei, x〉1xi≥4α| ≤ φα/2(|〈ei, x〉|) + 2xi1xi∈(0,4α).
+Proof. To see this, we can consider the following four events:
+1. xi = 0, then |Σ′i,ixi − zi + 〈ei, x〉1xi≥2α| = |zi| ≤ φα(〈ei, x〉)
+2. xi ≥ 4α. |Σ′i,ixi − zi + 〈ei, x〉1xi≥4α| = |Σ′i,ixi + 〈ei, x〉 − φα(Σ′i,ixi + 〈ei, x〉)|. Since Σ′i,ixi ≥ 2α, we can get the same bound.
+3. xi ∈ (α/4, 4α): then if zi 6= 0, |Σ′i,ixi − zi + 〈ei, x〉| = 0. Which implies that
+|Σ′i,ixi − zi| ≤ |〈ei, x〉| ≤ φα/2(|〈ei, x〉|) + α
+2 ≤ φα/2(|〈ei, x〉|) + 2xi1xi∈(0,4α)
+If zi = 0, then |Σ′i,ixi − zi| = Σ′i,ixi ≤ 2xi1xi∈(0,2α)
+4. xi ∈ (0, α/4), then Σ′i,ixi ≤ α2 , therefore, zi 6= 0 only when 〈ei, x〉 ≥ α 2 . We still have: |Σ ′ i,ixi−zi| ≤ φα/2(〈ei, x〉)
+If z0 = 0, then |Σ′i,ixi − zi| ≤ 2xi1xi∈(0,4α) as before.
+Putting everything together, we have the claim.
+Following the exact same calculation as in Lemma 6, we can obtain
+Σ′i,ixi − zi = ax,1φα/2(−〈ei, x〉) + ax,2φα/2(〈ei, x〉) − φβ(〈ei, x〉)1xi≥4α + φβ(−〈ei, x〉)1xi≥4α + bx1xi≥4α + cx2xi1xi∈(0,4α)
+for ax,1, ax,1, cx ∈ [−1, 1] and bx ∈ [−β, β].
+Therefore, consider a matrix M whose (i, j)-th entry is (Σ′i,ixi − zi)zj . This entry can be written as the summation of the following terms.
+1. Terms that can be bounded by Lemma 14. These include
+ax,1φα/2(−〈ei, x〉)xj , ax,2φα/2(〈ei, x〉)xj , ax,uax,vφα/2((−1)u〈ei, x〉)φα/2((−1)v〈ej , x〉)
+for u, v ∈ {1, 2}, and
+ax,ubxφα/2((−1)u〈ei, x〉)1xi≥4α, 2ax,ucxφα/2((−1)u〈ei, x〉)xj1xj∈(0,4α)
+by using 0 ≤ 1xj≥4α ≤ xj 4α and 0 ≤ xj1xj∈(0,4α) ≤ xj .
+2. Terms that can be bounded by Lemma 21. These include
+−φβ(〈ei, x〉)1xi≥4αxj , φβ(−〈ei, x〉)1xi≥4αxj ,
+(−1)uax,vφβ((−1)1+u〈ei, x〉)1xi≥4αφα/2((−1)v〈ej , x〉),
+(−1)u+vφβ((−1)1+u〈ei, x〉)1xi≥4α1xj≥4αφβ((−1)1+v〈ej , x〉)
+for u, v ∈ {1, 2}. Also include
+2(−1)ucxφβ((−1)1+u〈ei, x〉)1xi≥4αxj1xj∈(0,4α)
+by using0 ≤ xj1xj∈(0,4α) ≤ xj . Also include
+2(−1)ubxφβ((−1)1+u〈ei, x〉)1xi≥4α1xj≥4α
+by using 0 ≤ 1xj≥4α ≤ xj 4α .
+3. Terms that can be bounded by Lemma 18. These include
+bx1xi≥4αxj , b 2 x1xi≥4α1xj≥4α, 2bxcx1xi≥4αxi1xj∈(0,4α)xj .
+Where agin we use the fact that 0 ≤ 1xi≥4α ≤ xj 4α and 0 ≤ xi, 1xj∈(0,4α) ≤ 1
+4. Terms that can be bounded by Lemma 17. These include
+cx2xi1xi∈(0,4α)xj , 4c 2 xxi1xi∈(0,4α)xj1xj∈(0,4α).
+Where we use the fact that 0 ≤ 1xj∈(0,4α) ≤ 1.
+Putting everything together, when 0 < β ≤ α,
+‖E[(Σ′x− z)z>]‖2 = O (C2)
+where
+C2 = `4r3m αβ2D2 + `5r2.5m D2α2.5β + `2kr Dβ ( m Dk ) q 2q+2 + `3r2 √ km D1.5α2 + `6r4m α4D2 + kβ ( r D ) 2q+1 2q+2 + kr D α q+1 2 .
+This gives the bound on E[(Σ′x− z)z>]‖2. The bound on E[(Σ′x− z)x>]‖2 can be proved by a similar argument. A.2. Update  A.2.1. GENERAL UPDATE LEMMA Lemma 10 (Update). Suppose Σt is diagonal and Et is off-diagonal for all t. Suppose we have an update rule that is given by Σt+1 + Et+1 = (Σt + Et)(1− η∆) + ηΣ∆ + ηRt for some positive semidefinite matrix ∆ and some Rt such that ‖Rt‖2 ≤ C ′′. Then for every t ≥ 0,
+‖Σt + Et −Σ‖2 ≤ ‖Σ0 + E0 −Σ‖2(1− ηλmin(∆))t + C ′′
+λmin(∆) .
+Proof of Lemma 10. We know that the update is given by
+Σt+1 + Et+1 −Σ = (Σt + Et −Σ)(1− η∆) + ηRt.
+If we let Σt + Et −Σ = (Σ0 + E0 −Σ)(1− η∆)t + Ct.
+Then we can see that the update rule of Ct is given by
+C0 = 0,
+Ct+1 = Ct(1− η∆) + ηRt
+which implies that ∀t ≥ 0, ‖Ct‖2 ≤ C ′′
+λmin(∆) .
+Putting everything together completes the proof.
+Lemma 11 (Stage). In the same setting as Lemma 10, suppose initially for `1, `2 ∈ [0, 18 ) we have
+‖Σ0 − I‖2 ≤ `1, ‖E0‖ ≤ `2,Σ = (Diag[(Σ0 + E0)−1])−1.
+Moreover, suppose in each iteration, the error Rt satisfies that ‖Rt‖2 ≤ λmin(∆)160 `2.
+Then after t = log 400`2 ηλmin(∆) iterations, we have
+1. ‖Σt − I‖2 ≤ `1 + 4`2,
+2. ‖Et‖2 ≤ 140`2.
+Proof of Lemma 11. Using Taylor expansion, we know that
+Diag[(Σ0 + E0)−1] = Σ−10 + ∞∑ i=1 Σ −1/2 0 Diag[(−Σ −1/2 0 E0Σ −1/2 0 ) i]Σ −1/2 0 .
+Since ‖Diag(M)‖2 ≤ ‖M‖2 for any matrix M,
+‖Diag[(Σ0 + E0)−1]−Σ−10 ‖2 = ‖ ∞∑ i=1 Σ −1/2 0 Diag[(−Σ −1/2 0 E0Σ −1/2 0 ) i]Σ −1/2 0 ‖2
+≤ ‖ ∞∑ i=1 Σ −1/2 0 (−Σ −1/2 0 E0Σ −1/2 0 ) iΣ −1/2 0 ‖2 = ‖[(Σ0 + E0)−1](−E0Σ−10 )‖2
+≤ `2 (1− `1)(1− `1 − `2) ≤ 32 21 `2.
+Therefore,
+‖Diag[(Σ0 + E0)−1]Σ0 − I‖2 ≤ `2(1 + `1) (1− `1)(1− `1 − `2) ≤ ` := 12 7 `2.
+which gives us
+‖Diag[(Σ0 + E0)−1]−1Σ−10 − I‖2 ≤ ` 1− ` ≤ 24 11 `2.
+This then leads to
+‖Σ−Σ0‖2 ≤ ‖Diag[(Σ0 + E0)−1]−1 −Σ0‖2 ≤ (1 + `1)`
+1− ` ≤ 3`2.
+Now since ‖Σ0 + E0 −Σ‖2 ≤ 4`2 ≤ 1, after t = log 400`2 ηλmin(∆) iterations, we have
+‖Σt + Et −Σ‖2 ≤ 1
+80 `2.
+Then since Σt −Σ = Diag[Σt + Et −Σ], we have
+‖Σt −Σ‖2 ≤ ‖Σt + Et −Σ‖2 ≤ 1
+80 `2.
+This implies that
+‖Et‖2 ≤ ‖Σt −Σ‖2 + ‖Σt + Et −Σ‖2 ≤ 1
+40 `2
+and ‖Σt − I‖2 ≤ ‖Σt −Σ‖2 + ‖Σ−Σ0‖2 + ‖Σ0 − I‖2 ≤ 1
+80 `2 + 3`2 + `1 ≤ `1 + 4`2.
+Corollary 12 (Corollary of Lemma 11). Under the same setting as Lemma 11, suppose initially `1 ≤ 117 , then
+1. `1 ≤ 18 holds true through all stages,
+2. `2 ≤ ( 1 40 )t after t stages.
+Proof of Corollary 12. The second claim is trivial. For the first claim, we have
+(`1)stage s+1 ≤ (`1)stage s + 4(`2)stage s ≤ · · · ≤ 1
+17 +
+1
+8 ∑ i (1/40)i ≤ 1 8 . A.3. Proof of the Main Theorems With the update lemmas, we are ready to prove the main theorems.
+Proof of Theorem 1. For simplicity, we only focus on the expected update. The on-line version can be proved directly from this by noting that the variance of the update is polynomial bounded and setting accordingly a polynomially small η. The expected update of A(t) is given by
+A(t+1) = A(t) + η(E[yz>]−A(t)E[zz>])
+Let us pick α = 14 , focus on one stage and write A = A ∗(Σ0 + E0). Then the decoding is given by
+z = φα(A †x) = φα((Σ0 + E0) −1x).
+Let Σ,E be the diagonal part and the off diagonal part of (Σ0 + E0)−1. By Lemma 6,
+‖E[(Σx− z)x>Σ]‖2, ‖E[(Σx− z)z>‖2 = O(C1).
+Now, if we write A(t) = A∗(Σt + Et), then the expected update of Σt + Et is given by
+Σt+1 + Et+1 = (Σt + Et)(I−Σ∆Σ) + Σ−1(Σ∆Σ) + Rt
+where ‖Rt‖2 = O(C1). By Lemma 11, as long as C1 = O(σmin(∆)‖E0‖2) = O ( kλ D ‖E0‖2 ) , we can make progress. Putting in the expression of C1 with ` ≥ ‖E0‖2, we can see that as long as
+βkr D + m`4r2 α3D2 + `2 √ kmr1.5 D1.5β + `4r3m β2D2 + `5r2.5m D2α2β = O
+( kλ
+D `
+) ,
+we can make progress. By setting β = O ( λ` r ) , with Corollary 12 we completes the proof.
+Proof of Theorem 4. For simplicity, we only focus on the expected update. The on-line version can be proved directly from this by setting a polynomially small η. The expected update of A(t) is given by
+A(t+1) = A(t) + η(E[yz>]−A(t)E[zz>]).
+Let us focus on one stage and write A = A∗(Σ0 + E0). Then the decoding is given by
+z = φα(A †x) = φα((Σ0 + E0) −1x).
+Let Σ,E be the diagonal part and the off diagonal part of (Σ0 + E0)−1. By Lemma 8,
+‖E[(Σx− z)x>Σ]‖2, ‖E[(Σx− z)z>‖2 = O(C2).
+Now, if we write A(t) = A∗(Σt + Et), then the expected update of Σt + Et is given by
+Σt+1 + Et+1 = (Σt + Et)(I−Σ∆Σ) + Σ−1(Σ∆Σ) + Rt
+where ‖Rt‖2 = O(C2). By Lemma 11, as long as C2 = O(σmin(∆)‖E0‖2) = O ( kλ D ‖E0‖2 ) , we can make progress. Putting in the expression of C2 with ` ≥ ‖E0‖2, we can see that as long as
+C2 = `4r3m αβ2D2 + `5r2.5m D2α2.5β + `2kr Dβ ( m Dk ) q 2q+2 + `3r2 √ km D1.5α2 + `6r4m α4D2 + kβ ( r D ) 2q+1 2q+2 + kr D α q+1 2 = O ( kλ D ` ) ,
+we can make progress. Now set
+β = λ` D ( r D ) 2q+1 2q+2 , α =
+( λ`
+r
+) 2 q+1
+and thus in C2,
+1. First term `2− 2 q+1 k0r 5q+6 q+1 m
+λ2+ 2 q+1D2− 1 q+1
+2. Second term `4− 5 q+1 k0r 7q+16 2q+2 m
+λ1+ 5 q+1D2− 1 2q+2
+3. Third term `1k q+2 2q+2 r 4q+3 2q+2m q 2q+2
+λD 3q+1 2q+2
+4. Fourth term `3− 4 q+1 k 1 2 r 4 q+1+2m 1 2
+λ 4 q+1D− 3 2
+5. Fifth term `6− 8 q+1 k0r4+ 8 q+1m
+λ 8 q+1D2
+We need each term to be smaller than λk`D , which implies that (we can ignore the constant ` )
+1. First term:
+m ≤ kD 1− 1q+1λ3+ 2 q+1
+r5+ 1 q+1
+2. Second term:
+m ≤ kD 1− 12q+2λ2+ 5 q+1
+r 7 2+ 9 2q+2
+3. Third term:
+m ≤ kD q−1 q λ4+ 4 q
+r4+ 2 q
+4. Fourth term:
+m ≤ kDλ 2+ 8q+1
+r4+ 8 q+1
+5. Fifth term:
+m ≤ kDλ 1+ 8q+1
+r4+ 8 q+1
+This is satisfied by our choice of m in the theorem statement.
+Then with Corollary 12 we completes the proof. A.4. Expectation Lemmas In this subsection, we assume that x follows (r, k,m, λ)-GCC. Then we show the following lemmas. A.4.1. LEMMAS WITH ONLY GCC Lemma 13 (Expectation). For every ` ∈ [0, 1), every vector e such that ‖e‖2 ≤ `, for every α such that α > 2`, we have
+E[φα(〈e, x〉)] ≤ 16m`4r2
+α2(α− 2`)D2 .
+Proof of Lemma 13. Without lose of generality, we can assume that all the entries of e are non-negative. Let us denote a new vector g such that
+gi = { ei if ei ≥ α2r ; 0 otherwise.
+Due to the fact that ‖x‖1 ≤ r, we can conclude 〈e− g, x〉 ≤ α2r × r = α 2 , which implies
+φα 2 (〈g, x〉) ≥ 1 2 φα(〈e, x〉).
+Now we can only focus on g. Since ‖g‖2 ≤ `, we know that g has at most 4` 2r2
+α2 non-zero entries. Let us then denote the set of non-zero entries of g as E , so we have |E| ≤ 4` 2r2
+α2 .
+Suppose the all the x such that 〈g, x〉 ≥ α2 forms a set S of size S, each x (s) ∈ S has probability pt. Then we have:
+E[φα(〈e, x〉)] ≤ 2 ∑ s∈[S] ps〈g, x(s)〉 = 2 ∑ s∈[S],i∈E psgix (s) i .
+On the other hand, we have:
+1. ∀s ∈ [S] : ∑ i∈E gix (s) i ≥ α2 .
+2. ∀i 6= j ∈ [D] : ∑ s∈[S] psx (s) i x (s) j ≤ mD2 . This is by assumption 5 of the distribution of x.
+Using (2) and multiply both side by gigj , we get∑ s∈[S] ps(gix (s) i )(gjx (s) j ) ≤ mgigj D2
+Sum over all j ∈ E , j 6= i, we have:
+∑ s∈[S] ∑ j∈E,j 6=i ps(gix (s) i )(gjx (s) j ) ≤ mgi D2  ∑ j∈E,j 6=i gj  ≤ mgi D2 ∑ j∈E gj
+By (1), and since ∑ j∈E gjx (s) j ≥ α2 and gi ≤ `, x (s) i ≤ 1, we can obtain ∑ j∈E,j 6=i gjx (s) j ≥ α2 − `. This implies
+∑ s∈[S] ps(gix (s) i ) ≤ 1∑ j∈E,j 6=i gjx (s) j mgi D2 ∑ j∈E gj  ≤ 2m (α− 2`)D2 gi ∑ j∈E gj .
+Summing over i,
+∑ s∈[S],i∈E psgix (s) i ≤
+2m
+(α− 2`)D2 ∑ j∈E gj 2 ≤ 2m (α− 2`)D2 |E|‖g‖22 ≤ 8m`4r2 α2(α− 2`)D2 .
+Putting everything together we complete the proof.
+Lemma 14 (Expectation, Matrix). For every `, `′ ∈ [0, 1), every matrices E,E′ ∈ RD×D such that ‖E‖2, ‖E′‖2 ≤ `, α ≥ 4` and every bx ∈ [−1, 1] that depends on x, the following hold.
+1. Let M be a matrix such that [M]i,j = bxφα(〈[E]i, x〉)xj , then
+‖E[M]‖2 ≤ √ ‖E[M]‖1‖E[M]‖∞ ≤ 8`3r2 √ km
+D1.5α2 .
+2. Let M be a matrix such that [M]i,j = bxφα(〈[E]i, x〉)φα(〈[E′]j , x〉), then
+‖E[M]‖2 ≤ √ ‖E[M]‖1‖E[M]‖∞ ≤ 32`6r4m
+α4D2 .
+Proof of Lemma 14. Since all the φα(〈[E]i, x〉) and xi are non-negative, without lose of generality we can assume that bx = 1.
+1. We have ∑ j∈[D] E[Mi,j ] = E φα(〈[E]i, x〉) ∑ j∈[D] xj  ≤ rE[φα(〈[E]i, x〉)] ≤ 16`4r3m α2(α− 2`)D2 .
+On the other hand,
+∑ i∈[D] E[Mi,j ] = E ∑ i∈[D] φα(〈[E]i, x〉) xj  ≤ E[(uxEx)xj ]
+where ux is a vector with each entry either 0 or 1 depend on 〈[E]i, x〉 ≥ α or not. Note that ∑ i〈[E]i, x〉2 ≤ `2r, so ux can only have at most ` 2r α2 entries equal to 1, so ‖ux‖2 ≤ ` √ r α . This implies that
+(uxEx) ≤ `2r
+α .
+Therefore, ∑ i∈[D] E[Mi,j ] ≤ 2`2rk αD , which implies that
+‖E[M]‖2 ≤ 4 √ 2`3r2 √ km D1.5α1.5 √ (α− 2`) .
+2. We have
+‖E[M]‖1 ≤ max i ∑ j∈[D] E[Mi,j ] = max i E φα(〈[E]i, x〉) ∑ j∈[D] φα(〈[E′]j , x〉)  ≤ `2r α 16`4r3m D2α2(α− 2`) .
+In the same way we can bound ‖E[M]‖∞ and get the desired result.
+A.4.2. LEMMAS WITH xi ∈ {0, 1}
+Here we present some expectation lemmas when xi ∈ {0, 1}. Lemma 15 (Expectation, Matrix). For every `, `′ ∈ [0, 1), every matrices E,E′ ∈ RD×D such that ‖E‖2, ‖E′‖2 ≤ `, and ∀i ∈ [D], |Ei,i||E′i,i| ≤ `′, then for every β > 4`′ and α ≥ 4` and every bx ∈ [−1, 1] that depends on x, the following hold.
+1. Let M be a matrix such that [M]i,j √ ‖E[M]‖1‖E[M]‖∞ = bxφβ(〈[E]i, x〉)xixj , then
+‖E[M]‖2 ≤ √ ‖E[M]‖1‖E[M]‖∞ ≤ 8`1.5r1.25m
+D1.5β0.5 .
+2. Let M be a matrix such that [M]i,j = bxφβ(〈[E]i, x〉)xixjφβ(〈[E′]j , x〉), then
+‖E[M]‖2 ≤ √ ‖E[M]‖1‖E[M]‖∞ ≤ 8`4r3m
+β2D2 .
+3. Let M be a matrix such that [M]i,j = bxφβ(〈[E]i, x〉)xiφα(〈[E′]j , x〉), then
+‖E[M]‖2 ≤ √ ‖E[M]‖1‖E[M]‖∞ ≤ 16`5r2.5m
+D2α2β .
+Proof. This Lemma is a special case of Lemma 21 by setting γ = 1.
+A.4.3. LEMMAS WITH GENERAL xi
+Here we present some expectation lemmas for the general case where xi ∈ [0, 1] and the distribution of x satisfies the order-q decay condition.
+Lemma 16 (General expectation). Suppose the distribution of x satisfies the order-q decay condition.
+∀i ∈ [D], E[xi] ≤ Pr[xi 6= 0] ≤ (q + 2)2k
+qD .
+Proof. Denote s = Pr[xi 6= 0]. By assumption, Pr[xi ≤ √ α | xi 6= 0] ≤ αq/2, which implies that Pr[xi > √ α] > s(1− αq/2). Now, since
+E[x2i ] = ∫ 1 0 Pr[x2i ≥ α] = ∫ 1 0 Pr[xi ≥ √ α] ≤ 2k D ,
+We obtain s ≤ 2k
+D 1∫ 1 0 (1− αq/2)dα ≤ q + 2 q 2k D .
+Lemma 17 (Truncated covariance). For every α > 0, every bx ∈ [−1, 1] that depends on x, the following holds. Let M be a matrix such that [M]i,j = bx1xi≤αxixj , then
+‖E[M]‖2 ≤ √ ‖E[M]‖1‖E[M]‖∞ ≤ 6kr
+D α q+1 2 .
+Proof of Lemma 17. Again, without lose of generality we can assume that bx are just 1. On one hand, ∑ j∈[D] E[1xi≤αxixj ] ≤ rE[1xi≤αxi] ≤ rαE[10<xi≤α] = rαPr[xi ∈ (0, α]].
+By Lemma 16,
+Pr[xi ∈ (0, α]] = Pr[xi 6= 0] Pr[xi ≤ α | xi 6= 0] ≤ (q + 2)2k
+qD αq,
+and thus ∑ j∈[D] E[1xi≤αxixj ] ≤ 2(q + 2)kr qD αq+1 ≤ 6kr D αq+1.
+On the other hand, ∑ i∈[D] E[1xi≤αxixj ] ≤ E ∑ i∈[D] xi xj  ≤ 6kr D .
+Putting everything together we completes the proof.
+Lemma 18 (Truncated half covariance). For every α > 0, every bx ∈ [−1, 1] that depends on x, the following holds. Let M be a matrix such that [M]i,j = bx1xi≥αxj , then
+‖E[M]‖2 ≤ √ ‖E[M]‖1‖E[M]‖∞ ≤ 12k ( r D ) 2q+1 2q+2
+Proof of Lemma 18. Without lose of generality, we can assume bx = 1. We know that
+E[1xi≥αxj ] ≤ Pr[xi 6= 0]E[xj | xi 6= 0]
+≤ 1 s Pr[xi 6= 0]E[1xi≥sxixj | xi 6= 0] + Pr[xi 6= 0]E[1xi<s | xi 6= 0] ≤ 1 s E[xixj ] + sq Pr[xi 6= 0].
+From Lemma 16 we know that Pr[xi 6= 0] ≤ 6kD , which implies that∑ i∈[D] E[xixj ] = E[ ∑ i∈[D] xixj ] ≤ rE[xj ] ≤ rPr[xj 6= 0] ≤ 6kr D .
+Therefore, ∑ i∈[D] E[1xi≥αxj ] ≤ 6ksq + 1 s 6kr D
+Choosing the optimal s, we are able to obtain
+∑ i∈[D] E[1xi≥αxj ] ≤ ( r qD )q/(q+1) 6k(q + 1) ≤ 24k ( r D )q/(q+1) .
+On the other hand, ∑ j∈[D] E[1xi≥αxj ] ≤ rE[1xi>0] ≤ 6k D r.
+Putting everything together we get the desired bound.
+Lemma 19 (Expectation). For every ` ∈ [0, 1), every vector e such that ‖e‖2 ≤ `, for every i ∈ [D], α > 2|ei|, γ > 0, the following hold.
+1.
+∀i ∈ [D] : E[φα(〈e, x〉)1xi≥γ ] ≤ 4`2rm
+γD2(α− 2|ei|) .
+2. If ei = 0, then
+∀i ∈ [D] : E[φα(〈e, x〉)1xi≥γ ] ≤ 24kr`2
+Dα ( m Dk )q/(q+1) .
+Proof of Lemma 19. We define g as in Lemma 13. We still have ‖g‖1 ≤ ‖g‖ 2 2
+α 2r ≤ 2r`
+2
+α .
+1. The value φα(〈e, x〉)1xi≥γ is non-zero only when xi ≥ γ. Therefore, we shall only focus on this case. Let us again suppose x such that 〈g, x〉 ≥ α2 and xi ≥ γ forms a set S of size S, each x (s) ∈ S has probability ps.
+Claim 20. (1) ∀s ∈ [S] : ∑ j∈E gjx (s) j ≥ α2 .
+(2) ∀j 6= i ∈ [D] : ∑ s∈[S] psx (s) j x (s) i ≤ mD2 . (3) By Lemma 18,
+∀j 6= i ∈ [D] : ∑ a∈[S] pax (a) j ≤ 1 s m D2 + sq 6k D = 6k(q + 1) D ( m 6Dkq )q/(q+1) by choosing optimal s. Moreover, we can directly calculate that
+6k(q + 1)
+D
+( m
+6Dkq )q/(q+1) ≤ 6k D ( m Dk )q/(q+1) .
+With Claim 20(2), multiply both side by gj and taking the summation,∑ s∈[S],j∈E,j 6=i psgjx (s) j x (s) i ≤ m D2 ∑ j∈E,j 6=i gj .
+Using the fact that x(s)i ≥ γ for every s ∈ [S], we obtain∑ s∈[S],j∈E,j 6=i psgjx (s) j ≤ m γD2 ∑ j∈E,j 6=i gj .
+On the other hand, by Claim 20(1) and the fact that |ei| ≥ gi ≥ 0, we know that∑ j∈E,j 6=i gjx (s) j ≥ α 2 − |ei|.
+Using the fact that x(s)i ≥ γ for every s ∈ [S], we obtain∑ s∈[S] ps ≤ 2m γ(α− 2|ei|)D2 ∑ j∈E,j 6=i gj .
+Therefore, since gi ≤ |ei|,∑ s∈[S],j∈E psgjx (s) j ≤ ∑ s∈[S],j∈E,j 6=i psgjx (s) j + ∑ s∈[S] psgix (s) i
+≤ m γD2
+( 1 +
+2gi α− 2|ei| ) ∑ j∈E,j 6=i gj ≤ m γD2 α α− 2|ei| ‖g‖1 ≤
+2`2rm
+γD2(α− 2|ei|) .
+2. When ei = 0, in the same manner, but using Claim 20(3), we obtain∑ s∈[S] psgjx (s) j ≤ 6k D ( m Dk )q/(q+1) gj .
+Summing over j ∈ E , j 6= i we have:
+∑ s∈[S],j∈E,j 6=i psgjx (s) j ≤ 6k D ( m Dk )q/(q+1) 2r`2 α .
+Lemma 21 (Expectation, Matrix). For every `, `′ ∈ [0, 1), every matrices E,E′ ∈ RD×D such that ‖E‖2, ‖E′‖2 ≤ `, and ∀i ∈ [D], |Ei,i|, |E′i,i| ≤ `′, every β > 4`′ and α ≥ 4`, every γ > 0 and every bx ∈ [−1, 1] that depends on x, the following hold.
+1. Let M be a matrix such that [M]i,j = bxφβ(〈[E]i, x〉)1xi≥γxj , then
+‖E[M]‖2 ≤ √ ‖E[M]‖1‖E[M]‖∞ ≤ min
+{ 8`2 √ kr1.5 √ m
+√ γD1.5β
+, 12k`2r
+Dβ ( m Dk )q/(2q+2)} .
+2. Let M be a matrix such that [M]i,j = bxφβ(〈[E]i, x〉)1xi≥γ1xj≥γφβ(〈[E′]j , x〉), then
+‖E[M]‖2 ≤ √ ‖E[M]‖1‖E[M]‖∞ ≤ 8`4r2m
+γβ2D2 .
+3. Let M be a matrix such that [M]i,j = bxφβ(〈[E]i, x〉)1xi≥γφα(〈[E′]j , x〉), then
+‖E[M]‖2 ≤ √ ‖E[M]‖1‖E[M]‖∞ ≤
+16`5r2.5m √ γD2α2β .
+Proof of Lemma 21. Without loss of generality, assume bx = 1.
+1. Since every entry of M is non-negative, by Lemma 19,
+∑ j∈[D] E[Mi,j ] = E φβ(〈[E]i, x〉)1xi≥γ ∑ j∈[D] xj  ≤ rE[φβ(〈[E]i, x〉)1xi≥γ ] ≤ 4`2r2mγD2(β − 2`′) and ∑
+j∈[D]
+E[Mi,j ] ≤ 24kr`2
+Dβ ( m Dk )q/(q+1) .
+On the other hand, as in Lemma 14, we know that∑ j∈[D] φβ(〈[E′]j , x〉) ≤ `2r β .
+Therefore, ∑ i∈[D] E[φβ(〈[E]i, x〉)1xi≥γxj ] ≤ `2r β E[xj ] ≤ 6k`2r βD . Now, since each entry of M is non-negative, using ‖E[M]‖2 ≤ √ ‖E[M]‖1‖E[M]‖∞, we obtain the desired bound.
+2. Since now M is a “symmetric” matrix, we only need to look at ∑ j∈[D] E[Mi,j ], and a similar bound holds for∑
+i∈[D] E[Mi,j ].
+∑ j∈[D] E[Mi,j ] = E φβ(〈[E]i, x〉)1xi≥γ ∑ j∈[D] φβ(〈[E′]j , x〉)1xj≥γ  ≤ `2r β
+4`2rm
+γD2(β − 2`′) .
+The conclusion then follows.
+3. On one hand,
+∑ j∈[D] E[Mi,j ] = E φβ(〈[E]i, x〉)1xi≥γ ∑ j∈[D] φα(〈[E′]j , x〉)  ≤ `2r α
+4`2rm
+γD2(β − 2`′) .
+On the other hand,
+∑ i∈[D] E[Mi,j ] = E ∑ i∈[D] φβ(〈[E]i, x〉)1xi≥γ φα(〈[E′]j , x〉)  ≤ `2r β 16`4r2m D2α2(α− 2`) .
+Therefore,
+‖E[M]‖2 ≤ 8`5r2.5m
+√ γD2α1.5β0.5 √ β − 2`′ √ α− 2`
+≤ 16` 5r2.5m
+√ γD2α2β . A.5. Robustness In this subsection, we show that our algorithm is also robust to noise. To demonstrate the idea, we will present a proof for the case when xi ∈ {0, 1}. The general case when xi ∈ [0, 1] follows from the same argument, just with more calculations. Lemma 22 (Expectation). For every `, ν ∈ [0, 1), every vector e such that ‖e‖2 ≤ `, every α such that α > 2` + 2ν, the following hold.
+1. E[φα(〈e, x〉+ ν)] ≤ 16m` 4r2
+α2(α−2`−2ν)D2 . 2. If ei,i = 0, then E[|〈ei, x〉|xi] ≤ √ 2mkr D3 .
+Proof of Lemma 22. The proof of this lemma is almost the same as the proof of Lemma 13 with a few modifications.
+1. Without lose of generality, we can assume that all the entries of e are non-negative. Let us denote a new vector g such that
+gi = { ei if ei ≥ α2r , 0 otherwise.
+Due to the fact that ‖x‖1 ≤ r, we can conclude 〈e− g, x〉 ≤ α2r × r = α 2 , which implies
+φα 2 (〈g, x〉+ ν) ≥ 1 2 φα(〈e, x〉+ ν).
+Now we can only focus on g. Since ‖g‖2 ≤ `, we know that g has at most 4` 2r2
+α2 non-zero entries. Let us then denote the set of non-zero entries of g as E . Then we have |E| ≤ 4` 2r2
+α2 .
+Suppose the all the x such that 〈g, x〉 ≥ α2 − ν forms a set S of size S, each x (s) ∈ S has probability pt. Then
+E[φα(〈e, x〉)] ≤ 2 ∑ s∈[S] ps〈g, x(s)〉 = 2 ∑ s∈[S],i∈E psgix (s) i .
+On the other hand, we have the following claim. Claim 23. 1. ∀s ∈ [S] : ∑ i∈E gix (s) i ≥ α2 − ν.
+2. ∀i 6= j ∈ [D] : ∑ s∈[S] psx (s) i x (s) j ≤ mD2 . This is by the GCC conditions of the distribution of x.
+Using (2) and multiply both side by gigj , we get∑ s∈[S] ps(gix (s) i )(gjx (s) j ) ≤ mgigj D2 .
+Sum over all j ∈ E , j 6= i,
+∑ s∈[S] ∑ j∈E,j 6=i ps(gix (s) i )(gjx (s) j ) ≤ mgi D2  ∑ j∈E,j 6=i gj  ≤ mgi D2 ∑ j∈E gj .
+Using (1), and that ∑ j∈E gjx (s) j ≥ α2 − ν and gi ≤ `, x
+(s) i ≤ 1, we can obtain∑
+j∈E,j 6=i
+gjx (s) j ≥
+α 2 − ν − `.
+This implies ∑ s∈[S] ps(gix (s) i ) ≤ 1∑ j∈E,j 6=i gjx (s) j mgi D2 ∑ j∈E gj  ≤ 2m (α− 2ν − 2`)D2 gi ∑ j∈E gj .
+Summing over i,
+∑ s∈[S],i∈E psgix (s) i ≤
+2m
+(α− 4`)D2 ∑ j∈E gj 2 ≤ 2m (α− 2ν − 2`)D2 |E|‖g‖22 ≤ 8m`4r2 α2(α− 2`− 2ν)D2 .
+2. We can directly bound this term as follows.
+E[|〈e, x〉|xi] ≤ ∑ j 6=i |ej |E[xixj ] ≤ ` √∑ j 6=i E[xixj ]2 ≤ ` √ m D2 ∑ j 6=i E[xixj ]2 ≤ ` √ 2mkr D3 .
+We show the following lemma saying that even with noise, A†A∗ is roughly (Σ + E)−1.
+Lemma 24 (Noisy inverse). Let A ∈ RW×D be a matrix such that A = A∗(Σ + E) + N, for diagonal matrix Σ 12I, off diagonal matrix E with ‖E‖2 ≤ ` ≤ 18 and ‖N‖2 ≤ 1 4σmin(A ∗). Then
+‖A†A∗ − (Σ + E)−1‖2 ≤ 2‖N‖2(
+1 2 − 3 2` ) σmin(A∗)− ‖N‖2 ≤ 32‖N‖2 σmin(A∗) . Proof of Lemma 24. ‖A†A∗ − (Σ + E)−1‖2 ≤ ‖A†(A∗(Σ + E) + N)(Σ + E)−1 − (Σ + E)−1‖2 + ‖A†N‖2‖(Σ + E)−1‖2 ≤ ‖A†N‖2‖(Σ + E)−1‖
+≤ 2 (1− `)σmin(A) ‖N‖2.
+Since A = A∗(Σ + E) + N,
+σmin(A) ≥ σmin(A∗(Σ + E))− ‖N‖2 ≥ ( 1 2 − ` ) σmin(A ∗)− ‖N‖2.
+Putting everything together, we are able to obtain
+‖A†A∗ − (Σ + E)−1‖2 ≤ 2 (1− `) ( 1 2 − ` ) σmin(A∗)− ‖N‖2 ‖N‖2 ≤ 2‖N‖2( 1 2 − 3 2` ) σmin(A∗)− ‖N‖2 .
+Lemma 25 (Noisy decoding). Suppose we have z = φα((Σ′ + E′)x + ξx) for diagonal matrix ‖Σ′ − I‖2 ≤ 12 and off diagonal matrix E′ such that ‖E′‖2 ≤ ` ≤ 18 and random variable ξ
+x depend on x such that ‖ξx‖∞ ≤ ν. Then if 1 4 > α > 4`+ 4ν,m ≤ D r2 , we have
+‖E[(Σx− z)x>]‖2, ‖E[(Σx− z)z>]‖2 = O (C3)
+where
+C3 = (ν + β) kr D + m`4r2 α3D2 + `2 √ kmr1.5 D1.5β + `4r3m β2D2 + `5r2.5m D2α2β .
+Proof of Lemma 25. Since we have now
+zi = φα(Σ ′ i,ixi + 〈ei, x〉+ ξxi ).
+Like in Lemma 6, we can still show that
+|Σ′i,ixi + 〈ei, x〉xi + ξxi xi − zi| ≤ φα(〈ei, x〉+ ξxi ) ≤ φα(〈ei, x〉+ ν)
+which implies that there exists ax,ξ ∈ [−1, 1] that depends on x, ξ such that
+zi −Σ′i,ixi = 〈ei, x〉xi + ξxi xi + ax,ξφα(〈ei, x〉+ ν).
+Therefore,
+E[z2i ] ≤ 3(Σ′i,i + ν)2E[x2i ] + 3E[〈ei, x〉2x2i ] + 3E[φα(〈ei, x〉+ ν)2]
+≤ 6(2 + ν) 2k
+D + 3`2r
+√ 2mk
+D3 +
+48(` √ r + ν)m`4r2
+α2(α− 2ν − 2`)D2 ≤ O ( k
+D
+) .
+Again, from zi −Σ′i,ixi = 〈ei, x〉xi + ξxi xi + ax,ξφα(〈ei, x〉 + ν), following the exact same calculation as in Lemma 6, but using Lemma 22 instead of Lemma 13, we obtain the result.
+Definition 5 ((γ1, γ2)-rounded). A random variable ζ is (γ1, γ2) rounded if
+‖E[ζζ>]‖2 ≤ γ1, ‖ζ‖2 ≤ γ2.
+Theorem 26 (Noise). Suppose A0 is (`, ρ)-initialization for ` = O(1), ρ = O(σmin(A∗)). Suppose that the data is generated from y(t) = A∗x(t) + ζ(t), where ζ(t) is (γ1, γ2)-rounded, and γ2 = O(σmin(A∗)).
+Then after poly(D, 1 ) iterations, Algorithm 1 outputs a matrix A such that there exists diagonal matrix Σ̃ 1 2I with
+‖A−A∗Σ̃‖2 = O ( r γ2 λ σmax(A ∗) σmin(A∗) + √ γ1 λ √ D k + ε ) .
+Proof of Theorem 26. For notation simplicity, we only consider one stages, and we drop the round number here and let Ã = A(t+1) and A = A(t), and we denote the new decomposition as Ã = A∗(Σ̃ + Ẽ) + Ñ.
+Thus, the decoding of z is given by
+z = φα(A † 0(A ∗x+ ζ)).
+By Lemma 24, there exists a matrix R such that ‖R‖2 ≤ 32‖N0‖2σmin(A∗) with A † 0A ∗ = (Σ0 + E0) −1 + R. Now let Σ′ + E′ = (Σ0 + E0) −1 + R, where Σ′ is diagonal and E′ is off-diagonal. Then
+z = φα((Σ ′ + E′)x+ A†0ζ)
+where
+ν := ‖A†0ζ‖∞ ≤ 16‖ζ‖2 σmin(A∗) ≤ 16γ2 σmin(A∗) .
+For simplicity, we only focus on the expected update. The on-line version can be proved directly from this by setting a polynomially small η. The expected update is given by
+Ã = A + ηE[(A∗x+ ζ)z> −Azz>].
+Therefore,
+A∗(Σ̃ + Ẽ) + Ñ = A + ηE[(A∗x+ ζ)z> −Azz>] = A∗[(Σ + E)(I− ηE[zz>]) + ηE[xz>]] + N(I− ηE[zz>]) + E[ζz>].
+So we still have
+Σ̃ + Ẽ = (Σ + E)(I− ηE[zz>]) + ηE[xz>], Ñ = N(I− ηE[zz>]) + E[ζz>].
+By Lemma 25, Σ̃ + Ẽ = (Σ + E)(I− ηΣ′∆Σ′) + η∆Σ′ + C1
+Ñ = N(I− ηΣ′∆Σ′) + E[ζz>] + NC2.
+where ‖C1‖2, ‖C2‖2 ≤ C3, and
+C3 = (ν + β) kr D + m`4r2 α3D2 + `2 √ kmr1.5 D1.5β + `4r3m β2D2 + `5r2.5m D2α2β .
+First, consider the update on Σ̃+ Ẽ. By a similar argument as in Lemma 11, we know that as long as C3 = O ( k Dλ‖E0‖2 ) and ν = O(`), we can reduce the norm of E by a constant factor in polynomially many iterations. To satisfy the requirement on C3, we will choose α = 1/4, β = λr . Then to make the terms in C3 small, m is set as follows.
+1. Second term:
+m ≤ Dkλ r2 .
+2. Third term:
+m ≤ Dλ 4k
+r5 .
+3. Fourth term:
+m ≤ Dλ 3k
+r5 .
+4. Fifth term:
+m ≤ Dλ 2k
+r3.5 .
+This implies that after poly( 1ε ) stages, the final E will have
+‖E‖2 = O (
+rγ2 λσmin(A∗) + ε
+) .
+Next, consider the update on Ñ. Since the chosen value satisfies C3 ≤ 12σmin(Σ ′∆Σ′), we have
+‖Ñ‖2 ≤ max { ‖N0‖2,
+2‖E[ζz>]‖2 σmin(Σ′∆Σ′)
+} .
+For the term E[ζz>], we know that for every vectors u, v with norm 1,
+u>E[ζz>]v ≤ E[|〈u, ζ〉||〈z, v〉|].
+Since z is non-negative, we might without loss of generality assume that v is all non-negative, and obtain
+E[|〈u, ζ〉||〈z, v〉|] ≤ √ E[〈u, ζ〉2]E[〈z, v〉2] ≤ √ E[〈u, ζ〉2] √ max i∈[D] E[z2i ] = O (√ kγ1 D ) .
+Putting everything together and applying Corollary 12 across stages complete the proof.
+Proof of Theorem 5. The theorem follows from Theorem 26 and noting that √ γ1 λ √ D k is smaller than r γ2 λ σmax(A ∗) σmin(A∗)
+in order. B. Additional Experiments Here we provide additional experimental results. The first set of experiments in Section B.1 evaluates the performance of our algorithm in the presence of weak initialization, since for our theoretical analysis a warm start is crucial for the convergence. It turns out that our algorithm is not very sensitive to the warm start; even if there is a lot of noise in the initialization, it still produces reasonable results. This allows it to be used in a wide arrange of applications where a strong warm start is hard to achieve.
+The second set of experiments in Section B.2 evaluates the performance of the algorithm when the weight x has large sparsity. Note that our current bounds have a slightly strong dependency on the `1 norm of x. We believe that this is only because we want to make our statement as general as possible, making only assumptions on the first two moments of x. If in addition, for example, x is assumed to have nice third moments, then our bound can be greatly improved. Here we show that empirically, our algorithm indeed works for typical distributions with large sparsity.
+The final set of experiments in Section B.3 applies our algorithm on typical real world applications of NMF. In particular, we consider topic modeling on text data and component analysis for image data, and compare our method to popular existing methods. B.1. Robustness to Initializations In all the experiments in the main text, the initialization matrix A0 is set to A0 = A∗(I + U) where I is the identity matrix and U is a matrix whose entries are i.i.d. samples from the uniform distribution on [−0.05, 0.05]. Note that this is a very weak initialization, since [A0]i = (1 + Ui,i)[A∗]i + ∑ j 6=i Uj,i[A
+∗]j and the magnitude of the noise component∑ j 6=i Uj,i[A ∗]j can be larger than the signal part (1 + Ui,i)[A∗]i.
+Here, we further explore even worse initializations: A0 = A∗(I + U) + N where I is the identity matrix, U is a matrix whose entries are i.i.d. samples from the uniform distribution on [−0.05, 0.05] × rl for a scalar rl, N is an additive error matrix whose entries are i.i.d. samples from the uniform distribution on [−0.05, 0.05] × rn for a scalar rn. Here, we call U the in-span noise and N the out-of-span noise, since they introduce noise in or out of the span of A∗.
+We varied the values of rl or rn, and found that even when U violates our assumptions strongly, or the column norm of N becomes as large as the column norm of the signal A∗, the algorithm can still recover the ground-truth up to small relative error. Figure 3(a) shows the results for different values of rl. Note that when rl = 1, the in-span noise already violates our assumptions, but as shown in the figure, even when rl = 2, the ground-truth can still be recovered, though at a slower yet exponential rate. Figure 3(b) shows the results for different values of rn. For these noise values, the column norm of the noise matrix N is comparable or even larger than the column norm of the signal A∗, but as shown in the figure, such noise merely affects on the convergence. B.2. Robustness to Sparsity We performed experiments on the DIR data with different sparsity. In particular, construct a 100× 5000 matrix X, where each column is drawn from a Dirichlet prior D(α) on d = 100 dimension, where α = (α/d, α/d, . . . , α/d) for a scalar α. Then the dataset is Y = A∗X. We varied the α parameter of the prior to control the expected support sparsity, and ran the algorithm on the data generated.
+Figure 4 shows the results. For α as large as 20, the algorithm still converges to the ground-truth in exponential rate. When α = 80 meaning that the weight vectors (columns in X) have almost full support, the algorithm still produces good results, stabilizing to a small relative error at the end. This demonstates that the algorithm is not sensitive to the support sparsity of the data. B.3. Qualitative Results on Some Real World Applications We applied our algorithm to two popular applications with real world data to demonstrate the applicability of the method to real world scenarios. Note that the evaluations here are qualitative, due to that the guarantees for our algorithm is the convergence to the ground-truth, while there are no predefined ground-truth for these datasets in practice. Quantitative studies using other criteria computable in practice are left for future work. B.3.1. TOPIC MODELING Here our method is used to compute 10 topics on the 20newsgroups dataset, which is a standard dataset for the topic modeling setting. Our algorithm is initialized with 10 random documents from the dataset, and the hyperparameters like learning rate are from the experiments in the main text. Note that better initialization is possible, while here we keep things simple to demonstrate the power of the method.
+Table 1 shows the results of the NMF method and the LDA method in the sklearn package,10 and the result of our AND method. It shows that our method indeed leads to reasonable topics, with quality comparable to well implemented popular methods tuned to this task.
+10http://scikit-learn.org/
+B.3.2. IMAGE DECOMPOSITION
+Here our method is used to compute 6 components on the Olivetti faces dataset, which is a standard dataset for image decomposition. Our algorithm is initialized with 6 random images from the dataset, and the hyperparameters like learning rate are from the experiments in the main text. Again, note that better initialization is possible, while here we keep things simple to demonstrate the power of the method.
+Figure 5 shows some examples from the dataset, the result of our AND method, and 6 other methods using the implementation in the sklearn package. It can be observed that our method can produce meaningful component images, and the non-negative matrix factorization implementation from sklearn produces component images of similar quality. The results of these two methods are generally better than those by the other methods.  (Anandkumar et al., 2012)), which undermine their applicability in practice.    This problem is poorly understood, with only a few provable guarantees known (Awasthi & Risteski, 2015; Li et al., 2016).    Most of the previous theoretical approaches for analyzing alternating between decoding and encoding, such as (Awasthi & Risteski, 2015; Li et al., 2016; Arora et al., 2015), require the coordinates of x to be pairwiseindependent, or almost pairwise-independent (meaning Eμ[xixj ] ≈ Eμ[xi]Eμ[xj ]).    Most of the previous theoretical approaches for analyzing alternating between decoding and encoding, such as (Awasthi & Risteski, 2015; Li et al., 2016; Arora et al., 2015), require the coordinates of x to be pairwiseindependent, or almost pairwise-independent (meaning Eμ[xixj ] ≈ Eμ[xi]Eμ[xj ]).    Inverse decoding was also used in (Li et al., 2016; Arora et al., 2015; 2016).    Inverse decoding was also used in (Li et al., 2016; Arora et al., 2015; 2016).    It was also observed in (Arora et al., 2016) that Moore-Penrose    , (Kim & Park, 2008; Lee & Seung, 2001; Cichocki et al., 2007; Ding et al., 2013; 2014).    , (Kim & Park, 2008; Lee & Seung, 2001; Cichocki et al., 2007; Ding et al., 2013; 2014).    , 2012b) also studied NMF under separability assumptions about the features, and (Bhattacharyya et al., 2016) studied NMF under related assumptions.    The most related work is (Li et al., 2016), which analyzed an alternating minimization type algorithm.    Recently, there is a line of theoretical work analyzing tensor decomposition (Arora et al., 2012a; 2013; Anandkumar et al., 2013) or combinatorial methods (Awasthi & Risteski, 2015).    Since A and A∗ are in the same subspace, inspired by (Li et al., 2016) we can write A∗ as A(Σ + E) for a diagonal matrix Σ and an off-diagonal matrix E, and thus the decoding becomes z = φα(Σx + Ex).    In particular, we used the matrix with 100 topics computed by the algorithm in (Arora et al., 2013) on the NIPS papers dataset (about 1500 documents, average length about 1000).    We compare the algorithm AND to the following popular methods: Alternating Non-negative Least Square (ANLS (Kim & Park, 2008)), multiplicative update (MU (Lee & Seung, 2001)), LDA (online version (Hoffman et al., 2010)),7 and Hierarchical Alternating Least Square (HALS (Cichocki et al.    , 2010)),7 and Hierarchical Alternating Least Square (HALS (Cichocki et al., 2007)).    Non-negative matrix factorization is a basic tool for decomposing data into the feature and weight matrices under non-negativity constraints, and in practice is often solved in the alternating minimization framework. However, it is unclear whether such algorithms can recover the groundtruth feature matrix when the weights for different features are highly correlated, which is common in applications. This paper proposes a simple and natural alternating gradient descent based algorithm, and shows that with a mild initialization it provably recovers the ground-truth in the presence of strong correlations. In most interesting cases, the correlation can be in the same order as the highest possible. Our analysis also reveals its several favorable features including robustness to noise. We complement our theoretical results with empirical studies on semi-synthetic datasets, demonstrating its advantage over several popular methods in recovering the groundtruth. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

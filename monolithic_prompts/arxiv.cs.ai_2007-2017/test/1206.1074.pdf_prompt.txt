@@ -1,0 +1,233 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Memetic Artificial Bee Colony Algorithm for Large-Scale Global Optimization
+Paper Content: 1206.1074.pdf CRF Memetic Artificial Bee Colony Algorithm for Large-Scale Global Optimization Iztok Fister Iztok Fister Jr. Janez Brest Viljem Žumer iztok.fister@uni-mb.si iztok.fister@guest.arnes.si janez.brest@uni-mb.si zumer@uni-mb.si  Memetic computation (MC) has emerged recently as a new paradigm of efficient algorithms for
+solving the hardest optimization problems. On the other hand, artificial bees colony (ABC) algo-
+rithms demonstrate good performances when solving continuous and combinatorial optimization
+problems. This study tries to use these technologies under the same roof. As a result, a memetic
+ABC (MABC) algorithm has been developed that is hybridized with two local search heuristics:
+the Nelder-Mead algorithm (NMA) and the random walk with direction exploitation (RWDE).
+The former is attended more towards exploration, while the latter more towards exploitation of
+the search space. The stochastic adaptation rule was employed in order to control the balancing
+between exploration and exploitation. This MABC algorithm was applied to a Special suite on
+Large Scale Continuous Global Optimization at the 2012 IEEE Congress on Evolutionary Compu-
+tation. The obtained results the MABC are comparable with the results of DECC-G, DECC-G*,
+and MLCC.
+To cite paper as follows: I. Fister, I. Fister Jr., J. Brest, V. Zumer, Memetic Artificial Bee
+Colony Algorithm for Large-Scale Global Optimization, in Proc. IEEE Congress on Evolutionary
+Computation, Brisbane, Australia, 2012
+∗University of Maribor, Faculty of electrical engineering and computer science Smetanova 17, 2000 Maribor;
+Electronic address: iztok.fister@uni-mb.si †University of Maribor, Faculty of electrical engineering and computer science Smetanova 17, 2000 Maribor;
+Electronic address: iztok.fister@guest.arnes.si ‡University of Maribor, Faculty of electrical engineering and computer science Smetanova 17, 2000 Maribor;
+Electronic address: janez.brest@uni-mb.si §University of Maribor, Faculty of electrical engineering and computer science Smetanova 17, 2000 Maribor;
+Electronic address: zumer@uni-mb.si
+ar X
+iv :1
+20 6.
+10 74
+v1 [
+cs .N
+E ]
+5 J
+un 2
+01 2
+I. INTRODUCTION
+A large-scale global optimization problem is defined as follows. Let us assume, an objective function f(x) is given, where x = (x1, . . . , xD) is a vector of D design variables in a decision space S. The design variables xi ∈ {xlb, xub} are limited by their lower xlb ∈ R and upper bounds xub ∈ R. The task of optimization is to find the minimum of the objective function. Note that large-scale refers to a huge number of variables, i.e. n ≥ 1, 000. Moreover, this problem belongs to the domain of function optimization.
+The domain of function optimization serves as a ’test-bed’ for many new comparisons and new features of various algorithms [25]. Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12]. EAs hybridized with local search algorithms [1] have been successful within this domain. These kinds of EAs are often named as memetic algorithms (MAs) [24, 27]. Memetic computation (MC) [33] has emerged recently as a widening of MAs. MC uses a composition of memes that represent those units of information encoded within complex structures and interact with each other for the purpose of problemsolving. Namely, the meme denotes an abstract concept that can be, for example: a strategy, an operator or a local search algorithm.
+As analog to EA, swarm intelligence (SI) [4] has been inspired by nature. For foraging and defending, it simulates the collective behavior of social insects, flock of birds, ant-colonies, and fish schools. These particles are looking for good food sources and due to the interaction between them move to the more promising regions within an environment. This concept has been exploited also by the Artificial Bees Colony (ABC) algorithm proposed by Karaboga and Basturk [19] and achieved excellent results when solving continuous optimization problems [20] as well as combinatorial optimization problems [15, 37].
+Artificial bees form colonies within which each bee has limited capabilities and limited knowledge of its environment. However, such a colony is capable of developing a collective intelligence that is used for foraging. The foraging process is divided into three components: food sources, employed foragers, and unemployed foragers. On the other hand, Iacca et al. [18] assert that an optimal memetic exploration of the search space is composed of three
+memes: the first stochastic with long-search radius, the second stochastic with a moderatesearch radius, and the third deterministic with short-search radius. In line with this, it has been identified that the original ABC algorithm also explores the search space over three stages that could correspond to three memes: the first stochastic with a long-search radius (food sources), the second stochastic with a moderate-search radius (employed foragers), and the third random with long-search radius (unemployed foragers).
+Unfortunately, the deterministic meme with a short-search radius is missing from this identification. Therefore, the original ABC algorithm has been hybridized with the local search heuristics representing this deterministic meme. Two local search methods were applied within the proposed memetic ABC (MABC) algorithm: the Nelder/Mead (NM) simplex method [35] and the random walk method with direction exploitation (RWDE) [35]. The former is designed more towards exploration, whilst the latter more towards exploitation of the continuous search space. The stochastic adaptive rule as specified by Neri [9] was applied for balancing the exploration and exploitation.
+In order to prevent a slow convergence of the original ABC algorithm caused because of a single-dimension update by the crossover operator, a new crossover operator capable of updating multiple dimensions was developed within MABC. Additionally, new mutation strategies similar to DE strategies were incorporated into this algorithm.
+Finally, this MABC algorithm was applied to a Special suite on Large Scale Continuous
+Global Optimization at the 2012 IEEE Congress on Evolutionary Computation.
+This paper is structured as follows. Section II describes the MABC algorithm. In Section III, the test suite together with the experimental setup is discussed in detail. In Section IV, the obtained results are presented and compared with other algorithms. In Section V, the final remarks are presented, and a look is taken on future work. II. MEMETIC ARTIFICIAL BEES COLONY ALGORITHM FOR LARGE-SCALE GLOBAL OPTIMIZATION
+In the original ABC algorithm, the foraging process is performed by three groups of bees: employed bees, onlookers, and scouts. Each food source is discovered by only one employed bee. On the basis of information obtained by the employed foragers, the onlooker bees make a decision, which food source to visit. When the food source is exhausted, the corresponding
+unemployed foragers become scouts.
+In order to make a super-fit individual [9] that guides the direction in which the search space needs to be explored by the bee colony, an additional step is added to the original ABC algorithm, i.e. locally improving the best bee. As a result, the final scheme for the MABC algorithm is obtained as follows:
+Algorithm 1 Pseudo code of the MABC algorithm
+1: Init(); 2: while !TerminationConditionMeet() do 3: SendEmployedBees(); 4: SendOnlookerBees(); 5: LocalImproveBestBee(); 6: SendScouts(); 7: end while
+MABC is a population-based algorithm of size NP , where the candidate solutions xi are vectors of D design variables within a decision space S. Initial population (function Init() in Algorithm 1) is randomly sampled within decision space S, as follows:
+x (0) i,j = rand (0, 1) . (ub− lb) + lb, for j = 1 . . . D, (1)
+where function rand (0, 1) returns a random value between 0 and 1, and lb, ub denote the lower and upper bounds of the candidate solution xi.
+The core of the foraging process (sequence of function calls in the while loop in Algo-
+rithm 1) consists of four functions:
+• SendEmployedBees(): sending the employed bees onto the food sources and evaluating
+their nectar amounts,
+• SendOnlookerBees(): sharing information about food sources with employed bees,
+selecting the proper food source and evaluating their nectar amounts,
+• LocalImproveBestBee(): determining the best food source and improve it,
+• SendScouts(): determining the scout bees and then sending them to find new possibly
+better food sources.
+In the sense of MC analysis due to [18], each of these four functions perform certain
+exploration task, as follows:
+• stochastic long-distance exploration (function SendEmployedBees()),
+• stochastic moderate-distance exploration (function SendOnlookerBees()),
+• deterministic short-distance exploration (function LocalImproveBestBee()),
+• random long-distance exploration (function SendScouts()).
+In continuation, these exploration tasks are discussed in detail. A. Stochastic long-distance exploration The stochastic long-distance exploration is performed in the DE fashion [34] as follows. In order to obtain a trial solution, three operators are applied on each candidate’s solution, i.e. mutation, crossover and selection. The mutation operator in MABC implements a ′rand/1/bin ′ like DE mutation strategy, according to Eq. (2):
+v (t) i = x (t) r1 + ( x (t) r2 − x (t) r3 ) , (2)
+where r1, r2, r3 denote randomly-selected candidate solutions, and t is the generation number. This operator is slightly different from the original ABC modification operator. Conversely to DE, the constant scale parameter F is unused in the Eq. (2).
+In place of the original ABC expression for producing a new food position that modifies only single dimension of trial solution, the new expression is developed in MABC that is capable to modify multiple dimensions in trial solution. The number of modifications are controlled by CR parameter as follows:
+u (t) i,j = v (t) i,j if (randj(0, 1) ≤ CR || j == jr4) ,
+x (t) i,j otherwise,
+(3)
+where jr4 denotes a random dimension within the trial solution. According to the minimum value of the objective function, the selection operator selects the best between the candidate and trial solution, as expressed in Eq. (4):
+xt+1i = u (t) i if ( f ( u (t) i ) ≤ f ( x (t) i )) x (t) i,j otherwise.
+(4)
+The long-distance exploration comprises two stochastic mechanisms: the mutation strategy and crossover operators. The first mechanism focuses on exploration because the modified dimensions of the trial solution is independent of the current value, i.e. the new value is sampled as three dimensions of randomly-selected candidate solutions. The second mechanism determines how many modifications should be applied to the trial solution. As a result, this exploration attempts to detect new promising regions within the entire decision space S. B. Stochastic moderate-distance exploration Onlooker bees visit a food source after making a decision if the appropriate food source lacks sufficient nectar amounts. Within more nectar amounts, more bees can be expected in the vicinity of this food source. The property q that the i-th onlooker bee should visit the nectar amount is expressed as follows:
+qi = fi − fworst fbest − fworst , (5)
+where fi, fworst and fbest denotes the nectar amounts of i-th, worst and best food sources.
+The stochastic moderate-distance exploration is performed similarly to long-distance exploration, i.e. a trial solution undergoes acting the three operators: mutation, crossover and selection. Here, MABC implements a ′currenttobest/1/bin ′ like DE strategy as the mutation operator, expressed as:
+v (t) i = x (t) i + ( x (t) best − x (t) i ) + ( x (t) r1 − x (t) r2 )  if (qi < r0)else i = i+ 1 (6) where r0 denotes the randomly generated number between 0 and 1 (rand(0, 1)), r1 and r2 are the randomly-selected candidate solutions and qi is expressed according to Eq. (5). The crossover and selection operators are implemented according to Eqs (3) and (4).
+Note that the trial solution is only generated if the nectar amounts are sufficient. If not, the next food source is selected. This process repeats until the number of onlooker bees does not exceed NP . In this manner, the food sources with more nectar amounts are likely to be visited by onlookers. As a results, onlookers are collected in the vicinity of more promising food sources.
+In summary, the function SendOnlookerBees() directs onlookers to more promising regions of the search space. The applied mutation operator also contributes to this directed search. C. Deterministic short-distance exploration The deterministic short-distance exploration tries to fully exploit promising search directions. The goal of this exploration is to bring a candidate solution into the local optimum. In the case that the solution is the global optimum, the search needs to be finished. In MABC, short-distance exploration concerns for maintaining a diversity of population.
+In population-based algorithms, diversity plays a crucial role in the success of the optimization [29]. The diversity of a population is a measure of the different solutions present [14]. This measure can be expressed as the number of different fitness values present, the number of different phenotypes present, or the number of different genotypes present. In this study, the fitness diversity metric is expressed as [30]:
+Ψ = 1− ∣∣∣∣ favg − fbestfworst − fbest ∣∣∣∣ , (7) where favg, fbest, and fworst denote the average, best, and worst fitness of individuals in the population. Note that the metric returns values between 0 and 1.
+The main characteristic of this metric is that its value is independent on the range of variability the fitness values. It is very sensible to small variations and thus, especially suitable for fitness landscapes containing plateaus and low gradient areas [29]. Although more fitness diversity metrics were used in the experiments, this metric demonstrated that it is the most suitable for the MABC algorithm.
+In the sense of deterministic short-distance exploration, two local search algorithms were developed that run within the ABC framework. The first is the Nelder-Mead Algorithm (NMA) [28] with exploration features and the second the Random Walk with Direction Exploitation (RWDE) [35] with exploitation features. In order to coordinate the exploration/exploitation process, the following exponential distribution is used:
+p (Ψ) = e −(Ψ−µp) 2σ2p , (8)
+where Ψ are the fitness diversity metric, and variable µp denotes the mean value and σp is the standard deviation of diversity metric Ψ calculated so far. Both values µp and σp are calculated incrementally in each generation according to the Knuth’s algorithm [22].
+The following adaptive scheme is applied for balancing between both local search algo-
+rithms:
+if rand (0, 1) > p (Ψ) => use NMAotherwise => use RWDE, (9) where rand (0, 1) denotes a randomly generated value between 0 and 1. From Eq. (9) it can be seen that when the population looses the diversity, i.e. p (Ψ) > 0.5, the NMA exploration algorithm is executed, whilst in contrary the RWDE exploitation algorithm takes the initiative. D. Random long-distance exploration In nature, when the food source is exhausted the foragers become scouts. These scouts look for a new food sources within the environment. In MABC, scouts are simulated by new randomly generated food source that should be discovered by the foragers in the remaining cycles of this algorithm. The food is exhausted when the predefined number of cycles (also named scout limit) has expired, in which no further improvement of the nectar amounts are detected.
+The scouts are generated according to Eq. (1). Note that this exploration is treated as long-distance because the new food sources are sampled within the whole decision space S. On the other hand, the exploration is blind without any history information explored so far. E. MABC framework In the spirit of MC, the mentioned kinds of explorations can be seen as memes. These memes interact between each other in order to problem-solving. In MABC, the original ABC framework does not exploit the MC paradigm as a whole. That is, the memes are executed sequential within each generation. Let us emphasis that the stochastic long-distance (function SendEmployesBees()) and the stochastic moderate-distance (function SendOnlookerBees()) explorations are performed unconditionally, i.e. in each generation. On the other hand, the
+performances of the deterministic short-distance (function LocalImproveBestBee()) and the random long-distance (function SendScouts()) explorations are controlled by the parameters local search ratio and scouts limit. The first parameter regulates the ratio between the global and local search, whilst the second determines when to start exploring new regions of the continuous search space. III. EXPERIMENTS A goal of the experiments was the applying of MABC to the specific test-suite proposed in the Special session on Large Scale Continuous Global Optimization at the 2012 IEEE Congress on Evolutionary Computation, the obtaining of results, and then comparing these with the results of DECC-G*, DECC-G, and MLCC as proposed by the organizing committee, to see how many competitive results were achieved. A. Test suite The test-suite consists of five problem classes, i.e. various high-dimensional problems
+(D = 1, 000):
+1. Separable functions:
+• F1: Shifted Elliptic Function.
+• F2: Shifted Rastrigin’s Function.
+• F3: Shifted Ackley’s Function.
+2. Single-group m-nonseparable functions (m = 50):
+• F4: Single-group Shifted and m-rotated Elliptic Function.
+• F5: Single-group Shifted and m-rotated Rastrigin’s Function.
+• F6: Single-group Shifted and m-rotated Ackley’s Function.
+• F7: Single-group Shifted and m-dimensional Schwefel’s Problem 1.2.
+• F8: Single-group Shifted and m-dimensional Rosenbrock’s Function.
+3. D2m -group m-nonseparable functions (m = 50):
+• F9: D2m -group Shifted and m-rotated Elliptic Function. • F10: D2m -group Shifted and m-rotated Rastrigin’s Function. • F11: D2m -group Shifted and m-rotated Ackley’s Function. • F12: D2m -group Shifted and m-dimensional Schwefel’s Problem 1.2. • F13: D2m -group Shifted and m-dimensional Rosenbrock’s Function.
+4. Dm -group m-nonseparable functions (m = 50):
+• F14: Dm -group Shifted and m-rotated Elliptic Function. • F15: Dm -group Shifted and m-rotated Rastrigin’s Function. • F16: Dm -group Shifted and m-rotated Ackley’s Function. • F17: Dm -group Shifted and m-dimensional Schwefel’s Problem 1.2. • F18: Dm -group Shifted and m-dimensional Rosenbrock’s Function.
+5. Fully-nonseparable:
+• F19: Shifted Schwefel’s Problem 1.2.
+• F20: Shifted Rosenbrock’s Function.
+Note that the separability of a function determines how difficult the function is to solve. That is, the function f(x) is separable if its parameters xi are independent. In general, the separable functions are considered to be the easiest. In contrast, the fully-nonseparable functions are usually the more difficult to solve [36]. The degree of separability could be controlled by randomly dividing the object variables into several groups, each of which contains a particular number of variables. Although some of used functions are separable in their original forms, applying techniques as Salomon’s random coordinate rotation make them non-separable. Furthermore, the global optimum of the function could also be shifted. B. Experimental setup Table I presents the characteristics of MABC used in the experiments. Note that all values of algorithm parameters presented in this table were the best found during extensive
+experiments.
+The number of independent runs of the MABC algorithm was limited to 25. The maximum number of function evaluations FEs was fixed at 3 millions. Besides the final result, the error values by FEs = 120, 000 and FEs = 600, 000 were recorded. All these values were prescribed by the organizing committee of this competition.
+The population size was set to 20. MABC, with higher population sizes, converged slowly, whilst the same algorithm with smaller population sizes remained in local optimum. The crossover probability CR was set to 0.01. That is, each crossover modified 10 dimensions of the trial solution. The higher values of this parameter decreases the results of MABC drastically, whilst decreasing the number had a harmful impact on the results. The higher values for the local search ratio had deteriorating effect on the results. In this context, the value r = 0.006 was demonstrated the best results. The scout’s limit of 200 presented the best bias between the search progress (exploitation) and exploration of new regions within the search space. C. PC configuration All runs were made on HP Compaq with the following configurations:
+1. Processor - Intel Core i7-2600 3.4 (3.8) GHz 2. RAM - 4GB DDR3 3. Operating system - Linux Mint 12
+MABC was implemented within the Eclipse Indigo CDT framework. IV. RESULTS The purpose of this section is to illustrate the results obtained by MABC. The results are analyzed from different points of view and summarized within the following subsections:
+• convergence plots,
+• summary of results and
+• comparison with other algorithms.
+The obtained results are presented in detail in the reminder of this paper. A. Convergence Plots When a convergence of the results by solving different functions is analyzed four characteristic curves can be obtained. The characteristic plots, for example, of the functions F2, F11, F15, and F16, are illustrated in Figs. 1-4. Note that the average results over 25 runs are considered in all plots. B. Summary of Results conclusions can be derived:
+• Separable functions F1 − F3 are the easiest to solve for MABC;
+• Partial-separable Elliptic functions (F4, F9, F14) are the hardest nut to crack for
+MABC;
+• On average, the D 2m -group shifted and m-rotated functions are easier to solve than the
+D m -group shifted and m-rotated, but the single-group shifted and m-rotated functions are the hardest to solve.
+Even though, it should be valid that fully-nonseparable functions are the hardest to solve,
+this truth could not be seen from the results of the experiments. C. Comparison with other algorithms In this experiment, the results of the following algorithms are compared with the results
+of MABC (Table III):
+• DECC-G,
+• DECC-G* and
+• MLCC.
+Description, characteristics and results of the mentioned algorithms are published on the conference sites [31]. The comparison was performed similarly to rules prescribed by the organizing committee of the competition on LSGO CEC’2011. That is, the results for each algorithm are divided into three categories determined by the FEs limits 1.2e5, 6.0e5, and 3.0e6, i.e. at the 1 25 , 1 5 and the final evaluation numbers. In the absence of results from the first two categories, only the final results have been dealt with. Then, the algorithms in the experiment are ranked according to their decreasing mean-values with ranks from 1-4. Finally, rank 1 is rewarded with 25, rank 2 with 18, rank 3 with 15, and rank 4 with 12 points. The outcome of this estimation is presented in Table IV.
+Note that the points in Table IV are divided into five groups according their problem classes. The MABC algorithm outperformed the other algorithms by solving the problem classes II and V, whilst DECC-G* the problem classes III and IV, and MLCC the problem class I. In summary, the best results were obtained by DECC-G*. However, the performance of MABC was comparable with DECC-G*.
+In order to check how significant these results are, the Friedman nonparametric test as proposed in [16] was performed with significant level α = 0.05. According to this test, DECC-G* and MABC significantly improved the results of DECC-G. V. CONCLUSION This study presented a MABC algorithm that hybridizes the original ABC using two local search heuristics, i.e. NMA and RWDE. The first is dedicated more to exploration,
+whilst the second more to exploitation of the search space. An adaptive stochastic function was employed in order to balance the process of exploration/exploitation. The results of MABC were performed in the Special Suite on LSGO in the 2012 IEEE CEC, and compared with the results of algorithms: DECC-G, DECC-G* and MLCC. These results were very competitive when compared with the other algorithms. In addition, this algorithm has been analyzed in the spirit of MC, where four exploration stages are identified: stochastic long-distance, stochastic moderate-distance, deterministic short-distance, and random longdistance explorations. Each of these stages should correspond to the particular meme. However, the interaction between memes leaves additional options for further development of this algorithm. Finally, the adaptive stochastic function for balancing the process of exploration/exploitation bases on phenotypic diversity that could be less important in a well-balanced multi-modal landscapes. In order to show how a genotypic diversity influences the results, other diversity measures should be observed in the future. Acknowledgment The authors would like to acknowledge the efforts of the organizers of this session and availability of source code of benchmark functions. In addition, we thank to prof. Fatih Tasgetiren for help by searching the new directions in development of the ABC algorithm.
+[1] E. Aarts and J.K. Lenstra. Local search in combinatorial optimization. Princeton University
+Press, Princeton and Oxford, 1997.
+[2] F. Bäck, D.B. Fogel, and Z. Michalewicz. Handbook of Evolutionary Computation. Computa-
+tional Intelligence Library. Oxford University Press, Inc., Bristol, UK, 1997.
+[3] T. Bäck. Evolutionary Algorithms in Theory and Practice: Evolution Strategies, Evolutionary
+Programming, Genetic Algorithms. Oxford University Press, Inc., New York, USA, 1996.
+[4] C. Blum and D. Merkle. Swarm intelligence: introduction and applications. Natural computing
+series. Springer-Verlag, Berlin, Germany, 2008.
+[5] J. Brest, S. Greiner, B. Boskovic, M. Mernik, and V. Zumer. Self-adapting control parameters
+in differential evolution: A comparative study on numerical benchmark problems. IEEE Trans.
+Evolutionary Computation, 10(6):646–657, 2006.
+[6] J. Brest and M.S. Maučec. Self-adaptive differential evolution algorithm using population size
+reduction and three strategies. Soft Computing - A Fusion of Foundations, Methodologies and
+Applications, 15(11):2157–2174, 2011.
+[7] M. Clerc. Particle Swarm Optimization. ISTE Publishing Company, London, UK, 2006.
+[8] C.A.C. Coello, G.B. Lamont, and D.A. van Veldhuizen, editors. Evolutionary Algorithms for
+Solving Multi-Objective Problems, volume 5 of Genetic Algorithms and Evolutionary Compu-
+tation. Kluwer Academic Press, Dordrecht, Netherlands, 2007.
+[9] C. Cotta and F. Neri. Memetic Algorithms in Continuous Optimization, pages 153–165.
+Handbook of Memetic Algorithms. Springer-Verlag, Berlin, Germany, 2011.
+[10] S. Das and P.N. Suganthan. Differential evolution: A survey of the state-of-the-art. IEEE
+Transaction on Evolutionary Computation, 15(1):4–31, 2011.
+[11] M. Dorigo, V. Maniezzo, and A. Colorni. The ant system: Optimization by a colony of coop-
+erating agents. IEEE Transactions on Systems, Man, and Cybernetics - Part B: Cybernetics,
+26(1):29–41, 1996.
+[12] M. Dorigo and T. Stützle. Ant colony optimization. MIT Press, 2004.
+[13] R.C. Eberhart and J. Kennedy. A new optimizer using particle swarm theory. In Proceedings
+of the Sixth International Symposium on Micro Machine and Human Science (MHS’95), pages
+39–43, Piscataway, NJ, USA, October 1995.
+[14] A.E. Eiben and J.E. Smith. Introduction to evolutionary computing. Springer-Verlag, Berlin,
+2003.
+[15] I. Fister Jr., I. Fister, and J. Brest. A hybrid artificial bee colony for graph 3-coloring. Artificial
+Intelligence and Soft Computing –ICAISC 2012, 2012 in press.
+[16] S. Garcia, D. Molina, M. Lozano, and F. Herrera. A study on the use of non-parametric tests
+for analyzing the evolutionary algorithms’ behaviour: a case study on the cec’2005 special
+session on real parameter optimization. Journal of Heuristics, 15:617–644, 2009.
+[17] F. Glover and G.A. Kochenberger. Handbook of metaheuristics, volume 57 of International
+series in operations research & management science. Kluwer Academic Publishers, Dordrecht,
+Netherlands, 2003.
+[18] G. Iacca, F. Neri, E. Mininno, Y.-S. Ong, and M.-H. Lim. Ockham’s razor in memetic
+computing: Three stage optimal memetic exploration. Information Sciences, 188:17–43, 2012.
+[19] D. Karaboga and B. Bahriye. A survey: algorithms simulating bee swarm intelligence. Artif-
+ficial Intelligence Review, 31(1–4):61–85, 2009.
+[20] D. Karaboga and B. Basturk. A powerful and efficient algorithm for numerical function
+optimization: artificial bee colony (abc) algorithm. Journal of Global Optimization, 39(3):459–
+471, 2007.
+[21] S. Kirkpatrick, C.D. Gelatt, Jr., and M.P. Vecchi. Optimization by simulated annealing.
+Science Magazine, 220(4598):671–680, 1983.
+[22] D.E. Knuth. The Art of Computer Programming, Volume II: Seminumerical Algorithms. 2nd
+Edition Addison-Wesley, Reading Massachusetts, 1981.
+[23] T. Lozano, D. Molina, and F. Herrera. Editorial scalability of evolutionary algorithms and
+other metaheuristics for large-scale continuous optimization problems. Soft Computing - A
+Fusion of Foundations, Methodologies and Applications, 15(11):2085–2087, 2011.
+[24] P. Merz. Memetic Algorithms for Combinatorial Problems: Fitness Landscapes and Effective
+Search Strategy. PhD thesis, Gesamthochschule Siegen, University of Siegen, Germany, 2000.
+[25] Z. Michalewicz. Genetic Algorithms + Data Structures = Evolutionary Programs. Springer-
+Verlag, Berlin, 1996.
+[26] Z. Michalewicz and D.B. Fogel. How to Solve It: Modern Heuristics. Springer-Verlag, Berlin,
+2004.
+[27] P. Moscato. On evolutionary search, optimization, genetic algorithms and martial arts: To-
+ward memetic algorithms. Technical Report Caltech Concurrent Computation Program Report
+826, Caltech, Pasadena, California, 1989.
+[28] A. Nelder and R. Mead. A simplex method for function optimization. Computation Journal,
+7:308–313, 1965.
+[29] F. Neri. Diversity Management in Memetic Algorithms, pages 153–165. Handbook of Memetic
+Algorithms. Springer-Verlag, Berlin, Germany, 2011.
+[30] F. Neri, J. Toivanen, G.L. Cascella, and Y.-S. Ong. An adaptive multimeme algorithm for
+designing HIV multidrug therapies. IEEE/ACM Transactions on Computational Biology and
+Bioinformatics, 4(2):264–278, 2007.
+[31] NICAL. Special session on ec lsgo, January 2011.
+[32] A. Nolte and R. Schrader. A note on the finite time behaviour of dimulated annealing.
+Mathematics of Operations Research, 25(3):476–484, 2000.
+[33] Y.-S. Ong, M.-H. Lim, and X. Chen. Memetic computation - past, present & future [research
+frontier]. IEEE Computational Intelligence Magazine, 5(2):24–31, 2010.
+[34] K. Price, R.M. Storn, and J.A. Lampinen. Differential Evolution: A Practical Approach to
+Global Optimization. Springer-Verlag, New York, NY, USA, 2005.
+[35] S.S. Rao. Engineering optimization: theory and practice. John Willey & Sons, New Jersey,
+US, 2009.
+[36] K. Tang, Xiaodong Li, P. N. Suganthan, Z. Yang, and T. Weise. Benchmark Functions for the
+CEC 2010 Special Session and Competition on Large Scale Global Optimization. Technical
+report, Nature Inspired Computation and Applications Laboratory, USTC, China, 2009.
+[37] M.F. Tasgetiren, Q.-K. Pan, P.N. Suganthan, and A.H.-L. Chen. A discrete artificial bee
+colony algorithm for the total flowtime minimization in permutation flow shops. Information
+Sciences, 181(16):3459–3475, 2011.
+Updated 4 June 2012.  The domain of function optimization serves as a ’test-bed’ for many new comparisons and new features of various algorithms [25].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    Over the past decade, different kinds of metaheuristic optimization algorithms [17, 26] have been developed for solving this problem, for example: Simulated Annealing (SA) [21, 32], Evolutionary Algorithms (EAs) [2, 3, 8, 23], Differential Evolution (DE) [5, 6, 10, 34], Particle Swarm Optimization (PSO) [7, 13] and Ant Colony Optimization (ACO) [11, 12].    EAs hybridized with local search algorithms [1] have been successful within this domain.    These kinds of EAs are often named as memetic algorithms (MAs) [24, 27].    These kinds of EAs are often named as memetic algorithms (MAs) [24, 27].    Memetic computation (MC) [33] has emerged recently as a widening of MAs.    As analog to EA, swarm intelligence (SI) [4] has been inspired by nature.    This concept has been exploited also by the Artificial Bees Colony (ABC) algorithm proposed by Karaboga and Basturk [19] and achieved excellent results when solving continuous optimization problems [20] as well as combinatorial optimization problems [15, 37].    This concept has been exploited also by the Artificial Bees Colony (ABC) algorithm proposed by Karaboga and Basturk [19] and achieved excellent results when solving continuous optimization problems [20] as well as combinatorial optimization problems [15, 37].    This concept has been exploited also by the Artificial Bees Colony (ABC) algorithm proposed by Karaboga and Basturk [19] and achieved excellent results when solving continuous optimization problems [20] as well as combinatorial optimization problems [15, 37].    This concept has been exploited also by the Artificial Bees Colony (ABC) algorithm proposed by Karaboga and Basturk [19] and achieved excellent results when solving continuous optimization problems [20] as well as combinatorial optimization problems [15, 37].    [18] assert that an optimal memetic exploration of the search space is composed of three    Two local search methods were applied within the proposed memetic ABC (MABC) algorithm: the Nelder/Mead (NM) simplex method [35] and the random walk method with direction exploitation (RWDE) [35].    Two local search methods were applied within the proposed memetic ABC (MABC) algorithm: the Nelder/Mead (NM) simplex method [35] and the random walk method with direction exploitation (RWDE) [35].    The stochastic adaptive rule as specified by Neri [9] was applied for balancing the exploration and exploitation.    In order to make a super-fit individual [9] that guides the direction in which the search space needs to be explored by the bee colony, an additional step is added to the original ABC algorithm, i.    In the sense of MC analysis due to [18], each of these four functions perform certain exploration task, as follows:    The stochastic long-distance exploration is performed in the DE fashion [34] as follows.    In population-based algorithms, diversity plays a crucial role in the success of the optimization [29].    The diversity of a population is a measure of the different solutions present [14].    In this study, the fitness diversity metric is expressed as [30]:    It is very sensible to small variations and thus, especially suitable for fitness landscapes containing plateaus and low gradient areas [29].    The first is the Nelder-Mead Algorithm (NMA) [28] with exploration features and the second the Random Walk with Direction Exploitation (RWDE) [35] with exploitation features.    The first is the Nelder-Mead Algorithm (NMA) [28] with exploration features and the second the Random Walk with Direction Exploitation (RWDE) [35] with exploitation features.    Both values μp and σp are calculated incrementally in each generation according to the Knuth’s algorithm [22].    In contrast, the fully-nonseparable functions are usually the more difficult to solve [36].    In order to check how significant these results are, the Friedman nonparametric test as proposed in [16] was performed with significant level α = 0.    [1] E.    [2] F.    [3] T.    [4] C.    [5] J.    [6] J.    [7] M.    [8] C.    [9] C.    [10] S.    [11] M.    [12] M.    [13] R.    [14] A.    [15] I.    [16] S.    [17] F.    [18] G.    [19] D.    [20] D.    [21] S.    [22] D.    [23] T.    [24] P.    [25] Z.    [26] Z.    [27] P.    [28] A.    [29] F.    [30] F.    [32] A.    [33] Y.    [34] K.    [35] S.    [36] K.    [37] M.    Large-Scale Global Optimization Iztok Fister,∗ Iztok Fister Jr.,† Janez Brest,‡ and Viljem Žumer§ Abstract Memetic computation (MC) has emerged recently as a new paradigm of efficient algorithms for solving the hardest optimization problems. On the other hand, artificial bees colony (ABC) algorithms demonstrate good performances when solving continuous and combinatorial optimization problems. This study tries to use these technologies under the same roof. As a result, a memetic ABC (MABC) algorithm has been developed that is hybridized with two local search heuristics: the Nelder-Mead algorithm (NMA) and the random walk with direction exploitation (RWDE). The former is attended more towards exploration, while the latter more towards exploitation of the search space. The stochastic adaptation rule was employed in order to control the balancing between exploration and exploitation. This MABC algorithm was applied to a Special suite on Large Scale Continuous Global Optimization at the 2012 IEEE Congress on Evolutionary Computation. The obtained results the MABC are comparable with the results of DECC-G, DECC-G*, and MLCC. To cite paper as follows: I. Fister, I. Fister Jr., J. Brest, V. Zumer, Memetic Artificial Bee Colony Algorithm for Large-Scale Global Optimization, in Proc. IEEE Congress on Evolutionary Computation, Brisbane, Australia, 2012 LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

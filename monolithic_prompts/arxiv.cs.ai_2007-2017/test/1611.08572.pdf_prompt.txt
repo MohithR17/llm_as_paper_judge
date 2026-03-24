@@ -1,0 +1,606 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Bipolar Weighted Argumentation Graphs
+Paper Content: 1611.08572.pdf CRF Bipolar Weighted Argumentation Graphs Till Mossakowski Fabian Neuhaus   ar X
+iv :1
+61 1.
+08 57
+2v 1
+[ cs
+.A I]
+2 5
+This paper discusses the semantics of weighted argumentation graphs that are biplor, i.e. contain both attacks and support graphs. The work builds on previous work by Amgoud, Ben-Naim et. al. [1, 2], which presents and compares several semantics for argumentation graphs that contain only supports or only attacks relationships, respectively. 1 Introduction In [3] we presented a prototype of a system that enables users to explore arguments for a given topic. This involves these steps:
+1. Argument identification. In the first step, arguments concerning a given topic are identified in a given text and attacking and supporting relationships between the propositions are established. The result is an argumentation graph. In the future we hope to use argumentation mining techniques to automate this step. At this time, this is done manually by marking up some text.
+2. Initial plausibility assessment. The propositions (represented as the nodes of the argumentation graph) are assigned an initial plausibility based on Web searches.
+3. Acceptability degree calculation. The acceptability degree of the propositions are calculated. This calculation depends on the plausibility assessment of the propositions and the attacks and supports between them.
+4. Recommendation. Based on the acceptability degree calculation the system determines an answer and the argument for it.
+5. User Interaction. The user is able to explore the argument graph and may manually change the plausibility rating of any proposition. The system recalculates the acceptability degrees and its recommendation.
+In this paper we focus on the third step: the calculation of acceptability degrees of the propositions of the arguments. For the sake of this paper we treat the propositions as arguments in an argument network.1
+This is an evaluation of a weighted graphs that are bipolar, i.e. contain both attack and support relations. Weighted argumentation graphs have been widely discussed, in particular in [5, 6, 7], and also for the bipolar case [8], but not considering initial weightings. Given that the result of the initial plausibility assessment provide a continuous initial weighting, the most relevant previous work is on the evaluation argumentation graphs with support relationships by Leila Amgoud and Jonathan Ben-Naim [1] and an unpulished work by the same authors and two other authors on the evaluation of argumentation graphs with attack relationships [2].
+Since for our purposes we need to consider bipolar [9] argumentation graphs that contain both attack and support relationships, we need to generalise the results of [1] and [2]. The result is a novel acceptability semantics for weighted argumentation graphs that contain both attacks and supports between arguments. The outline of the paper follows the presentations in [1, 2]. In section 2 we introduce the basic notions. In section 4 we discuss the features an acceptability semantics should have. These features are characterised axiomatically. We discuss how these axioms relate to the axioms from [1, 2].
+In section 5 we discuss a semantics that meets the characteristics from section 4 and show that it converges. In section 7 we compare our approach to [1, 2] in more detail and in 10 we discuss some limitations of our approach and future work. 2 Basic Concepts In [1, 2] argumentation graphs are represented as a set of weighted nodes, which represent the attacks, and a set of vertices, which represent an attack relationship or a support relationship, respectively. We choose an alternative representation. An argument graph consists of three elements: a vector of arguments A = a1, . . . an, a matrix G that determines the attack and support relationships between the arguments, and a weighting w of the arguments. More specifically, G is a square matrix of order n, which elements are either −1, 0 or 1. Given a matrix G, if the element gij = 1, then this is intended to represent that the argument aj supports the argument ai; if gij = −1, then argument aj attacks ai; and if gij = 0, then aj does neither support nor attack
+1 This is a significant simplification, since it only allows us to represent convergent arguments in the sense of [4]. Further, this approach does not consider that the strength of a support or attack may be weighted as well; see section 10.
+ai. The vector w assigns to each argument a real number to represent its initial plausibility. The larger the w(a) for some argument a is, the larger its initial plausibility. 0 is is the neutral value (neither plausible nor implausible). Negative values denote implausibility. Note that this deviates from [1, 2], where only values in [0, 1] are considered. Our approach has greater flexibility. For example, we plan to use hit counts as initial plausibilities, which can be used directly without any normalisation.
+Definition 1 (Weighted Attack/Support Argumentation Graph) A weighted attack/support argumentation graph (wasa) is a triple A = 〈A, G, w〉, where
+• A is a vector of size n (for some n ∈ N+), where all components of A are pairwise distinct.
+• G = {gij} is a square matrix of order n where gij ∈ {−1, 0, 1},
+• w is a vector in Rn.
+If A = 〈A, G, w〉 is a wasa and A is of size n, then A consists of n arguments.
+Example 1
+A =
+〈(
+a1 a2 a3 a4
+)
+,
+(
+0 0 0 0 1 1 −1 −1 1 1 0 −1 0 0 0 0
+)
+,
+(
+0.5 2 2 1
+)〉
+a1 0.5
+//
+a2 2
+✁✁ ✁✁ ✁✁ ✁✁ ✁
+a3 2 •✁✁✁✁✁✁✁✁✁ a4 1 • •
+The wasa A in Example 1 consists of four arguments, namely a1, a2, a3, a4. The second component of A determines that a1 and a4 are neither attacked nor supported. a1 and a2 support both a2 and a3. a2 is attacked by a3 and a4, and a3 is attacked by a4. The third component of A assigns weights to the arguments, namely w(a1) = 0.5, w(a2) = 2, w(a3) = 2 and w(a4) = 1. Example 1 also contains a graphical representation of A, which represents support relationships as connections with an arrow head and attacks as connections with a round head.
+A wasa is a representation of a set of arguments, their attack and support relationships, and the initial plausibility of the arguments. The question that this paper needs to address is: How do we calculate the acceptability of the arguments based on their initial plausibility and their relations? Following the terminology in [1, 2], an answer to this question is called an acceptability semantics:
+Definition 2 (Acceptability Semantics) An acceptability semantics is a function S transforming any wasa A = 〈A, G, w〉 into a vec-
+tor DegS A in Rn, where n is the number of arguments in A. For any argument ai in A, DegSA(ai) is called the acceptability degree of ai.
+Obviously, there are many possible acceptability semantics. Example 2 defines the acceptability semantics SG that may have been embraced by the Greek sophist Gorgias, who believed that knowledge and communication is impossible.
+Example 2 (Gorgias Semantics) SG is the function such that for, any wasa A that consists of n arguments, SG(A) is a vector of size n
+such that SG(A) = ( 0 ... 0 ) .
+According the Georgias Semantics any argument is equally accept-
+able and unacceptable, thus, DegS G
+A (a) = 0 for any argument a in any
+wasa A. Most people would probably agree that SG does not provide us with a useful tool for analysing argumentations. However, it raises the questions what requirements a suitable acceptability semantics should meet. We will discuss this question in the section 4. 3 Notation and auxiliary definitions Unless otherwise specified A is a wasa such that A = 〈A, G, w〉. If a1, . . . , an are the components of A we denote by
+• AttA(ai) the set of all attackers of ai in A, that is AttA(ai) = {aj| gij = −1};
+• Sup A (ai) the set of all supporters of ai in A, that is SupA(ai) =
+{aj| gij = 1};
+• BackA(ai) and DetrA(ai) are the sets of the backers of ai and the set of the detractors of ai. They are defined recursively as the set of all arguments that directly or indirectly support ai (e.g., attacking an attacker of ai) and, respectively, the set of all arguments that directly or indirectly attack ai (e.g., supporting an attacker of ai). Thus, BackA(ai) and DetrA(ai) are the minimal sets such that the following equations hold:
+BackA(ai) = SupA(ai)∪{aj | ∃x : aj ∈ SupA(x)∧x ∈ BackA(ai)}
+∪ {aj| ∃x : aj ∈ AttA(x) ∧ x ∈ DetrA(ai)}
+DetrA(ai) = AttA(ai)∪{aj | ∃x : aj ∈ AttA(x)∧x ∈ BackA(ai)}
+∪ {aj| ∃x : aj ∈ SupA(x) ∧ x ∈ DetrA(ai)}
+• ParentA(ai) is the ith matrix row (gi1, . . . , gin) of G. It contains the parents of ai in the argument graph and hence combines the information of Sup
+A (ai) and AttA(ai) in one vector.
+Definition 3 (Influence) Given a wasa A = 〈A, G, w〉 and a vector v ∈ Rn (e.g. v could be w), the influence of v on ai is defined as the number
+∑
+b∈Sup A (ai)
+v(b) − ∑
+c∈AttA(ai)
+v(c) = ParentA(ai)v
+The influence of v in general is computed as the vector of the individual influences:
+(
+ParentA(a1)v ... ParentA(an)v
+)
+= Gv
+Note that supporters and attackers cancel each other out when computing the influence. Moreover, support by an implausible argument (weigthed negatively) behaves like an attack, an vice verse, an attack by an implausible argument behaves like a support.
+Definition 4 (Isolation) Let A = 〈A, G, w〉 be a wasa such that a1, . . . , an are the components of A. The isolation A|ai of ai in A (1 ≤ i ≤ n) is defined as follows
+A|ai =
+〈
+A, 
+g′11 ··· g ′ 1n
+... ... ... g′ n1 ··· g ′ nn  , 
+w′1
+... w′
+n 
+〉
+where    
+  
+g′jk = 0 if j = i or k = i g′jk = gjk otherwise w′j = 0 if aj = ai w′j = wj otherwise
+Definition 5 (Isomorphism) Let A = 〈A, G, w〉 and A′ = 〈A′, G′, w′〉 be two wasa, such that:
+A =
+(
+a1 ... an
+)
+,A′ = 
+a′1 ... a′ n  , G =
+(
+g11 ··· g1n
+... ... ... gn1 ··· gnn
+)
+, G′ = 
+g′11 ··· g ′ 1n
+... ... ... g′ n1 ··· g ′ nn 
+An isomorphism from A to A′ is a bijective function f from A to A′ such that the following holds, for any ai, aj,
+• w(ai) = w′(f(ai)), • if f(ai) = a′k and f(aj) = a ′ m, then gij = g ′ km.
+Definition 6 (Union) Let A = 〈A, G, w〉 and A′ = 〈A′, G′, w′〉 be two wasa such that A and A′ do not share a component and
+A =
+(
+a1 ... an
+)
+,A′ = 
+a′1 ... a′ m  , G =
+(
+g11 ··· g1n
+... ... ... gn1 ··· gnn
+)
+, G′ = 
+g′11 ··· g ′ 1m
+... ... ... g′ m1 ··· g ′ mm  ,
+w =
+(
+w1
+... wn
+)
+, w′ = 
+w′1
+... w′
+m 
+The union A⊕A′ = 〈A†, G†, w†〉 of A and A′ is defined as follows:
+A† =     
+a1 ... an a′1
+... a′ m      , G† =     
+g11 ··· g1n 0 ··· 0
+... ... ... ... ... ... gn1 ··· gnn 0 ··· 0 0 ··· 0 g′11 ··· g ′ 1m
+... ... ... ... ... ... 0 ··· 0 g′ m1 ··· g ′ mm      , w† =     
+w1
+... wn w′1
+... w′
+m     
+To improve readability we will in the rest of the paper use a more compact notation, which does not list the individual components but refers to the matrixes that are merged. (”0” represent a zero matrix of appropriate dimensions, that is n×m and m× n, respectively.)
+A† = ( A A′ ) , G† = ( G 0 0 G′ ) , w† = ( ww′ ) 4 Mandatory Characteristics of a Seman- tics
+We do not consider Counting and Weakening Soundness, since they follow from the other mandatory principles according to [2], and thus are secondary.
+Axiom 1 (Anonymity) A semantics S satisfies anonymity iff, for any two wasa A = 〈A, G, w〉 and A′ = 〈A′, G′, w′〉 and for any isomorphism f from A to A′, the following property holds: for any a in A, DegS
+A (a) = DegS A′ (f(a)).
+Axiom 2 (Independence) A semantics S satisfies independence iff, for any two wasa A = 〈A, G, w〉 and A′ = 〈A′, G′, w′〉 such that A and A′ do not share a component, the following property holds: for any a in A, DegS
+A (a) = DegS A⊕A′(a).
+Axiom 3 (Equivalence) A semantics S satisfies equivalence iff, for any weighted argumentation graph A = 〈A, G, w〉, for any a, b in A, if
+• w(a) = w(b),
+• there exists a bijective function f from AttA(a) to AttA(b) such that ∀x ∈ AttA(a), DegSA(x) = Deg S A (f(x)),
+• there exists a bijective function g from Sup A (a) to Sup A (b) such
+that ∀x ∈ Sup A (a), DegS A (x) = DegS A (g(x)),
+then DegS A (a) = DegS A (b).
+Axiom 4 (Directionality) A semantics S satisfies directionality iff, for any two wasa A = 〈A, G, w〉 and A′ = 〈A, G′, w〉 the following holds: if G and G′ are of order n (for some n ∈ N+) and there exists i, j ∈ N+ such that
+• gji = 0, • g′ji 6= 0, • for any k,m if k 6= i or m 6= j, then gmk = g′mk,
+then for all x in A: if x 6= aj and aj 6∈ BackA(x) and aj 6∈ DetrA(x), then DegS
+A (x) = DegS A′ (x).
+Axiom 5 (Conservativity) A semantics S satisfies conservativity iff for any wasa A = 〈A, G, w〉, for any argument a in A, if AttA(a) = Sup
+A (a) = ∅, then DegS A (a) = w(a).2
+Axiom 6 (Strong proportionality) A semantics S satisfies strong proportionality3 iff, for any A and G and for any argument a in A, there is a constant c such that for all w,
+DegS A (a) = cw(a)
+Axiom 7 (Neutrality) A semantics S satisfies neutrality iff, for any wasa A = 〈A, G, w〉 the following holds: if there is an argument a in A such that DegS
+A (a) = 0, then DegS A = DegS A|a .
+Axiom 8 (Monotony) A semantics S satisfies monotony4 iff, for any two wasa A = 〈A, G, w〉 and A′ = 〈A′, G′, w′〉 and any argument a which is both in A and in A′, if
+1. w(a) = w′(a)
+2. AttA′(a) ⊆ AttA(a) and SupA(a) ⊆ SupA′(a), 3. for all x ∈ AttA′(a), DegSA′(x) ≤ Deg S A (x), 4. for all x ∈ Sup A (a), DegS A (x) ≤ DegS A′ (x),
+then DegS A (a) ≤ DegS A′ (a).
+Axiom 9 (Impact) A semantics S satisfies impact5 iff, for any wasa A = 〈A, G, w〉 and any arguments a, b in A such that DegS
+A (b) > 0:
+• if b ∈ AttA(a) and b 6∈ BackA(a), then DegSA(a) < Deg S A|b (a),
+2Corresponds to Maximality in [2] and Minimality in [1]. 3In [2], a weaker form of proportionality is introduced, which in reality is only a mono-
+tonicity property. 4Monotony implies boundedness from [1]. 5Impact generalizes Weakening in [2] and Strengthening in [1].
+• if b ∈ Sup A (a) and b 6∈ DetrA(a), then DegSA|b(a) < Deg S A (a).
+Axiom 10 (Reinforcement) A semantics S satisfies reinforcement iff, for any two wasa A = 〈A, G, w〉 and A′ = 〈A′, G′, w′〉 and argument a such that: a is both in A and A′, and w(a) = w′(a), AttA(a) = AttA′(a), and SupA(a) = SupA′(a) the following holds:
+1. If
+• for all x ∈ AttA(a), DegSA(x) ≤ Deg S A′ (x), • for all x ∈ Sup A (a), DegS A (x) ≥ DegS A′ (x), • there is some b such that either
+– b ∈ AttA(a) and DegSA(b) < Deg S A′ (b) or – b ∈ Sup A (a) and DegS A (b) > DegS A′ (b),
+then DegS A (a) > DegS A′ (a).
+2. If
+• for all x ∈ AttA(a), Deg S A (x) ≥ DegS A′ (x), • for all x ∈ Sup A (a), DegS A (x) ≤ DegS A′ (x), • there is some b such that either
+– b ∈ AttA(a) and DegSA(b) > Deg S A′ (b) or – b ∈ Sup A (a) and DegS A (b) < DegS A′ (b),
+then DegS A (a) < DegS A′ (a).
+Axiom 11 (Neutralisation) A semantics S satisfies neutralisation iff, for any wasa A = 〈A, G, w〉 and any components ak, al, am in A, if
+• ak ∈ AttA(am),
+• al ∈ SupA(am), • DegS A (ak) = Deg S A (al), • A′ = 〈A, G′, w〉 and
+G′ = 
+g′11 ··· g ′ 1m
+... .. . ... g′ m1 ··· g ′ mm where  
+ 
+g′ij = 0 if j = m and i = k g′ij = 0 if j = m and i = l g′ij = gij otherwise
+then DegS A = DegS A′ .
+Axiom 12 (Continuity) A semantics S satisfies continuity iff, for any sequence of wasas An = 〈A, G, wn〉, if
+lim n→∞ wn = w
+then for A = 〈A, G, w〉
+lim n→∞ DegS An = DegS A 5 Direct Aggregation Semantics The main intuition behind the aggregation semantics is that the strength of an argument in an argumentation is based on its initial plausibility and it is strengthened by supports and weakened by attacks. If we understand ”strengthening” as addition and ”weakening” as subtraction, we get to a model where the acceptability degree of an argument is calculated by adding to its initial plausibility the sum of the acceptability degrees of its supporters and subtracting the sum of the acceptability degree of its attackers.
+One additional intuition behind the semantics is that the influence of arguments is the strongest on arguments that they directly attack or support and increasingly weaker on arguments that are only indirectly connected to them.
+Example 3
+a3 1
+// a2 1
+// a1 1
+a4 1
+OO
+a′3 1
+// a′2 1
+// a′1 1
+a′4 1
+OO
+The difference can be illustrated by Example 3: both a1 and a ′ 1 are supported by 3 different arguments. However, while a4 provides only indirect support for a1, a ′ 4 supports a ′ 1 directly. For this reason, the acceptability degree of a′1 should be larger than the acceptability degree of a1. We achieve this effect by introducing a so-called ”dampening factor” d ≥ 1 that mitigates the effect of arguments along the paths of a wasa.
+These two intuitions are formalised by Definitions 9 and 8.
+Definition 7 Let A = 〈A, G, w〉 be a wasa. Let the damping factor d be such that d ≥ 1. Let fd be a function from A to R such that for any a ∈ A, for i ∈ {0, 1, 2, . . .}, if i = 0, then f id(a) = w(a), otherwise
+f id(a) = w(a) + 1
+d × 
+∑
+b∈Sup A (a)
+f i−1d (b)− ∑
+c∈AttA(a)
+f i−1d (c) 
+or shorter in matrix notation
+f id = w + 1
+d Gf i−1d
+Definition 8 The direct aggregation semantics is a function sd transforming any wasa A = 〈A, G, w〉 into a weighting on A such that for any a ∈ A
+Degd A (a) = lim i→∞ f id(a)
+that is
+Degd A = lim i→∞ f id =
+∞ ∑
+i=0
+( 1
+d G)iw
+(degree = propagation matrix × initial plausiblity)
+Here, we call G the incidence matrix and ∑∞ i=0 ( 1 d G)i the propagation matrix. Note that the degree can be computed from the initial plausibility by a fixed linear transformation given by the propagation matrix.
+Let indegree(G) be the maximal indegree, i.e. the maximum number of edges leading into an argument in A. For d ≤ indegree(G), the direct aggregation semantics is not well-defined in general. Example 4 provides an example, where fd does not converge.
+Example 4 Assume d = indegree(G) and consider an argument with an initial plausibility 1 that attacks itself. In this case d = indegree(G) = 1 and
+A = 〈( a ) , (−1 ) , ( 1 )〉 or, graphically: A = a 1
+•
+In this case f2id (a) = 1 and f 2i+1 d (a) = 0.
+Theorem 1 For d > indegree(G), the direct aggregation semantics is well-defined and convergecs to (I − 1
+d G)−1w.
+For the proof, we need the following from [10], Corolloray 5.6.16:
+Fact 1 If 9 9 is a matrix norm, and if 9A9 < 1, then I − A is invertible and
+(I −A)−1 = ∞ ∑
+i=0
+Ai
+Proof (of Thm. 1): We need to show that
+∞ ∑
+i=0
+( 1
+d G)iw
+converges. Note that the maximum row sum norm 9 9∞ defined by
+9G9∞ = max i=1,...,n
+∑
+j=1,...,n
+|gij |
+coincides with the maximal indgree, i.e. 9G9∞ = indegree(G). Hence, we have
+9 1
+d G9∞ ≤
+indegree(G)
+d < 1
+By Fact 1, this implies that I − 1 d G is invertible and
+Degd A =
+∞ ∑
+i=0
+( 1
+d G)iw = (I −
+1 d G)−1w
+Theorem 2 D = Degd A is the unique solution of the equation
+D = w + 1
+d GD
+(degree = initial plausiblity + damped influence)
+Proof: The equation can be rewritten as (I − 1 d G)D = w, which shows that D = (I − 1 d G)−1w = Degd A is a solution. Moreover, if D = w + 1 d GD, by suceessively unfolding, we get
+D =
+∞ ∑
+i=0
+( 1
+d G)iw = Degd A
+In the sequel, we will examine direct aggregation semantics w.r.t. the properties introduced in Sect. 4. Generally, we will assume that d is chosen such that d > indegree(G), e.g. d = indegree(G) + 1. This means that d depends on the argument matrix (graph). Sometimes, it is more suitable to choose a global d that independent of the matrix. We will indicate these cases.
+Example 5 If d = indegree(G) + 1 (or generally, d does depend on indegree(G)), direct aggregation semantics does not satisfy (Independence). Consider A = 〈( a ) , ( 1 ) , ( 1 )〉 and A′ = 〈 (
+a b c
+) , ( −1 0 0 0 −1 −1 0 −1 −1 ) , ( 1 1 1 ) 〉.
+Then Degd A = ( 23 ) (with d = 2), but Deg d A′ =
+(
+3 4 3 5 3 5
+)
+(with d = 3).
+Theorem 3 If d is chosen globally (which implies that only wasas of maximal indegree < d are considered), direct aggregation semantics satisfies (Independence).
+Proof: Degd A (a) =
+( ∑∞
+i=0 ( 1 d G)iw
+) (a)6 = (
+∑∞ i=0 ( 1 d
+(
+Gi 0 0 (G′)i
+) ) ( ww′ ) )
+(a) = ( ∑∞
+i=0 ( 1 d
+(
+G 0 0 G′
+) )iw† ) (a) = ( ∑∞ i=0 ( 1 d G†)iw† ) (a) = Degd A⊕A′(a).
+Our semantics enjoys all other desirable properties (the proof has been relegated to the appendix):
+6Given a vector v, we use the notation v(aj) for the value vj . This is particularly convenient if we do not have the index j at hand.
+Theorem 4 Direct aggregation semantics satisfies (Anonymity), (Equivalence), (Directionality), (Conservativity), (Strong proportionality), (Neutrality), (Monotony), (Impact), (Reinforcement), (Neutralisation) and (Continuity).
+We will now examine the behaviour of direct aggregation semantics for specific cases. As noted above, the degree is computed from the initial plausibility by multiplication with the propagation matrix. Hence, it suffices to examine propagation matrices, which are independent of the initial plausibility. Indeed, propagation matrices can be computed easily by matrix inversion, see Thm. 1. We list propagation matrices for a number of small argument graphs, in terms of the damping factor d. We begin with acyclic graphs. An isolated argument will be not affected at all:
+a (1)
+Edges in the argument graph propagate (positive or negative) influence with strength 1
+d :
+a // b (
+1 0 1 d 1
+) a •b ( 1 0 − 1
+d 1
+)
+Influence of arguments can also propagated along k edges, resulting in a factor 1
+dk . For k = 2, we get:
+a // b // c 1 d2
+(
+d2 0 0 d d2 0 1 d d2
+)
+a •b •c 1 d2
+(
+d2 0 0 −d d2 0 1 −d d2
+)
+a // b •c 1 d2
+(
+d2 0 0 d d2 0 −1 −d d2
+)
+a •b // c 1 d2
+(
+d2 0 0 −d d2 0 −1 d d2
+)
+Now to cyclic graphs. The simplest case is self-support resp. selfattack, resulting in a slight strengthening resp. weakening of the weight:
+a ( dd−1 ) a • ( dd+1 )
+Since a chain of two attacks is a support, both mutual attack and support lead to a slight self-support as well, while an attack-support pair (called a vicious circle in [11]) leads to a slight self-attack of both arguments. We also show the combination with explicits self-supports
+and self-attacks:
+a oo // b 1 d2−1
+(
+d2 d d d2
+)
+a• •b 1 d2−1
+(
+d2 −d −d d2
+)
+a // b• 1 d2+1
+(
+d2 −d d d2
+)
+a // b • 1
+d2−r+1
+(
+d2−d −d d d2
+)
+a oo // b 1 d2−d−1
+(
+d2−d d d d2
+) a• •b •
+1 d2+d−1
+(
+d2+d −d −d d2
+)
+a oo // b
+1
+d−2
+(
+d−1 1 1 d−1
+)
+a • • •b
+• 1
+d+2
+(
+d+1 −1 −1 d+1
+)
+Forall arguments in a cycle of length three, we get a slight selfsupport (left hand-side, non-vicious circles) or self-attack of the argument (right hand-side, vicious circle in the sense of [11]):
+a // b
+✟✟ ✟✟ ✟✟ ✟
+c
+[[✻✻✻✻✻✻✻
+1 d3−1
+(
+d3 d d2 d2 d3 d d d2 d3
+)
+a •b
+•✟ ✟✟ ✟✟ ✟✟
+c
+•✻✻✻✻✻✻✻
+1 d3+1
+(
+d3 d −d2
+−d2 d3 d d −d2 d3
+)
+a •b
+•✟ ✟✟ ✟✟ ✟✟
+c
+[[✻✻✻✻✻✻✻
+1 d3−1
+(
+d3 −d d2 −d2 d3 −d d −d2 d3
+)
+a // b
+✟✟ ✟✟ ✟✟ ✟
+c
+•✻✻✻✻✻✻✻
+1 d3+1
+(
+d3 −d −d2 d2 d3 −d d d2 d3
+)
+Finally, we show various cycles of length four, all of which show a slight self-support. The numbers 2 and −2 in the last three examples are caused by the fact that between diagonally opposite arguments, there are always two distincts paths:
+a // b
+d
+OO
+coo
+1 d4−1
+(
+d4 d d2 d3 d3 d4 d d2 d2 d3 d4 d d d2 d3 d4
+)
+a •b
+• d
+•
+c•
+1 d4−1
+( d4 −d d2 −d3
+−d3 d4 −d d2
+d2 −d3 d4 −d −d d2 −d3 d4
+)
+a •b
+d
+OO
+c•
+1 d4−1
+( d4 −d −d2 d3
+−d3 d4 d −d2 −d2 d3 d4 −d d −d2 −d3 d4
+)
+a •b
+• d
+OO
+coo
+1 d4−1
+( d4 −d d2 d3
+−d3 d4 −d −d2
+d2 −d3 d4 d d −d2 d3 d4
+)
+a oo // bOO
+d
+OO
+c//oo
+1 d2−d
+( d2−2 d 2 d d d2−2 d 2 2 d d2−2 d d 2 d d2−2 ) a• •b •
+• d •
+•
+c••
+1 d2−d
+( d2−2 −d 2 −d −d d2−2 −d 2 2 −d d2−2 −d −d 2 −d d2−2 )
+a oo // b •
+• d •
+•
+c//oo
+1 d2−d
+( d2−2 d −2 −d d d2−2 −d −2 −2 −d d2−2 d −d −2 d d2−2 ) 6 Sigmoid Direct Aggregation Semantics We now show how the real-valued direct aggregation semantics can be cast into the more traditional framework of weighting in [0, 1]. We need a sigmoid function, that is, a bijection σ : R → (0, 1) that is continuous and strictly increasing such that σ(0) = 0.5. For example, the logistic function
+σ(x) = 1
+1 + e−x
+or the suitably normalised arcus tanges function
+σ(x) = arctan(x)
+π +
+1
+2
+will do. Given such a σ, we extend it to
+σ̄ : R∗ → [0, 1], σ̄(−∞) = 0, σ̄(∞) = 1
+where R∗ = R ∪ {−∞,∞}. Note that σ̄ is still bijective. Given a covector v ∈ Rn and a vector w ∈ (R∗)n, we define their multiplication vw as
+vw =  
+ 
+∞ if ∑
+wi=∞ vi >
+∑
+wi=−∞ vi
+−∞ if ∑
+wi=∞ vi <
+∑
+wi=−∞ vi
+∑
+wi∈R viwi if
+∑
+wi=∞ vi =
+∑
+wi=−∞ vi
+where i ranges over 1 . . . n. This can be easily extended to matrixvector multiplication.
+Being such prepared, we now can define
+Definition 9 Let A = 〈A, G, w〉 be a wasa such that w : A → [0, 1]. Let the damping factor d be such that d ≥ 1. The sigmoid direct aggregation semantics is defined as
+Degsd A = σ̄
+(
+∞ ∑
+i=0
+( 1
+d G)iσ̄−1(w)
+)
+We have a fixed-point theorem similar to Thm. 2:
+Theorem 5 D = Degsd A is the unique solution of the equation
+D = σ̄(σ̄−1(w) + 1
+d Gσ̄−1(D))
+Proof: Rewrite the equation to
+σ̄−1(D) = σ̄−1(w) + 1
+d Gσ̄−1(D) (1)
+and use Thm. 2.
+Theorem 6 Sigmoid direct aggregation semantics satisfies (Anonymity), (Equivalence), (Directionality), (Conservativity), (Monotony), (Reinforcement), (Neutralisation) and (Continuity). (Neutrality) and (Impact) are only satisfied if the neutral value is taken to be 12 , not 0. (Strong proportionality) is not satisfied; instead a strong (inverse) monotonicity principle holds. 7 Comparison to previous work Generalising the classical work by Dung [12] to rank-based argumentation, Amgoud et al. [2] have introduced weighted argumentation graphs. Moreover, they restrict weightings to [0, 1]. Thus they consider a non-empty finite set A of arguments, a weighting w : A → [0, 1], and an attack relation Ra ⊆ A × A. Amgoud et al. have also considered support argumentation graphs [1], which are similar, except that Ra is replaced by a support relation Rs ⊆ A×A.
+It is straightforward to organise A into a vector. Then Ra and Rs can be organised as incidence matrices Ga and Gs. A combined attack/support graph then leads to a wasa in our sense by setting G := Gs −Ga.
+Both the h-categorizer semantics of [2] (for attack relations) and the aggregation based semantics of [1] (for support relations) work with a summation of the attacks resp. supports. They can be combined into one semantics for wasas as follows (note that weights a restriced to [0, 1]):
+Definition 10 (Sigmoid Aggregation Function) Let A = 〈A, G, w〉 be a wasa such that w : A → [0, 1]. The sigmoid aggregation function fs from A to [0, 1] is defined as follows: for any a ∈ A, for i ∈ {0, 1, 2, . . .}, if i = 0, then f is(a) = w(a), otherwise
+f is(a) =
+{
+w(a) 1−si(a) if s i(a) ≤ 0 w(a)+si(a) 1+si(a) if s i(a) ≥ 0
+where, for any a ∈ A:
+si(a) = ∑
+b∈Sup A (a)
+f i−1s (b)− ∑
+b∈AttA(a)
+f i−1s (b)
+Definition 11 (Sigmoid Aggregation Semantics) The sigmoid aggregation semantics is a function Com transforming any wasa A = 〈A, G, w〉 into a weighting on A such that for any a ∈ A
+DegCom A
+(a) = lim i→∞
+f is(a)
+Example 6 The function f is does not converge in general. Consider the wasa
+3 4 a oo // •
+•
+b •
+•
+1 4
+3 4 c oo // d 14
+Then f2is = ( 3 4 1 4 3 4 1 4 ) T and f2i+1s = ( 1 2 1 2 1 2 1 2 ) T .
+This shows that a näıve combination of the semantics of attacks from [2] with the semantics of supports from [1] is not possible. 8 Damped Sigmoid Aggregation Seman- tics
+The sigmoid aggregation semantics can be made convergent by modifying it as follows: si is divided by a dapming factor d > indegree(G), such that its components range between -1 and 1. This allows us to get rid of si in the denominator and use functions linear in si instead of a sigmoid function.
+Definition 12 (Damped sigmoid aggregation function) Let A = 〈A, G, w〉 be a wasa such that w : A → [0, 1]. Let the damping factor d be such that d ≥ 1. The damped sigmoid aggregation function fds from A to [0, 1] is defined as follows: for any a ∈ A, for i ∈ {0, 1, 2, . . .}, if i = 0, then f ids(a) = w(a), otherwise
+f ids(a) =
+{
+w(a)(1 + si(a)) if si(a) ≤ 0 w(a) + (1− w(a))si(a) if si(a) ≥ 0
+where, for any a ∈ A:
+si(a) = 1
+d × 
+∑
+b∈Sup A (a)
+f i−1ds (b)− ∑
+b∈AttA(a)
+f i−1ds (b) 
+Noting that w(a) + (1− w(a))si(a) = w(a)(1 − si(a)) + si(a) and
+si(a) + |si(a)|
+2 =
+{
+0 if si(a) ≤ 0
+si(a) if si(a) ≥ 0
+we get the matrix notation:
+f ids = w − w ◦ |s i|+
+si + |si|
+2 , where si =
+1 d Gf i−1
+Here, ◦ denotes pointwise product (also called Hadamard product). An alternative matrix notation is
+f ids = w +Diag(p(w, s i))si where si = 1 d Gf i−1
+p(w, s)(x) =
+{
+w(x) if s(x) < 0
+1− w(x) if s(x) ≥ 0
+Conjecture 1 For d > indegree(G), limn→∞f i ds converges. 9 Damped Dogged Semantics A variant of the semantics of the previous section uses a standard sigmoid function instead of that defined by case disctinction.
+Definition 13 (Dogged Function) Let σ be any sigmoid function, see Sect. 6 for examples. Let A = 〈A, G, w〉 be a wasa such that w : A → [0, 1]. Let the damping factor d be such that d ≥ 1. The dogged function fσ,do from A to [0, 1] is defined as follows: for any a ∈ A, for i ∈ {0, 1, 2, . . .}, if i = 0, then f iσ,do(a) = w(a), otherwise
+f iσ,do(a) =  
+ 
+1 if w(a) = 1 σ(si(a) + σ−1(w(a)) if 0 < w(a) < 1
+0 if w(a) = 0
+where, for any a ∈ A:
+si(a) = 1
+d × 
+∑
+b∈Sup A (a)
+f i−1σ,do(b)− ∑
+b∈AttA(a)
+f i−1σ,do(b) 
+Example 7 For d = 1 and σ(x) = arctan(x) π + 12 , limn→∞f i σ,do does not converge in general. Consider the following graph
+a • ••
+❃❃ ❃❃
+❃❃ ❃❃•
+◆◆ ◆◆
+◆◆ ◆◆
+◆◆ ◆◆
+◆◆
+•
+b•
+•♣♣ ♣♣ ♣♣ ♣♣ ♣♣ ♣♣ ♣♣• •✁ ✁✁ ✁✁ ✁✁ ✁ •
+•
+d • •
+•✁ ✁✁ ✁✁ ✁✁ ✁
+•
+• ◆◆
+◆◆ ◆◆
+◆◆ ◆◆
+◆◆ ◆◆ e•
+•♣♣ ♣♣ ♣♣ ♣♣ ♣♣ ♣♣ ♣♣ • ❁❁ ❁❁ ❁❁ ❁❁
+f • •c
+with initial weight 0.8 for every node.
+Conjecture 2 For d > indegree(G), limn→∞f i σ,do converges. 10 Conclusion and Future work We have shown that bipolar argumentation graphs can be equipped with a weighting (ranked-based) semantics, both for weights ranging over real numbers as well as for weights in the range [0, 1].
+Future work should consider the following questions:
+• Is it possible to generalise counting in a way that one does not consider exactly the same set of attackers, but a set of comparable attackers?
+• Can attack and support relations be equipped with a strength in [−1, 1]?  [1, 2], which presents and compares several semantics for argumentation graphs that contain only supports or only attacks relationships, respectively.    [1, 2], which presents and compares several semantics for argumentation graphs that contain only supports or only attacks relationships, respectively.    1 Introduction In [3] we presented a prototype of a system that enables users to explore arguments for a given topic.    Weighted argumentation graphs have been widely discussed, in particular in [5, 6, 7], and also for the bipolar case [8], but not considering initial weightings.    Weighted argumentation graphs have been widely discussed, in particular in [5, 6, 7], and also for the bipolar case [8], but not considering initial weightings.    Weighted argumentation graphs have been widely discussed, in particular in [5, 6, 7], and also for the bipolar case [8], but not considering initial weightings.    Weighted argumentation graphs have been widely discussed, in particular in [5, 6, 7], and also for the bipolar case [8], but not considering initial weightings.    Given that the result of the initial plausibility assessment provide a continuous initial weighting, the most relevant previous work is on the evaluation argumentation graphs with support relationships by Leila Amgoud and Jonathan Ben-Naim [1] and an unpulished work by the same authors and two other authors on the evaluation of argumentation graphs with attack relationships [2].    Given that the result of the initial plausibility assessment provide a continuous initial weighting, the most relevant previous work is on the evaluation argumentation graphs with support relationships by Leila Amgoud and Jonathan Ben-Naim [1] and an unpulished work by the same authors and two other authors on the evaluation of argumentation graphs with attack relationships [2].    Since for our purposes we need to consider bipolar [9] argumentation graphs that contain both attack and support relationships, we need to generalise the results of [1] and [2].    Since for our purposes we need to consider bipolar [9] argumentation graphs that contain both attack and support relationships, we need to generalise the results of [1] and [2].    Since for our purposes we need to consider bipolar [9] argumentation graphs that contain both attack and support relationships, we need to generalise the results of [1] and [2].    The outline of the paper follows the presentations in [1, 2].    The outline of the paper follows the presentations in [1, 2].    We discuss how these axioms relate to the axioms from [1, 2].    We discuss how these axioms relate to the axioms from [1, 2].    In section 7 we compare our approach to [1, 2] in more detail and in 10 we discuss some limitations of our approach and future work.    In section 7 we compare our approach to [1, 2] in more detail and in 10 we discuss some limitations of our approach and future work.    2 Basic Concepts In [1, 2] argumentation graphs are represented as a set of weighted nodes, which represent the attacks, and a set of vertices, which represent an attack relationship or a support relationship, respectively.    2 Basic Concepts In [1, 2] argumentation graphs are represented as a set of weighted nodes, which represent the attacks, and a set of vertices, which represent an attack relationship or a support relationship, respectively.    Given a matrix G, if the element gij = 1, then this is intended to represent that the argument aj supports the argument ai; if gij = −1, then argument aj attacks ai; and if gij = 0, then aj does neither support nor attack 1 This is a significant simplification, since it only allows us to represent convergent arguments in the sense of [4].    Note that this deviates from [1, 2], where only values in [0, 1] are considered.    Note that this deviates from [1, 2], where only values in [0, 1] are considered.    Note that this deviates from [1, 2], where only values in [0, 1] are considered.    The question that this paper needs to address is: How do we calculate the acceptability of the arguments based on their initial plausibility and their relations? Following the terminology in [1, 2], an answer to this question is called an acceptability semantics: Definition 2 (Acceptability Semantics) An acceptability semantics is a function S transforming any wasa A = 〈A, G, w〉 into a vec-    The question that this paper needs to address is: How do we calculate the acceptability of the arguments based on their initial plausibility and their relations? Following the terminology in [1, 2], an answer to this question is called an acceptability semantics: Definition 2 (Acceptability Semantics) An acceptability semantics is a function S transforming any wasa A = 〈A, G, w〉 into a vec-    ) A = ( A A′ ) , G = ( G 0 0 G′ ) , w = ( w w′ ) 4 Mandatory Characteristics of a Semantics We do not consider Counting and Weakening Soundness, since they follow from the other mandatory principles according to [2], and thus are secondary.    Axiom 9 (Impact) A semantics S satisfies impact iff, for any wasa A = 〈A, G, w〉 and any arguments a, b in A such that Deg A (b) > 0: • if b ∈ AttA(a) and b 6∈ BackA(a), then DegSA(a) < Deg S A|b (a), Corresponds to Maximality in [2] and Minimality in [1].    Axiom 9 (Impact) A semantics S satisfies impact iff, for any wasa A = 〈A, G, w〉 and any arguments a, b in A such that Deg A (b) > 0: • if b ∈ AttA(a) and b 6∈ BackA(a), then DegSA(a) < Deg S A|b (a), Corresponds to Maximality in [2] and Minimality in [1].    In [2], a weaker form of proportionality is introduced, which in reality is only a monotonicity property.    Monotony implies boundedness from [1].    Impact generalizes Weakening in [2] and Strengthening in [1].    Impact generalizes Weakening in [2] and Strengthening in [1].    For the proof, we need the following from [10], Corolloray 5.    a ( d d−1 ) a • ( d d+1 ) Since a chain of two attacks is a support, both mutual attack and support lead to a slight self-support as well, while an attack-support pair (called a vicious circle in [11]) leads to a slight self-attack of both arguments.    Forall arguments in a cycle of length three, we get a slight selfsupport (left hand-side, non-vicious circles) or self-attack of the argument (right hand-side, vicious circle in the sense of [11]): a // b ✟✟ ✟✟ ✟✟ ✟    6 Sigmoid Direct Aggregation Semantics We now show how the real-valued direct aggregation semantics can be cast into the more traditional framework of weighting in [0, 1].    Given such a σ, we extend it to σ̄ : R → [0, 1], σ̄(−∞) = 0, σ̄(∞) = 1 where R = R ∪ {−∞,∞}.    Being such prepared, we now can define Definition 9 Let A = 〈A, G, w〉 be a wasa such that w : A → [0, 1].    [2] have introduced weighted argumentation graphs.    Moreover, they restrict weightings to [0, 1].    Thus they consider a non-empty finite set A of arguments, a weighting w : A → [0, 1], and an attack relation Ra ⊆ A × A.    have also considered support argumentation graphs [1], which are similar, except that Ra is replaced by a support relation Rs ⊆ A×A.    Both the h-categorizer semantics of [2] (for attack relations) and the aggregation based semantics of [1] (for support relations) work with a summation of the attacks resp.    Both the h-categorizer semantics of [2] (for attack relations) and the aggregation based semantics of [1] (for support relations) work with a summation of the attacks resp.    They can be combined into one semantics for wasas as follows (note that weights a restriced to [0, 1]): Definition 10 (Sigmoid Aggregation Function) Let A = 〈A, G, w〉 be a wasa such that w : A → [0, 1].    They can be combined into one semantics for wasas as follows (note that weights a restriced to [0, 1]): Definition 10 (Sigmoid Aggregation Function) Let A = 〈A, G, w〉 be a wasa such that w : A → [0, 1].    The sigmoid aggregation function fs from A to [0, 1] is defined as follows: for any a ∈ A, for i ∈ {0, 1, 2, .    This shows that a näıve combination of the semantics of attacks from [2] with the semantics of supports from [1] is not possible.    This shows that a näıve combination of the semantics of attacks from [2] with the semantics of supports from [1] is not possible.    Definition 12 (Damped sigmoid aggregation function) Let A = 〈A, G, w〉 be a wasa such that w : A → [0, 1].    The damped sigmoid aggregation function fds from A to [0, 1] is defined as follows: for any a ∈ A, for i ∈ {0, 1, 2, .    Let A = 〈A, G, w〉 be a wasa such that w : A → [0, 1].    The dogged function fσ,do from A to [0, 1] is defined as follows: for any a ∈ A, for i ∈ {0, 1, 2, .    This paper discusses the semantics of weighted argumentation graphs that are biplor, i.e. contain both attacks and support graphs. The work builds on previous work by Amgoud, Ben-Naim et. al. [1, 2], which presents and compares several semantics for argumentation graphs that contain only supports or only attacks relationships, respectively. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

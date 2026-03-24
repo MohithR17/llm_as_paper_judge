@@ -1,0 +1,68 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: None
+Paper Content: 1705.03967.pdf CRF   (adam.white@ualberta.ca).  ar X
+iv :1
+70 5.
+03 96
+7v 1
+[ cs
+.L G
+] 1
+0 M
+ay 2
+01 7 GQ(λ) Quick Reference and Implementation Guide
+Adam White and Richard S. Sutton
+Revised July 29, 2014
+This document should serve as a quick reference for and guide to the implementation of linear GQ(λ), a gradient-based off-policy temporal-difference learning algorithm. Explanation of the intuition and theory behind the algorithm are provided elsewhere (e.g., Maei & Sutton 2010, Maei 2011). If you questions or concerns about the content in this document or the attached java code please email Adam White (adam.white@ualberta.ca). 1 Requirements and Setting For each use of GQ(λ) you will need to provide three question functions specifying the quantity to be predicted, and four answer functions characterizing the approximation that will be found. Let S and A denote the sets of states and actions. Then the question functions are:
+• π : S × A → [0, 1]; target policy to be learned. Incidently, if π is chosen as the greedy policy with respect to the learned value function, then the algorithm will implement a generalization of the Greedy-GQ algorithm (Maei, Szepesvari, Bhatnagar & Sutton 2010).
+• γ : S→ [0, 1]; termination or discounting function (γ(s) = 1− β(s) in GQ paper)
+• r : S×A× S→ R; reward function
+In many publications there is also specified a fourth question function, the terminal reward function z : S → R used to specify a final reward at termination. More recently its has been recognized that this functionality can be included in the reward function, making use of the discounting function (Modayil, White & Sutton 2014). For example, if one wanted only a terminal reward function z(s) upon termination in state s, one would use a
+reward function of r(s, a, s′) = (1 − γ(s′))z(s′). This completes the specification of the predictive question that you are seeking to answer using the GQ(λ) algorithm.
+The answer functions are:
+• b : S×A→ [0, 1]; behavior policy
+• I : S × A → [0, 1]; interest function (can set to 1 for all state-action pairs or indicate selected state-action pairs to be best approximated)
+• φ : S×A→ Rn; feature-vector function
+• λ : S→ [0, 1]; bootstrapping or eligibility-trace decay-rate function
+The following data structures are internal to GQ:
+• θ ∈ Rn; the learned weights of the linear approximation: Qπ(s, a) = θ⊤φ(s, a) =
+∑n i=1 θiφi(s, a)
+• w ∈ Rn; secondary set of learned weights
+• e ∈ Rn; eligibility trace vector
+Parameters internal to GQ:
+• α; step-size parameter for learning θ
+• η ∈ [0, 1]; relative step-size parameter for learning w (αη) 2 Algorithm Specification We can now specify GQ(λ). Let w and e be initialized to zero and θ be initialized arbitrarily. Let the subscript t denote the current time step. Let ρt denote the “importance sampling” ratio:
+ρt = π(St, At)
+b(St, At) , (1)
+where St and At are the state and action occuring on time step t. Let φ̄t denote the expected next feature vector, defined by:
+φ̄t = ∑
+a∈A
+π(St, a)φ(St, a) (2)
+Then the following equations fully specify GQ(λ):
+δt = r(St, At, St+1) + γ(St+1)θ ⊤ t φ̄t+1 − θ ⊤ t φ(St, At) (3)
+θt+1 = θt + α [ δtet − γ(St+1)(1 − λ(St+1))(w ⊤ t et)φ̄t+1 ]
+(4)
+wt+1 = wt + αη[δtet − (w ⊤ t φ(St, At))φ(St, At)] (5)
+et = I(St)φ(St, At) + γ(St)λ(St)ρtet−1 (6) 3 Pseudocode The following pseudocode characterizes the algorithm and its use.
+Initialize θ arbitrarily and w = 0 Repeat (for each episode):
+Initialize e = 0 S ← initial state of episode Repeat (for each step of episode):
+A← action selected by policy b in state S Take action A, observe next state, S′ φ̄← 0 For all a ∈ A(s):
+φ̄← φ̄+ π(S′, a)φ(S′, a)
+ρ = π(S,A) b(S,A) GQlearn(φ(S,A), φ̄, λ(S′), γ(S′), r(S,A, S′), ρ, I(S)) S ← S′
+until S′ is terminal
+GQLearn(φ, φ̄, λ, γ,R, ρ, I) δ ← R+ γθ⊤φ̄− θ⊤φ e← ρe+ Iφ θ ← θ + α(δe − γ(1− λ)(w⊤e)φ̄) w ← w + αη(δe − (w⊤φ)φ) e← γλe 4 Code The files GQlambda.java and GQlambda.cpp (in the arXiv source archive) contain implementations of the GQlearn function described in the pseudocode. We have excluded optimizations (e.g., binary features or efficient
+trace implementation) to ensure the code is simple and easy to understand. We leave it to the reader to provide environment code for interfacing to GQ(λ) (e.g., using RL-Glue). 5 References Maei, H. R., Szepesvári, Cs., Bhatnagar, S., Sutton, R. S. (2010). Toward off-policy learning control with function approximation. In Proceedings of the 27th International Conference on Machine Learning, Haifa, Israel.
+Maei, H. R. and Sutton, R. S. (2010). GQ(λ): A general gradient algorithm for temporal-difference prediction learning with eligibility traces. In Proceedings of the Third Conference on Artificial General Intelligence, pp. 91–96.
+Modayil, J., White, A., Sutton, R. S. (2014). Multi-timescale nexting in a reinforcement learning robot. Adaptive Behavior 22 (2):146–160.
+Sutton, R. S., Barto, A. G. (1998). Reinforcement Learning: An Introduction. MIT Press.   This document should serve as a quick reference for and guide to the implementation of linear GQ(λ), a gradient-based off-policy temporal-difference learning algorithm. Explanation of the intuition and theory behind the algorithm are provided elsewhere (e.g., Maei & Sutton 2010, Maei 2011). If you questions or concerns about the content in this document or the attached java code please email Adam White (adam.white@ualberta.ca). dvips(k) 5.996 Copyright 2016 Radical Eye Software
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

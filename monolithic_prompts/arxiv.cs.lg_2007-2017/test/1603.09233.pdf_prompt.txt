@@ -1,0 +1,319 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Optimal Recommendation to Users that React: Online Learning for a Class of POMDPs
+Paper Content: 1603.09233.pdf CRF Optimal Recommendation to Users that React: Online Learning for a Class of POMDPs Rahul Meshram Aditya Gopalan   ar X
+iv :1
+60 3.
+09 23
+3v 1
+[ cs
+.L G
+] 3
+0 M
+ar 2
+01 6
+I. INTRODUCTION
+Automated online recommendation (AOR) systems for different types of content aim to adapt to user’s preferences and issue targeted recommendations for content for which the user is estimated to have a higher preference. In the generation of these recommendations, user behavior is typically modeled as a fixed, stochastic response governed by the preference, or taste, of the user for each specific item that has been recommended for consumption. However, in most AOR systems, the dynamic aspects of the response of the user to recommended content are not modeled or investigated. For example, consider an AOR for music. It is reasonable to assume that for some items, there will be short-term user fatigue for a song that has been just been recommended and played out. In this case, the user’s preference for the item drops sharply immediately after consumption and rises with time subsequently. Hence, for such items it is ideal to allow for an interval of time before recommending the item again. It is also possible that the opposite is true—the user’s appetite is whetted with each successive recommendation of a particular item. Capturing such response dynamics could involve assigning a notion of state to the user’s preference for each item at the time of the choosing the recommendations. This state should in turn
+Rahul Meshram and D. Manjunath are with the Electrical Engineering Department of IIT Bombay in Mumbai INDIA. Aditya Gopalan is with the Electrical Communication Engineering Department of Indian Institute of Science in Bangalore INDIA. The work of Rahul Meshram and D. Manjunath was carried out in the Bharti Centre for Communications at IIT Bombay. D. Manjunath is also supported by grants from CEFIPRA and DST.
+depend on the history of the recommendations or play-outs for the item.
+There are several technical challenges in capturing or estimating the time dependent user preference to an item. Firstly, even for a recommended item, the user’s taste or preference for an item is never directly observed; only a binary response in the form of like/dislike, or play/skip, depending on the preference at that time is available. Thus the actual preference is a latent quantity which needs to be inferred and tracked continuously. This motivates the use of a hidden Markov model for the state of a user with respect to an item—the state captures the instantaneous preference and the response depends in a stochastic manner on the state. The AOR observes the response but not the state. The second challenge is that the act of recommending content to the user itself changes the user’s state of mind (e.g., fatigued, stimulated) which in turn influences the user’s responses to future content. This means that the model should allow for action dependent transitions between the states. A third challenge is adapting to the heterogeneity among users—two users may have not only different propensities towards a content item but also different rates at which they react dynamically to recommendations. This in turn necessitates learning the associated state transition models under uncertainty of not knowing what state induced a response.
+This paper frames the problem of optimal recommendation under user adaptation and uncertainty as learning a stylized average-cost partially observable Markov decision process (POMDP). For a given user, an independent POMDP is associated with each item. The state of the POMDP expresses either a high (state 1) interest or a low (state 0) interest of the user for the item. In each step, the AORS recommends one item and the user response for the item is determined by the state. This binary response is also available to the AORS. The states of each of the POMDPs changes accordingly as the the item is recommended or not recommended. Thus the AORS can be seen to be a restless hidden Markov multi-armed bandit. In this paper we develop this model and describe a Thompson sampling mechanism to learn the parameters of the model using the response for each recommendation. Specifically, our contributions in this paper are as follows.
+1) Formulate a POMDP-based model for each item in the database of a recommendation system by incorporating user adaptation, hidden state and uncertainty in model. The AOR itself is modeled as an average cost restless hidden Markov multi-armed bandit. 2) Analyze the structure of the single-armed POMDP and show that the optimal policy is of single-threshold type
+2 in the belief. A consequence of the single threshold is that the optimal policy has a cyclic form with a recommendation step followed by k no-recommendation steps. The optimal k is derived.
+3) Devise a natural online learning algorithm based on Thompson sampling (TS) for optimizing reward in the POMDP with no knowledge of the model parameters. 4) Derive what is, to our knowledge, the first known regret bounds for TS for online learning in a class of POMDPs. A. Related Work Multi-armed bandit models for recommendation systems and for online advertising have been modeled as contextual bandits, e.g., [1]–[3] and the user interests are assumed to be independent of the recommendation history, i.e., they have static models of reward. There are several models for restless multi-armed bandits that use state transitions and state-based rewards with applications in dynamic spectrum access, e.g., [4]–[6]. Such models assume (1) perfect observation of the state when the arm is sampled, and (2) state transitions being independent of/unrelated to actions. There is some work in modeling changing rewards in multi-armed bandits, e.g., [7] but it is again in the fully observable state case, thus circumventing the critical problem of state uncertainty arising in user adaptation. Other approaches towards handling user reactions to recommendations have considered algorithms that use a finite sequence of past user responses as a basis for deciding the current recommendation, e.g., [8]; but these are primarily numerical studies. A more general framework for a restless multi-armed bandit with unobservable states and action-dependent transitions was considered in [9], [10]. In [10] it was shown that the such a system is approximately Whittle-indexable. The restless bandit that we propose in this paper is a special case of that from [10] for which we obtain much stronger results and also a Thompson sampling-based algorithm to learn the parameters of the arms.
+The rest of the paper is organized as follows. In the next section we describe the model and set up notation. In Section III we analyze the structural properties of the averagecost POMDP corresponding to a single arm. In Section IV a Thompson sampling based algorithm is described to learn the parameters of the POMDP based on the observed reward. In Section V we analyse the regret as compared to the optimal policy. We conclude with some illustrative numerical results and a discussion on extension to the multi-armed bandit case. II. MODEL DESCRIPTION AND PRELIMINARIES The AOR system is modeled as a restless multi-armed bandit with arm i representing the state of the user with respect to item i. Each arm is modeled as an independent partially observable Markov decision processes, with two states and two actions. We first describe the model for a single generic arm. S = {0, 1} is the set of states with 0 corresponding to a low interest and 1 corresponding to high interest. A = {0, 1} is the set of actions with 1 for sampling the arm and 0 for not sampling the arm. r : S ×A → R is the reward function with
+0 1(1− q)
+q
+1
+Reward: λ Reward: λ
+State transitions and rewards when At = 0.
+0 11
+1
+Reward: 1 w.p. ρ Reward: 1 w.p. 1
+State transitions and rewards when At = 1.
+Fig. 1. Single-arm POMDP. The state transitions and rewards for when the item is recommended and when it is not recommended.
+R = {0, 1, λ} being the set of rewards. Time progresses in discrete steps indexed by t = 1, 2, 3, . . . A step is an instant at which a recommendation can potentially be made by the AORS. Xt denotes the state of the arm at the start of time step t, At is the action played at time t and and Rt is the reward obtained at time t.
+The reward structure for the POMDP is as follows. A unit reward is obtained with probability 1 if At = Xt = 1. This corresponds to recommending the item when the user’s interest is high. A unit reward is obtained with probability ρ if At = 1 and Xt = 0, i.e., if an item is recommended and the interest is low. A reward λ is obtained independent of Xt for At = 0, i.e., when the item is not recommended.
+Remark 1. A restless multi-armed bandit is typically analyzed by first analyzing the single arm case with a reward of λ for At = 0. λ is called the subsidy for not sampling. Such an analysis is used to determine if the Whittle index based policy can be used to optimally choose the arm at each time step. This analysis is also used to calculate the Whittle-index for an arm.
+If At = 0, then 0 → 1 transitions occur with probability q and 1 → 0 transitions with probability 0. This corresponds to an increasing interest as the time progresses since the last recommendation. If At = 1, then 0 → 0 and 1 → 0 transitions happen with probability 1 corresponding to a decreased interest after a recommendation. Fig. 1 illustrates the preceding discussion in the form of a state transition diagram.
+Recall that the actual state (0 or 1) is never observed. Let πt = Pr (Xt = 0) , denote the belief about the state of the arm at the beginning time t. Let Ht denote the history of actions and rewards up to time t. Let φt : Ht → {0, 1} be the strategy that determines the action at time t. For a strategy φ and an initial belief π at time t = 0 (i.e., Pr (X0 = 0) = π), the
+3 expected finite horizon reward function is
+V φT (π) = E φ
+[
+T−1 ∑
+t=0
+r(Xt, At)
+∣ ∣ ∣ ∣ π0 = π
+]
+= Eφ
+[
+T−1 ∑
+t=0
+[πtρ+ (1− πt)1]
+∣ ∣ ∣ ∣ π0 = π
+]
+.
+The long term average reward is defined as V φ(π) = limT→∞ 1 T V φT (π).
+In the next section we assume that (q, ρ), are known and determine the policy φ that maximizes V φ(π). III. SINGLE ARM: OPTIMAL POLICY We solve the average reward problem described in the previous section by the vanishing discount approach [11], [12]—by first considering a discounted reward system and then taking limits as the discount vanishes. The infinite horizon discounted reward under policy φ and discount β, 0 < β < 1, is
+V φβ (π) := E φ
+[
+∞ ∑
+t=1
+βt−1 (
+aφt (πtρ+ (1 − πt))+
+(1− aφt )λ )
+∣ ∣ ∣ ∣ π0 = π ] . (1)
+From [10], we can show that the following dynamic program solves (1).
+Vβ(π) = max {λ+ βVβ((1− q)π), 1− π(1− ρ) + βVβ(1)} (2)
+Further, we can state the following about Vβ(π).
+Lemma 1. 1) Equation (2) has a unique solution Vβ(π). Further, Vβ(π) is continuous and bounded.
+2) Vβ(π) is convex non-increasing in π and increasing in β. 3) ∣ ∣Vβ(π1) − Vβ(π2) ∣
+∣ < (1 − ρ) for all π ∈ [0, 1] and β ∈ [0, 1). 4) The optimal policy is of threshold type with a single threshold for β ∈ [0, 1) and λL ≤ λ ≤ λH .
+The first two above follow directly from [10] and the last two are derived in [13].
+Define V β := Vβ(π) − Vβ(1) for π ∈ [0, 1]. From (2), we get
+V β + (1− β)Vβ(1) = max { λ+ βV β((1 − q)π),
+1− π(1− ρ)} (3)
+From Lemma 1, V β(π) is convex monotone in π and by definition V β(1) = 0. Further, from the lemma we know that there is a constant C < ∞ such that ∣
+∣Vβ(π) − Vβ(1) ∣
+∣ < C. This implies that V β(π) is bounded and Lipschitz-continuous. Finally, (1 − β)Vβ(π) is also bounded. Hence we can apply the Arzela-Ascoli theorem [14], to find a subsequence (V βk(π), (1 − β)Vβk(π)) that converges uniformly to (V (π), g) as βk → 1. Thus, as βk → 1, along an appropriate subsequence, (3) reduces to
+V (π) + g = max {λ+ V ((1− q)π), 1 − π(1 − ρ)} , (4)
+for all π ∈ [0, 1]. (4) is the dynamic programming equation whose solution gives us the optimal value function that maximizes the average reward.
+Since V (π) inherits the structural properties of Vβ(π), we have, from Lemma 1, that
+Lemma 2. 1) V (π) is monotone non-increasing and convex in π.
+2) The optimal policy is of threshold type with a single threshold for λL ≤ λ ≤ λH .
+This in turn leads us to the following theorem which is a direct analog of Theorem 6.17 in [11].
+Theorem 1. If there exists a bounded function V (π) for π ∈ [0, 1] and a constant g that satisfies (4), then there exists a stationary policy φ∗ such that
+g = max φ lim T→∞
+1 T V φT (π) (5)
+for all π ∈ [0, 1], and moreover, φ∗ is the policy for which the RHS of (4) is maximized. A. An Equivalent Form for the Optimal Policy For the single-armed bandit, the threshold policy of Lemma 2 can be interpreted as follows. Let πT be the threshold such that the optimal policy is At = 1 if πt ≤ πT and At = 0, if πt > πT . We know that if At = 1, then πt+1 = 1, i.e., if the item is recommended then the state becomes 0. When the item is not recommended, the belief about state 0 decreases by a factor of (1 − q). Since there is a single threshold and πt monotonically decreases every time the item is not recommended, the optimal policy will be to wait for k steps before recommending again, where k is the first time that πt has crossed πT . This value k is a function of q and ρ and will be denoted by kpt(q, ρ).
+We first consider infinite horizon discounted reward problem. In this case, solving (1) is equivalent to solving following optimization problem.
+kβ,opt(q, ρ) = argmax k≥1 Ṽβ(k), (6)
+where Ṽβ(k) is the value function obtained by not recommending for k steps between successive recommendations. We can write
+Ṽβ(k) := { λ+ λβ + λβ2 + · · ·+ λβk−1
++βk [ (1− q)kρ+ 1− (1− q)k ]}
++βk+1 { λ+ λβ + λβ2 + · · ·+ λβk−1
++βk [ (1− q)kρ+ 1− (1− q)k ]}
++β2(k+1) { λ+ λβ + λβ2 + · · ·+ λβk−1
++βk [ (1− q)kρ+ 1− (1− q)k ]} + · · ·
+Let Ck denote the reward from the first one cycle of k steps with no recommendations for (k − 1) steps and a
+4 recommendation in the k-th step. We can write
+Ck := λ+ λβ + λβ 2 + · · ·+ λβk−1
++βk [ (1 − q)kρ+ 1− (1− q)k ]
+= λ (1− βk)
+(1 − β) + βk
+[ (1− q)kρ+ 1− (1− q)k ]
+The first k−1 terms above correspond to the reward from not sampling and the kth term denotes the reward from sampling. Thus, Ṽβ(k) can be rewritten as follows.
+Ṽβ(k) = Ck [ 1 + βk+1 + β2(k+1) + · · · ]
+= 1
+1− βk+1
+[
+λ (1− βk)
+(1− β) + βk
+[ (1− q)kρ+ 1− (1− q)k ]
+]
+The preceding discussion gives us the following result on the value function and the optimal policy for the average reward criterion POMDP.
+Theorem 2. 1) The value function for policy k is
+Ṽ (k) = lim β→1 (1 − β)Ṽβ(k)
+= 1
+k + 1
+[ λk + [ (1− q)kρ+ 1− (1− q)k ]] .
+2) The optimum policy kopt(q, ρ) satisfies
+kopt(q, ρ) = argmax k≥1 Ṽ (k)
+= argmax k≥1
+1
+k + 1
+[ λk + [ (1− q)kρ+ 1− (1− q)k ]] (7)
+Thus, for the single armed bandit, given q, ρ and λ, we obtain the optimal policy as the number of steps to wait before recommending the item again. In the next section we describe the Thompson sampling algorithm to learn the parameters based on the reward that is observed. Subsequently, we analyze the regret from the learning process. We remind the reader that the state is never observed in the system and the learning is based only on rewards. IV. THOMPSON SAMPLING LEARNING ALGORITHM We have seen that the optimal policy for the (singlearm) POMDP described by q and ρ is of threshold type (Section III-A), and corresponds to waiting for kopt(q, ρ) steps in between successive recommendations. However, when the parameters q, ρ that describe the Markov chain transition probabilities are unknown a priori1, they must be learnt or inferred from the available feedback in order to attain maximum cumulative reward. This section describes an online algorithm that learns to play the optimal policy using experience, i.e., observations from previously played actions, while at the same time keeping the net reward as high as possible (the exploreexploit problem).
+The learning algorithm (Algorithm 1) is a version of the popular Thompson sampling strategy [15], developed originally for stochastic multi-armed bandit problems [16], and subsequently extended to learning in Markov Decision Processes
+1as in an AOR system where user behavior is unknown at start
+(MDPs) [17]–[19] and POMDPs. It works in epochs, where an epoch is defined to be the interval of time from an instant at which the POMDP is sampled (action 1 is played) up until the next instant at which it is sampled again. At the beginning, the algorithm initializes a prior or belief distribution2 on the space of all candidate parameters/models, which in our case is any subset X of the unit square [0, 1]× [0, 1] containing all possible POMDPs parameterized by (q, ρ). At the start of each epoch ℓ ≥ 1, a model (qℓ, ρℓ) is randomly and independently sampled according to the current prior over X (this random draw is crucial in inducing exploration over the model space). Then, the optimal policy for this sampled model is computed, which by the previous results corresponds to sampling the chain after an interval of kopt(qℓ, ρℓ) time instants3. This policy is now applied for one cycle, i.e., the algorithm waits for the specified interval of time instants, samples the chain at the next time instant, and obtains an observation for the sampled instant (a Bernoulli-distributed reward). The observed reward is used to update the prior over models via Bayes’ rule, the epoch ends, and the next epoch starts with the updated prior. Notation. In Algorithm 1, B(X ) denotes the Borel σ-algebra of X ⊂ Rd. Pr ( R = r ∣ ∣ (q, ρ), k )
+denotes the likelihood, under the POMDP model specified by parameters (q, ρ), of observing a reward of r ∈ {0, 1} upon sampling the Markov chain after having not sampled the chain for exactly k previous time instants. Specifically, we have
+Algorithm 1: Thompson sampling algorithm for learning the optimal policy
+Input: Parameter space X ⊆ [0, 1]2, Policy space K ⊂ {0, 1, 2, . . .}, Observation space R = {0, 1}, Prior probability distribution Z1 over (X ,B(X )) for epoch ℓ = 1, 2, . . . do
+Sample (qℓ, ρℓ) ∈ X according to the probability distribution Zℓ Compute the optimal policy kℓ = kopt(qℓ, ρℓ) for sampled parameters Apply the policy kℓ once: wait for the next (kℓ − 1) time steps and sample the Markov chain at the kℓ-th time instant Observe reward on sampling, denote it by Rℓ ∈ {0, 1} Update the current prior over (q, ρ) to
+Zℓ+1(B) :=
+∫
+B Pr
+( R = Rℓ ∣ ∣ (q, ρ), kℓ )
+Zℓ(q, ρ)dq dρ ∫
+X Pr
+( R = Rℓ ∣ ∣ (q, ρ), kℓ ) Zℓ(q, ρ)dq dρ
+for any Borel set B ∈ B(X ). end for
+Pr ( R = r ∣ ∣ (q, ρ), k ) =
+{
+f(q, ρ, k) if r = 1
+1− f(q, ρ, k) if r = 0,
+2Note that the prior used in Thompson sampling is merely a parameter of the algorithm (e.g., the uniform measure over a compact domain), carefully designed to induce random exploration, and is not related to any Bayesian modeling assumptions on the true model as such.
+3This could be carried out using either standard planning methods such as value/policy iteration or exhaustive search over threshold-type policies.
+5 where f(q, ρ, k) is simply the probability of observing a reward of 1 after having waited for k time steps since the last sample, when the parameters are (q, ρ). It follows that
+f(q, ρ, k) = (1− q)kρ+ [ 1− (1− q)k ] . V. MAIN RESULT – REGRET BOUND In this section, we show an analytical performance guarantee for Algorithm 1.
+To this end, we consider a widely employed measure of performance from online learning theory, namely regret [20], [21]. The regret of a strategy, for the POMDP described by (q∗, ρ∗), is the difference between the cumulative reward which the optimal policy4 kopt(q∗, ρ∗) earns when run from a fixed initial state for a fixed time horizon T , and that which the strategy earns with the same initial state and time horizon. Formally, the regret for a strategy A is the random variable
+RA(q∗,ρ∗)(T ) :=
+T−1 ∑
+t=0
+r ( Xt, A kopt(q ∗,ρ∗) t ) − T−1 ∑
+t=0
+r ( Xt, A A t ) ,
+where Akopt(q ∗,ρ∗)
+t (resp. A A t ) represents the action taken by
+kopt(q ∗, ρ∗) (resp. A) at time instant t, and it is assumed that the algorithms A and kopt(q∗, ρ∗) are run on independent POMDP instances. The goal is typically to bound the regret of a sequential decision making algorithm as a function of the structure of the POMDP (number of states/actions in the underlying MDP) and show that it grows only sub-linearly with time T (i.e., the per-round regret vanishes), either in expectation or with high probability.
+Towards bounding the regret of the Thompson sampling POMDP algorithm (Algorithm 1), it is convenient to consider a modified version of regret that essentially counts the number of epochs during the operation of the algorithm in which the policy used is not kopt(q∗, ρ∗), or in other words the length of the epoch consisting of no-sampling instants is not kopt(q∗, ρ∗). This corresponds to the quantity
+R̃(q∗,ρ∗)(L) :=
+L ∑
+ℓ=1
+1{kℓ 6=kopt(q∗,ρ∗)},
+defined for the first L epochs that the algorithm executes. Note that under the reasonable assumption that an upper bound kmax on kopt(q∗, ρ∗) is available a priori, and if the Thompson sampling algorithm samples at all times parameters (q, ρ) for which kopt(q, ρ) ≤ kmax, then the length of each epoch is bounded between 1 and kmax; thus the standard regret R(T ) is bounded in terms of the modified regret R̃(L) by a constant factor kmax (note that the maximum possible reward is 1). In order to focus on the order-wise scaling of the regret with time or number of epochs, we henceforth concentrate on bounding the (modified) regret R̃(T ), with high probability.
+We will need the following set of mild assumptions on the structure of the parameter space and the initial prior under which a regret bound holds.
+4We overload notation, when the context is clear, to represent the optimal policy using the optimal waiting time kopt(q∗, ρ∗).
+Assumption 1. (a) The parameter space X ⊆ [η, 1 − η] for some η ∈ (
+0, 12 ) , (b) |X | < ∞, (c) The true model (q∗, ρ∗) ∈ X , (d) The prior distribution Z1 over X puts positive mass on the true model, (e) There is a unique (average-reward) optimal policy kopt(q∗, ρ∗) ≤ kmax for the true model with a known upper bound kmax ∈ Z.
+Theorem 3 (Main Result – Thompson sampling regret). Let Assumption 1 hold, and let ǫ, δ ∈ (0, 1). There exists L0 ≡ L0(ǫ) such that the following bound holds, for the cumulative regret of Algorithm 1 with initial prior Z1, with probability at least 1− δ for all L ≥ L0:
+R̃(q∗,ρ∗)(L) ≤ B + C(logL),
+where B ≡ B(ǫ, δ, (q∗, ρ∗),X ) is a problem-dependent constant independent of the number of epochs L, and C ≡ C(δ, (q∗, ρ∗),X ) is the solution to an optimization problem (P1).
+Note. The optimization problem is described in detail in Appendix A for the sake of clarity. Discussion. Theorem 3 establishes that the regret of Algorithm 1 scales only logarithmically (thus, sub-linearly) with time (or epochs), with high probability, when starting with a ‘grain-of-truth’ prior that ascribes positive probability to the true model. The algorithm is thus able to achieve a suitable balance between exploring across different sampling policies and exploiting its improving knowledge about the true model (q∗, ρ∗) to keep the regret controlled, in a nontrivial fashion. Moreover, this is achieved in a POMDP model in which the state of the Markov chain is never available at any time instant, but instead only a stochastic reward correlated with the current state is observed that conveys implicit information about the true parameter (q∗, ρ∗). The logarithmic growth of the regret with time is controlled by the quantity C, which depends on Kullback-Leibler (KL) divergences of the distribution of the observations under different models and policies, thus encoding the information structure of the observations.
+The theorem is proven by following closely the method developed to show [22, Theorem 1 and Proposition 2] and [18, Theorem 1 and 5], namely the strategy of bounding the posterior mass (with high probability) both from below (in a neighborhood of the true model) and from above (outside the neighborhood, for parameters corresponding to suboptimal policies) spelt out in detail in [22, Appendix A]. We describe the derivation of Theorem 3 in Appendix A.
+The following accompanying result provides more insight into the order-wise scaling of regret. In the following, D(p||q) := p log (
+p q
+) + (1 − p) log (
+1−p 1−q
+)
+denotes the KL divergence between Bernoulli distributions of parameter p and q, 0 < p, q < 1.
+Theorem 4. Consider L to be large enough so that
+max (q,ρ)∈X ,k≤kmax
+D(f(q∗, ρ∗, k)||f(q, ρ, k)) ≤ 1 + ǫ
+1− ǫ logL.
+Then, there exists ∆2 > 0 such that
+C(logL) ≤
+(
+1
+∆2
+)
+2(1 + ǫ)
+1− ǫ logL.
+6 Discussion. Theorem 4 highlights a key property of the regret induced by the information structure of the POMDP problem – that the regret asymptotically does not scale with the total number kmax of candidate optimal policies, which could be large by itself. This can be contrasted with running a simple multi-armed bandit algorithm such as UCB [23] with the ‘arms’ being different waiting-duration policies with the duration ranging from 0, 1, . . . , kmax (a total of kmax + 1 arms), and the reward being the reward from applying a single cycle of any such policy while disregarding the POMDP structure entirely. It follows from standard stochastic bandit regret bounds that such an algorithm would achieve regret that scales with the total number of arms, i.e., O(kmax logT ). The advantage of using Thompson sampling with a prior on POMDP structures (q, ρ) is that every application of any waiting-time policy provides a non-trivial amount of information (in the sense of the prior-posterior update) about the true POMDP (q∗, ρ∗), and hence about all other policies (in the multi-armed bandit view this is akin to any arm providing reward information about all arms following every pull). The proof of the result is motivated by [22, Proposition 2], and is detailed in the appendix. VI. NUMERICAL RESULTS AND DISCUSSION We present some numerical results to show the rate of convergence of Algorithm 1 to the optimal policy of the POMDP model, for various configurations of the true model and initial prior. We fix λ = 0.3 in all of the simulations and consider four combinations of the true models (q∗, ρ∗); (1) (0.05,0.25), (2) (0.05,0.15), (3) (0.05,0.35), and (4) (0.15,0.35). For each of these four values of the true parameters, we present two performance measures as a function of the time step—the regret and also probability mass on the true values. These values are average from 300 runs of the simulation. The first set of plots (shown in Fig. 2) are obtained by discretising the parameter space coarsely into a (5 × 5) grid at (0.05, 0.15, 0.25, 0.35, 0.45) and starting with the uniform a distribution on the 25 points. The second set of plots (shown in Fig. 3) is obtained by using a finer 10 × 10 grid at (0.05, 0.10, . . . , 0.50).
+We observe that true model and the initial prior (i.e., supported on the coarse/fine grid) both affect the convergence rate of regret and probability distribution of true model. The effect of the prior on the finer grid is to increase the overall regret and slow down the convergence to the true model. This is presumably due to (a) the fact that imposing a prior over a fairly coarse grid is equivalent to providing a large amount of side information about the true model (i.e., that it must be one of a small set of models), and on a related note, (b) the presence of confounding or competing models that are closer to it than in the coarse grid prior, which must be eliminated to achieve low regret (this is analogous to the phenomenon of smaller ‘gap’ in multi-armed bandits leading to higher regret). A. Discussion and Directions – Multi-armed bandit case We formulated the problem of optimizing recommendations for a single user, whose taste in a certain item changes
+with recommendations, as online learning in a two-state, twoparameter POMDP. Using this approach, we developed and analyzed the performance of a natural Thompson-sampling algorithm for learning the optimal policy for a user-item pair. A logical next step in this investigation is to treat the multi-armed bandit version of the problem with multiple independently evolving POMDPs, each representing different users/items, and a resource constraint on which users/items can be activated at any instant, e.g., decide which of several items is to be shown to a user at a certain time, given that the user remembers how far ago she consumed a certain item and may respond accordingly to item recommendations.
+The Thompson sampling based algorithm proposed in this work could be extended to cover the multi-armed bandit case by jointly sampling parameters for all POMDPs, computing the optimal refresh rate for each of them, and scheduling the recommendations accordingly while at the same time updating its current prior to incorporate observations. This opens up new avenues for analysis of performance for such algorithms, and we plan to pursue it as part of future work. A. Proof of Theorem 3 We sketch how the proof of the result can be adapted from that of [22, Theorem 1]; due to space constraints the reader is referred to [18], [22] for precise estimates and details. We first define the decision regions based on KL-divergence for each policy k. Let Sk := {(q, ρ) ∈ X : kopt(q, ρ) = k} be the collection of all models (q, ρ) ∈ X for which the optimal policy is k. Denote k∗ := kopt(q∗, ρ∗), let ǫ > 0, and define the following sub-decision regions ∀k 6= k∗:
+S ′ k := S ′ k(ǫ) = {(q, ρ) ∈ Sk : D (f(q ∗ , ρ ∗ , k ∗)||f(q, ρ, k∗)) ≤ ǫ}
+S ′′ k := Sk \ S ′ k = {(q, ρ) ∈ Sk : D (f(q ∗ , ρ ∗ , k ∗)||f(q, ρ, k∗)) > ǫ} .
+Let Nk(l) = ∑l
+i=1 1{(qi,ρi)∈Sk} be the number of times up to and including epoch l for which the policy employed by Algorithm 1 is k. Also, Nk(l) = ∑l
+i=1 1{(qi,ρi)∈S′k} +
+∑l i=1 1{(qi,ρi)∈S′′k } . Define N ′ k(l) := ∑l i=1 1{(qi,ρi)∈S′k} and
+N ′′ k (l) := ∑l
+i=1 1{(qi,ρi)∈S′′k } . Next, it can be shown that
+the posterior on S ′′
+k decays exponentially with t, leading to a negligible, i.e., O(1), regret from S ′′
+k . To obtain posterior distribution on S ′
+k to be small, we need ∑kmax
+k Nk(l)D (f(q ∗, ρ∗, k)||f(q, ρ, k)) ≈ logL. This mean that suboptimal models are sampled as long as their posterior probability mass is greater than 1
+L . If the posterior probability
+of a model parameter is less than 1 L , then the number of times that parameter sampled up to epoch L is O(1) and this is negligible compared to regret. It is thus enough to bound the maximum amount of time that the posterior probability of any S ′
+k, k 6= k ∗, can stay above 1/L, when non-trivial regret
+is incurred. We now define N ′ (l) := ( N ′ k(l) ) , at l ≥ 0, N ′
+(0) = (0, · · · , 0). The policy k is eliminated when all its model losses exceed logL. Let τ1 be the first time when some policy k1 is eliminated, k1 6= k∗. The play count of policy k1 fixed at N ′
+k1 (τ1) for remaining horizon up to L. Next τ2 ≥ τ1
+when policy k2 /∈ {k∗, k1} is eliminated and play count of k2 fixed at N ′
+k2 (τ2). This process goes on until all subop-
+timal policies eliminated. N ′ (τi) = ( N ′ k(τi) ) {k=1,···kmax} is play count vector of all policies at time τi. Let Yi := N ′ (τi) = ( N ′ k(τi) )
+{k=1,···kmax} . Since the play count of
+policy ki fixed at N ′
+ki (τi) for remaining horizon, we have
+constraints Yi(kj) = Yj(kj), for i ≥ j. That means plays of policy kj do not occur after time τj . Let D(f(q, ρ)) := (D (f(q∗, ρ∗, k)||f(q, ρ, k))){k=1,···kmax} is a vector of the marginal Kullback-Leibler divergences for all policies. As the policy ki eliminated at time τi, this translates into the following problem: min(q,ρ)∈S′
+ki
+〈Yi, D(f(q, ρ))〉 ≥ 1+ǫ 1−ǫ logL,
+where 〈x, y〉 denotes the standard inner product in Euclidean space. We summarize the discussion on the elimination of suboptimal policies in the following constrained optimization
+8 problem that depends on the marginal KL divergences.
+C(logL) :=
+max
+kmax−1 ∑
+i=1
+Yi(ki)
+s.t. Yi ∈ R kmax + , i = 1, · · · , kmax − 1
+Yi(kmax) = 0, k = 1, · · · , kmax − 1 Yi ≥ Yj , i ≥ j, j = 1 · · · , kmax − 1 Yi(j) = Yj(j), i ≥ j, j = 1, · · · , kmax − 1 σ : {1, · · · , kmax − 1} → {1, · · · , kmax} − {k ∗} injective
+min (q,ρ)∈S ′
+σ(i)
+〈Yi, D(f(q, ρ))〉 = 1 + ǫ
+1− ǫ logL,
+i = 1, · · · , kmax − 1. (P1) B. Preliminary Results Towards Proving Theorem 4 We collect here some useful assertions towards showing the result. We first note that the variation distance provides a lower bound on KL-divergence and it is given as
+D(f(q∗, ρ∗, k)||f(q, ρ, k)) ≥ 1
+2 ln 2 d 2(f(q∗, ρ∗, k), f(q, ρ, k))
+≥ 1
+ln 2 dk(q, ρ) (8)
+Here, d(f(q∗, ρ∗, k), f(q, ρ, k)) is variation distance between f(q∗, ρ∗, k) and f(q, ρ, k) and this is described as follows.
+d(f(q∗, ρ∗, k), f(q, ρ, k)) = 2 ∣ ∣f(q∗, ρ∗, k)− f(q, ρ, k) ∣ ∣
+We can rewrite ∣ ∣f(q∗, ρ∗, k)− f(q, ρ, k) ∣ ∣ 2 as follows.
+∣ ∣f(q∗, ρ∗, k)− f(q, ρ, k) ∣ ∣ 2 =
+[
+qk(ρ− 1)− q∗ k (ρ∗ − 1)
+]2
+,
+where q = 1 − q, and q∗ = 1 − q∗. Define dk(q, ρ) := [ qk(ρ− 1)− q∗ k (ρ∗ − 1) ]2 , and d(q, ρ) :=
+[d1(q, ρ), · · · , dkmax(q, ρ)] . We need the following series of lemmas to prove Theorem 4.
+Lemma 3. For every ǫ > 0, there exists δ > 0 such that if (q, ρ) and (q∗, ρ∗) sufficiently away and D(f(q∗, ρ∗, k∗)||f(q, ρ, k∗)) ≤ ǫ then D(f(q∗, ρ∗, k)||f(q, , ρ, k)) ≥ δ.
+Proof: Since (q, ρ) is sufficiently away from (q∗, ρ∗), the difference |qk − q∗ k | will be positive for all policies k = 1, 2, · · · , kmax. We set
+δ1 := min k
+[
+qk(ρ− 1)− q∗ k (ρ∗ − 1)
+]2
+> 0.
+Then, using inequality in (8), we obtain
+D(f(q∗, ρ∗, k)||f(q, ρ, k)) > 1
+ln 2 δ1 > δ,
+where δ = 1ln 2δ1. This completes the proof.
+Lemma 4. One can find ǫ > 0 such that it can not happen that there exists (q, ρ) /∈ Nǫ1(q ∗, ρ∗) and k, k ′ , k 6= k ′
+for which dk(q, ρ) ≤ ǫ and dk′ (q, ρ) ≤ ǫ.
+Proof: Suppose dk(q, ρ) = dk′ (q, ρ) = 0, then we will have
+qk
+q∗ k
+= 1− ρ∗
+1− ρ =
+qk ′
+q∗ k ′
+(9)
+This implies that qk−k ′ = q∗ k−k
+′
+Now observe that when k 6= k ′
+and q is not in neighborhood of q∗, so equality (9) is not true. This means that our assumption dk(q, ρ) = dk′ (q, ρ) = 0 is not true. Further, it implies that only one of the following claim is true.
+1) if dk(q, ρ) = 0, then dk′ (q, ρ) > 0 for k 6= k ′ 2) if dk′ (q, ρ) = 0 then dk(q, ρ) > 0 for k 6= k ′ .
+In other word, we can find ǫ > 0 for which either dk(q, ρ) ≤ ǫ, dk′ (q, ρ) > ǫ is true, or dk′ (q, ρ) ≤ ǫ dk(q, ρ) > ǫ is true.
+Lemma 5. Consider any parameter (q, ρ) 6= (q∗, ρ∗) and (q, ρ) /∈ Nǫ1(q ∗, ρ∗), where Nǫ1(q ∗, ρ∗) is ǫ1 neighborhood of (q∗, ρ∗). Then there exists an integer κ ∈ {1, 2, 3, · · · , kmax− 1} and ∆ > 0 such that for all (q, ρ) /∈ Nǫ1(q
+∗, ρ∗) : ∣ ∣{k : dk(q, ρ) ≥ ∆} ∣ ∣ ≥ κ. (10)
+Also, for sufficiently small ∆ > 0, we have κ = kmax − 1.
+Proof: From Lemma 4, notice that in d(q, ρ), there can be at most one element which can be zero or arbitrary close zero, say, dl(q, ρ) ≤ ǫ and remaining entries, dk(q, ρ) > ǫ, k 6= l. When (q, ρ) /∈ Nǫ1(q
+∗, ρ∗), implies |q − q∗| ≥ ǫ1 and |ρ− ρ∗| ≥ ǫ1. Thus we obtain
+dk(q, ρ) = [ q k(ρ− 1)− q∗ k (ρ∗ − 1) ]2
+≥ min k
+[
+(q∗ + ǫ1) k((ρ∗ + ǫ1)− 1)− q∗ k (ρ∗ − 1)
+]2
+∆ := min1≤k≤kmax
+[
+(q∗ + ǫ1) k((ρ∗ + ǫ1)− 1) − q∗ k (ρ∗ − 1)
+]2
+,
+this ∆ > 0. Now, combining Lemma 4, and dk(q, ρ) ≥ ∆, there exists κ ∈ {1, 2, 3, · · · , kmax−1}, such that for (q, ρ) /∈ Nǫ1(q
+∗, ρ∗), we have ∣
+∣{k : dk(q, ρ) ≥ ∆} ∣ ∣ ≥ κ. (11)
+Further, for sufficiently small ǫ > 0, and (q, ρ) /∈ Nǫ1(q ∗, ρ∗), we have kmax − 1 nonzero entries in vector d(q, ρ). In this case, fix ∆ = ǫ, we obtain ∣ ∣{k : dk(q, ρ) > ∆} ∣
+∣ = kmax − 1. Thus, κ = kmax − 1. C. Proof of Theorem 4 From lemma 5, we know that for sufficiently small ∆ > 0, we have κ = kmax − 1 and ∣ ∣{k : dk(q, ρ) ≥ ∆} ∣
+∣ = kmax − 1. Thus, we have ∆2 = 1ln 2∆ > 0 and κ = kmax − 1 such that ∣ ∣{k ∈ K : k 6= k∗, D(f(q∗, ρ∗, k)||f(q, ρ, k)) ≥ ∆2} ∣ ∣ = kmax − 1
+From Lemmas 3, 5 and eqn. (8), we note that all assumptions in [22, Proposition 2] are satisfied. Note that the upper bound on C(logL) is given in [22, Proposition 2] and it is as follows.
+C(logL) ≤
+(
+kmax − κ
+∆2
+)
+2(1 + ǫ)
+1− ǫ logL
+Here, we substitute κ = kmax − 1, and required upper bound on C(logL) follows.  , [1]–[3] and the user interests are assumed to be independent of the recommendation history, i.    , [1]–[3] and the user interests are assumed to be independent of the recommendation history, i.    , [4]–[6].    , [4]–[6].    , [7] but it is again in the fully observable state case, thus circumventing the critical problem of state uncertainty arising in user adaptation.    , [8]; but these are primarily numerical studies.    A more general framework for a restless multi-armed bandit with unobservable states and action-dependent transitions was considered in [9], [10].    A more general framework for a restless multi-armed bandit with unobservable states and action-dependent transitions was considered in [9], [10].    In [10] it was shown that the such a system is approximately Whittle-indexable.    The restless bandit that we propose in this paper is a special case of that from [10] for which we obtain much stronger results and also a Thompson sampling-based algorithm to learn the parameters of the arms.    SINGLE ARM: OPTIMAL POLICY We solve the average reward problem described in the previous section by the vanishing discount approach [11], [12]—by first considering a discounted reward system and then taking limits as the discount vanishes.    SINGLE ARM: OPTIMAL POLICY We solve the average reward problem described in the previous section by the vanishing discount approach [11], [12]—by first considering a discounted reward system and then taking limits as the discount vanishes.    From [10], we can show that the following dynamic program solves (1).    ∣ < (1 − ρ) for all π ∈ [0, 1] and β ∈ [0, 1).    The first two above follow directly from [10] and the last two are derived in [13].    The first two above follow directly from [10] and the last two are derived in [13].    Define V β := Vβ(π) − Vβ(1) for π ∈ [0, 1].    Hence we can apply the Arzela-Ascoli theorem [14], to find a subsequence (V βk(π), (1 − β)Vβk(π)) that converges uniformly to (V (π), g) as βk → 1.    Thus, as βk → 1, along an appropriate subsequence, (3) reduces to V (π) + g = max {λ+ V ((1− q)π), 1 − π(1 − ρ)} , (4) for all π ∈ [0, 1].    17 in [11].    If there exists a bounded function V (π) for π ∈ [0, 1] and a constant g that satisfies (4), then there exists a stationary policy φ such that    for all π ∈ [0, 1], and moreover, φ is the policy for which the RHS of (4) is maximized.    The learning algorithm (Algorithm 1) is a version of the popular Thompson sampling strategy [15], developed originally for stochastic multi-armed bandit problems [16], and subsequently extended to learning in Markov Decision Processes 1as in an AOR system where user behavior is unknown at start (MDPs) [17]–[19] and POMDPs.    The learning algorithm (Algorithm 1) is a version of the popular Thompson sampling strategy [15], developed originally for stochastic multi-armed bandit problems [16], and subsequently extended to learning in Markov Decision Processes 1as in an AOR system where user behavior is unknown at start (MDPs) [17]–[19] and POMDPs.    The learning algorithm (Algorithm 1) is a version of the popular Thompson sampling strategy [15], developed originally for stochastic multi-armed bandit problems [16], and subsequently extended to learning in Markov Decision Processes 1as in an AOR system where user behavior is unknown at start (MDPs) [17]–[19] and POMDPs.    At the beginning, the algorithm initializes a prior or belief distribution2 on the space of all candidate parameters/models, which in our case is any subset X of the unit square [0, 1]× [0, 1] containing all possible POMDPs parameterized by (q, ρ).    At the beginning, the algorithm initializes a prior or belief distribution2 on the space of all candidate parameters/models, which in our case is any subset X of the unit square [0, 1]× [0, 1] containing all possible POMDPs parameterized by (q, ρ).    Algorithm 1: Thompson sampling algorithm for learning the optimal policy Input: Parameter space X ⊆ [0, 1], Policy space K ⊂ {0, 1, 2, .    To this end, we consider a widely employed measure of performance from online learning theory, namely regret [20], [21].    To this end, we consider a widely employed measure of performance from online learning theory, namely regret [20], [21].    We describe and study a model for an Automated Online Recommendation System (AORS) in which a user’s preferences can be time-dependent and can also depend on the history of past recommendations and play-outs. The three key features of the model that makes it more realistic compared to existing models for recommendation systems are (1) user preference is inherently latent, (2) current recommendations can affect future preferences, and (3) it allows for the development of learning algorithms with provable performance guarantees. The problem is cast as an average-cost restless multi-armed bandit for a given user, with an independent partially observable Markov decision process (POMDP) for each item of content. We analyze the POMDP for a single arm, describe its structural properties, and characterize its optimal policy. We then develop a Thompson sampling-based online reinforcement learning algorithm to learn the parameters of the model and optimize utility from the binary responses of the users to continuous recommendations. We then analyze the performance of the learning algorithm and characterize the regret. Illustrative numerical results and directions for extension to the restless hidden Markov multiarmed bandit problem are also presented. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

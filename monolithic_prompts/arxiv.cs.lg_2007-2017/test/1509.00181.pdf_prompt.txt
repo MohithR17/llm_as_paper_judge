@@ -1,0 +1,560 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Differentially Private Online Learning for Video Recommendation with Social Big Data over Media Cloud
+Paper Content: 1509.00181.pdf CRF Differentially Private Online Learning for Video Recommendation with Social Big Data over Media Cloud  hustzhouyx@gmail.com, panzhou@hust.edu.cn wu@ece.ufl.edu  ar X
+iv :1
+50 9.
+00 18
+1v 1
+[ cs
+.L G
+] 1
+S ep
+2 01
+5 IEEE TRANSACTIONS ON MULTIMEDIA, VOL. X, NO. X, SEPTEMBER 20XX 1
+Index Terms—Online social networks, big data, video recommendation, distributed online learning, differential privacy, media cloud.
+I. INTRODUCTION
+IN recent years, online social networks (OSNs) have beenmassively growing, where users can share and consume all kinds of multimedia contents. As a result, given the numerous different genres of videos in social media, how to discover the videos of personal interest and recommend them to individual users are of great significance. Recommendation is foreseen to be one of the most important services that can provide such personalized multimedia contents to users [1]. Several companies have demonstrated initial successes in recommendation system design. Take Amazon’s success in recommendation system for instance, the company reported a 29% sales increase to $12.83 billion during its second fiscal quarter, up from $9.9 billion during the same time
+Pan Zhou and Yingxue Zhou, †These authors contributed equally to this work and should be considered co-first authors, are with the School of Electronic Information and Communications, Huazhong University of Science and Technology, Wuhan 430074, China. E-mail: hustzhouyx@gmail.com, panzhou@hust.edu.cn
+Dapeng Wu is with the Department of Electrical and Computer Engineering, University of Florida. E-mail: wu@ece.ufl.edu
+Hai Jin is with the School of Computer Science and Technology, Huazhong University of Science and Technology, Wuhan, 430074, China
+Manuscript received XXXXX; revised XXXXX.
+last year. In addition, [3] reported that YouTube won its first Emmy for video recommendations. In fact, YouTube delivers a set of personalized videos to registered users based on their previous activities (watched, favorited, liked) on the YouTube site [4]. However, as revealed in [2], more than 40 % of all YouTube views come from OSNs like Facebook and Twitter. Consequently, revolution from traditional recommendation algorithms, such like Google’s content-based filtering (CB) and Amazon’s collaborative filtering (CF), to social-based recommendation is prevailing and desirable. To be specific, technologies such as Bag-of-Features Tagging (BoFT) [5] extract user’s multifarious social profiles (e.g., social status, social relationships, hobbies, professions and ages) modeled as context vectors from big social data. Then, video service vendors recommend personalized video contents to individuals based on the extracted context information.
+However, there exist three major challenges in this scenario. The first challenge comes from the big data’s role in the personalized recommendation. Online social networking accelerates the popularity of applications and services, resulting in the explosive increase of data scale. In order to achieve personalization, companies require information on the attributes, demand, or preferences of the user. Big data puts companies in a favorite position to have access to much more contextual information. Unfortunately, how to harness and actually use Big Data to effectively personalize recommendation is a monumental task. Since big data often refers to massive and highdimensional digital content, traditional stand-alone systems cannot overcome the storage and processing of this large-scale datasets [6]. Besides that, complex and various user-generated big data in the OSNs results in the sparsity and heterogeneity of users’ context space, which makes timely recommendation more challenging.
+Furthermore, the leakage of users sensitive contextual information in this video recommendation process becomes a prominent issue [7]. Typically, the more detailed the information related to the user is, the more accurate the recommendations for the user are. Service vendors running the recommender systems collect information as possible as they can to ensure accurate recommendations. However, potential threats to user privacy are often underestimated. Because the outcomes of recommendation are related to the information in user’s context, recommended videos usually expose this kind of information. For example, recommended teaching videos imply that this particular user can be a teacher. Finally, the inventory of videos is an important commercial secret for the
+service vendor. As for the service vendors’ incentives, they rely on stored video source files to gain popularity among users. Intuitively, video service vendors are selfish and they refuse the inference of what videos they have in the inventories by other video service vendors. Avoiding the divulge of video contents of each service vendor is desirable.
+Taking the above three difficulties into consideration, establishing a privacy-preserving video recommendation system in OSNs can be extremely challenging. Traditional recommender systems, including collaborative filtering (CF) [9], contentbased filtering (CB) [8] and hybrid approaches [10], can provide meaningful recommendations at an individual level by leveraging users interests as demonstrated by their past activity. However, their stand-alone systems have difficulties in dealing with tremendous high-dimensional social big data. Taking the privacy of user’s profile into consideration, previously, anonymity was the main tool in social networks [11], [12] as well as in recommendation systems [13]. But anonymity incurs high computation and cannot be qualified to what extent individual privacy is preserved. Differential privacy [15] proposed recently is a heuristic method to solve this problem. Several studies have incorporated it into recommendation systems [16]–[18], but none of them has considered both the privacy of users and the service vendors. Therefore, it is necessary to design a privacy-preserving video recommendation in OSNs that can handle the big data and achieve high-accurate recommendations.
+In this paper, we combine differential privacy and distributed online learning to design an efficient and high-accurate timely recommendation system based on media cloud. To cope with the sheer volume of pervasive big data, collected users’ contexts are translated to remote media cloud and decentralized into several video service vendors working cooperatively in the cloud. Fig. 1 gives an illustration of this deployment. Our main thesis in this media cloud based scenario is that video service vendors are modeled as decentralized online learners, who try to learn from user’s social profiles (contexts) and match the contexts to corresponding favorite videos. If service vendors cannot find suitable videos in their repositories for their users, they (requesting vendors) can request other service vendors (requested vendors) to help recommend. Since the extracted context vectors from big social data are high-dimensional and omnifarious, the context space with d dimensions (d is the number of user features) can be extremely huge and heterogeneous. Then, learning the most matchable video for each individual can be extremely slow. Therefore, each service vendor initially groups users (partition the context space) with similar context into rough crowds, and then, they dynamically refine the partition strategies over time.
+On the other hand, service vendors do not want other vendors speculate what videos they stored in their repositories as well as the information of them. However, in the cooperative recommendation process, requested vendors may recommend their video to requesting vendors’ service sites (for requesting vendors’ users). Then, requesting vendors will learn information about recommended videos (of requested vendors) from the click-through rate (CTR). To avoid this privacy disclosure problem, we adopt Laplace mechanism [15], adding
+noise to feed-back recommendation accuracy (CTR). When service vendors recommend only their own videos, protecting the privacy of users’ contexts is the main issue. Adding
+noise will destroy the precise estimation of recommendation accuracies about their own videos. Fortunately, exponential mechanism [19] gives us some enlightenment to handle this conundrum. With the fact that user’s context (d-dimensional piont in the context space) are sparsely and heterogeneously distributed over the context space, number of points in each context group varies considerably. Beyond that, differential privacy operates better with the datasets scaling up, especially under the circumstance of big data. Thus, we propose a novel geometric differentially private method to rapidly reduce performance (recommendation accuracy) loss. This paper makes the following contributions:
+• We propose a media cloud based video recommendation and rigorously formulate it as a distributed online learning problem. In our model, decentralized service vendors work cooperatively to deal with large-scale contextual data. • To handle the dimensionality and sparsity of the social big data, our method adaptively partitions the context space for each service vendor. Our evaluation results show this method has lower performance loss and converges fast to optimal recommendations. • To the best of our knowledge, we are the first to deal with the privacy issue of both the social media users’ and video service vendors in video recommendation. We integrate exponential mechanism and Laplace mechanism simultaneously into distributed learning systems. We guarantee ε-differential privacy while not coming at substantial expense in accuracy. • We introduce “geometric differentially private model” to deal with the privacy problems with sparse and heterogeneous social big data. This refinement has more practical meaning and can reduce the performance loss extensively.
+The remainder of the paper is organized as follows. In Section II, we briefly review the related work. Section III presents the system model, defines our performance metric and reviews some solution concept. Section IV details the design of algorithms and provides theoretical analysis of the perfor-
+mances. In section V, we present our geometric differentially private model. Section VI discusses our experimental results and analysis. Section VII concludes this paper. II. RELATED WORK In this related work section, we first compare our scheme against other existing online recommendation systems and afterwards review some privacy-preserving methods in social networks and recommendation systems. Finally, we compare our work against various classes of online learning techniques. A. Recommendation System Several recommendation algorithms have been exploited in the past. Content-based filtering (CB) recommendation systems [20]–[22] focus on the similarities of content titles, tags and descriptions and they find user-interested items based on user’s individual reading history. CB recommender systems are easy to deploy. Nonetheless, simply representing the users profile information by a bag of words is not sufficient to capture the exact interests of the user. Collaborative filtering (CF) recommendation systems [23], [24] rely on abundant user transaction histories and content popularity. CF systems require enough history consumption record and feedback, which is not suitable to real-time recommendation. Graph-based (GB) recommendation systems [25], [26] build a graph to calculate the correlation between recommendation objects. Then, recommendation problem turns into a node selection problem on a graph. Besides that, users cotagging behaviors and friendships in social network are described by a graph. Combining graph theory with recommendation is a marvellous idea. However, in OSNs, this graph can be continuously changeable. Constructing and storing such graph are impractical. Context-aware recommendation systems make recommendation based on the contextual information both of items and users. [27] has done a pioneering in this area, but its centralized framework fails to satisfy the need of big data environment. Our distributed cooperative recommendation framework can arrange recommendation timely under big data environment and provides rigorous performance guarantees. B. Privacy Preservation As for the privacy of social media users, previously, anonymity was the main tool in social networks [11], [12] and recommendations [13], [14]. However, especially for rich, high-dimensional big data, most anonymization techniques appear to cripple the utility of the data [28], [29]. In addition, anonymity cannot guarantee privacy in the presence of colluding adversaries or those with auxiliary information [31]. On the other hand, prior works lay emphasis on cryptography [30], but it often incurs high computation and communication overheads. Besides, neither of them can qualify to what extent the privacy is preserved. Differential privacy [15] proposed in recent years has been incorporated into recommendation by several studies. McSherry and Mironov [17] show how to adapt the leading algorithms used in the Netflix Prize competition to make privacy-preserving movie recommendations.
+Ashwin et al. [7] combine differential privacy with graph theory for social recommendation. [16] studies the privacy of sensitive user-item preferences in item recommendation systems on social networks. The main differences between
+our work and the existing studies on differential privacy in recommendation are: 1) All of their studies only focus on static databases. However, our differential privacy method is dominant in the dynamic online data streams for online social networks. 2) We protect both the privacy of user’s context information and service vendors simultaneously. In contrast, previous works consider only unilateral privacy such as user’s profile. 3) Our novel geometric differential privacy is matchable to the sparsity and heterogeneity of big social data in this recommendation process, which preserves the privacy and reduces performance loss extensively. Table I presents the detailed comparison. C. Online Learning Our proposed distributed learning method derives from contextual bandits [32]. This algorithm learns form the context information available at each time, which, in this case, is the user’s social profiles. Then, it keeps an index that weights the estimated performance and uncertainty of each action (video in this case) and choose the action with highest index at each time. Furthermore, the indices for the next time slot for all actions are updated based on the feedback received from the chosen action. There exist some works studying the contextual bandit [32], [33], where the best action (video) given the context is learned online. Moreover, the their studies in contextual bandits postulate single-learner (service vendor) learning over time, which has difficulty in dealing with tremendous multiple distributed data sources. C. Tekin et al. first proposed a distributed contextual bandit framework for big data classification [34]. Then, they expand this framework into social recommendations [35]. However, because of the timevariability and heterogeneity, uniform partition of the highdimensional context space is a unprecedented conundrum. A context-aware partition method for big data proposed in [36] is a heuristic work. Nonetheless, the single-learner framework
+can not satisfy the need of the massive big social data. We combine adaptive context space partition with distributed learning, which can efficiently handle above difficulties. III. PROBLEM FORMULATION  A. System Model The system model is shown in Fig. 2. There are M distributed service vendors distributed in media cloud, which are indexed by set M = {1, 2, 3...,M}. They work independently and cooperatively in discrete time setting t = 1, 2, ..., T . Each vendor owns a set of videos. We denote the set of videos Mi = {k1,k2,··· ,kK} for service vendor i. At each time slot, the following events happen sequentially for service vendor i: 1) a social media user with its unique extracted contextual information xi(t) comes to service vendor i; 2) The service vendor i chooses one of its videos in the repository Mi to recommend to this user, or sends the context information to another service vendor and requests other service vendor j for help; 3) At the end of each time slot, the user’s click feedback fk,xi(t)(t) (If user clicks, it equals one, otherwise zero, where k is the recommended video.) only comes to the service vendor where the user arrived; 4) The service vendor i learns from the feedback, then promotes the selection strategy for next user.
+We describe the details here. Each service vendor has access to only its own video repository. Service vendors are selfish in the sense that, they do not reveal their repositories to other service vendors. But they know the number of videos of other service vendors. In this article, we assume every service vendor possesses K videos. The context information xi(t) of the data is a high-dimensional vector. Each coordinate of the vector represents the attribute of the user (e.g., social status, social relationship, hobby, profession and age). We use the hypercube X = [0, 1]d to denote its range, where d is the dimension of the space. Given the setting of big data, d is extremely large and those context vectors are distributed
+non-uniformed in the hypercube space. Each video k ∈ Mi has an unknown expected recommendation accuracy (CRT, also called reward) uk,x depending on the context x. Since the result produced by the video is randomly distributed, the fk,x(t) represents the click feedback, which is a random variable valued one or zero. Different videos have different expected reward for the same context. We aim to find the video with the highest expected reward for that context. Practically, similar contexts have similar expected accuracy for the same video. We use the Lipschitz condition to describe this similarity:
+|uk,x1 − uk,x2 | ≤ L‖x1 − x2‖ α . (1)
+The goal of the service vendor is to try its best to recommend video with highest recommendation accuracy. Consequently, when the user comes to one of the service vendor, if the service vendor does not have matchable video to this user, the user’s context information will be sent to another service vendor executing the recommendation task. Our algorithm chooses another service vendor by comparing the experiential recommendation accuracy of each service vendor with those of its own videos. To be reasonable, in this distributed contextual bandit framework, we call Ki = Mi ∩M−i the set of arms (videos and other service vendors) of service vendor i, where M−i = M−{i}. B. Solution Concept Definition 1 (Optimal Arm). Our benchmark when evaluating the performance of the learning algorithm is the optimal solution, which selects the arm k with the highest accuracy for learner i from the set Ki = Mi∩M−i given context xt at time t. Specifically, the optimal solution we compare against is given by:
+k∗ (xt) = argmax k∈Ki uk,xt , ∀xt ∈ X . (2)
+Knowing the optimal solution means that learner i knows the arm in Ki that yields the highest expected accuracy for each x ∈ X . Choosing the best arm for each context x requires to evaluate the accuracy for each context and is computationally intractable, because the context space X has infinite scattered d-dimensional points. We will use the adaptive partition method (detailed in Section IV) to handle this problem.
+Definition 2 (The Regret of Learning). We define the regret as a performance measure of the learning algorithm used by the learners. Simply, the regret of a learning algorithm for learner i is the reward (recommendation accuracy) gap between optimal arms and selected arms
+R(T ) = ∑T
+t=1 uk∗(xt),xt − E
+[
+∑T
+t=1 fk(t),xt(t)
+]
+, (3)
+where k(t) denotes the video or other learner chosen at time t, k∗(xt) denotes the best choise for context xt. Regret gives the convergence rate of the total expected reward of the learning algorithm to the value of the optimal solution. Any algorithm whose regret is sublinear, i.e., R(T ) = O(T γ) such that γ < 1
+, will converge to the optimal solution in terms of the average reward. A smaller γ will result in faster convergent rate. In the following section we will propose a private distributed learning algorithm with sublinear regret. Let us review concepts related to differential privacy.
+Definition 3 (Differential Privacy [15]). A randomized computation M has ε differential privacy if for any two input sets A and B with a single input difference, and for any set of outcomes R ∈ Range(M),
+P[M(A) ∈ R] ≤ exp(ε)× P[M(B) ∈ R].
+Informally, differential privacy means that the outcome of two nearly identical input datasets (different for a single input) should also be nearly identical. Thus, attacker is not able to get the information of the individual’s information by comparing the query result of A and B. One effective tool is the Laplace Mechanism [15]. Given any function f : N |X| → Rk we add random nosie to it: ML(x, f(·), ε) = f(x)+(Y1,··· ,Yk), where Yi are i.i.d. random variables drawn from Lap(∆f/ε). Next, we give explanation of ∆f :
+Definition 4 (l-sensitivity of Laplace mechanism [37]). The l-sensitivity of a function f : N |X| → Rk is:
+∆f = max x,y∈N |X|,|x−y|=1 ‖f(x)− f(y)‖1 . (4)
+The l-sensitivity of a function f captures the magnitude, by which a single component can change the function f in the worst case. Indeed, the sensitivity of a function gives an upper bound on how much we must perturb its output to preserve privacy.
+Corollary 1 (Composability [19]). The sequential application of randomized computation Mi, each giving εi differential privacy, yields ∑
+i εi differential privacy.
+Referring to differential privacy, another powerful tool is the exponential mechanism [19]. The exponential mechanism ME(x,u,R) selects and outputs an element r ∈ R with probability proportional to exp( εu(x,r)2∆u ). Here, x is the input data set we want to protect, r is the output of the mechanism and u(x, k) is the unity function. There is also a definition of the sensitivity:
+Definition 5 (Sensitivity of Exponential Mechanism [37]). The sensitivity of exponential mechanism is defined as follows:
+∆µ = max r∈R max x1,x2:‖x1−x2‖1≤1 |u(x1, r)− u(x2, r)| . (5)
+The sensitivity measures the change of utility function u(x, r), when one item in targeted data set changes. An important theorem can also be derived as [37] :
+Theorem 1. Fixing a database x, let ROPT = {r ∈ R : u(x, r) = OPTu(x)} denote the set of elements in R which attain utility score OPTu(x). Then, When used to select an output r ∈ R, the exponential mechanism εεq(x) ensures that:
+P[u(x, εεq(x)) < max r u(x, r) − 2∆u ε (ln( |R||ROPT |) + t)]
+≤ exp(−t). (6) IV. DIFFERENTIAL PRIVATE DISTRIBUTED LEARNING WITH ADAPTIVE CONTEXT SPACE PARTITION FOR SOCIAL BIG DATA COMPUTING Since the recommendation accuracies of each recommended video for different users have unknown stochastic distributions, the natural way to learn a video’s performance is to record and update its sample mean reward (recommendation accuracy) for the same context arrivals. Using such an empirical value to evaluate the expected reward is the basic approach to help the service vendors to learn. Unfortunately, to handle the problem of social big data, recording and updating the sample mean reward of different videos for the same context are scarcely possible. The context space X can be extremely large and the dimension is prohibitively high. The memory capacity of the sever can not meet the need of keeping a sample mean reward for all contexts. To overcome this difficulty, we dynamically partition the entire context space into multiple smaller context subspaces (according to the number of arriving users). Then, we maintain and update the sample mean reward estimates for each subspace. This is due to the fact that the expected result of a video is likely to be similar for similar contexts. Next we propose our online learning model. In section V, we will refine our algorithm to geometric differential privacy to extensively reduce the performance loss. A. Algorithm Description In this subsection, we describe our differentially Private Distributed learning with Adaptive context space Partition algorithm (P-DAP for short) for video recommendation. We first introduce several useful concepts for describing our algorithm.
+• Context subspace. A context subspace C is a subspace of the entire context space X , i.e., C ⊆ X . In this paper, all context subspaces are created by uniformly partitioning the context space on each dimension. Thus, each context subspace is a d-dimensional hypercube with side length being m−l, where m is number of segmentations of each dimension to be partitioned and l is the partition level. To be specific, when we assign m = 2, d = 1 and entire space is [0, 1], then the entire context space [0, 1] is a level-0 subspace, [0, 1/2) and [1/2, 1] are two level-1 subspaces etc. • Active context subspace. We define a set named P t
+in which all existing subspaces is collected, and P t is
+changing over time. A context subspace C is active if it is in the current context subspace set P t. • Partition process. For service vendor i and each active context subspace C ⊆ P t, the algorithm maintains the sample mean reward estimates rik,C(t) for each video for the context arrivals to this subspace up to time t. For each active subspace C ⊆ P t, the algorithm also maintains a counter M iC(t) that records the number of context arrivals to C up to time t. As Fig. 3 shows, with the context arrivals aggregated by time, if M iC(t) ≥ Am
+pl at time t, where p and m are positive numbers. C will be further partitioned.
+Algorithm 1 ExP-DAP for service vendor i’s own user 1: Input: k ∈ Ki; m, p, A, K , T , ǫ; initial points C = X ,
+r̄ik,C(0) = 0, ∀k ∈ Ki, M i C (0) = 0, N i k,C(0) = 0, l = 0
+2: for t = 1, ..., (K+M − 1)K , xi(t) ∈ C do 3: if ∃k ∈ Ki, such that N ik,C < N then 4: Select k and observe r̄ik,C(t). 5: end if 6: end for 7: Partition Space X and update M iC (t), r̄ i k,C(t), N i k,C(t). 8: for t = (K +M − 1)N + 1, ..., T , xi(t) ∈ C do 9: if there exist ∀k ∈ Ki such that N ik,C(t) = 0 then
+10: Randomly select k for xi(t). 11: else 12: for all ki ∈ Mi do
+13: P[select k] = exp
+(
+rik,C (t)
+2∆u
+)/
+∑
+k∈Mi
+exp
+(
+rik,C (t)
+2∆u
+)
+.
+14: end for 15: Select ki ∈ Mi according to computed probability distribution. 16: Select kj ∈ M−i such that kj = argmax
+k∈Mi rik,C(t).
+17: call k such that rik,C(t) = max ( riki,C(t), r i kj ,C (t) )
+. 18: end if 19: Update M iC (t), r̄ i k,C(t), N i k,C(t) and partition C if
+M tC ≥ Am pl.
+20: end for
+In our distributed framework, for each service vendor i ∈ M, we dynamically partitions the context space when context xi(t) arrives. To better understand our P-DAP, we apart it into two algorithms, i.e., Algorithm 1 and Algorithm 2. When service vendor i receives its own users’ extracted contexts, service vendor i runs Algorithm 1 to select video or request other service vendor’s help. Because service vendor i does not outward recommend videos to other service vendors’s users, we only need to protect user’s privacy and we adopt exponential mechanism in Algorithm 1 (named as ExP-DAP) to achieve this protection. When service vendor i receives users’ extracted contexts from other service vendors, it runs Algorithm 2 (named as LaP-DAP) to select videos and protect the privacy of selected videos. Two algorithms are carried out simultaneously, although we describe them separately.
+To begin with, we present our Algorithm 1 in the following 3 phases: Phase 1: Reward Estimation and Primal Partition
+In the earliest period of contexts arrivals, for service vendor i, we try each arm k ∈ Ki for K times in order to get initial estimate of the accuracy of each video. During this period, random user’s click result f i
+k,x(t)(t) of video k revealed at each end of time slot t.
+In the meanwhile, we get context samples to help partition the context space. Then we begin to partition the whole space into several subspaces and update the counter M iC(t) of context arrivals of each subspace as well as the estimated reward rik,C(t) for different arms, where r̄ i k,C(t) = ∑
+x(t)∈C f i k,x(t)/N i k,C(t) (N i k,C(t) counts the number of times when k is selected for contexts belong to subspace C). Finally, we get the primal partition and reward estimation (line 2-7).
+Phase 2: Reward Estimation for Subspaces At the end of phase 1, new user with context comes to service vendor i, we first determine to which subspace C the context belong and the level of it. For the subspace C, we judge whether there exist arms that have not been selected yet for this subspace (because we want to get reward evaluation for all videos in every subspaces). If there exist such arms, we randomly select one of them (line 9-10). At each time slot, we update M iC(t) and r i k,C(t).
+Phase 3: Decision with Privacy Protection When all arms have been called in particular subspaces, we already have sample mean for them. In traditional bandit algorithms, they usually select the arm with the highest sample mean reward. Instead, to protect the privacy, we first randomly choose one arm ki ∈ Mi according to the computed probability distribution (line 12-15). Then, we select another arm ki ∈ M−i with the highest probability. Finally we compare the estimated reward of these two arms and select the one with higher estimated reward to process the data stream with context xi(t) (line 17). We will prove this randomly selection scenario guarantee ε-differential privacy in next subsection.
+Then, we describe Algorithm 2 as follows. In our problem setting, in order to protect the privacy of neighbor service vendors, we face a big challenge that traditional differential privacy only apply to static database. By contrast, the datasets we want to protect are dynamically releasing over time. In detail, suppose at every time step t ∈ [T ], one entry from dataset D, fk,x(t) ∈ {0, 1} arrives and the task is to output vt = ∑t τ=1 fk,x(τ) while ensuring the complete output sequence 〈v1, ..., vT 〉 is ε-differential private. To overcome this challenge, we use a tree based aggregation method initially proposed by Dwork [39], Chan [38], which is extremely effective in releasing private continual statistics over a data stream.
+Tree based aggregation. Assume for simplicity that T = 2α for some positive integer α. We create a binary tree, i.e., Treek for each arm k ∈ M−i with its leaf nodes being f1, ..., fT . As illustrated in Fig. 4, at each time slot, when new reward is produced, we insert the value of the reward into the leaf node. Over the entire time sequence [T ], the reward is inserted sequentially. Each internal node x in Treek stores the sum of all the leaf nodes in the tree rooted at x. First notice that one can compute any vt using at most log(T ) nodes of Treek. Second, notice that for any two neighboring datasets D
+and D′ different in leaf node fi and fi ′ at most log(T ) nodes in Treek gets modified. So, if we flatten the complete tree as a vector then for any neighboring datasets D and D′ one can easily show that ‖Tree(D)− Tree(D′)‖1 ≤ log(T ). We will further bound the amount of the noise added to each tree in section IV when evaluating the performance of our algorithm.
+Algorithm 2 LaP-DAP for other service vendors’ users 1: Input: k ∈ Mi; m, p, A, K , T , ǫ; initial points C = X ,
+r̄ik,C(0) = 0, ∀k ∈ Ki, M i C (0) = 0, N i k,C(0) = 0, l = 0
+2: Create empty binary tree Treek with T -leaves, ∀k ∈ Mi. 3: for t = 1, ...,K , xj(t) ∈ C do 4: Select kt and observe reward f ik,xi(t). 5: Add noise to f i
+k,xi(t) and insert it to Treek via tree
+based aggregation. 6: Update M iC (t), r̄ i k,C(t), N i k,C(t) and partition C if
+M tC ≥ Am pl.
+7: end for 8: for t = k + 1, ..., T ; xj (t) ∈ C do 9: Select k∗ = argmax
+k∈Mi rik,C (t) and observe f i k∗,xi(t) .
+10: Add noise to f i k∗,xi(t) and insert it to Treek∗ via tree based aggregation. 11: Update partition P t. 12: end for
+LaP-DAP Description. When service vendor i receives context xj(t) from service vendor j, service vendor i first determines the subspace C to which this context belongs and the level l of it. Then we judge whether there exists video for this subspace C has not been recommended yet. If the set of videos that have not been recommended is non-empty, we select one of the videos in the set randomly to get reward estimation of each videos (line 3-4). Otherwise, we select the video (k∗) with highest accuracy (line 8-9). At the end of each time slot, we get the reward f i
+k∗,xi(t) of selected video, which
+provides information about service vendor i. Concerning with the privacy, when service vendor j get reward f ik∗,xi(t), we add Laplace noise with standard deviation λ = K log(T )/ε to it. At each time slot, update context partition of service vendor i according partition condition in Partition process. B. Algorithm Analysis The properties of the proposed algorithm are analyzed in this subsection. For simplicity of presentation, we replace service vendors with learners. We prove that the regret is
+sublinear converged over the time, and our P-DAP guarantees differential privacy.
+1) Regret Bound: For each subspace C, let uk,C = supx∈Cuk,x and uk,C = infx∈Cuk,x. Let x
+∗ be the context at the center of the hypercube C. We define the optimal arm for subspce C as k∗ = argmax
+k∈Ki uk,x∗ . Then the suboptimal arms
+for learner i in subspace C can be written as follows:
+Ss,l,B = { k : uk∗,C − ūk,C > Bm −αl} , (7)
+where B is a constant and α > 0. We will bound B to get optimal solution. The regret in (2) can be written as the sum of three components:
+R (T ) ≤ Ro (T ) +Rs (T ) +Rn (T ) , (8)
+where Ro (T ) is the regret due to selecting suboptimal arms from Mi by time T , Rs (T ) is the regret due to selecting suboptimal arms from M−i and Rn (T ) is the regret of near optimal selections by time T . Next, we bound each of these terms separately.
+Theorem 2. For every level-l context subspace C, the expected regret due to choosing suboptimal arm k ∈ Mi, will be bounded as follows:
+E [ Regok,C (T ) ]
+≤ m2αlln (T ) + π2
+3
++ 2Lm−αl
+ε [ln (K) + ln (T )] . (9)
+Proof: The regret of E[Regok,C (T )] is due to: 1) inherent gap of bandit algorithm between the optimal selections and the suboptimal selections; 2) the gap between approximately optimal reward applying exponential mechanism and suboptimal selections (line 12-15 in Algorithm 1):
+E [ Regok,C (T ) ]
+≤ E ∑T
+t=1
+( uk∗,x(t) − uεεu(x(t)),x(t) )
+≤ E ∑T
+t=1
+( uk∗,x(t) − uk,x(t) )
++ E ∑T
+t=1
+( uk,x(t) − uεεu(x(t)),x(t) )
+= E [ Reg1k,C (T ) ] + E [ Reg2k,C (T ) ] . (10)
+Next, we will bound the two part of the E[Regok,C (T )] separately:
+Lemma 1. The inherent regret gap of bandit algorithm between optimal arms and suboptimal arms E[Reg1k,c (T )] is bounded as follows:
+E [ Reg1k,C (T ) ]
+≤ m2αlln (T ) + π2
+3 . (11)
+Proof: We denote Fk(T ) the number of times that arm k is selected by time T . For x ∈ C, let ∆uk,C = uk∗,C − uk,C be the gap of reward between suboptimal arm k and optimal arm k∗ in subspace C. As initially defined, the regret of choosing suboptimal arm k is the expected number of times when k is selected times the gap of mean rewards. That is E[Reg1k,C (T )] = ∑T t=1 Fk(T ) ·∆uk,C ≤ ∑T t=1 Fk(T ) for ∆uk,C ≤ 1. Inequality (11) results from the fact that Fk(T ) will not be larger than m2αlln (T ) with the high probability
+1− σ, where σ is a small value. Now we discuss the result in inequality (11) under two circumstance.
+Case1. Fk(T ) ≤ m2αlln(T ). Under this circumstance, (11) holds correctly. Now we focus on case2.
+Case2. Fk(t1) = m2αlln(T ) when t1 < T . Then we have
+Reg1k,C (T ) ≤ T ∑
+t=1 I (k is picked at time t)
+≤ m2αlln (T ) + ∑T
+t=m2αl I (k is picked at time t).
+Next we will figure out the probability that k is selected under Case2.
+When t > m2αlln (T ), if k is selected, we have rk,C (t) ≥ rk∗
+C ,C (t), this inequality holds when at least one of the
+following holds:
+r̄k,C(t) ≥ µ̄k,C +Ht, (12)
+r̄k∗,C(t)≤k∗,C(t)−Ht, (13)
+r̄k,C(t) ≥ r̄k∗,C(t), (14)
+r̄k,C(t) < µ̄k,C +Ht, r̄k∗,C(t)>k∗,C(t)−Ht.
+Then the probability when suboptimal arm k is picked can be written as follows:
+P[k is picked ∩ Case2.]
+≤ P[r̄k,C(t) ≥ ūk,C +Ht]
++ P[r̄k∗,C(t) ≤ k∗,C(t)−Ht]
++ P[r̄(t) ≥ ūk,C(t), r̄(t)k∗,C < ūk,C +Ht,
+r̄k∗,C(t) > k∗,C(t)−Ht].
+We denote wik,C(t) the set of rewards of arm k in subspace C. Let Oik,C(t) be the event that at most a n
+samples in wik,c(t) are collected from suboptimal process functions of the k-th arm. Different from classical finite-time bandit theory, these samples are not identically distributed. Enlightened by [34], in order to facilitate our analysis of the regret, we also generate two different artificial i.i.d. processes to bound the probabilities related to r̄k,C(t), k ∈ Mi. The first one is the best process in which rewards are generated according to a bounded i.i.d. process with expected reward ūk,C , the other one is the worst process in which the rewards are generated according to a bounded i.i.d. process with expected reward uk,C . Let r best k,C (z) denote the sample mean of the z samples from the best process and rworstk,C (z) denote the sample mean of the z samples from the worst process. Thus, combining (7), for any suboptimal arm we have: P(r̄k,C(t) ≥ r̄k∗,C(t), r̄k,C(t) < uk,C +Ht, r̄k∗,C(t) > uk∗,C(t)−Ht) ≤ P(r̄ best k,C (|w i k,C(t)|) ≥ r̄worstk∗ C ,C (|w i k,C(t)|)− a n ), r̄bestk,C (|w i k,C(t)|) < uk,C +L (√ d ml )α + Ht+ a n , r̄worstk∗,C (|w i k∗,C(t)|) > uk∗,C −L( √ d ml )α−Ht, case2)).
+Since k is a suboptimal arm, we have uk∗,C − ūk,C > Bm−αl, and :
+r̄ worst k∗,C (|wik∗,C(t)|) > uk∗,C − L(
+√ d ml )α −Ht,
+r̄ best k,C (|wik,C(t)|) < ūk,C + L(
+√ d ml )α +Ht + a n .
+Given the condition:
+2L(
+√ d ml )α + 2Ht + 2 a n −Bm−αl ≤ 0, (15)
+we have :
+rbestk,c (|w i k,c(t)|) < r worst k∗c ,c (|wik,c(t)|) − a
+n ,
+which implies that suboptimal arms will hardly be selected by time:
+P[rk,c(t) ≥ rk∗,c(t), rk,c(t) < µ̄k,c +Ht, rk∗,c(t) > k∗,c(t)−Ht] = 0. (16)
+In Case2. we have n ≥ mαlln(T ). In order to make (15) hold, we assign B ≥ 2L( √ d
+ml )α + 4, a = mαlln(T ), Ht = an .
+Then, we have:
+P[r̄k,C(t) ≥ µ̄k,C +Ht] ≤ e 2(Ht) 2m∂lln(T ) = 1
+t2 ,
+P[r̄k∗,C(t) ≤ k∗,C(t)−Ht] ≤ e 2(Ht) 2mαlln(T ) = 1
+t2 .
+Thus, we have:
+P(k is picked ∩Case2.) ≤ P(r̄k,C(t) ≥ ūk,C +Ht) +P(r̄k∗,C(t) ≤ k∗,C(t)−Ht) ≤ 2
+t2 ,
+then,
+E[Reg1k,c(T )] ≤ m 2αlln(T ) + ∑T m2αlln(T ) 2 t2 ≤ m2αlln(T ) + π 2
+3 .
+Before we derive Lemma 3, we provide a bound on the sensitivity of exponential mechanism.
+Lemma 2. The sensitivity of exponential mechanism is bounded is follows:
+∆u ≤ Lm−αl. (17)
+Proof: In our framework, x1 and x2 are neighboring vectors (user’s social profiles), which differ on at most one component. The unity function u(x, k) represents the recommendation accuracy (reward) related to input context x and output video k. By Definition 5 and inequality (1), we have
+∆u = max k∈Mi max x1,x2:‖x1−x2‖1≤1 |q(x1, k)− q(x2, k)|
+= max k∈Mi max x1,x2:‖x1−x2‖1≤1 |uk,x1 − uk,x2 |
+≤ max k∈Mi max x1,x2:‖x1−x2‖1≤1
+L‖x− x′‖ α ≤ Lm−αl.
+Combining Lemma 2 and Theorem 1, we can derive Lemma 3 as follows:
+Lemma 3. The regret due to the near optimal reward when applying exponential mechanism can be bounded as follows:
+E [ Reg2k,C (T ) ]
+≤ 2Lm−αl
+ε [ln (K) + ln (T )] . (18)
+Proof: At each time slot, we do not choose the arm with highest reward. Instead, we assign each arm a probability to be
+chosen. Thus, at each time slot, there exists the gap of reward when applying the randomly selection. By using Theorem 1, in inequality (6), we have |R|= K, |ROPT | = 1 (we only have one optimal arm). Then, we set t = ln(T ). Thus, at each time slot, we have the regret by randomly selection as follows:
+u(x, k)− u(x, εεu(x)) < 2∆u
+ε (ln(K) + ln(T )),
+which holds with a probability less than 1 T . Then, we have:
+E [ Reg2k,C(T ) ] =E ∑T
+t=1
+( uk,x(t) − uεεu(x(t)),x(t) )
+≤ T ∑
+1
+[∆q] • P[∆q < 2∆u ε (ln(K) + ln(T ))]
+≤ T ∑
+1
+2∆u ε (ln(K) + ln(T )) • 1 T
+≤ 2Lm −αl
+ε (ln(K) + ln(T )) ,
+where ∆q = u(x, k)−u(x, εεu(x)) = uk,x(t)−uεεu(x(t)),x(t) ≤ 2∆u ε
+(ln(K)+ ln(T )) denotes the regret bound of exponential mechanism selection at each time slot.
+Combining Lemma 1, Lemma 2 and inequality (10), our Theorem 2 holds.
+The above Theorem 2 implies that for k ∈ Mi, the proposed algorithm make sure the suboptimal arms will be selected more than m2αl ln(T ) with very small probability.
+Lemma 4. For k ∈ M−i we have the regret of choosing suboptimal k in subspace C by time T as follows:
+E[Regsk,C(T )] ≤ m2αlln(T ) + Γ
+4 m
+αl + π2
+3 (1 +
+K a )ln(T ), (19)
+where Γ is the near maximum value of the amount of total noise added by time T . We will bound Γ in Lemma 5.
+Proof: When we add Laplace noise to each time reward, our estimate of the actual reward will be disturbed and our number of times that need to be played until finding the optimal arm will be increased. But we demonstrate that there will be no more than m2αlln(T ) + Γ4m
+αl times to be tried before finding the optimal arm with a high probability.
+For k ∈ M−i, we define k is the supoptimal arm, and k∗ is the optimal arm for subspace C. At t-th time slot, suboptimal arm k is selected over k∗ if rk,C(t) ≥ rk∗,C(t) is true. Here, the reward rk,C(t) ≥ rk∗,C(t) is the virtual reward that include with noise for subspace C of arm k. Thus, we denote Rk,C(t) the true reward of arm k for subspace C. Then suboptimal arm k is selected, only if the following holds:
+Rk,C(t) + Γ
+N ik,C(t) ≥ Rk∗,C(t) +
+Γ
+N ik∗,C(t) . (20)
+It can be easily shown that (17) is true, only if one of the following equations holds:
+Rk,C(t) ≥ uk,C +Ht, (21)
+R̄k∗,C(t) ≤ uk∗,C −Ht, (22)
+Rk,C(t) < uk,C +Ht, Rk∗,C(t) > uk∗,C −Ht, Rk,C(t) + Γ
+N ik,C(t) ≥ Rk∗,C(t) +
+Γ
+N ik∗,C(t) . (23)
+As we have discussed above for k ∈ Mi, we also denote best process and worst process to bound the probabilities. Then, we have
+R best k,C (|wik,C(t)|) < uk,C + L( √ d
+ml )α +Ht +
+a n ,
+R worst k,C (|wik∗,C(t)|) > uk∗c ,C − L( √ d ml )α −Ht),
+R best k,C (|wik,C(t)|)+ Γ N ik,C(t) ≥ Rworstk∗c ,C (|w i k∗,C(t)|)+
+Γ N ik∗,C(t) − a n .
+When k is a suboptimal arm, we have uk∗,C−ūk,C > Bm −αl.
+Together imply that:
+2L(
+√ d ml )α + 2Ht +
+Γ N ik,C(t) − Γ N ik∗,C(t) + 2 a n −Bm−αl ≤ 0.
+For n > N ik,C(t), Ht = a n
+and B ≥ 2L( √ d
+ml )α + 4, then,
+we draw the conclusion that (20) holds when the following holds:
+2L(
+√ d ml )α +
+Γ
+N ik,C(t) + 4
+a
+N ik,C(t) −Bm−αl ≤ 0.
+Then we come to a conclusion that when N ik,C(t) ≥ m2αlln(T ) + Γ4m
+αl, the inequality (20) can not hold. (we use SiC(t) denote this case), directly by the use of Chernoff bound, we can show that :
+P(Rk,C(t) ≥ µk,C +Ht) ≤ 1
+t2 , (24)
+P(Rk∗,C(t) ≤ uk∗,C −Ht) ≤ 1
+t2 . (25)
+Let Oik,C(t) be the event that at most a n samples in wik,C(t) are collected from suboptimal process functions of the k-th arm. Obviously for any k ∈ Mi, Oik,C(t) = Ω, while this is not always true for k ∈ M−i. Combining (17) and (18), for k ∈ M−i, we have:
+P(Oik.C(t), S i C(t)) ≤
+2 t2 .
+For k ∈ Mi obviously we have P(Oik,C(t) C = 0) . For k ∈ M−i, let Y ik,C(t) denote the random variable, the number of times suboptimal function m of for arm k is chosen when event SiC(t) holds. We have {O i k,C(t) C , SiC(t)} = {Y ik,C(t) ≥ a}. Applying the Markov inequality, we have
+P(Oik,C(t) C , SiC(t)) ≤
+E[Y ik,C(t)]
+a . Let Eik,C(t) be the event
+that a suboptimal processing function m ∈ Mk is called by learner k, when it is invoked by learner i for the t-th time, we have
+Y ik,C(t) = ∑wik,C(t)
+t′=1 I(Eik,C(t
+′)),
+and
+P
+[
+E i k,C (t)
+]
+≤ ∑
+m∈Mj
+P (rm,C (t) ≥ r∗mC (t))
+≤ ∑
+m∈Mj
+[P ( Rm,C (t) ≥ um,C +Ht, SiC(t) )
++ P ( R ∗m C (t) ≤ u∗mC −Ht, SiC(t) )
++ P(Rm,C (t) + Γ Nm,C (t) ≥ R∗mC (t) +
+Γ
+N∗m,C (t) ,
+Rm,C (t) < um,C +Ht,
+R ∗m C (t)−
+Γ
+N∗m,C (t) > u
+∗m C −Ht, SiC(t))].
+We have the last probability in the sum above is equal to zero while the first two inequalities are upper bounded by e−2(Ht)
+2m2αlln(T ). This is due to the event SiC(t). Therefore, we have
+P(Eik,C(t)) ≤ ∑ m∈Mk 2e−2(Ht) 2mαlln(Γ) ≤ 2K t2 .
+Together imply that
+E[Y ik,C(t)] ≤
+∞ ∑
+t′=1
+P(Eik,C(t ′)) ≤
+∞ ∑
+t=1
+2K
+t2 .
+Therefore, from the Markov inequality we get
+P(Oik,l(t) C , SiC(t)) ≤
+E[Y ik,C(t)]
+a ≤
+π2
+3 · K a ln(T ).
+Then, for arm k ∈ M−i, we have
+E[Regsk.C(T )] ≤ T ∑
+t=1
+I(k is picked)
+≤ m2αlln(T ) + Γ 4 m αl ln(Γ) +
+T ∑
+t=1
+P(SiC(t))
+≤ m2αlln(T ) + Γ 4 m αl ln(Γ) + T ∑
+t=1
+[
+P(Ok.C(t), S i C(t)) + P(O i k,C(t) c , S i C(t))
+]
+≤ m2αlln(T ) + Γ 4 m αl ln(Γ) +
+π2
+3 (1 +
+K a )ln(T ).
+Lemma 5. For all arms k ∈ M−i and all time step t ∈ [T ], w.p. ≥ 1 − σ (over the randomness), the amount of noise Γ added in the total reward for k till time t is at most |Nk(t)| ≤ θlog2(T )log(θT log(T )/σ)
+ε , where θ is the number of arms belong
+to M−i. Proof: For the ease of notation, let Rk(t) be the true total reward for arm k until time t. As discussed above, Nk(t) = rk(t) − Rk(t) is a sum of at most log(T ) Laplace distributed random variables Lap( θ log(T )
+ε ). By the tail prop-
+erty of Laplace distribution, we know that for a given random variable x ∼ Lap(λ), with probability 1 − ϕ. So, with probability at least (1− ϕ/log(T ))log(T ) ≤ 1 − ϕ, |Nk(t)| ≤ θlog2(T )log(log(T )/ϕ) ε
+. Taking the union bound over all k-arms and all time step T and setting ϕ = σ/(θT ), we have w.p. ≥ 1 − σ, for all k ∈ M−i and for all t ∈ [T ], |Nk(t)| ≤ θlog2(T )log(θT log(T )/σ) ε .
+Lemma 6. The regret due to choose near-optimal arms RegnC(T ) in each level-l subspace is bounded as follows:
+RegnC(T ) ≤ ABm l(p−a). (26)
+Proof: Due to the definition of near-optimal arms, regret due to selecting a near-optimal arm is at most Bm−αl. Because there could be at most Ampl slots for a level-l subspace according to the partitioning rule, the regret of this part is at most ABml(p−a).
+Now, we combine the results in Lemma 4, Lemma 6 and Theorem 2 to obtain the complete regret bound. The regret depends on the context arrival process and hence, we let Hil (T ) denote the number of level-l subspaces that have been activated by time T of learner i. Before we derive Theorem
+6, we provide a bound on the highest level of active subspace by time .
+Theorem 3. The complete regret of our private distributed learning algorithm is bounded by
+R(T ) ≤ ∑k∈Mi ∑ l H i l (T ) ·
+[
+m2αlln(T ) + π 2
+3
++ 2Lm −αl
+ε (ln(K) + ln(T ))
+]
++ ∑
+k∈M−i
+∑
+l H i l (T ) ·
+[
+m2αlln(T ) + Γ 4 mαl +π 2
+3
+(
+1 + K a ln(T )
+)
+]
++ ∑ l H i l (T ) ·ABml(p−a).
+(27) Proof: Combining the result of Lemma 1 and Lemma 3
+it is easy to see that Ro(T ) is bounded as follows:
+Ro(T ) ≤ E ∑
+l
+Hil (T ) · ∑
+k∈Mi
+Regok.C(T )
+≤ ∑ l Hil (T ) ∑
+k∈Mi
+E[Regok.C(T )]
+≤ ∑
+l
+Hil (T ) ·K [ m2αlln(T ) + π 2
+3
++ 2Lm −αl
+ε (ln(K) + ln(T ))
+]
+.
+By applying Lemma 4, the Rs(T ) is bounded by
+Rs(T ) = E ∑
+k∈M−i
+∑
+l
+Hil (T ) ·RegSk·C(T )
+≤ ∑ k∈M−i ∑ l Hil (T ) · [ m2αlln(T ) + Γ 4 mαl
++π 2
+3
+(
+1+K a ln(T )
+)
+]
+.
+Finally, Rn(T ) is bounded by
+Rn(T ) ≤ E ∑
+l
+H i l (T ) ·RegnC(T ) ≤
+∑
+l
+H i l (T ) ·ABml(p−a).
+Theorem is resulted of the summing of above three equation.
+The following corollary establishes the regret bound when the context arrivals are uniformly distributed over the entire context space. This is the worst-case scenario because the algorithm has to learn over the entire context space. Before we derive Corollary 2, we provide a bound on the highest level of active subspace by time.
+Lemma 7. Given a time T , the highest level of active subspace is at most ⌈
+logm( T A )/P
+⌉
++ 1.
+Proof: It is easy to see that the highest possible level of active subspace is achieved when all requests by time have the
+same context. This requires Amlmax ≤ T . Therefore, lmax = ⌈
+logm( T A )/P
+⌉
++ 1.
+Corollary 2. If the context arrival by time T is uniformly distributed over the context space, and we set the partition parameter p much larger than similarity parameter α we have:
+R (T ) ≤ Ro (T ) +Rs (T ) +Rn (T ) ≤ ( T
+A ) d+2α d+p ·md+2αln(T ) (K +M − 1)
++( T A ) d+α d+p ·md+αAB +( T A ) d+p−α d+p ·md+p−α Γ 4 +( T A ) d d+p ·md · π2 3 (K +M − 1) +(T 4 ) d−α d+p md−α[ 2KL ε (ln(K) + ln(T )) + π 2 3 Kln(T )].
+(28)
+Proof: First we calculate the highest level of subspace when context arrivals are uniform. In the worst case, all level l subspaces will stay active, and then they are deactivated until all level-(l+ 1) subspaces become active and so on. Let lmax be the maximum level subspace under this scenario. Because there must be some time T ′ < T when all subspaces are level subspaces, we have
+mdlAmpl < T,
+where mdl is the maximum number of level l subspaces and Ampl is the maximum number of time slots that belong to a level l subspace. Thus, we have lmax < logm( T A )
+d+p + 1 . Combining this conclusion with the regret bound in Theorem 3, we get Corollary 2. Details of this proof can be referred to [?].
+We have shown that the regret upper bound of our private distributed learning model is sublinear in time, implying our computing service vendors can select optimal videos by time. Also, fast convergence to optimal is favorable to dynamically changing big data environments.
+2) Differential Privacy: We finally prove that our algorithm can preserve privacy of user’s contextual information and the that of each service vendor’s videos.
+Theorem 4. The Algorithm 1 can preserves (ε, 0)- differential privacy for user’s contextual information.
+Proof: Let x1 and x2 be two input context vectors that differ in one single attribute, µ denote the reward of exponential mechanism, R denotes the output (sequence of selected videos) space of exponential mechanism. Then R = {k1,k2, ..., kM+K−1}. We suppose that the same user’s data stream has come for N times over time arbitrary sequence {t1,t2,...,tN}, as a result, our algorithm selected an arbitrary sequence of arms such that ME(x1, µ, R) = {k1, k2, ..., kN} at the time sequence. We denote µ(x1, ki) the mean reward of arm ki for context x1 at time ti. In our algorithm µ(x1, ki) equals rki,C(ti). C is the active subspace to which the context x1 belongs at time. If x1 and x2 belong to the same subspace C at time ti, then µ(x1, ki) = µ(x2, ki). We construct a function I(t1, x1, x2). When x1, x2 belong to the same active subspace, the value of the function equals one, otherwise zero. We consider the relative probability of our algorithm for given context x1 and x2:
+P[ME(x1,µ,R)={k1,k2,...,kN}] P[ME(x2,µ,R)={k1,k2,...,kN}]
+= N ∏
+i=1
+( exp(
+ε′µ(x1,ki) 2∆µ )
+∑
+k′∈R
+exp( ε′µ(x1,k ′) 2∆µ
+) )
+/
+( exp(
+ε′µ(x2,ki) 2∆µ )
+∑
+k′∈R
+exp( ε′µ(x2,k ′) 2∆µ
+) )
+= N ∏
+i=1
+exp( ε ′(µ(x1,ki)−µ(x2,ki))
+2∆µ ) · (
+∑
+k′∈R
+exp( ε′µ(x2,k ′) 2∆µ )
+∑
+k′∈R
+exp( ε′µ(x1,k ′) 2∆µ
+) )
+= N ∏
+i=1
+exp( ε ′(µ(x1,ki)−µ(x2,ki))
+2∆µ ) · (
+∑
+k′∈R
+exp( ε′µ(x2,k ′) 2∆µ )
+∑
+k′∈R
+exp( ε′µ(x1,k ′) 2∆µ
+) )
+≤ N ∏
+i=1
+exp ( ε′
+2 · I(ti, x1, x2)
+) · exp ( ε′
+2 · I(ti, x1, x2)
+)
+×( ∑ k′∈R exp( εµ(x1,k ′) 2∆µ )
+∑
+k′∈R
+exp( εµ(x1,k ′) 2∆µ
+) )
+= N ∏
+i=1 exp(ε′ · I(ti, x1, x2)) ≤ exp(Nε′) = exp(ε).
+Thus, the theorem follows.
+Theorem 5. The Algorithm 2 can preserve (ε, 0)- differential privacy for service vendors’ videos.
+Proof: For k ∈ M−i and subspace C, let [T ′] = {1, ..., T ′} denotes the sequence of time slots that videos is selected for simplicity, where T ′ < T . let D = 〈f1, ..., fT 〉 be a data set of true rewards. We call a data set D′ neighbor of D if it differs from D in exactly one reward. We define Ft(C) the virtual outcome (reward with noise added), then we have, at each round, the probability of same outcome for different arm k1 and k2:
+P[ML(k1,t)=Ft(C)] P[ML(k2,t)=Ft(C)]
+= exp(− ε
+′|ft(k1)−Ft(C)| ∆f )
+exp(− ε ′|ft(k2)−Ft(C)|
+∆f )
+= exp ( ε′ ∆f (|ft(k2)− Ft(C)| − |ft(k1)− Ft(C)|) ) ≤ exp( ε ′
+∆f |ft(k1)− ft(k2)|)
+= exp( ε ′
+∆f ‖ft(k1)− ft(k2)‖1)
+≤ exp(ε′).
+In our problem model, the proposed algorithm only accesses the reward for its computation via the tree based aggregation scenario. Learner i maintains M − 1 trees for other learner’s reward sets respectively. Each tree guarantee ε′ = ε/(M − 1) differential privacy. With the composition property stated in Corollary 1, we can draw the conclusion that our algorithm 2 is ε-differential private.
+Theorem 4 shows that the attributes (e.g., social status, hobby and age) in users’ sensitive context vectors cannot be inferred from the recommended results. The proof of Theorem 5 supports that the service vendors fail to extract information about videos in neighbor service vendors’ repositories by the rewards. In summary, our Theorem 4 and Theorem 5 prove that the proposed algorithm P-DAP can preserve the both privacy of users and service vendors synchronously. V. GEOMETRIC DIFFERENTIAL PRIVACY In the previous section, we preserve privacy to the same extend for all subspaces. That is to say, we set the same
+value of ε for the whole context space. This section presents our refined geometric differentially private model. Considering the sparsity and heterogeneity of big data, some context subspaces are scattered with countless data points, however, other subspaces are nearly blank. There is no necessity to guarantee the same private level for every subspaces. Beyond that, A large and increasing number of statistical analyses can be done in a differential private manner while adding little noise. We can decrease the private level when the density of datasets increased (l denotes the density of subspaces). In this way, the performance loss due to the randomness brought by differential privacy can be reduced extensively. For current active subspaces, we set different value of ε related to the density l of them. Fig. 5 gives an illustration of this method. For simplicity, we take the one-dimensional context space for instance. Leaf nodes presented in Fig. 5 are current active subspaces, we set different value of ε related to the density l of each subspaces.
+The modified method works as follows. After we get enough context samples, we already have accurate estimations for rewards. From now on, for each context arrival, we first figure out to which subspace it belongs. Then we judge the level l of the subspace and set ε = ε0mαl for level-l subspaces, where m and α are constants as we have defined previously.
+Theorem 6. Geometric differential privacy has a lower regret bound than uniform differential privacy as follows:
+RG(T ) ≤ R(T )− ( (T A ) α mα − 1 )
+(
+A1( T A )
+d−2α d+p md−2α
++A2( T A )
+d−α d+p md−α
+)
+,
+(29) where A1 and A2 are two constants. When time T goes into infinity, the value of the second term on the right side of the inequality will increase exponentially. Thus, the result of Theorem 6 proves that our geometric differential privacy has greatly reduced the regret bound.
+Proof: We set ε = ε0mαl and the amount of noise Γ = Γ0 ε0mαl in the geometric differential privacy method. Thus, we
+have:
+RG(T ) ≤ R(T )− ∑lmax l=1 (M − 1)m αl(Γ0 ε0 − Γ0 ε0mαl ) − ∑lmax
+l=1 K (ln(T ) + ln(T )) · ( 2Lm−αl ε0 − 2Lm −αl ε0mαl )
+≤ ( (T A ) α mα − 1 )
+(
+K(ln(T )+ln(T )) ε0 (T A )
+d−2α d+p md−2α
++Γ0 ε0 (T A )
+d−α d+p md−α
+)
+.
+For simplicity, we use A1 and A2 denote K(ln(T )+ln(T ))
+ε0
+and Γ0 ε0 respectively. Here the Theorem 6 holds. VI. EXPERIMENTAL RESULTS AND ANALYSIS In this section, we demonstrate the theoretical regret bounds for our algorithms with empirical results based on very large real-world datasets, which includes massive multimedia data and social media users-generated big data. We show that: 1) regret bounds are sublinear converged over time; 2) Our differentially private methods work well and do not come at the expense of recommendation accuracy; 3) Geometric differential privacy method has a lower regret bound and higher accuracy. Finally, we use users’ context vectors refined from real datasets to test the recommendation accuracy of our algorithms. A. Experimental Setup To evaluate the performance of our recommendation system, training data and test data about users and videos should be gathered. We collect numerous user context vectors extracted from large real datasets in Sina Microblog, a popular online social networking site in China. This datasets contain users’ social profiles and multimedia content they shared. We also extract public information from Youku, a prevalent video sharing site (VSS) in China, such as video attributes, popular videos. After preprocessing, around 74000 video items, 578000 user context vectors with 13900-dimension are stored.
+For simplicity, we deploy the recommendation system on a small-sized framework with four distributed video service vendors. Using collected video data, we constructed a set of 1000 videos for each service vendor respectively, Following the real situation, we arrange different video items for different service vendors. We randomly sample 200000 users ( context vectors) from our stored datasets, and input these vectors to our simulative recommendation system sequentially. When receiving user arrival, service vendor selects a particular video to recommend. At the end of this time slot, the reward of this selection, a binary random number (equal 0 or 1), is produce, to imitate the result of user’s click action. Since our scheme appertains to the class of online distributed learning techniques, we will compare our scheme against several previous approaches:
+• Centralized learning with adaptive partition (CAP) [36]: There is only one learner in this centralized framework who partitions the context space dynamically over time according to the number of user arrivals. • Distributed learning with uniform partition (DUP) [34]: This distributed framework contains multiple cooperative
+learners. But all of them uniformly partition context space initially. No partition process is involved over time. • Distributed learning with adaptive partition (DAP): This is the primal model of the proposed P-DAP. Multiple learners in this distributed framework adaptively partition the context space over time (No privacy preservation in this model).
+Finally, to thoroughly analyze the performance of our proposed algorithms, we logically deploy our experiment by the following 4 steps:
+Step 1. We first compare our primal model DAP with previous work, i.e., CAP [36] and DUP [34]. We input sampled 200000 users’ context vectors sequentially into these three models respectively. That is to say, each model will receive same input datasets with 200000 elements. We plot the regrets and the average regrets (to evaluate the convergence rate) of each model. Afterwards, we extracted four groups (with different size) of user context vectors from collected real datasets. Then, we input these four groups context vectors into CAP, DUP and DAP to test the performance of each model.
+Step 2. We construct our differentially private model (PDAP) based on step 1. As for each vendors’ own user, arms (videos and other service vendors) are randomly selected according to computed probabilities. Simultaneously, Laplace noise is added when recommending videos to other service vendors’ users. To prove the smooth trade-off between privacy and accuracy in our P-DAP, we vary the privacy constant ε from 0.01 to 1 and compare them with non-private model (DAP). Finally, we user our extracted four groups of context vectors to test the accuracy of these models.
+Step 3. To prove the lower regret loss of geometric differential private method (GP-DAP), we set different value of ε for different context subspaces. To be specific, the value of ε wax with the decrease of the density of data points in each subspace. Then, we compare the regrets of GP-DAP and PDAP (ε=0.01) over time. B. Results and Analysis We first evaluate DAP’s performances in terms of regret loss and average regret loss in Step 1. In the meanwhile, we compare DAP, CAP and UAP and plot the regret lines in Fig. 6.
+Fig. 6 (a) shows the comparison with DAP, CAP and DUP in terms of regrets, where the horizontal axis is the number of user arrivals. From the tendency of “Regret” lines, we can draw the conclusion that the regret of DAP is sublinear converged over time. And obviously, DAP has lower regret loss than DUP and CAP all the time. Fig. 6 (b) records the average regrets (normalized by number of arrivals) of DAP, CAP and DUP, where the horizontal axis is the number of user arrivals. As we can see, our primal model DAP converges fast and has lower average accuracy then CAP and DUP. Also, results show the average regret of DAP in the tail of lines is extremely small (smaller than 0.02 per user).
+Table II records the average accuracies (total reward divided by number of arrivals) in our tested process, where N represents the number of context vectors used by test. We find that
+as the number of arrivals increased, the average accuracies of each model get promoted as well. This could be resulted from the fact that systems trained better as number of samples increased. Also, we can read from the table that the average accuracy of our DAP can reach up to 92%, but neither those of CAP nor DUP can exceed 80 %. Finally, We can draw the conclusion that DAP outperforms CAP and DUP.
+Fig.7 gives the simulation experiment results of P-DAP. Fig.7 (a) shows both the regrets of P-DAP and DAP are sublinear over time. To be specific, we can see from the tendency of regret lines that as privacy preservation level get increased (smaller ε), regrets converged more slowly. Fig.7 (b) shows our differentially private P-DAP has low-regret (no more than 0.03 per time slot) even for a high level of privacy preservation (e.g., ε = 0.01). The regret obtained by the nonprivate algorithm has the lowest regret as expected. More significantly, the regret gets closer to the non-private regret as its privacy preservation is weaker.
+Table III records our tested average accuracies for DAP and P-DAP with different privacy preservation level. As we can read from the table, average accuracy of DAP can reach to
+91.56% and those of our P-DAP with different values of ε is greater than 80% by time.
+Fig. 8 shows our simulation results of GP-DAP and PDAP, where we set ε=0.01. From Fig. 8 (a) tells us the regret of GP-DAP is less than that of P-DAP by 32%. We can immediately draw the conclusion that GP-DAP cut the regret loss extensively. We also use different set of data with different volume to test the accuracies of P-DAP and GP-DAP. Fig. 8 (b) shows the comparison of these average accuracies. Both GP-DAP and P-DAP have high accuracy for each group, and the accuracies become slightly higher when increasing the sizes of groups. Obviously, GP-DAP always has higher accuracy than P-DAP.
+Table IV records the test result of GP-DAP and P-DAP (ε=0.01) of different user groups. At first glance, the accuracies increased slightly as we add more context samples into test group. This is due to the fact that, more samples can help systems get better estimation of each processing functions. Also, we can see that, the average accuracy of the GP-DAP will be greater than 88% as number of user arrivals exceed 30000. VII. CONCLUSION In this paper, we have presented a differential private distributed learning framework for video recommendation for online social networks. To tackle with the large value and heterogeneity of big data, we adopt dynamic space partition to distributed contextual bandit. Concerned with the privacy of social network users and that of video service vendors, we use exponential mechanism and Laplace mechanism simultaneously. Furthermore, to alleviate the performance loss due to introducing differential privacy, we refine our framework to novel geometric differentially private model. We have theoretically analyzed our algorithms in terms of performance loss (regret) and privacy preserving. We have also evaluated our algorithms, demonstrating their sublinear converged regrets, delicate trade-off between performance loss and privacy preserving level and extensively reduction.  Recommendation is foreseen to be one of the most important services that can provide such personalized multimedia contents to users [1].    In fact, YouTube delivers a set of personalized videos to registered users based on their previous activities (watched, favorited, liked) on the YouTube site [4].    However, as revealed in [2], more than 40 % of all YouTube views come from OSNs like Facebook and Twitter.    To be specific, technologies such as Bag-of-Features Tagging (BoFT) [5] extract user’s multifarious social profiles (e.    Since big data often refers to massive and highdimensional digital content, traditional stand-alone systems cannot overcome the storage and processing of this large-scale datasets [6].    Furthermore, the leakage of users sensitive contextual information in this video recommendation process becomes a prominent issue [7].    Traditional recommender systems, including collaborative filtering (CF) [9], contentbased filtering (CB) [8] and hybrid approaches [10], can provide meaningful recommendations at an individual level by leveraging users interests as demonstrated by their past activity.    Traditional recommender systems, including collaborative filtering (CF) [9], contentbased filtering (CB) [8] and hybrid approaches [10], can provide meaningful recommendations at an individual level by leveraging users interests as demonstrated by their past activity.    Traditional recommender systems, including collaborative filtering (CF) [9], contentbased filtering (CB) [8] and hybrid approaches [10], can provide meaningful recommendations at an individual level by leveraging users interests as demonstrated by their past activity.    Taking the privacy of user’s profile into consideration, previously, anonymity was the main tool in social networks [11], [12] as well as in recommendation systems [13].    Taking the privacy of user’s profile into consideration, previously, anonymity was the main tool in social networks [11], [12] as well as in recommendation systems [13].    Taking the privacy of user’s profile into consideration, previously, anonymity was the main tool in social networks [11], [12] as well as in recommendation systems [13].    Differential privacy [15] proposed recently is a heuristic method to solve this problem.    Several studies have incorporated it into recommendation systems [16]–[18], but none of them has considered both the privacy of users and the service vendors.    Several studies have incorporated it into recommendation systems [16]–[18], but none of them has considered both the privacy of users and the service vendors.    To avoid this privacy disclosure problem, we adopt Laplace mechanism [15], adding noise to feed-back recommendation accuracy (CTR).    Fortunately, exponential mechanism [19] gives us some enlightenment to handle this conundrum.    Content-based filtering (CB) recommendation systems [20]–[22] focus on the similarities of content titles, tags and descriptions and they find user-interested items based on user’s individual reading history.    Content-based filtering (CB) recommendation systems [20]–[22] focus on the similarities of content titles, tags and descriptions and they find user-interested items based on user’s individual reading history.    Collaborative filtering (CF) recommendation systems [23], [24] rely on abundant user transaction histories and content popularity.    Collaborative filtering (CF) recommendation systems [23], [24] rely on abundant user transaction histories and content popularity.    Graph-based (GB) recommendation systems [25], [26] build a graph to calculate the correlation between recommendation objects.    Graph-based (GB) recommendation systems [25], [26] build a graph to calculate the correlation between recommendation objects.    [27] has done a pioneering in this area, but its centralized framework fails to satisfy the need of big data environment.    As for the privacy of social media users, previously, anonymity was the main tool in social networks [11], [12] and recommendations [13], [14].    As for the privacy of social media users, previously, anonymity was the main tool in social networks [11], [12] and recommendations [13], [14].    As for the privacy of social media users, previously, anonymity was the main tool in social networks [11], [12] and recommendations [13], [14].    As for the privacy of social media users, previously, anonymity was the main tool in social networks [11], [12] and recommendations [13], [14].    However, especially for rich, high-dimensional big data, most anonymization techniques appear to cripple the utility of the data [28], [29].    However, especially for rich, high-dimensional big data, most anonymization techniques appear to cripple the utility of the data [28], [29].    In addition, anonymity cannot guarantee privacy in the presence of colluding adversaries or those with auxiliary information [31].    On the other hand, prior works lay emphasis on cryptography [30], but it often incurs high computation and communication overheads.    Differential privacy [15] proposed in recent years has been incorporated into recommendation by several studies.    McSherry and Mironov [17] show how to adapt the leading algorithms used in the Netflix Prize competition to make privacy-preserving movie recommendations.    [7] combine differential privacy with graph theory for social recommendation.    [16] studies the privacy of sensitive user-item preferences in item recommendation systems on social networks.    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Content-based (CB),Collaborative filtering(CF),graphbased(GB),contextaware(CA) Anonymity(A), cryptography (Cr),differential privacy(DP) Private target Centralized (C), decentralized (D) [20]–[22] CB No None C [23], [24] CF No None C [25], [26] GB No None C [28] CA No None C [35] CA No None D [13] Hybrid CF A User C [14] CB,CF A User C [30] CF Cr User D [16] GB DP User D [17] CF DP User C [7] GB DP User C    Our proposed distributed learning method derives from contextual bandits [32].    There exist some works studying the contextual bandit [32], [33], where the best action (video) given the context is learned online.    There exist some works studying the contextual bandit [32], [33], where the best action (video) given the context is learned online.    first proposed a distributed contextual bandit framework for big data classification [34].    Then, they expand this framework into social recommendations [35].    A context-aware partition method for big data proposed in [36] is a heuristic work.    We use the hypercube X = [0, 1] to denote its range, where d is the dimension of the space.    Definition 3 (Differential Privacy [15]).    One effective tool is the Laplace Mechanism [15].    Definition 4 (l-sensitivity of Laplace mechanism [37]).    Corollary 1 (Composability [19]).    Referring to differential privacy, another powerful tool is the exponential mechanism [19].    Definition 5 (Sensitivity of Exponential Mechanism [37]).    An important theorem can also be derived as [37] :    To be specific, when we assign m = 2, d = 1 and entire space is [0, 1], then the entire context space [0, 1] is a level-0 subspace, [0, 1/2) and [1/2, 1] are two level-1 subspaces etc.    To be specific, when we assign m = 2, d = 1 and entire space is [0, 1], then the entire context space [0, 1] is a level-0 subspace, [0, 1/2) and [1/2, 1] are two level-1 subspaces etc.    To overcome this challenge, we use a tree based aggregation method initially proposed by Dwork [39], Chan [38], which is extremely effective in releasing private continual statistics over a data stream.    Enlightened by [34], in order to facilitate our analysis of the regret, we also generate two different artificial i.    Since our scheme appertains to the class of online distributed learning techniques, we will compare our scheme against several previous approaches: • Centralized learning with adaptive partition (CAP) [36]: There is only one learner in this centralized framework who partitions the context space dynamically over time according to the number of user arrivals.    • Distributed learning with uniform partition (DUP) [34]: This distributed framework contains multiple cooperative    , CAP [36] and DUP [34].    , CAP [36] and DUP [34].    With the rapid growth in multimedia services and the enormous offers of video contents in online social networks, users have difficulty in obtaining their interests. Therefore, various personalized recommendation systems have been proposed. However, they ignore that the accelerated proliferation of social media data has led to the big data era, which has greatly impeded the process of video recommendation. In addition, none of them has considered both the privacy of users’ contexts (e,g,. social status, ages and hobbies) and video service vendors’ repositories, which are extremely sensitive and of significant commercial value. To handle the problems, we propose a cloud-assisted differentially private video recommendation system based on distributed online learning. In our framework, service vendors are modeled as distributed cooperative learners, recommending videos according to user’s context, while simultaneously adapting the video-selection strategy based on user-click feedback to maximize total user clicks (reward). Considering the sparsity and heterogeneity of big social media data, we also propose a novel geometric differentially private model, which can greatly reduce the performance (recommendation accuracy) loss. Our simulation shows the proposed algorithms outperform other existing methods and keep a delicate balance between computing accuracy and privacy preserving level. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

@@ -1,0 +1,494 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: A 128 channel Extreme Learning Machine based Neural Decoder for Brain Machine Interfaces
+Paper Content: 1509.07450.pdf CRF A 128 channel Extreme Learning Machine based Neural Decoder for Brain Machine Interfaces Yi Chen Enyi Yao ychen3@ntu.edu.sg, arindam.basu@ntu.edu.sg).  ar X
+iv :1
+50 9.
+07 45
+0v 1
+[ cs
+.L G
+] 2
+2 Se
+p 20
+15 1 A 128 channel Extreme Learning Machine based Neural Decoder for Brain Machine Interfaces Yi Chen, Student Member, IEEE, Enyi Yao, Student Member, IEEE, Arindam Basu, Member, IEEE
+Abstract—Currently, state-of-the-art motor intention decoding algorithms in brain-machine interfaces are mostly implemented on a PC and consume significant amount of power. A machine learning co-processor in 0.35µm CMOS for motor intention decoding in brain-machine interfaces is presented in this paper. Using Extreme Learning Machine algorithm and low-power analog processing, it achieves an energy efficiency of 3.45 pJ/MAC at a classification rate of 50 Hz. The learning in second stage and corresponding digitally stored coefficients are used to increase robustness of the core analog processor. The chip is verified with neural data recorded in monkey finger movements experiment, achieving a decoding accuracy of 99.3% for movement type. The same co-processor is also used to decode time of movement from asynchronous neural spikes. With time-delayed feature dimension enhancement, the classification accuracy can be increased by 5% with limited number of input channels. Further, a sparsity promoting training scheme enables reduction of number of programmable weights by ≈ 2X .
+Index Terms—Neural Decoding, Motor Intention, BrainMachine Interfaces, VLSI, Extreme Learning Machine, Machine Learning, Neural Network, Portable, Implant
+I. INTRODUCTION
+Brain-machine interfaces (BMI) are becoming increasingly popular over the last decade and open up the possibility of neural prosthetic devices for patients with paralysis or in locked-in state. As depicted in Fig. 1, typical implanted BMI consists of a neural recording IC to amplify, digitize and transmit the neural action potentials (AP) recorded by the microelectrode array (MEA). Significant effort has been dedicated to develop energy efficient neural recording channel in recent years for long-term operation of the implanted devices [1] [2] [3] [4]. Some recent solutions have also integrated the AP detection [5] [6] [7] [8] and spike sorting features [9] [10] [11]. However, in order to produce an actuation command (e.g. for a prosthetic arm), the subsequent step of motor intention decoding is required to map the spike train patterns acquired in the neural recording to the motor intention of the subjects.
+Though various elaborate models and methods of motor intention decoding have been developed in past decades with the goal of achieving high decoding performance [12] [13] [14], the state-of-the art neural signal decoding are mainly conducted on PC consuming a considerable amount of power and making it impractical for the long-term use. With onchip real-time motor intention decoding, the size and the power consumption of the computing device can be reduced
+Yi Chen, Enyi Yao, and Arindam Basu are with Centre of Excellence in IC Design (VIRTUS), School of Electrical and Electronic Engineering, Nanyang Technological University, Singapore 639798 (e-mail:ychen3@ntu.edu.sg, arindam.basu@ntu.edu.sg).
+A F E A D C DSP
+Tx
+Rx
+A F E A D C D S P
+Tx
+Rx
+Traditional design
+Envisioned design
+MLCP
+ML
+Actuator
+Tx/Rx
+Actuator
+Tx/Rx
+Skull
+Skull
+Fig. 1: Comparison of envisioned and traditional implanted BMI: The envisioned system uses a machine learning co-processor (MLCP) along with the DSP used in traditional neural implants to estimate motor intentions from neural recordings thus providing data compression. Traditional systems perform such decoding outside the implant and use bulky computers.
+o1
+1 j L
+x1 xD
+βkj
+H1 Hj HL
+wij
+ELM
+oM
+Movement
+Onset G(tk)
+Movement type S(tk):
+label of maximum output
+Moving average of input spikes
+oM+1 θ
+(a) (b)
+o1
+1 j L
+x1 xD
+βkj
+H1 Hj HL
+wij
+g(·)
+g(·)
+g(·)
+oC
+MLCP
+DSP
+Fig. 2: Algorithm: (a) The architecture of the Extreme Learning Machine (ELM) with one nonlinear hidden layer and linear output layer. (b) Use of ELM in neural decoding for classifying movement type and onset time of movement.
+effectively and the solution becomes truly portable. Furthermore, integrating the neural decoding algorithm with the neural recording device is also desired to reduce the wireless data transmission rate and make the implanted BMI solution scalable as required in the future [15]. Until now, very few attempts have been made to give a solution for this problem. A low-power motor intention architecture using analog computing is proposed in [16], featuring an active filtering with massive parallel computing through low power analog filters and memories. However, no measurement results are published to support the silicon viability of the architecture. A more recent work proposes a universal computing architecture for neural signal decoding [17]. The architecture is implemented on a FPGA with a power consumption of 537 µW.
+In this paper, we present a machine learning co-processor (MLCP) achieving low-power operation through massive par-
+2 allelism, sub-threshold analog processing and careful choice of algorithm. Figure 1 contrasts our approach with traditional approaches: our MLCP acts in conjunction with the digital signal processor (DSP) already present in implants (for spike sorting, detection and packetizing) to provide the decoded outputs. The bulk of processing is done on the MLCP while simple digital functions are performed on the DSP. Compared to traditional designs that perform the decoding outside the implant, our envisioned system that provides opportunity for huge data compression by integrating the decoder in the implant. The MLCP is characterized by measurement and the decoding performance of the proposed design is verified with data acquired in individuate finger movements experiment of monkeys. Some initial results of this work were presented in [18]. Here, we present more detailed theory, experimental results including decoding time of movement, new sparsity promoting training and also discuss scalability of this architecture. II. PROPOSED DESIGN: ALGORITHM  A. Extreme Learning Machine 1) Network Architecture: The machine learning algorithm used in this design is Extreme Learning Machine (ELM) proposed in [19]. As depicted in Fig. 2(a), The ELM is essentially a single hidden-layer feed-forward network (SLFN). The k-th output of the network (1≤ k ≤ C) can be expressed as follows,
+ok =
+L ∑
+i
+βkig (wi,x, bi) =
+L ∑
+i
+βkihi = h Tβk,
+wi,x ∈ R D;βki, bi ∈ R;h,βk ∈ R L
+(1)
+where x denotes the input feature vector, L is the number of hidden neurons, h is the output of the hidden layer, bi is the bias for each hidden layer node, wi and βki are input and output weights respectively. A non-linear activation function g() is needed for non-linear classification. A special case of the nonlinear function is the additive node defined by hi = g ( w T i x+ bi )
+. The above equation can be compactly written for all classes as o = hβ, o = [o1, o2, ..oc] where β = [β1,β2...βC ] denotes the L×C matrix of output weights.
+While the output ok can be directly used in regression, for classification tasks the input is categorized as the k-th class if ok is the largest output. Formally, we can define the classification output as an integer class label s given by s = argmaxkok, 1 ≤ k ≤ C. Intuitively, we can think of the first layer as creating a set of random basis functions while the second layer chooses how to combine these functions to match a desired target. Of course, if we could choose the basis functions through training as well, we would need less number of such functions. But the penalty to be paid is longer training times. More details about the algorithm can be found in [19], [20].
+2) Training Methods: The special property of the ELM is that w can be random numbers from any continuous probability distribution and remains unchanged after initiation [19], while only β needs to be trained and stored with high resolution. Therefore the training of this SLFN reduces to
+finding a least-square solution of β given the desired target values in a training set. We will next show two methods of training–the conventional one (T1) for improved generalization as well as a second method (T2) that promotes sparsity. For simplicity, we show the solution of weights for one output ok–the same method can be extended to other output weights as well and can be represented in a compact matrix equation [19].
+Suppose there are p training samples–then we can create a p×L hidden layer output matrix H where each row of H has the hidden layer neuron output for each training sample. Let Tk ∈ Rp be the vector of target values for the p samples. With these inputs, the two training methods are shown in Fig. 3. The step for L2 norm minimization can be solved directly with the solution given by βk = H † Tk where H† is the Moore-Penrose generalized inverse of the matrix H. Hence, training can happen quickly in this case. The L1 norm minimization step in T2 however has to be performed using standard optimization algorithms like LARS [21]. Thus T2 provides reduced hardware complexity due to reduction in the number of hidden neurons at the cost of increased training time. B. Neural Decoding The neural decoding algorithm we use is inspired by the method in [22]. We replace the committee of ANN in their work with ELM in our case. Three specific advantages of the ELM for this application are (1) the fixed random input weights can be realized by a current mirror array exploiting fabrication mismatch of the CMOS process; (2) one-step training that is necessary for quick weight update to address change in input statistics and (3) the hidden layer outputs h can be reused for multiple operations on the same input data x. In this case, we have reused h to classify both the onset time and type of movement. One disadvantage of the ELM algorithm is the usage of 1.5− 3X hidden neurons compared to fully tuned architectures (e.g. SVM, AdaBoost) since the hidden nodes in ELM only create random projections that are not fine tuned [23]. However, implementing random weights results in more than 10X savings over fully tunable weights making this architecture more lucrative overall. Next, we give an overview of the decoding algorithm while the reader is pointed to [22] for more details.
+1) Movement type and Onset time Decoding: Figure 2(b) depicts how the ELM is used in neural decoding. Even though the input is an asynchronous spike train, the ELM produces classification outputs at a fixed rate of once every Ts seconds. The input x is created from the firing rate of spike trains p(t) = ∑
+ts δ(t − ts) of biological neurons by
+finding the moving average over a duration Tw. Hence, we can define the firing rate ri of i-th neuron at time instant tk as ri(tk) = ∫ tk
+tk−Tw p(t) where Ts = 20 ms and Tw = 100
+ms following [22]. Finally, x(tk) = [r1(tk), r2(tk), ...rq(tk)] where there are q biological neurons in the recording (d = q). As shown in Fig. 2(b), we have C = M +1 output neurons in this case where there are M movement types to be decoded. The M + 1-th neuron is used to decode the onset time of
+3T1
+H
+S1: Create hidden layer matrix
+for all p training samples
+T2
+LpR ´ÎH p
+k RÎT
+22 min kkk
+k
+bgb b +T-H
+S2: Least square optimization with L2 regularization:
+LpR ´ÎH p
+k RÎT
+S3: Prune the hidden layer neurons
+with zero output weights
+LpR ¢´ÎH*
+p
+k RÎT
+L
+k RÎb
+L k RÎ *b
+L k R ¢ Îb
+H
+S1: Create hidden layer matrix
+for all p training samples
+S2: Least square optimization with L1 regularization:
+S4: Least square optimization with L2 regularization:
+12 min kkk
+k
+bgb b +T-H
+22 *min kkk k bgb b +T-H
+Fig. 3: Training methods for ELM: T1 is the conventionally used training method to improve generalization by minimizing norm of weights as well as training error. T2 uses an additional step of sparsifying output weights to reduce the required hardware.
+movement. For decoding type of movement, we can directly use the method described in the earlier section II-A for M - class classifier to get the predicted output class at time tk as s(tk) = argmaxpop(tk), 1 ≤ p ≤ M .
+For decoding movement onset time, we further create a binary classifier that reuses the same hidden layer but adds an extra output neuron. Similar to [22], this output is trained for regression–the target is a trapezoidal fuzzy membership function which gradually rises from 0 to 1 representing the gradual evolution of biological neural activity. This output oM+1 is thresholded to produce the final output G(tk) at time tk as:
+G(tk) =
+{
+1, ifoM+1(tk) > θ 0, otherwise (2)
+where θ is a threshold optimized as a hyperparameter. Moreover, to reduce spurious classification and produce a continuous output, the primary output G(tk) is processed to create Gtrack(tk) that is high only if G is high for at least λ times over the last τ time points. Further, to reduce false positives, another detection is prohibited for Tr ms after a valid one. The final decoded output, F (tk) is obtained by a simple combination of the two classifiers as F (tk) = Gtrack(tk)× s(tk).
+2) Time delay based dimension increase (TDBDI): A common problem in long-term neural recording is the loss of information from electrodes over time due to tissue reactions such as gliosis, meningitis or mechanical failures [24]. Hence, initially functional electrodes may not provide information later on. To retain the quality of decoding, we propose a method commonly used in time series analysis–the use of information from earlier time points [25]. In the context of neural decoding, it means that we use more information from the dynamics of neural activity in functional electrodes in
+place of lost information from the instantaneous values of activity in previously functional electrodes. So if we use p−1 previous values from the n functional electrodes, the new feature vector is given by:
+x(tk) = [r1(tk), r1(tk−1), r1(tk−2), r1(tk−p+1),
+r2(tk), r2(tk−1)...rn(tk−p+1)] (3)
+where the input dimension of the ELM is given by D = n×p. This is a novel algorithmic feature in our work compared to [22]. III. PROPOSED DESIGN: HARDWARE IMPLEMENTATION Fig.1 shows a typical usage scenario for our MLCP where it works in tandem with the DSP and performs the intention decoding. The DSP only needs to send very simple control signals to the MLCP and performs the calculation of the second stage of ELM (multiplication by learned weights β). The input to the MLCP comes from spike sorting that can be performed on the DSP [10]. In some cases, spike sorting may not be needed and spike detection may be the only required pre-processing [24]. A. Architecture Details and timing of the MLCP are shown in Fig. 4. We map input and hidden layers of ELM into the MLCP fabricated in AMS-0.35µm CMOS process, where high computation efficiency is achieved by exploiting fabrication mismatch abundantly found in analog devices, while the output layer that requires precision and tunability (tough to attain analog designs) can be implemented on the DSP. Since the number of computations in first stage far outnumbers those in the second (as long as D >> C), such a system partition still retains
+4 RN_cnt S P K
+A < 6 :0 >
+CCO1
+CNT1
+h1
+1 -t o -1 2 8 D e M u x
+WinCNT1 DAC1
+Input Processing Current Mirror
+Array
+Reference
+SPI
+MLCP
+CLK_out C<13:0>
+Iin1
+CCO2
+h2
+Iin2
+CNT2
+CCOL
+hL
+IinL
+CNTL
+WinCNT2 DAC2 WinCNTD DACD I D A C ,2
+I D A C ,1
+I D A C ,D
+Column Scanner
+DSP Timing & Control ELM output Stage
+Wireless T/Rx
+NEU S D L < 2 :0 > R N _ in C L K _ in
+Random weight
+(wij)
+Hidden layer output
+In p u t v e c to r (x )
+CM
+CM
+CM
+(a)
+CLK_out
+SPK
+A<6:0>
+RN_in
+CLK_in
+NEU
+C<0:13>
+RN_cnt
+(b)
+Fig. 4: The diagram (a) and the timing (b) of MLCP based neural decoder.
+the power efficiency of the analog design. Up to 128 input channels and 128 hidden layer nodes are supported by the MLCP, with each input channel embedding an input processing circuit that extracts input feature from the incoming spike trains. As mentioned in the earlier section, we extract a moving average of the spike count as the input feature of interest.
+On receiving a spike from the neural amplifier array (after spike detection and/or spike sorting), the DSP sends a pulse via SPK and 7-bit channel address (A〈6 : 0〉) to the DEMUX in the MLCP for row-decoding. Each row of the MLCP has a 6-bit window counter (WinCNT ) to count the total number of input spikes in a moving window with length of 5ts and a moving step of ts. The length of ts, normally set to 20 ms, is determined by the period of CLK in. The counter value in j-th row is converted into input feature current IDACj for the ELM, corresponding to the input xj in Fig. 2. Furthermore, a 1-bit control signal (Sext〈j〉) stored in each row determines whether the j-th row’s input to the moving window circuit is an external spike count or a delayed spike count from the previous channel. The delay length can be selected from among 5 delay
+steps ranging from 20 ms to 100 ms, based on SDL〈2 : 0〉. This is how the TDBDI feature described earlier is implemented in the MLCP.
+Input feature current from each row is further mirrored into all hidden-layer nodes by a current mirror array. Hence, ratios of the current mirrors are essentially the input weights, and are inherently random due to fabrication mismatch of the transistors even when identical value is used in the design. We use sub-threshold current mirror to achieve very low power consumption, resulting in wij = e ∆Vt,ij
+UT with UT denoting thermal voltage and ∆Vt,ij denoting the threshold voltage mismatch between input transistor on j-th row and mirror transistor on i-th column of that row. This is similar to the concepts described in [26] [27]. The input weights are lognormal distributed since ∆Vt,ij follows a normal distribution. We therefore realize random input weights in a very low ‘cost’ way that requires only one transistor per weight. It is the fixed random input weights of the ELM that makes this unique design possible. A capacitance CM=400 fF on each row sets the SNR of the mirroring to 43 dB.
+5 4b CNT 4b reg
+6 b re g
+Sext<1>=0Di<3:0>
+M U X 5 to 1 D o < 3 :0 >
+6b current
+DAC
+4b reg
+4b reg
+4b reg
+4b reg
+4b reg
+DAC1WinCNT1
+Di<3:0>
+4b CNT 4b reg
+6 b re g
+Sext<2>=1
+M U X 5 to 1 D o < 3 :0 >
+6b current
+DAC
+4b reg
+4b reg
+4b reg
+4b reg
+4b reg
+DAC2WinCNT2
+I D A C 2
+I D A C 1
+SPK1 Dn
+Dn-5
+Qn-1
+0
+1
+SDL<2:0>
+SDL<2:0>
+(a)
+D5D5
+_
+IDAC
+Iref
+D4 D4
+_ D0
+D0
+_ DVDD
+(b)
+DVDD
+vmem Iin
+N E U
+Cint
+M1
+I l e a k
+Cf
+vf M2 M3
+V lk
+vo
+INV1 INV2 INV3
+(c)
+Fig. 5: Sub-block circuit diagrams: (a) Input processing circuit to take moving average of incoming spikes; (b) Current-mode DAC to convert average value to input x for the current mirror; (c) Neuronbased CCO to implement hidden node non-linearity and convert to digital.
+The hidden layer node is implemented by a current controlled oscillator (CCO) driving a 14-bit counter with a 3- bit programmable stop value fmax to implement a saturating nonlinearity in the activation function g(). The advantage of choosing this nonlinearity is that it can be digitally set and also some neurons can be configured to be linear as well to achieve good performance in linearly separable problems [28]. The computation of hidden layer nodes is activated by setting NEU high. The output of CCO is a pulse frequency modulated signal with the frequency proportional to total input current. The counter outputs are latched and serially read using the CLK OUT signal when NEU is low with CCO disabled to save power. The output weights, β, are stored on the DSP where the final output ok is calculated. Thus the
+MLCP
+MCU
+Wireless
+T/Rx
+5.1 cm
+7 .4 c m
+PEU Photo
+Current
+Mirror
+Array W in d o w C o u n te r C ir c u it s
+CCOs & Output
+Counters
+Reference
+& SPI
+4 .9 5 m m
+4.95 mm
+MLCP Die Photo
+Fig. 6: Die photo and test board: The die photo of MLCP fabricated in 0.35µm CMOS process and the portable external unit (PEU) integrating MLCP with MCU and battery.
+MLCP performs the bulk of MACs (D×L) while the DSP only performs C×L MACs of the output layer. It should be noted here, the output of hidden layer neurons changes with power supply voltage due to sensitivity of the CCO frequency to power supply variation, leading to degradation of the decoding accuracy. However, since power supply variation is a commonmode component to all CCOs, normalization methods can be applied in post-processing (see Section IV-E4) to the hidden layer outputs to reduce the effect introduced by power supply variation. B. Sub-circuit: Input processing Fig. 5 shows diagrams of the circuit blocks in the MLCP. Fig. 5(a) shows two adjacent input processing circuits with WinCNT1 configured to receive an external spike train by setting Sext〈1〉=0 and WinCNT2 configured as time delay based channel by setting Sext〈2〉=1. The corresponding signal flows are also depicted in the figure by red dash lines. The moving window counter is realized by (1) counting spike in a sub-window in a length of ts; (2) storing sub-window counter value in a delay chain made of shift registers; and (3) adding and subtracting previous 6-b output value with corresponding sub-window counter values in the delay chain to get new 6-b output value of WinCNT . This calculation can be represented as:
+Qn 〈5 : 0〉 = Qn−1 〈5 : 0〉+Dn 〈3 : 0〉 −Dn−5 〈3 : 0〉 , (4)
+where Qn 〈5 : 0〉 and Dn 〈3 : 0〉 are 6-b output value and 4-b sub-window counter value at time instance n respectively. All registers in the input processing circuits toggle at the rising edge of CLK in. The advantage of this structure is that the delay chain for sub-window counter value is reused in the proposed TDBDI feature, leading to a compact design.
+A compact, 6-bit MOS ladder based current mode DAC, as shown in Fig. 5(b), splits a reference current Iref (6-bit programmable in range of 1 nA to 63 nA) according to the WinCNT output value to generate the input feature current IDAC to the current mirrors. C. Sub-circuit: Current Controlled Oscillator The diagram of the current controlled oscillator (CCO) is depicted in Fig. 5(c). The capacitance of Cint = 400 fF
+6 173 174 175 0 20 40 60 80 100
+counter value
+Median counter value: 174
+710 711 712 713 714 0
+20
+40
+60
+80
+100
+counter value
+Median counter value: 712
+2150 2151 2152 2153 2154 2155 2156 2157 0
+10
+20
+30
+40
+50
+60
+70
+80
+90
+100
+counter value
+Median counter value: 2154
+μ=174
+σ=0
+μ=712.1
+σ=0.48
+μ=2153.6
+σ=1.39
+Fig. 8: Jitter performance: The variation in the counter output for a fixed value of input current is observed for 100 trials and plotted as a histogram for (a) low, (b) medium and (c) high input currents. The measured jitter is < 0.1%
+sets oscillation frequency of this relaxation oscillator based on summed input current while Cf = 100 fF provides hysteresis through positive feedback. When NEU is pulled high, pFET M2 is turned off. M1 is used to set the leakage term bi in equation 1 and can be set to 0 for most cases. Iin from the current mirrors starts to discharge vmem until it crosses the threshold voltage of the INV1, leading to transition of all inverters. Then, vmem is pulled down very quickly through a positive feedback loop formed by Cf . At the same time, M3 turns on, charging vmem towards DVDD until it crosses the threshold voltage of INV1 from low to high and the cycle
+repeats. Neglecting higher order effects, the time for each cycle of the CCO operation is determined by the sum of the charging and discharging time constant of vmem, and can be expressed by:
+TCCO = Cf ×DVDD
+Iin +
+Cf ×DVDD
+(Irst − Iin) , (5)
+where Irst is the charging current when M3 is on. Normally Irst >> Iin reducing equation 5 to:
+fCCO = 1
+TCCO ≈ Iin Cf ×DVDD . (6) IV. MEASUREMENT RESULTS  A. MLCP Characterization This section presents the measurement results from the MLCP fabricated in 0.35µm CMOS process. To test the circuit, we have integrated it with a microcontroller unit or MCU (TI MSP430F5529) to act as the DSP. Though we have not integrated it with an implant yet, this setup does allow us to realistically assess performance of the MLCP with prerecorded neural data as shown later. Moreover, the designed board is entirely portable with its own power supply and wireless TX-RX module (TI CC2500). Hence, it can be used as a portable external unit (PEU) for neural implant systems
+7 0 1 2 3 4 5 6 0 500 1000 1500 2000 2500 3000
+Normalized Random Weights
+Output Channel Address
+In p
+u t
+C h
+an n
+el A
+d d
+re ss
+Output Frequency (kHz)
+20 40 60 80 100 120
+120
+100
+80
+60
+40 20 100
+200
+300
+-60 -40 -20 0 20 40 60 0
+500
+1000
+1500
+2000
+2500
+DV t (mV)
+(a)
+(b) (c)
+Fig. 10: The random input weights: (a) Measured mismatch map of the CCO frequencies; (b) Distribution of input weights and (c) ∆Vt,ij . These values are measured by reading the output counter values when a fixed input value is given one row at a time.
+as well. As shown in Fig. 6, the MLCP has a die area of 4.95× 4.95 mm2 and the PEU measures 7.4cm×5.1cm.
+For the characterization results shown next, we use AVDD=2.1 V powering the reference circuits to generate bias currents and DVDD=0.6 V for the rest. Figure 7(a) verifies operation of the input processing by probing output of the window counter, with frequency of CLK in and input spike train being 20 Hz and 630 Hz respectively. The output, as labeled by Q 〈5 : 0〉, increases from 0 to 63 within 100 ms in the left half of Fig. 7(a). The TDBDI feature is shown in the right half of Fig. 7 based on setting of SDL 〈2 : 0〉=001 when Sext=1. It adds a delay of 40 ms to the Q 〈5 : 0〉, comparing with waveforms in the left half. Measured charging and discharging dynamics of the CCO based neuron are shown in Fig. 7(b) by probing a buffered version of membrane voltage vmem. Measured transfer curves of the 128 CCOs in a chip is plotted in Fig. 7(c), by varying input spike frequency from 0 to 630 Hz. Here, the saturation of the count is not shown–
+when implemented, it stops the count at the preset value. The noise of the whole circuit is also characterized in terms of jitter at the output of the CCO. The variance in the counter value is measured for the same input current over 100 trials. This experiment is repeated for three different current values spanning most of the counting range. The results of this experiment, shown in Fig. 8, demonstrate percentage jitter less than 0.1% for the entire counting range.
+Next, we show characterization results for the input DAC channels. Since it is not possible to separately measure output current of the DAC, we measure the output of the CCO to infer the linearity of the DAC. This is reasonable since the linearity and the noise performance of the CCO is better than the 6 bit resolution of the DAC. Figure 9 plots the measured differential non-linearity (DNL) of 64 randomly selected input DACs. The worst case DNL is approximately ±3 LSB. While this DNL can be part of the non-linearity g(wi,x,bi) in the general case, it makes the implementation of the additive node less accurate.
+Variation in transfer curves of the CCO array is a result of random mismatch from various aspects of the circuits, mainly current mirror array, which is expected and desired in this design. By applying the same input spike frequency of 320 Hz to each row individually, a mismatch map of the CCO frequencies is generated with Iref = 32 nA, as presented in Fig. 10(a), by reading out the quantized frequency values in the output counters. These frequencies are normalized to the median frequency and plotted in Fig. 10(b) and (c) to show conformance to the log-normal distribution as expected. The underlying random variable of ∆Vt,ij has a normal distribution with mean≈0 and standard deviation≈16.5 mV. Totally eight sample dies are characterized with mean and standard deviation of ∆Vt,ij in all chips listed in Tab. I. B. Experiment The neural data used to verify the decoding performance of the proposed design is acquired in a monkey finger movement experiment described in detail in [22]. In the experiment, the monkey puts its right hand into a pistol-grip manipulandum with one finger placed in one slot of the manipulandum. The monkey is trained to perform flexion or extension of the individual finger and wrist according to the given visual instruction. A single-unit recording device is implanted into the M1 cortex of the monkey, enabling the real-time recording of single unit spike train during the experiment. The entire data set includes neural data recorded from three different monkeys–Monkey C, G and K, performing 12 types of individuated movements labeled by the moving finger number and by the first letter of the moving direction. Furthermore, all the trials are aligned such that the onset of the movement happens at 1 s. Therefore the ELM can be trained according to the given label and the onset moment. C. Neural Decoding Performance We have tested the MLCP based PEU using the data set mentioned above. A multiple-output ELM with number of classes C = 12 is trained to identify the movement type of the
+trial. An additional output is used to decode the onset time of movement. During training, the pre-recorded input spikes from biological neurons in M1 are sent to the MLCP the counter values of H are wirelessly transmitted to a PC where fmax and β are calculated and communicated back. This process already includes non-idealities in the analog processor such as DNL of input DAC, non-linearity in CCO and early effect induced current addition errors–hence, the learning takes these effects into account and corrects for them appropriately. Then, the MLCP can run autonomously during testing phase.
+We present decoding results in a format similar to [22] for easy comparison wherever possible. For the first set of experiments, we use the normal training method T1 described in section II-A2. As shown in Fig. 11(a) with n = D = 30, the decoding accuracy of the 12 types of movements (the flexion and extension of the fingers and wrist in one hand) increases as L is increased, with a mean accuracy of 94.8% at L = 60. This trend is expected [19] since more number of random projections should allow better separation of the classes till the point when the amount of extra information for a new projection is negligible. Based on this result, we fix L = 60 for the rest of the experiments unless stated otherwise.
+Next, we explore the variation in performance as number of available neural channels (n) (or equivalently M1 neurons in this case) reduces while keeping L fixed at 60. Fig. 11(b) shows that an increase in accuracy from 85.4% to 91.7% can be obtained at n = 15, by using delayed samples as added features (TDBDI). Here, we have used only one earlier sample–hence, p = 2 and the effective input dimension of the ELM is D = 2 × n. With n = 40, L = 60 and p = 2, a decoding accuracy of 99.3% can be achieved. Next, to check
+the robustness of the earlier result, the same experiment is performed using several different datasets, including individuated finger movement data from Monkey K, C and G and combined finger movement from Monkey K (12 individuate movements and 6 types of simultaneous movement of two fingers). The results of the MLCP with increasing M1 neurons, as shown in Fig. 11(c), is consistent with software result in [22]. The trend of increasing performance with more M1 neurons is expected
+0 0.02 0.04 0.06 0.08 0.1 0.12 0
+0.2
+0.4
+0.6
+0.8
+1
+False Positive Rate
+T ru
+e P
+o si
+ti v e
+R at
+e
+l =2, Tr=0 ms l =6, Tr=0 ms l =2, Tr=140 ms l =6, Tr=140 msθ=1.0
+θ=0.6
+θ=0.3
+(b)
+Fig. 13: Measured movement onset decoding results: (a) A segment of 40 channel input spike trains is shown with real-time decoding output deciding when a movement onset happens and which tpye is this onset. (b) ROC curves of onset decoding.
+0 20 40 60 80 100 120
+0.4
+0.6
+0.8
+1
+Number of Hidden Layer Neurons (L)
+D ec
+od in
+g A
+cc ur
+ac y
+T1
+T2
+Fig. 14: Advantage of Sparsity promoting training T2: The sparsity promoting method chooses best random projections and can reduce required number of hidden neurons by around 50%.
+since it provides more information. The performance of the proposed MLCP is also robust across eight sample chips, as presented in Fig. 11(d) for the same experiment as in the last two cases.
+The hidden layer output matrix H is reused to decode the onset time of finger movement using the regression capacity of the ELM. As mentioned earlier, only one more output node is added to the ELM. The trapezoidal membership function described in section II-B and shown in Fig. 13(a) is set to 1 around the time of 1 s to indicate the onset and set to 0 where there is definitely no movement. Figure 12 illustrates the finite state machine in the MCU to implement the post-processing
+described in section II-B to obtain Gtrack from the primary output G. Optimal values of λ = 6 and Tr = 140 ms can be found from the ROC curve shown in Fig. 13(b). The nature of the ROC curves are again very similar to the ones in [22]. With H reused, we achieve real-time combined decoding by detecting when there is a movement in the trial and labeling the predicted movement type when a movement onset is detected. This is illustrated by a snapshot of the developed GUI in Fig. 13(a), where three 2-s trials are shown with 40-channel input spike trains recorded from M1 region printed at the bottom part of the figure. Primary, post-processed output and predicted movement type are also shown in the top half of the figure. Lastly we show the benefits of the sparsity promoting training method, T2 described in section II-A2. To show the benefit of this method, we compare with the first experiment shown earlier in Fig. 11(a) where n = D = 30 and the number of hidden layer neurons L is varied to see its effect on performance. It can be seen that for the method T2, the decoding accuracy increases to approximately the maximum value of 94.8% attained by the method T1 for much fewer number of hidden layer neurons (L ≈ 30). This is possible because the sparsity promoting step of minimizing L1 norm of output weights chooses the most relevant random projections in the hidden layer. Thus, the new method T2 can reduce power dissipation by approximately 50% due to reduction in number of hidden layer neurons. D. Power Dissipation Finally, we report the power consumption of the proposed MLCP for the 40 input channels, 60 hidden layer nodes, 12- class classification problem. The current drawn from analog and digital power supply pins were measured using a Keithley picoammeter. The power breakup is shown in Fig. 15. At the lowest value of AVDD=1.2V and DVDD=0.6V needed for robust operation, the total power dissipated is 414 nW with 54 nW from DVDD and 360 nW from AVDD. Performing 40 × 60 MAC in the current mirror array at 50 Hz rate of classification, the MLCP provides a 3.45 pJ/MAC and 8.3 nJ/classify performance. It is clear that the efficiency is limited by the fixed analog power that is amortized across the L hidden layer neurons and D×L current mirror multipliers. The
+10
+TABLE II: Comparison Table
+JSSC 2013 [29] JSSC 2007 [30] JSSC 2013 [31] ISSCC 2014 [32] This Work Technology 0.13 µm 0.5 µm 0.13 µm 0.13 µm 0.35 µm
+Supply voltage 0.85 V 4 V 1.2 V (digital) 3 V 0.6 V (digital) 1 V (analog) 1.2 V (analog)
+Design style Digital Analog floating Mixed mode Analog floating Mixed mode gate gate
+Algorithm SVM SVM Fuzzy logic Deep learning feature ELM feature with TDBDI Application EEG/ECG analysis Speech Recognition Image processing Autonomous sensing Neural Implant
+Power dissipation 136.5 µW 0.84 µW 57 mW 11.4 µW 0.4 µW Max input dimension 4001 14 14 8 1281
+Energy efficiency 631 pJ/MAC2 0.8 pJ/MAC 1.4 pJ/MAC3 1 pJ/op4 5.2/1.46 pJ/MAC 5
+Resolution 16 b 4.5 b 6 b 7.5 b 7/14 b6
+Classification rate 0.5-2 Hz 40 Hz 5 MHz 8.3 kHz 50 Hz 1 can be further extended by reusing input channels at the expense of classification rate 2 assuming 1000 support vectors 3 1024 6-bit multiply at 10 MHz consumes 14 mW. 4 The operations are much simpler than a MAC. 5 5.2 pJ/MAC includes both analog and digital power for D = 40, L = 60 and C = 12. In reality, analog power is amortized across all multiplies
+and the peak efficiency of 1.46 pJ/MAC is attainable for D = L = 128 for the same value of C. See section IV-D for details. 6 Each multiply is 7 bit accurate due to SNR limitation while the output quantization in the CCO-ADC has 14 bits for dynamic range.
+fundamental limit of this architecture is the power dissipation of the CCO and current mirror array which is limited to 0.45 pJ/MAC.
+In contrast, recently reported 16-bit digital multipliers consume 16 − 70 pJ/MAC [33] [34] [35] [36] where we ignore the power consumed by the adder for simplicity. We have also implemented near threshold digital array multipliers in 65nm CMOS operating at 0.65 V that resulted in energy efficiency of 11 pJ/MAC confirming the much lower energy attainable by analog solutions over digital ones. Moreover, implementing the MLCP computations in digital domain would incur further energy cost due to memory access (for getting the weight values) and clocking which are ignored here.
+Since we implement the operation of second stage in digital domain, we need C × L multiplications per classification. For the case of L = 60 and C = 12 described above and energy cost of 11 pJ/MAC for digital multiplies, the total energy cost of second stage operation is 7.92 nJ/classify. Hence, the total energy/classification becomes 16.22 nJ and the combined energy/operation increases to 5.2 pJ/MAC. For peak energy efficiency, we consider D = 128, L = 128 and C = 12 resulting in a net energy/computation of 1.46 pJ/MAC including both stages. E. Discussion 1) Comparison: Our MLCP is compared with other recently reported machine learning systems in Table II. Compared to the digital implementation of SVM in [29], our implementation achieves far less energy per MAC due to the analog implementation. [30], [31] and [32] achieve good energy efficiency similar to our method by using analog computing. [31] uses a multiplying DAC (MDAC) to perform the multiplication by weights–however, they have only 6 bit resolution in the multiply and also the MDAC occupies much larger area than the single transistor we use for multiplications. [30] and [32] use analog floating-gate transistors for the multiplication. Compared to these, our single transistor multiplier takes lesser area (no capacitors that are needed in floating-
+WinCNT
+WinCNT
+C C
+O C
+N T
+C C
+O C
+N T
+25 μm
+24 μm
+0.4×0.35 μm 2
+Fig. 16: Array Layout: The area of the current IC is limited by the pitch of the CCO and WINCNT circuits even though the actual area of the current mirrors (0.4× 0.35µm2) are very small.
+gates), does not require high voltages for programming charge and allow for digital correction of errors due to the digital output.
+2) Area Limits: Using a single transistor for multiplication in the first layer should provide area benefits over other schemes. The current layout (Fig. 16) was done due to its simple connection patterns and is not optimized. It can be seen that the actual area of a unit transistor in the array (0.4× 0.35µm2) is much less than the area of an unit cell in the layout which is limited by the pitch of the CCO and the window counter circuits. Moving to a highly scaled process or folding the placement of the output CCO layer to be parallel to the input window counter circuits would enable large reduction (≈ 80X) in the area of the current mirror array. The ultimate limit in terms of area for this architecture stems from the area of capacitors–for this 128 input, 128 output architecture, the total capacitor area is 0.132mm2.
+3) Data rate requirements: When used in an implant with offline training, the MLCP can reduce transmission data rate drastically. First, for direct transmission of 100 channel data sampled at 20kHz with 10 bit resolution, the required data rate is 20Mbps. This massive data rate can be reduced partially by including spike sorting [11]. In this case, assuming 8 bit address encoding a maximum of 256 biological neurons each firing at a rate fbio, the data rate to be transmitted for
+11
+a conventional implant without neural decoder is given by Rconv = 8× 256× fbio. As an example, with fbio = 100Hz, Rconv = 204kbps. This can be reduced even further by integrating the decoder as proposed here. For the proposed case, the output of the decoder is obtained at a rate fdeco. During regular operation after training, the data rate for C classes is given by Rprop,test = fdeco × ⌈log2(C)⌉. As an example, for the case described in section IV-C with fdeco = 50 Hz and C = 13, Rprop,test = 200 bps. This example, shows the potential for thousand fold data rate reductions over spike sorting by integrating the decoder in the implant.
+From the viewpoint of power dissipation, the analog front end and spike detection can be accomplished within a power budget of 1µW per channel [37] [38] [5]. Assuming a transmission energy of ≈ 50pJ/bit from recently reported wireless transmitters for implants [39]–[41], the power dissipation for raw data rates of 200kbps/channel and compressed data rates of 2kbps/channel after spike sorting are 10µW and 0.1µW respectively. Hence, the power for wireless transmission is a bottleneck for systems transmitting raw data. For systems with spike sorting in the implant, this power dissipation is not a bottleneck. However, the power/channel needed for the spike sorter is about 5µW. In comparison, if our decoder operates directly on the spike detector output, it can provide compression at a power budget of < 0.01µW/channel. This would result in a total power dissipation/channel of ≈ 1µW in our case compared to ≈ 6µW in the case of spike sorting– a 6X reduction. There is a lot of evidence that the decoding algorithms can work on the spike detector output [24]; in fact, it is believed that this will make the system more robust for long term use. This will be a subject of our future studies.
+Even if the decoder is explanted, a MCU cannot provide sufficient throughput to support advanced decoding algorithms while FPGA based systems consume a large baseline power. A custom MLCP based solution provides an attractive combination of low-power and high throughput operation when paired with a flexible MCU for control flow.
+4) Normalization for Increased Robustness: The variation of temperature is not a big concern in the case of implantable electronics since body temperature is well regulated. However, variation of power supply voltage can be a concern. A normalization method can be applied to the hidden layer output for reducing its variation due to power supply fluctuation, at the cost of additional computation. The normalization proposed here can be expressed by:
+hj,norm = hj
+∑L j=0 hj/ ∑D i=0 xi
+. (7)
+The rationale behind the proposed normalization is that the effect of power supply fluctuation on the hidden layer output can be modelled as multiplication factor in hidden layer output equation. As analyzed before, the output of the jth hidden layer node can be formulated as: hj =
+Iin,j Cf×V DD tcnt, where
+Iin,j is the input current of the jth hidden layer node and tcnt is counting window length. Since Iin,j is proportional to the strength of input vector x = [x1, x2...xD], we can model the relation between the input vector and hidden layer output as: hj = Kjα(T, V DD) ∑D i=0 xi, where the variation part
+DVDD (V) 2.5
+2.5
+3.5
+4.5
+1 2 DVDD (V) 1.5 2.5
+2.5
+3
+3.5
+4
+4.5 x=8
+(a) (b)
+x=10
+150
+200
+250
+300
+350
+400
+450
+500
+550
+600
+650
+h i
+N o rm
+al iz
+ed h i
+150
+200
+250
+300
+350
+400
+450
+500
+550
+600
+650
+h i
+N o rm
+al iz
+ed h i
+1 21.5
+3
+4
+hi Normalized hi
+hi Normalized hi
+Blue lines are original hidden layer output from SPICE simulation, while green dashed lines are normalized output in both (a) and (b). The input x in (a) and (b) are 8 and 10 respectively.
+Fig. 17: Normalization to reduce variation:
+is a multiplicative term α(T, V DD), and Kj lumps up the constant part of the path gain from input to jth hidden layer output. It is reasonable to assume that α(T, V DD) is the same across different nodes, since fluctuation of power supply is a global effect on chip scale. Hence, it can be cancelled by the proposed normalization as:
+hj,norm = hj
+∑L j=0 hj/ ∑D i=0 xi
+= Kjα(T, V DD)
+∑D
+i=0 xi ∑L
+j=0(Kjα(T, V DD) ∑D i=0 xi)/ ∑D i=0 xi
+= Kj
+∑L
+j=0 Kj
+D ∑
+i=0
+xi.
+(8)
+Simulation results are presented here to verify the proposed method of normalization. The original hidden layer outputs (L = 3) are obtained by SPICE simulations where DVDD is swept from 0.6 V to 2.5 V and input x (D = 1) changes from 8 to 10. Original and normalized values of one of the hidden layer outputs are compared in Fig. 17. As can be observed here, the normalized output (in green dashed lines) varies significantly less due to variation of DVDD than the original output (in blue solid lines). The hardware cost for this normalization is D + L additions and L divisions. Assuming similar costs for division and multiplication, the normalization does not incur much overhead if C >> 1 since L × C multiplications are required by the second stage anyway.
+5) Considerations for Long Term Implants: When using this MLCP based decoder in long term implants, we have to consider issues of parameter drift over several time scales. Over long term of days, aging of the circuits in MLCP or probe impedance change due to gliosis and scarring may change performance. This is typically countered by retraining the decoder every day [24]. Such retraining has allowed decoders to operate at similar level of performance over years. Over shorter time scales, any variation not sufficiently quenched by the normalization method described earlier can be explicitly calibrated by having digital multiplication of coefficients for every input and output channel. These can be determined periodically by injecting calibration inputs and observing the output of the CCO.
+Another type of training–referred to as decoder retraining [42], [43] are needed to take into account change in neural
+12
+statistics during closed loop experiments. The training done here may be thought of as open loop training for initialization of coefficents of second stage of ELM. Next, the experiment has to be redone with closed loop feedback and new training data set has to be generated for retraining the second layer weights. After several such iterations, the final set of weights of second layer will be obtained. V. CONCLUSION We presented a MLCP in 0.35µm CMOS with a die area of 4.95×4.95mm2 and a 7.4cm×5.1cm PEU based on the proposed MLCP that achieves real-time motor intention decoding in an efficient way. Implementing the ELM algorithm, the MLCP utilizes massive parallel low power analog computing and hardware reuse, achieving a power consumption of 0.4 µW at 50 Hz classification rate, resulting in an energy efficiency of 3.45 pJ/MAC. Learning in the second stage also compensates for non-idealities in the analog processor. Furthermore, It includes time-delayed sample based dimension increase feature for enhancing decoding performance when number of recorded neurons are limited. A sparsity promoting training method is shown to reduce the number of hidden layer neurons and output weights by ≈ 50%. We demonstrated the operation of the IC for decoding individuated finger movements using recordings of M1 neurons. However, the ELM algorithm used in the decoder is quite general and has been shown to be an universal approximator and equivalent to SVM or multi-layer perceptrons [20]. Hence, our MLCP can also be used for other decoding applications requiring regression or classification computations. Higher dimensions of inputs and hidden layers can be handled by making a larger IC and also by reusing the same hidden layer several times. In either case, power dissipation increases but not energy/compute. Higher input dimensions can be accommodated at same power by reducing the bias current input of the splitter DACs in input channels [27]. Increase of hidden layer neurons however do incur a proportional power increase. Given that the power requirement of the current decoder is > 100X lower than the AFE, we can easily extend it to handle many more input and output channels. VI. ACKNOWLEDGEMENT The authors would like to thank Dr. Nitish Thakor for providing neural recording data.  Significant effort has been dedicated to develop energy efficient neural recording channel in recent years for long-term operation of the implanted devices [1] [2] [3] [4].    Significant effort has been dedicated to develop energy efficient neural recording channel in recent years for long-term operation of the implanted devices [1] [2] [3] [4].    Significant effort has been dedicated to develop energy efficient neural recording channel in recent years for long-term operation of the implanted devices [1] [2] [3] [4].    Significant effort has been dedicated to develop energy efficient neural recording channel in recent years for long-term operation of the implanted devices [1] [2] [3] [4].    Some recent solutions have also integrated the AP detection [5] [6] [7] [8] and spike sorting features [9] [10] [11].    Some recent solutions have also integrated the AP detection [5] [6] [7] [8] and spike sorting features [9] [10] [11].    Some recent solutions have also integrated the AP detection [5] [6] [7] [8] and spike sorting features [9] [10] [11].    Some recent solutions have also integrated the AP detection [5] [6] [7] [8] and spike sorting features [9] [10] [11].    Some recent solutions have also integrated the AP detection [5] [6] [7] [8] and spike sorting features [9] [10] [11].    Some recent solutions have also integrated the AP detection [5] [6] [7] [8] and spike sorting features [9] [10] [11].    Some recent solutions have also integrated the AP detection [5] [6] [7] [8] and spike sorting features [9] [10] [11].    Though various elaborate models and methods of motor intention decoding have been developed in past decades with the goal of achieving high decoding performance [12] [13] [14], the state-of-the art neural signal decoding are mainly conducted on PC consuming a considerable amount of power and making it impractical for the long-term use.    Though various elaborate models and methods of motor intention decoding have been developed in past decades with the goal of achieving high decoding performance [12] [13] [14], the state-of-the art neural signal decoding are mainly conducted on PC consuming a considerable amount of power and making it impractical for the long-term use.    Though various elaborate models and methods of motor intention decoding have been developed in past decades with the goal of achieving high decoding performance [12] [13] [14], the state-of-the art neural signal decoding are mainly conducted on PC consuming a considerable amount of power and making it impractical for the long-term use.    Furthermore, integrating the neural decoding algorithm with the neural recording device is also desired to reduce the wireless data transmission rate and make the implanted BMI solution scalable as required in the future [15].    A low-power motor intention architecture using analog computing is proposed in [16], featuring an active filtering with massive parallel computing through low power analog filters and memories.    A more recent work proposes a universal computing architecture for neural signal decoding [17].    Some initial results of this work were presented in [18].    Extreme Learning Machine 1) Network Architecture: The machine learning algorithm used in this design is Extreme Learning Machine (ELM) proposed in [19].    More details about the algorithm can be found in [19], [20].    More details about the algorithm can be found in [19], [20].    2) Training Methods: The special property of the ELM is that w can be random numbers from any continuous probability distribution and remains unchanged after initiation [19], while only β needs to be trained and stored with high resolution.    For simplicity, we show the solution of weights for one output ok–the same method can be extended to other output weights as well and can be represented in a compact matrix equation [19].    The L1 norm minimization step in T2 however has to be performed using standard optimization algorithms like LARS [21].    Neural Decoding The neural decoding algorithm we use is inspired by the method in [22].    SVM, AdaBoost) since the hidden nodes in ELM only create random projections that are not fine tuned [23].    Next, we give an overview of the decoding algorithm while the reader is pointed to [22] for more details.    Hence, we can define the firing rate ri of i-th neuron at time instant tk as ri(tk) = ∫ tk tk−Tw p(t) where Ts = 20 ms and Tw = 100 ms following [22].    Similar to [22], this output is trained for regression–the target is a trapezoidal fuzzy membership function which gradually rises from 0 to 1 representing the gradual evolution of biological neural activity.    2) Time delay based dimension increase (TDBDI): A common problem in long-term neural recording is the loss of information from electrodes over time due to tissue reactions such as gliosis, meningitis or mechanical failures [24].    To retain the quality of decoding, we propose a method commonly used in time series analysis–the use of information from earlier time points [25].    This is a novel algorithmic feature in our work compared to [22].    The input to the MLCP comes from spike sorting that can be performed on the DSP [10].    In some cases, spike sorting may not be needed and spike detection may be the only required pre-processing [24].    This is similar to the concepts described in [26] [27].    This is similar to the concepts described in [26] [27].    The advantage of choosing this nonlinearity is that it can be digitally set and also some neurons can be configured to be linear as well to achieve good performance in linearly separable problems [28].    Experiment The neural data used to verify the decoding performance of the proposed design is acquired in a monkey finger movement experiment described in detail in [22].    We present decoding results in a format similar to [22] for easy comparison wherever possible.    This trend is expected [19] since more number of random projections should allow better separation of the classes till the point when the amount of extra information for a new projection is negligible.    11(c), is consistent with software result in [22].    The nature of the ROC curves are again very similar to the ones in [22].    JSSC 2013 [29] JSSC 2007 [30] JSSC 2013 [31] ISSCC 2014 [32] This Work Technology 0.    JSSC 2013 [29] JSSC 2007 [30] JSSC 2013 [31] ISSCC 2014 [32] This Work Technology 0.    JSSC 2013 [29] JSSC 2007 [30] JSSC 2013 [31] ISSCC 2014 [32] This Work Technology 0.    JSSC 2013 [29] JSSC 2007 [30] JSSC 2013 [31] ISSCC 2014 [32] This Work Technology 0.    In contrast, recently reported 16-bit digital multipliers consume 16 − 70 pJ/MAC [33] [34] [35] [36] where we ignore the power consumed by the adder for simplicity.    In contrast, recently reported 16-bit digital multipliers consume 16 − 70 pJ/MAC [33] [34] [35] [36] where we ignore the power consumed by the adder for simplicity.    In contrast, recently reported 16-bit digital multipliers consume 16 − 70 pJ/MAC [33] [34] [35] [36] where we ignore the power consumed by the adder for simplicity.    In contrast, recently reported 16-bit digital multipliers consume 16 − 70 pJ/MAC [33] [34] [35] [36] where we ignore the power consumed by the adder for simplicity.    Compared to the digital implementation of SVM in [29], our implementation achieves far less energy per MAC due to the analog implementation.    [30], [31] and [32] achieve good energy efficiency similar to our method by using analog computing.    [30], [31] and [32] achieve good energy efficiency similar to our method by using analog computing.    [30], [31] and [32] achieve good energy efficiency similar to our method by using analog computing.    [31] uses a multiplying DAC (MDAC) to perform the multiplication by weights–however, they have only 6 bit resolution in the multiply and also the MDAC occupies much larger area than the single transistor we use for multiplications.    [30] and [32] use analog floating-gate transistors for the multiplication.    [30] and [32] use analog floating-gate transistors for the multiplication.    This massive data rate can be reduced partially by including spike sorting [11].    From the viewpoint of power dissipation, the analog front end and spike detection can be accomplished within a power budget of 1μW per channel [37] [38] [5].    From the viewpoint of power dissipation, the analog front end and spike detection can be accomplished within a power budget of 1μW per channel [37] [38] [5].    From the viewpoint of power dissipation, the analog front end and spike detection can be accomplished within a power budget of 1μW per channel [37] [38] [5].    Assuming a transmission energy of ≈ 50pJ/bit from recently reported wireless transmitters for implants [39]–[41], the power dissipation for raw data rates of 200kbps/channel and compressed data rates of 2kbps/channel after spike sorting are 10μW and 0.    Assuming a transmission energy of ≈ 50pJ/bit from recently reported wireless transmitters for implants [39]–[41], the power dissipation for raw data rates of 200kbps/channel and compressed data rates of 2kbps/channel after spike sorting are 10μW and 0.    There is a lot of evidence that the decoding algorithms can work on the spike detector output [24]; in fact, it is believed that this will make the system more robust for long term use.    This is typically countered by retraining the decoder every day [24].    Another type of training–referred to as decoder retraining [42], [43] are needed to take into account change in neural    Another type of training–referred to as decoder retraining [42], [43] are needed to take into account change in neural    However, the ELM algorithm used in the decoder is quite general and has been shown to be an universal approximator and equivalent to SVM or multi-layer perceptrons [20].    Higher input dimensions can be accommodated at same power by reducing the bias current input of the splitter DACs in input channels [27].    Currently, state-of-the-art motor intention decoding algorithms in brain-machine interfaces are mostly implemented on a PC and consume significant amount of power. A machine learning co-processor in 0.35μm CMOS for motor intention decoding in brain-machine interfaces is presented in this paper. Using Extreme Learning Machine algorithm and low-power analog processing, it achieves an energy efficiency of 3.45 pJ/MAC at a classification rate of 50 Hz. The learning in second stage and corresponding digitally stored coefficients are used to increase robustness of the core analog processor. The chip is verified with neural data recorded in monkey finger movements experiment, achieving a decoding accuracy of 99.3% for movement type. The same co-processor is also used to decode time of movement from asynchronous neural spikes. With time-delayed feature dimension enhancement, the classification accuracy can be increased by 5% with limited number of input channels. Further, a sparsity promoting training scheme enables reduction of number of programmable weights by ≈ 2X . LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

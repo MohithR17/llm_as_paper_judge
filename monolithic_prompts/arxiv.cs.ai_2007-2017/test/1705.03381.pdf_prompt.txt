@@ -1,0 +1,539 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: A note on the uniqueness of models in social abstract argumentation
+Paper Content: 1705.03381.pdf CRF A note on the uniqueness of models in social abstract argumentation Leila Amgoud Elise Bonzon Marco Correia Jorge Cruz Jérôme Delobelle Sébastien Konieczny João Leite Alexis Martin Nicolas Maudet Srdjan Vesic   ar X
+iv :1
+70 5.
+03 38
+1v 1
+[ cs
+.A I]
+9 M
+ay 2
+01 7
+1 Introduction
+In the presence of several conflicting arguments, as is the case for instance in online debate platforms, it is difficult to appreciate which ones are “stronger” or more convincingly defended. This is even more challenging when those arguments can have weights (for instance, providing from votes of the users). To this date, social abstract argumentation [LM11] remains one of the only proposal embracing both aspects of the structural interaction among arguments (attacks), and votes on these arguments. Furthermore, the model has been the subject of an in-depth algorithmic study and experimental evaluation [CCL14], showing that instances of significant size can be handled.
+Formally, a social abstract argumentation framework is defined as a triple 〈A,R,V〉, where A stands for a set of arguments, R ⊆ A×A for a set of attacks among arguments, and V : A 7→ N×N a function mapping each arguments to a tuple of pro and con votes (v+ and v−). We denote by R−(a) the set of attacker(s) of an argument a.
+Given a totally ordered set L containing all possible valuations of an argument, with top (⊤) and bottom (⊥) elements, finding a social model consists in finding a mapping MS : A → L of values to arguments satisfying certain constraints induced by the argumentation framework. That is, for all a ∈ A it must be the case that:
+MS(a) = τ(a)f ¬g {M(ai) : ai ∈ R−(a)} (1) where: τ : A → L is the social support; f : L×L → L combines the initial score with the score of direct attackers; g : L × L → L aggregates the score of direct attackers; and ¬ : L → L restricts the value of the attacked argument. For the semantics to be well-behaved, it is required that f is continuous, commutative, associative, monotonic w.r.t. both values and ⊤ is its identity element; that g is continuous, commutative, associative, monotonic w.r.t. both values and ⊥ is its identity element; and that ¬ is antimonotonic, continuous, ¬⊥ = ⊤, ¬⊤ = ⊥ and ¬¬a = a. τ is monotonic w.r.t. the first value and anti-monotonic w.r.t the second value. Most importantly, well-behaved semantics induce at least one social model [LM11, Theorem 12].
+A very important property that the designer may require is the uniqueness of the model, that is, the fact that there exists only one social model satisfying Equation (1). One natural well-behaved social semantics satisfying this under some condition is the simple product semantics, defined as SPǫ = 〈[0, 1], τǫ,f,g,¬〉 where τǫ = v +
+v++v−+ǫ (with ǫ > 0, and τǫ = 0 when there is no votes), x1 f x2 = x1 × x2 (Product T-Norm), x1 g x2 = x1 + x2 − x1 × x2 (Probabilistic Sum T-CoNorm) and ¬x1 = 1− x1.
+Indeed, when |R−(a)|×τ(a) < 1, for all arguments a in the system, the uniqueness of the model can be proven [LM11, Theorem 13]. It is also conjectured [LM11, Conjecture 14] that this simple product models enjoy this property for social abstract argumentation frameworks in general. In this note we show that while the conjecture holds when there are 3 arguments, it does not from 4 arguments onwards (Section 2). We briefly discuss the consequences of this finding in Section 3.
+2 Uniqueness of models only holds up to 3 arguments
+Proposition 1. In any social abstract argumentation frameworks 〈A,R,V〉 with |A| ≤ 3, there exists a unique social model.
+Proof. We detail the case where A = {a1, a2, a3} and R = A×A. The other cases are similar and can be derived along the same lines. We will prove that with 0 < a1, a2, a3 < 1, there is a unique solution solution in (0, 1)3 to the system:  
+  x1 = a1 (1− x2) (1− x3) x2 = a2 (1− x1) (1− x3) x3 = a3 (1− x1) (1− x2)
+(2)
+(3)
+(4)
+Let us consider the case where all a’s are different, without loss of generality a3 < a2 < a1 Multiplying (2) and (3) by (1− x1) and (1− x2) respectively, we obtain:
+{ x1 (1− x1) = a1 (1− x1) (1− x2) (1− x3) x2 (1− x2) = a2 (1− x1) (1− x2) (1− x3)
+therefore x1 (1− x1)
+a1 = x2 (1− x2) a2
+since x(1 − x) = 14 − ( 1 2 − x )2 we can rewrite the equation as:
+a2
+a1
+(
+1 4 − ( 1 2 − x1 ) 2 ) = ( 1 4 − ( 1 2 − x2 ) 2 )
+(5)
+Since we assume that a2 < a1 it must be the case that:
+1 4 − ( 1 2 − x1 ) 2 > 1 4 − ( 1 2 − x2 ) 2
+(
+1 2 − x2
+)
+2 >
+(
+1 2 − x1
+)
+2
+√
+(
+1 2 − x2
+)
+2 >
+√
+(
+1 2 − x1
+)
+2
+∣ ∣ ∣ ∣ 1
+2 − x2
+∣ ∣ ∣ ∣ > ∣ ∣ ∣ ∣ 1
+2 − x1
+∣ ∣ ∣ ∣ (because √ x2 = |x|)
+Let us know prove that x2 < 1 2 . There are two cases for x1:
+• Case x1 < 12 . Suppose for contradiction that x2 ≥ 12 , therefore we must have ∣ ∣ 1 2 − x2 ∣ ∣ > ∣
+∣ 1 2 − x1
+∣
+∣, thus x2 − 12 > 12 − x1, and finally x2 > 1 − x1. But this is impossible because x2 = a2 (1− x1) (1− x3) Therefore, in this case x2 < 1 2
+• Case x1 ≥ 12 . In that case we have −x1 ≤ − 12 , and thus 1− x1 ≤ 12 . This means that x2 < 12 because x2 = a2 (1− x1) (1− x3)
+Therefore, in every case we have that x2 < 1 2 Solving for x2 the equation (5) gives:
+(
+1 2 − x2
+)
+2 = 1 4 − a2
+a1
+(
+1 4 − ( 1 2 − x1 ) 2 )
+x2 = 1 2 ± √ 1 4 − a2
+a1
+(
+1 4 − ( 1 2 − x1 ) 2 )
+and since we know that x2 < 1 2 we have:
+x2 = 1 2 − √ 1 4 − a2
+a1
+(
+1 4 − ( 1 2 − x1 ) 2 )
+A similar reasoning can be used for x3, therefore, the first equation of the initial system can be rewritten as:
+x1 = a1
+( 1− ( 1 2 − √ 1 4 − a2
+a1
+(
+1 4 − ( 1 2 − x1 ) 2 )
+))( 1− ( 1 2 − √ 1 4 − a3
+a1
+(
+1 4 − ( 1 2 − x1 ) 2 )
+))
+= a1
+(
+1 2 +
+√
+1 4 − a2
+a1
+(
+1 4 − ( 1 2 − x1 ) 2 )
+)(
+1 2 +
+√
+1 4 − a3
+a1
+(
+1 4 − ( 1 2 − x1 ) 2 )
+)
+Let f be the real variable function defined over (0, 1):
+f (x1) = a1
+(
+1 2 +
+√
+1 4 − a2
+a1
+(
+1 4 − ( 1 2 − x1 ) 2 )
+)(
+1 2 +
+√
+1 4 − a3
+a1
+(
+1 4 − ( 1 2 − x1 ) 2 )
+)
+Any real value r1 with 0 < r1 < 1 that satisfies the equation r1 = f (r1) determines one solution of the system:
+〈x1, x2, x3〉 = 〈 r1, 1 2 − √ 1 4 − a2
+a1
+(
+1 4 − ( 1 2 − r1 ) 2 ) , 1 2 − √ 1 4 − a3
+a1
+(
+1 4 − ( 1 2 − r1 ) 2 )
+〉
+Let us now prove that there exists one and only one value for 0 < r1 < 1 that satisfies equation r1 = f (r1). f is a continuous function defined over [0, 1] (its roots always have positive values in this interval). The derivative f ′ (x1) of the function is:
+− a2
+(
+1 2 +
+√
+1 4 − a3 a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+)
+(
+1 2 − x1
+)
+√
+1 4 − a2 a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+− a3
+(
+1 2 +
+√
+1 4 − a2 a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+)
+(
+1 2 − x1
+)
+√
+1 4 − a3 a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+• if x1 < 12 both terms are negative and f ′ (x1) < 0 (f is decreasing in [ 0, 12 )
+• if x1 = 12 both terms are zero and f ′ (x1) = 0(f ( 1 2 ) is smaller value f in [0, 1])
+• if x1 > 12 both terms are positive and f ′ (x1) > 0 (f is increasing in ( 1 2 , 1 ] )
+Evaluating the function in its significant points, we get that:
+• f(0) = a1
+• f ( 1 2 ) = a1
+(
+1 2 + 1 2
+√ 1− a2a1 )( 1 2 + 1 2 √ 1− a3a1 )
+• f(1) = a1 The second derivative of the function is:
+f ” (x1) = a2
+(
+1 2 +
+√
+1 4 − a3a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+)
+√
+1 4 − a2a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+− a2
+2 (
+1 2 +
+√
+1 4 − a3a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+)
+(
+1 2 − x1
+)
+2
+a1
+(
+1 4 − a2a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+)
+3/2
++ a3
+(
+1 2 +
+√
+1 4 − a2a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+)
+√
+1 4 − a3a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+− a3
+2 (
+1 2 +
+√
+1 4 − a2a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+)
+(
+1 2 − x1
+)
+2
+a1
+(
+1 4 − a3a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+)
+3/2
++ 2a2a3
+(
+1 2 − x1
+)
+2
+a1
+√
+1 4 − a2a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+√
+1 4 − a3a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+f ” (x1) = a2
+(
+1 2 +
+√
+1 4 − a3 a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+)
+√
+1 4 − a2 a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+ 1− a2 ( 1 2 − x1 ) 2
+a1
+(
+1 4 − a2a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+) 
++ a3
+(
+1 2 +
+√
+1 4 − a2 a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+)
+√
+1 4 − a3 a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+ 1− a3 ( 1 2 − x1 ) 2
+a1
+(
+1 4 − a3a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+) 
++ 2a2a3
+(
+1 2 − x1
+)
+2
+a1
+√
+1 4 − a2a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+√
+1 4 − a3a1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+(6)
+(7)
+(8)
+Let us now inspect the terms of this expression. The last term (8) is clearly positive. The first
+two are also positive if
+(
+1− a ( 1 2 −x1)2
+a1 (
+1 4 − a a1 ( 14−( 1 2 −x1)2)
+)
+)
+> 0 for any value of 0 < a < a1.
+Let us consider its derivative.
+ 1− a ( 1 2 − x1 ) 2
+a1
+(
+1 4 − aa1
+(
+1 4 −
+(
+1 2 − x1
+) 2 )
+) 
+′
+= 2a
+(
+1 2 − x1
+)
+a1
+(
+1 4 −
+a( 14−( 1 2 −x1)2)
+a1
+)   
+1− a ( 1 2 − x1 ) 2
+a1
+(
+1 4 −
+a( 14−( 1 2 −x1)2)
+a1
+)   
+Whose only zero is when x1 = 1 2 (it can be checked that the second term of the product cannot
+be equal to 0, because a < a1). For the interval [ 0, 12 ) the derivative has values:
+ 1− a ( 1 2 − 0 )2
+a1
+(
+1 4 − aa1
+(
+1 4 −
+(
+1 2 − 0
+)2 )) 
+′
+= a
+a1 ( 1 4 − 0 )
+(
+1− a 1 4
+a1 ( 1 4 − 0 )
+)
+= 4a
+a1
+(
+1− a a1
+)
+> 0
+For the interval ( 1 2 , 1 ] the derivative has values:
+ 1− a ( 1 2 − 1 )2
+a1
+(
+1 4 − aa1
+(
+1 4 −
+(
+1 2 − 1
+)2 )) 
+′
+= −a
+a1 ( 1 4 − 0 )
+(
+1− a 1 4
+a1 ( 1 4 − 0 )
+)
+= −4a a1
+(
+1− a a1
+)
+< 0
+Therefore, the term
+(
+1− a ( 1 2 −x1)2
+a1 (
+1 4 − a a1 ( 14−( 1 2 −x1)2)
+)
+)
+increases in [ 0, 12 ) and decreases in ( 1 2 , 1 ] . Its
+least value in the interval is with x1 = 0 (with x1 = 1 the value is equal): (
+1− a ( 1 2 −x1)2
+a1 (
+1 4 − a a1 ( 14−( 1 2 −x1)2)
+)
+)
+> 1− a ( 1 2 −0)2
+a1 (
+1 4 − a
+a1
+(
+1 4 −( 12−0)
+2 )) = 1− a 1 4
+a1( 14 ) = 1− aa1 > 0
+Therefore, every term of the second derivative are positive and therefore the second derivative is always positive in the interval.
+Summing up, in the interval [0, 1] we have:
+x1 [0] (0, 1 2 )
+[
+1 2
+] (
+1 2 , 1
+)
+[1] f(x1) a1 ց f(12 ) ր a1 f ′(x1) − − 0 + + f ′′(x1) + + + + +
+We will first prove that in (0, 1) there exists at least one solution to the equation x1 = f (x1). Note that any solution to the equation in [0, 1] corresponds to an intersection point between the straight line y = x and the curve y = f(x). Both functions are continuous and are defined over the entire interval [0, 1]. At one end of the interval, with x = 0, the value of y = 0 that satisfies the equation of the straight line is inferior to the value of y = f(0) = a1 that satisfies the equation of the curve (the straight line is below the curve at the point x = 0). At the other end of the interval, with x = 1, the value of y = 1 that satisfies the equation of the straight line is superior to the value of y = f(1) = a1 that satisfies the equation of the curve (the straight line is above the curve at the point x = 1). Since both the
+straight line and the curve are continuous, there has to be at least one point in which they cross, i.e.: ∃r∈(0,1)r = f(r)
+We shall now prove that in (0, 1) there exists at most one solution to the equation x1 = f (x1). Note that the function f is strictly convex in [0, 1] since its second derivative is always positive in all points of the interval. Being convex in [0, 1] we know that:
+• ∀x1 6=x2∈[0,1]∀t∈(0,1)f (tx2 + (1− t)x1) < tf (x2) + (1− t)f (x1)
+• ∀x1 6=x2∈[0,1]∀t∈(0,1)f (x1 + t (x2 − x1)) < f (x1) + t (f (x2)− f (x1))
+Informally, the previous inequality establishes that the value of the function in any point between x1 and x2 is strictly smaller than the value of the point in the straight line conecting x1 to x2. Let x1 = r1 be the smaller value of x1 that satisfies the equation r1 = f (r1) (we already established that there exists at least one). If r1 is the smaller value that satisfies the equation, then there are no additional solutions with values of x1 ∈ (0, r1). Let x2 = 1, through the inequality above we have:
+∀t∈(0,1)f (r1 + t (1− r1)) < f (r1) + t (f(1)− f (r1)) < f (r1) + t (a1 − f (r1)) (because f(1) = a1) < r1 + t (a1 − r1) (because f (r1) = r1) < r1 + t (1− r1) (because a1 < 1)
+Through the previous inequality we know that no value of x1 ∈ (r1, 1) can satisfy equation x1 = f (x1). Therefore, r1 is the only solution in (0, 1), so there exists one and only one solution to equation x1 = f (x1) in this interval. Consequently, there is also one and only one solution of the original system in (0, 1)3.
+The question is thus whether the same property holds for a larger number of arguments, as conjectured in [LM11]. It turns out that, from 4 arguments, several social models may exist.
+Example 1 (Non-uniqueness of models). The example involves four arguments involved in pairwise reciprocal attacks, as illustrated (see Figure 1).
+To compute the score of each argument, we will use the simple product semantics introduced as a well-behaved SAF semantics in [LM11]. Recall that the vote aggregation function τǫ (with ǫ > 0) corresponds to the proportionality of positive votes by the total number of votes on an argument. Thus, by taking ǫ = 0.1, the social support of all the arguments is: τǫ(a) = τǫ(b) = τǫ(c) = τǫ(d) =
+1 1+0+ǫ = 1 1.1 ≈ 0.909. Let us now write the equation system (with one equation for each argument) from the AF illustrated in Figure 1.
+{
+M(a) = M(c) = 11.1 × (1− (M(b) +M(d)−M(b)×M(d))) M(b) = M(d) = 11.1 × (1− (M(a) +M(c)−M(a)×M(c)))
+{
+M(a) = M(c) = 11.1 × (1− (2M(b)−M(b)2)) = 11.1 × (1− (2M(d)−M(d)2)) M(b) = M(d) = 11.1 × (1− (2M(a)−M(a)2)) = 11.1 × (1− (2M(c)−M(c)2))
+It can be checked that this equation system has three distinct valid models which lead to different rankings:
+3 Discussion
+We conclude by briefly discussing the consequences of this result. One possible way to ensure the uniqueness of the model would be to normalize the values, for instance by dividing the initial social support τ(a) of all arguments by the overall number of arguments in the system, thus making sure that |R−(a)| × τ(a) < 1, compute the model (and multiply again). When one is only interested in the rankings of arguments (i.e. not in their absolute values), this is a sufficient repair strategy.
+However, this normalization implies that some desirable properties (which were previously satisfied by social abstract argumentation frameworks, at least in the restricted setting of a unique positive vote, see [BDKM16]) would now be falsified. One of these properties –satisfied by many of the existing semantics– is the property of “Ordinal Independence” [ABN16]. It says that the ranking between two arguments should be independent of arguments that are not connected to either of them. The following example shows that it cannot be guaranteed any longer.
+Example 2 (Ordinal independence is not satisfied). We first consider the situation where there are 6 arguments. We shall focus here on the value of some argument in the cycle (a, b, c), say a, as compared to the value of argument f .
+a
+(1, 0)
+b (1, 0)
+c
+(1, 0)
+d
+(1, 0)
+e
+(1, 0)
+f (5, 0)
+Computing the values (again in using the simple product semantics with ǫ = 0.1) gives M(a) = 0.7074 and M(f) = 0.7058, hence a ≻ f . But now suppose there are 1000 more –completely unrelated– arguments. By using the same method, we get that M(a) = 0.9074, while M(f) = 0.97, hence f ≻ a. The addition of these arguments have modified the relative ranking of a and f .
+References
+[ABN16] Leila Amgoud and Jonathan Ben-Naim. Axiomatic foundations of acceptability semantics. In Proc. of the Fifteenth International Conference on the Principles of Knowledge Representation and Reasoning, (KR’16), 2016.
+[BDKM16] Elise Bonzon, Jérôme Delobelle, Sébastien Konieczny, and Nicolas Maudet. Argumentation Ranking Semantics based on Propagation. In 6th International Conference on Computational Models of Argument (COMMA-2016), Postdam, Germany, 2016.
+[CCL14] Marco Correia, Jorge Cruz, and João Leite. On the efficient implementation of social abstract argumentation. In Proc. of the 21st European Conference on Artificial Intelligence, (ECAI’14), pages 225–230, 2014.
+[LM11] João Leite and João Martins. Social abstract argumentation. In Proc. of the 22nd International Joint Conference on Artificial Intelligence, (IJCAI’11), pages 2287–2292, 2011.   Social abstract argumentation is a principled way to assign values to conflicting (weighted) arguments. In this note we discuss the important property of the uniqueness of the model. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

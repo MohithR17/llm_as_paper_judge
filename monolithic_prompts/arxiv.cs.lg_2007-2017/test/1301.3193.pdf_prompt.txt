@@ -1,0 +1,1034 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Learning Graphical Model Parameters with Approximate Marginal Inference
+Paper Content: 1301.3193.pdf CRF Learning Graphical Model Parameters with Approximate Marginal Inference Justin Domke   ar X
+iv :1
+30 1.
+31 93
+v1 [
+cs .L
+G ]
+1 5
+Ja n
+20 13
+Index Terms—Graphical Models, Conditional Random Fields, Machine Learning, Inference, Segmentation. 1 INTRODUCTION G RAPHICAL models are a standard tool in image pro-cessing, computer vision, and many other fields. Exact inference and inference are often intractable, due to the high treewidth of the graph. Much previous work involves approximations of the likelihood. (Section 4). In this paper, we suggest that parameter learning can instead be done using “marginalization-based” loss functions. These directly quantify the quality of the predictions of a given marginal inference algorithm. This has two major advantages. First, approximation errors in the inference algorithm are taken into account while learning. Second, this is robust to model mis-specification. The contributions of this paper are, first, the general framework of marginalization-based fitting as implicit differentiation. Second, we show that the parameter gradient can be computed by “perturbation”– that is, by re-running the approximate algorithm twice with the parameters perturbed slightly based on the current loss. Third, we introduce the strategy of “truncated fitting”. Inference algorithms are based on optimization, where one iterates updates until some convergence threshold is reached. In truncated fitting, algorithms are derived to fit the marginals produced after a fixed number of updates, with no assumption of convergence. We show that this leads to significant speedups. We also derive a variant of this that can apply to likelihood based learning. Finally, experimental results confirm that marginalization based learning gives better results on difficult problems where inference approximations and model mis-specification are most significant. 2 SETUP  2.1 Markov Random Fields Markov random fields are probability distributions that may be written as
+p(x) = 1
+Z
+∏
+c
+ψ(xc) ∏
+i
+ψ(xi). (1)
+This is defined with reference to a graph, with one node for each random variable. The first product in Eq. 1 is over the set of cliques c in the graph, while the second is over all individual variables. For example, the graph
+x1 x2
+x3 x4
+x5 x6
+corresponds to the distribution
+p(x) = 1
+Z ψ(x1, x2)ψ(x2, x3, x5)ψ(x3, x4)ψ(x5, x6) × ψ(x1)ψ(x2)ψ(x3)ψ(x4)ψ(x5)ψ(x6).
+Each function ψ(xc) or ψ(xi) is positive, but otherwise arbitrary. The factor Z ensures normalization. The motivation for these types of models is the Hammersley–Clifford theorem [1], which gives specific conditions under which a distribution can be written as in Eq. 1. Those conditions are that, first, each random variable is conditionally independent of all others, given its immediate neighbors and, secondly, that each configuration x has nonzero probability. Often, domain knowledge about conditional independence can be used to build a reasonable graph, and the factorized representation in an MRF reduces the curse of dimensionality encountered in modeling a high-dimensional distribution. 2.2 Conditional Random Fields One is often interested in modeling the conditional probability of x, given observations y. For such problems, it is natural to define a Conditional Random Field [2]
+p(x|y) = 1
+Z(y)
+∏
+c
+ψ(xc,y) ∏
+i
+ψ(xi,y).
+2 Here, ψ(xc,y) indicates that the value for a particular configuration xc depends on the input y. In practice, the form of this dependence is application dependent. 2.3 Inference Problems Suppose we have some distribution p(x|y), we are given some input y, and we need to guess a single output vector x∗. What is the best guess? The answer clearly depends on the meaning of “best”. One framework for answering this question is the idea of a Bayes estimator [3]. One must specify some utility function U(x,x′), quantifying how “happy” one is to have guessed x if the true output is x′. One then chooses x∗ to maximize the expected utility
+x∗ = argmax x
+∑
+x′
+p(x′|y)U(x,x′).
+One natural utility function is an indicator function, giving one for the exact value x′, and zero otherwise. It is easy to show that for this utility, the optimal estimate is the popular Maximum a Posteriori (MAP) estimate.
+Theorem. If U(x,x′) = I[x = x′], then
+x∗ = argmax x p(x|y).
+Little can be said in general about if this utility function truly reflects user priorities. However, in highdimensional applications, there are reasons for skepticism. First, the actual maximizing probability p(x∗|y) in a MAP estimate might be extremely small, so much so that astronomical numbers of examples might be necessary before one could expect to exactly predict the true output. Second, this utility does not distinguish between a prediction that contains only a single error at some component xj , and one that is entirely wrong. An alternative utility function, popular for imaging problems, quantifies the Hamming distance, or the number of components of the output vector that are correct. Maximizing this results in selecting the most likely value for each component independently.
+Theorem. If U(x,x′) = ∑ i I[xi = x ′ i], then
+x∗i = argmax xi p(xi|y). (2)
+This appears to have been originally called Maximum Posterior Marginal (MPM) inference [4], though it has been reinvented under other names [5]. From a computational perspective, the main difficulty is not performing the trivial maximization in Eq. 2, but rather computing the marginals p(xi|y). The marginal-based loss functions introduced in Section 4.2 can be motivated by the idea that at test time, one will use an inference method similar to MPM where one in concerned only with the accuracy of the marginals. The results of MAP and MPM inference will be similar if the distribution p(x|y) is heavily “peaked” at a single configuration x. Roughly, the greater the entropy of p(x|y), the more there is to be gained in integrating
+over all possible configurations, as MPM does. A few papers have experimentally compared MAP and MPM inference [6], [7]. 2.4 Exponential Family The exponential family is defined by
+p(x; θ) = exp ( θ · f(x) −A(θ) ) ,
+where θ is a vector of parameters, f(x) is a vector of sufficient statistics, and the log-partition function
+A(θ) = log ∑
+x
+expθ · f(x). (3)
+ensures normalization. Different sufficient statistics f(x) define different distributions. The exponential family is well understood in statistics. Accordingly, it is useful to note that a Markov random field (Eq. 1) is a member of the exponential family, with sufficient statistics consisting of indicator functions for each possible configuration of each clique and each variable [8], namely,
+f(X) = {I[Xc = xc]|∀c,xc} ∪ {I[Xi = xi]|∀i, xi}.
+It is useful to introduce the notation θ(xc) to refer to the component of θ corresponding to the indicator function I[Xc = xc], and similarly for θ(xi). Then, the MRF in Eq. 1 would have ψ(xc) = eθ(xc) and ψ(xi) = e
+θ(xi). Many operations on graphical models can be more elegantly represented using this exponential family representation. A standard problem in the exponential family is to compute the mean value of f ,
+µ(θ) = ∑
+x
+p(x; θ)f(x),
+called the “mean parameters”. It is easy to show these are equal to the gradient of the log-partition function.
+dA dθ = µ(θ). (4)
+For an exponential family corresponding to an MRF, computing µ is equivalent to computing all the marginal probabilities. To see this, note that, using a similar notation for indexing µ as for θ above,
+µ(xc; θ) = ∑
+X
+p(X; θ)I[Xc = xc] = p(xc; θ).
+Conditional distributions can be represented by thinking of the parameter vector θ(y;γ) as being a function of the input y, where γ are now the free parameters rather than θ. (Again, the nature of the dependence of θ on y and γ will vary by application.) Then, we have that
+p(x|y;γ) = exp ( θ(y;γ) · f(x) −A(θ(y;γ)) ) , (5)
+sometimes called a curved conditional exponential family.
+3 2.5 Learning The focus of this paper is learning of model parameters from data. (Automatically determining graph structure remains an active research area, but is not considered here.) Specifically, we take the goal of learning to be to minimize the empirical risk
+R(θ) = ∑
+x̂
+L ( θ, x̂ ) , (6)
+where the summation is over all examples x̂ in the dataset, and the loss function L(θ, x̂) quantifies how well the distribution defined by the parameter vector θ matches the example x̂. Several loss functions are considered in Section 4. We assume that the empirical risk will be fit by some gradient-based optimization. Hence, the main technical issues in learning are which loss function to use and how to compute the gradient dL
+dθ .
+In practice, we will usually be interested in fitting conditional distributions. Using the notation from Eq. 5, we can write this as
+R(γ) = ∑
+(ŷ,x̂)
+L ( θ(ŷ,γ), x̂ ) .
+Note that if one has recovered dL dθ , dL dγ is immediate from the vector chain rule as
+dL dγ =
+dθT
+dγ
+dL dθ . (7)
+Thus, the main technical problems involved in fitting a conditional distribution are similar to those for a generative distribution: One finds θ = θ(ŷ,γ), computes the L and dL
+dθ on example x̂ exactly as in the generative
+case, and finally recovers dL dγ from Eq. 7. So, for simplicity, y and γ will largely be ignored in the theoretical developments below. 3 VARIATIONAL INFERENCE This section reviews approximate methods for computing marginals, with notation based on Wainwright and Jordan [8]. For readability, all proofs in this section are postponed to Appendix A. The relationship between the marginals and the logpartition function in Eq. 4 is key to defining approximate marginalization procedures. In Section 3.1, the exact variational principle shows that the (intractable) problem of computing the log-partition function can be converted to a (still intractable) optimization problem. To derive a tractable marginalization algorithm one approximates this optimization, yielding some approximate log-partition function Ã(θ). The approximate marginals are then taken as the exact gradient of Ã. We define the reverse mapping θ(µ) to return some parameter vector that yields that marginals µ. While this will in general not be unique [8, sec. 3.5.2], any two vectors that produce the same marginals µwill also yield the same distribution, and so p(x; θ(µ)) is unambiguous. 3.1 Exact Variational Principle Theorem (Exact variational principle). The log-partition function can also be represented as
+A(θ) = max µ∈M θ · µ+H(µ), (8)
+where M = {µ′ : ∃θ,µ′ = µ(θ)}
+is the marginal polytope, and
+H(µ) = − ∑
+x
+p(x; θ(µ)) log p(x; θ(µ))
+is the entropy.
+In treelike graphs, this optimization can be solved efficiently. In general graphs, however, it is intractable in two ways. First, the marginal polytope M becomes difficult to characterize. Second, the entropy is intractable to compute. Applying Danskin’s theorem to Eq. 8 yields that
+µ(θ) = dA
+dθ = argmax µ∈M θ · µ+H(µ). (9)
+Thus, the partition function (Eq. 8) and marginals (Eq. 9) can both be obtained from solving the same optimization problem. This close relationship between the logpartition function and marginals is heavily used in the derivation of approximate marginalization algorithms. To compute approximate marginals, first, derive an approximate version of the optimization in Eq. 8. Next, take the exact gradient of this approximate partition function. This strategy is used in both of the approximate marginalization procedures considered here: mean field and tree-reweighted belief propagation. 3.2 Mean Field The idea of mean field is to approximate the exact variational principle by replacingM with some tractable subset F ⊂ M, such that F is easy to characterize, and for any vector µ ∈ F we can exactly compute the entropy. To create such a set F , instead of considering the set of mean vectors obtainable from any parameter vector (which characterizes M), consider a subset of tractable parameter vectors. The simplest way to achieve this to restrict consideration to parameter vectors θ with θ(xc) = 0 for all factors c.
+F = {µ′ : ∃θ,µ′ = µ(θ), ∀c, θ(xc) = 0}.
+It is not hard to see that this corresponds to the set of fully-factorized distributions. Note also that this is (in non-treelike graphs) a non-convex set, since it has the same convex hull as M, but is a proper subset. So, the mean field partition function approximation is based on the optimization
+Ã(θ) = max µ∈F θ · µ+H(µ), (10)
+4 with approximate marginals corresponding to the maximizing vector µ, i.e.
+µ̃(θ) = argmax µ∈F θ · µ+H(µ). (11)
+Since this is maximizing the same objective as the exact variational principle, but under a more restricted constraint set, clearly Ã(θ) ≤ A(θ). Here, since the marginals are coming from a fullyfactorized distribution, the exact entropy is available as
+H(µ) = − ∑
+i
+∑
+xi
+µ(xi) log µ(xi). (12)
+The strategy we use to perform the maximization in Eq. 10 is block-coordinate ascent. Namely, we pick a coordinate j, then set µ(xj) to maximize the objective, leaving µ(xi) fixed for all i 6= j. The next theorem formalizes this.
+Theorem (Mean Field Updates). A local maximum of Eq. 10 can be reached by iterating the updates
+µ(xj) ← 1
+Z exp
+( θ(xj) + ∑
+c:j∈c
+∑
+xc\j
+θ(xc) ∏
+i∈c\j
+µ(xi) ) ,
+where Z is a normalizing factor ensuring that ∑
+xj
+µ(xj) = 1. 3.3 Tree-Reweighted Belief Propagation Whereas mean field replaced the marginal polytope with a subset, tree-reweighted belief propagation (TRW) replaces it with a superset, L ⊃ M. This clearly can only increase the value of the approximate log-partition function. However, a further approximation is needed, as the entropy remains intractable to compute for an arbitrary mean vector µ. (It is not even defined for µ 6∈ M.) Thus, TRW further approximates the entropy with a tractable upper bound. Taken together, these two approximations yield a tractable upper bound on the log-partition function. Thus, TRW is based on the optimization problem
+Ã(θ) = max µ∈L θ · µ+ H̃(µ). (13)
+Again, the approximate marginals are simply the maximizing vector µ, i.e.,
+µ̃(θ) = argmax µ∈L θ · µ+ H̃(µ). (14)
+The relaxation of the local polytope used in TRW is the local polytope,
+L = {µ : ∑
+xc\i
+µ(xc) = µ(xi), ∑
+xi
+µ(xi) = 1}. (15)
+Since any valid marginal vector must obey these constraints, clearly M ⊂ L. However, L in general also contains unrealizable vectors (though on trees L = M).
+Thus, the marginal vector returned by TRW may, in general, be inconsistent in the sense that no joint distribution yields those marginals. The entropy approximation used by TRW is
+H̃(µ) = ∑
+i
+H(µi)− ∑
+c
+ρcI(µc), (16)
+where H(µi) = − ∑
+xi µ(xi) logµ(xi) is the univariate
+entropy corresponding to variable i, and
+I(µc) = ∑
+xc
+µ(xc) log µ(xc) ∏
+i∈c µ(xi) (17)
+is the mutual information corresponding to the variables in the factor c. The motivation for this approximation is that if the constants ρc are selected appropriately, this gives an upper bound on the true entropy.
+Theorem (TRW Entropy Bound). Let Pr(G) be a distribution over tree structured graphs, and define ρc = Pr(c ∈ G). Then, with H̃ as defined in Eq. 16,
+H̃(µ) ≥ H(µ).
+Thus, TRW is maximizing an upper bound on the exact variational principle, under an expanded constraint set. Since both of these changes can only increase the maximum value, we have that Ã(θ) ≥ A(θ). Now, we consider how to actually compute the approximate log-partition function and associated marginals. Consider the message-passing updates
+mc(xi) ∝ ∑
+xc\i
+e 1 ρc θ(xc)
+∏
+j∈c\i
+eθ(xj) ∏ d:j∈dmd(xj) ρd
+mc(xj) , (18)
+where “∝” is used as an assignment operator to means assigning after normalization.
+Theorem (TRW Updates). Let ρc be as in the previous theorem. Then, if the updates in Eq. 18 reach a fixed point, the marginals defined by
+µ(xc) ∝ e 1 ρc θ(xc)
+∏
+i∈c
+eθ(xi) ∏ d:i∈dmd(xi) ρd
+mc(xi) ,
+µ(xi) ∝ e θ(xi)
+∏
+d:i∈d
+md(xi) ρd
+constitute the global optimum of Eq. 13.
+So, if the updates happen to converge, we have the solution. Meltzer et al. show [9] that on certain graphs made up of monotonic chains, an appropriate ordering of messages does assure convergence. (The proof is essentially that under these circumstances, message passing is equivalent to coordinate ascent in the dual.) TRW simplifies into loopy belief propagation by choosing ρc = 1 everywhere, though the bounding property is lost.
+5 4 LOSS FUNCTIONS For space, only a representative sample of prior work can be cited. A recent review [10] is more thorough. Though, technically, a “loss” should be minimized, we continue to use this terminology for the likelihood and its approximations, where one wishes to maximize. For simplicity, the discussion below is for the generative setting. Using the same loss functions for training a conditional model is simple (Section 2.5). 4.1 The Likelihood and Approximations The classic loss function would be the likelihood, with
+L(θ,x) = log p(x; θ) = θ · f(x) −A(θ). (19)
+This has the gradient
+dL dθ = f(x)− µ(θ). (20)
+One argument for the likelihood is that it is efficient; given a correct model, as data increases it converges to true parameters at an asymptotically optimal rate [11]. Some previous work uses tree structured graphs where marginals may be computed exactly [12]. Of course, in high-treewidth graphs, the likelihood and its gradient will be intractable to compute exactly, due to the presence of the log-partition function A(θ) and marginals µ(θ). This has motivated a variety of approximations. The first is to approximate the marginals µ using Markov chain Monte Carlo [13], [14]. This can lead to high computational expense (particularly in the conditional case, where different chains must be run for each input). Contrastive Divergence [15] further approximates these samples by running the Markov chain for only a few steps, but started at the data points [16]. If the Markov chain is run long enough, these approaches can give an arbitrarily good approximation. However, Markov chain parameters may need to be adjusted to the particular problem, and these approaches are generally slower than those discussed below. 4.1.1 Surrogate Likelihood A seemingly heuristic approach would be to replace the marginals in Eq. 20 with those from an approximate inference method. This approximation can be quite principled if one thinks instead of approximating the logpartition function in the likelihood itself (Eq. 19). Then, the corresponding approximate marginals will emerge as the exact gradient of this surrogate loss. This “surrogate likelihood” [17] approximation appears to be the most widely used loss in imaging problems, with marginals approximated by either mean field [18], [19], TRW [20] or LBP [21], [22], [23], [24], [25]. However, the terminology of “surrogate likelihood” is not widespread and in most cases, only the gradient is computed, meaning the optimization cannot use line searches. If one uses a log-partition approximation that provides a bound on the true log-partition function, the
+surrogate likelihood will then bound the true likelihood. Specifically, mean field based surrogate likelihood is an upper bound on the true likelihood, while TRW-based surrogate likelihood is a lower bound. 4.1.2 Expectation Maximization In many applications, only a subset of variables may be observed. Suppose that we want to model x = (z,h) where z is observed, but h is hidden. A natural loss function here is the expected maximization (EM) loss
+L(θ, z) = log p(z; θ) = log ∑
+h
+p(z,h; θ).
+It is easy to show that this is equivalent to
+L(θ, z) = A(θ, z)−A(θ), (21)
+where A(θ, z) = log ∑
+h expθ · f(z,h) is the log-partition function with z “clamped” to the observed values. If all variables are observed A(θ, z) reduces to θ · f(z). If on substitutes a variational approximation for A(θ, z), a “variational EM” algorithm [8, Sec. 6.2.2] can be recovered that alternates between computing approximate marginals and parameter updates. Here, because of the close relationship to the surrogate likelihood, we designate “surrogate EM” for the case where A(θ, z) and A(θ)may both be approximated and the learning is done with a gradient-based method. To obtain a bound on the true EM loss, care is required. For example, lowerbounding A(θ, z) using mean field, and upper-bounding A(θ) using TRW means a lower-bound on the true EM loss. However, using the same approximation for both A(θ) and A(θ, z) appears to work well in practice [26]. 4.1.3 Saddle-Point Approximation A third approximation of the likelihood is to search for a “saddle-point”. Here, one approximates the gradient in Eq. 20 by running a (presumably approximate) MAP inference algorithm, and then imagining that the marginals put unit probability at the approximate MAP solution, and zero elsewhere [27], [28], [21]. This is a heuristic method, but it can be expected to work well when the estimated MAP solution is close to the true MAP and the conditional distribution p(x|y) is strongly “peaked”. 4.1.4 Pseudolikelihood Finally, there are two classes of likelihood approximations that do not require inference. The first is the classic pseudolikelihood [29], where one uses
+L(θ,x) = ∑
+i
+log p(xi|x−i; θ).
+This can be computed efficiently, even in high treewidth graphs, since conditional probabilities are easy to compute. Besag [29] showed that, under certain conditions, this will converge to the true parameter vector as the amount of data becomes infinite. The pseudolikelihood has been used in many applications [30], [31].
+6 Instead of the probability of individual variables given all others, one can take the probability of patches of variables given all others, sometimes called the “patch” pseudolikelihood [32]. This interpolates to the exact likelihood as the patches become larger, though some type of inference is generally required. 4.1.5 Piecewise Likelihood More recently, Sutton and McCallum [33] suggested the piecewise likelihood. The idea is to approximate the logpartition function as a sum of log-partition functions of the different “pieces“ of the graph. There is flexibility in determining which pieces to use. In this paper, we will use pieces consisting of each clique and each variable, which worked better in practice than some alternatives. Then, one has the surrogate partition function
+Ã(θ) = ∑
+c
+Ac(θ) + ∑
+i
+Ai(θ),
+Ac(θ) = log ∑
+xc
+eθ(xc), Ai(θ) = log ∑
+xi
+eθ(xi).
+It is not too hard to show that A(θ) ≤ Ã(θ). In practice, it is sometimes best to make some heuristic adjustments to the parameters after learning to improve test-time performance [34], [35]. 4.2 Marginal-based Loss Functions Given the discussion in Section 4.1, one might conclude that the likelihood, while difficult to optimize, is an ideal loss function since, given a well-specified model, it will converge to the true parameters at asymptotically efficient rates. However, this conclusion is complicated by two issues. First, of course, the maximum likelihood solution is computationally intractable, motivating the approximations above. A second issue is that of model mis-specification. For many types of complex phenomena, we will wish to fit a model that is approximate in nature. This could be true because the conditional independencies asserted by the graph do not exactly hold, or because the parametrization of factors is too simplistic. These approximations might be made out of ignorance, due to a lack of knowledge about the domain being studied, or deliberately because the true model might have too many degrees of freedom to be fit with available data. In the case of an approximate model, no “true” parameters exist. The idea of marginal-based loss functions is to instead consider how the model will be used. If one will compute marginals at test-time – perhaps for MPM inference (Section 2.3) – it makes sense to maximize the accuracy of these predictions. Further, if one will use an approximate inference algorithm, it makes sense to optimize the accuracy of the approximate marginals. This essentially fits into the paradigm of empirical risk minimization [36], [37]. The idea of training a probabilistic model using an alternative loss to the likelihood goes back at least to Bahl et al. in the late 1980s [38].
+There is reason to think the likelihood is somewhat robust to model mis-specification. In the infinite data limit, it finds the “closest” solution in the sense of KLdivergence since, if q is the true distribution, then
+KL(q||p) = const.− E q log p(x; θ). 4.2.1 Univariate Logistic Loss The univariate logistic loss [39] is defined by
+L(θ,x) = − ∑
+i
+log µ(xi; θ),
+where we use the notation µ to indicate that the loss is implicitly defined with respect to the marginal predictions of some (possibly approximate) algorithm, rather than the true marginals. This measures the mean accuracy of all univariate marginals, rather than the joint distribution. This loss can be seen as empirical risk minimization of the KL-divergence between the true marginals and the predicted ones, since
+∑
+i
+KL(qi||µi) = ∑
+i
+∑
+xi
+q(xi) log q(xi)
+µ(xi; θ)
+= const.− E q
+∑
+i
+logµ(xi; θ).
+If defined on exact marginals, this is a type of composite likelihood [40]. 4.2.2 Smoothed Univariate Classification Error Perhaps the most natural loss in the conditional setting would be the univariate classification error,
+L(θ,x) = ∑
+i
+S (
+max x′i 6=xi
+µ(xi; θ)− µ(xi; θ) ) ,
+where S(·) is the step function. This exactly measures the number of components of x that would be incorrectly predicted if using MPM inference. Of course, this loss is neither differentiable nor continuous, which makes it impractical to optimize using gradient-based methods. Instead Gross et al. [5] suggest approximating with a sigmoid function S(t) = (1 + exp(−αt))−1, where α controls approximation quality. There is evidence [36], [5] that the smoothed classification loss can yield parameters with lower univariate classification error under MPM inference. However, our experience is that it is also more prone to getting stuck in local minima, making experiments difficult to interpret. Thus, it is not included in the experiments below. Our experience with the univariate quadratic loss [41] is similar. 4.2.3 Clique Losses Any of the above univariate losses can be instead taken based on cliques. For example, the clique logistic loss is
+L(θ,x) = − ∑
+c
+logµ(xc; θ),
+7 10 0 10 1 10 2 10 30 0.1 0.2 0.3
+# training data
+m ea
+n te
+st e
+rr or
+shift of 0
+10 0
+10 1
+10 2
+10 3
+# training data
+shift of 3
+10 0
+10 1
+10 2
+10 3
+# training data
+shift of 10
+likelihood clique logistic univariate logistic
+Figure 1: Mean test error of various loss functions trained with exact inference. In the case of a wellspecified model (shift of zero), the likelihood performs essentially identically to the marginal-based loss functions. However, when mis-specification is introduced, quite different estimates result.
+which may be seen as empirical risk minimization of the mean KL-divergence of the true clique marginals to the predicted ones. An advantage of this with an exact model is consistency. Simple examples show cases where a model predicts perfect univariate marginals, despite the joint distribution being very inaccurate. However, if all clique marginals are correct, the joint must be correct, by the standard moment matching conditions for the exponential family [8]. 4.2.4 Hidden variables Marginal-based loss functions can accommodate hidden variables by simply taking the sum in the loss over the observed variables only. A similar approach can be used with the pseudolikelihood or piecewise likelihood. 4.3 Comparison with Exact Inference To compare the effects of different loss functions in the presence of model mis-specification, this section contains a simple example where the graphical model takes the following “chain” structure:
+. . .
+x1 x2 x3 x4 xn
+y1 y2 y3 y4 yn
+Here, exact inference is possible, so comparison is not complicated by approximate inference. All variables are binary. Parameters are generated by taking θ(xi) randomly from the interval [−1,+1] for all i and xi. Interaction parameters are taken as θ(xi, xj) = t when xi = xj , and θ(xi, xj) = −t when xi 6= xj , where t is randomly chosen from the interval [−1,+1] for all (i, j). Interactions θ(yi, yj) and θ(xi, yi) are chosen in the same way. To systematically study the effects of differing “amounts” of mis-specification, after generating data, we apply various circular shifts to x. Thus, the data no longer corresponds exactly the the structure of the graphical model being fit. Thirty-two different random distributions were created. For each, various quantities of data were generated
+by Markov chain Monte Carlo, with shifts introduced after sampling. The likelihood was fit using the closedform gradient (Sec. 4.1), while the logistic losses were trained using a gradient obtained via backpropagation (Sec. 7). Fig. 1 shows the mean test error (estimated on 1000 examples), while Fig. 2 shows example marginals. We see that the performance of all methods deteriorates with mis-specification, but the marginal-based loss functions are more resistant to these effects. 4.4 MAP-Based Training Another class of methods explicitly optimize the performance of MAP inference [42], [43], [44], [45], [25]. This paper focuses on applications that use marginal inference, and that may need to accommodate hidden variables, and so concentrates on likelihood and marginalbased losses. 5 IMPLICIT FITTING We now turn to the issue of how to train high-treewidth graphical models to optimize the performance of a marginal-based loss function, based on some approximate inference algorithm. Now, computing the value of the loss for any of the marginal-based loss functions is not hard. One can simply run the inference algorithm and plug the resulting marginal into the loss. However, we also require the gradient dL
+dθ .
+Our first result is that the loss gradient can be obtained by solving a sparse linear system. Here, it is useful to introduce notation to distinguish the loss L, defined in terms of the parameters θ from the loss Q, defined directly in terms of the marginals µ. (Note that though the notation suggests the application to marginal inference, this is a generic result.)
+Theorem. Suppose that
+µ(θ) := argmax µ:Bµ=d θ · µ+H(µ). (22)
+Define L(θ,x) = Q(µ(θ),x). Then, letting D = d 2H
+dµdµT ,
+dL dθ = ( D−1BT (BD−1BT )−1BD−1 −D−1 )dQ dµ .
+A proof may be found in Appendix B. This theorem states that, essentially, once one has computed the predicted marginals, the gradient of the loss with respect to marginals dQ
+dµ can be transformed into the gradient
+of the loss with respect to parameters dL dθ through the solution of a sparse linear system. The optimization in Eq. 22 takes place under linear constraints, which encompasses the local polytope used in TRW message-passing (Eq. 15). This theorem does not apply to mean field, as F is not a linear constraint set when viewed as a function of both clique and univariate marginals. In any case, the methods developed below are simpler to use, as they do not require explicitly forming the constraint matrix B or solving the linear system.
+8 0 20 40 60 80 100 120 140 160 180 200 0 0.5 1 true marginals eplacements p (y i = 1 |x )
+i
+0 20 40 60 80 100 120 140 160 180 200 0
+0.5
+1 shift of 3
+p (y
+i =
+1 |x )
+i
+0 20 40 60 80 100 120 140 160 180 200 0
+0.5
+1 shift of 10
+p (y
+i =
+1 |x )
+i
+Figure 2: Exact and predicted marginals for an example input. Predicted marginals are trained using 1000 data. With low shifts, all loss functions lead to accurate predicted marginals. However, the univariate and clique logistic loss are more resistant to the effects of model mis-specification. Legends as in Fig. 1. 6 PERTURBATION This section observes that variational methods have a special structure that allows derivatives to be calculated without explicitly forming or inverting a linear system. We have, by the vector chain rule, that
+dL dθ =
+dµT
+dθ
+dQ dµ . (23)
+A classic trick in scientific computing is to efficiently compute Jacobian-vector products by finite differences. The basic result is that, for any vector v,
+dµ
+dθT v = lim r→0
+1
+r
+( µ(θ + rv) − µ(θ) ) ,
+which is essentially just the definition of the derivative of µ in the direction of v. Now, this does not immediately seem helpful, since Eq. 23 requires dµ T
+dθ , not dµ dθT . How-
+ever, with variational methods, these are symmetric. The simplest way to see this is to note that
+dµ
+dθT =
+d
+dθT
+(
+dA
+dθ
+)
+= dA
+dθdθT .
+Domke [46] lists conditions for various classes of entropies that guarantee that A will be differentiable. Combining the above three equations, the loss gradient is available as the limit
+dL dθ = lim r→0 1 r ( µ(θ + r dQ dµ )− µ(θ) ) . (24)
+In practice, of course, the gradient is approximated using some finite r. The simplest approximation, onesided differences, simply takes a single value of r in Eq. 24, rather than a limit. More accurate results at the
+cost of more calls to inference, are given using two-sided differences, with
+dL dθ ≈ 1 2r ( µ(θ + r dQ dµ )− µ(θ − r dQ dµ ) ) ,
+which is accurate to order o(r2). Still more accurate results are obtained with “four-sided” differences, with
+dL dθ ≈ 1 12r ( −µ(θ + 2r dQ dµ ) + 8µ(θ + r dQ dµ )
+− 8µ(θ − r dQ
+dµ ) + µ(θ − 2r
+dQ dµ ) ) ,
+which is accurate to order o(r4) [47]. Alg. 1 shows more explicitly how the loss gradient could be calculated, using two-sided differences. The issue remains of how to calculate the step size r. Each of the approximations above becomes exact as r → 0. However, as r becomes very small, numerical error eventually dominates. To investigate this issue experimentally, we generated random models on a 10×10 binary grid, with each parameter θ(xi) randomly chosen from a standard normal, while each interaction parameter θ(xi, xj) was chosen randomly from a normal with a standard deviation of s. In each case, a random value x was generated, and the “true” loss gradient was estimated by standard (inefficient) 2-sided finite differences, with inference re-run after each component of θ is perturbed independently. To this, we compare one, two, and four-sided perturbations. In all cases, the step size is, following Andrei [48], taken to be r = mǫ 1 3 ( 1+ ||θ||∞ ) /||dQ dµ
+||∞, where ǫ is machine epsilon, and m is a multiplier that we will vary. Note that the optimal power of ǫ will depend on the finite difference scheme; 13 is optimal for two-sided differences [49, Sec. 8.1]. All calculations take place in double-precision with
+9 Algorithm 1 Calculating dL dθ by perturbation (two-sided).
+inference run until marginals changed by a threshold of less than 10−15. Fig. 3 shows that using many-sided differences leads to more accuracy, at the cost of needing to run inference more times to estimate a single loss gradient. In the following experiments, we chose twosided differences with a multiplier of 1 as a reasonable tradeoff between accuracy, simplicity, and computational expense. Welling and Teh used sensitivity of approximate beliefs to parameters to approximate joint probabilities of non-neighboring variables [50]. 7 TRUNCATED FITTING The previous methods for computing loss gradients are derived under the assumption that the inference optimization is solved exactly. In an implementation, of course, some convergence threshold must be used. Different convergence thresholds can be used in the learning stage and at test time. In practice, we have observed that too loose a threshold in the learning stage can lead to a bad estimated risk gradient, and learning
+terminating with a bad search direction. Meanwhile, a loose threshold can often be used at test time with few consequences. Usually, a difference of 10−3 in estimated marginals has little practical impact, but this can still be enough to prevent learning from succeeding [51]. It seems odd that the learning algorithm would spend the majority of computational effort exploring tight convergence levels that are irrelevant to the practical performance of the model. Here, we define the learning objective in terms of the approximate marginals obtained after a fixed number of iterations. To understand this, one may think of the inference process not as an optimization, but rather as a large, nonlinear function. This clearly leads to a well-defined objective function. Inputting parameters, applying the iterations of either TRW or mean field, computing predicted marginals, and finally a loss are all differentiable operations. Thus, the loss gradient is efficiently computable, at least in principle, by reverse-mode automatic differentiation (autodiff), an approach explored by Stovanov et al. [36], [52]. In preliminary work, we experimented with autodiff tools, but found these to be unsatisfactory for our applications for two reasons. Firstly, these tools impose a computational penalty over manually derived gradients. Secondly, autodiff stores all intermediate calculations, leading to large memory requirements. The methods derived below use less memory, both in terms of constant factors and big-O complexity. Nevertheless, some of these problems are issues with current implementations of reverse-mode autodiff, avoidable in theory. Both mean field and TRW involve steps where we first take a product of a set of terms, and then normalize. We define a “backnorm” operator, which is useful in taking derivatives over such operations, by
+backnorm(g, c) = c⊙ (g − g · c).
+This will be used in the algorithms here. More discussion on this point can be found in Appendix C. 7.1 Back Mean Field The first backpropagating inference algorithm, back mean field, is shown as Alg. 2. The idea is as follows: Suppose we start with uniform marginals, run N iterations of mean field, and then– regardless of if mean field has converged or not– take predictedmarginals and plug them into one of the marginal-based loss functions. Since each step in this process is differentiable, this specifies the loss as a differentiable function of model parameters. We want the exact gradient of this function.
+Theorem. After execution of back mean field,
+←− θ (xi) = dL
+dθ(xi) and
+←− θ (xc) = dL
+dθ(xc) .
+A proof sketch is in Appendix C. Roughly speaking, the proof takes the form of a mechanical differentiation of each step of the inference process.
+10
+Algorithm 2 Back Mean Field 1) Initialize µ uniformly. 2) Repeat N times for all j:
+a) Push the marginals µj onto a stack.
+b) µ(xj) ∝ exp ( θ(xj) + ∑
+c:j∈c
+∑
+xc\j
+θ(xc) ∏
+i∈c\j
+µ(xi) )
+3) Compute L, ←−µ (xj) = dLdµ(xj) and ←−µ (xc) = dL dµ(xc) . 4) Initialize ←− θ (xi) ← 0, ←− θ (xc) ← 0.
+5) Repeat N times for all j (in reverse order): a) ←−νj ← backnorm(←−µj , µj)
+b) ←− θ (xj) ← ←− θ (xj) + ←−ν (xj) c) ←− θ (xc) ← ←− θ (xc) + ←−ν (xj) ∏
+i∈c\j
+µ(xi) ∀c : j ∈ c
+d) ←−µ (xi) ← ←−µ (xi) + ∑
+xc\i
+←−ν (xj)θ(xc) ∏
+k∈c\{i,j}
+µ(xk)
+∀c : j ∈ c, ∀i ∈ c\j
+e) Pull marginals µj from the stack. f) ←−µj(xj) ← 0
+Note that, as written, back mean field only produces univariate marginals, and so cannot cope with loss functions making use of clique marginals. However, with mean field, the clique marginals, are simply the product of univariate marginals: µ(xc) = ∏
+i∈c µ(xi). Hence, any loss defined on clique marginals can equivalently be defined on univariate marginals. 7.2 Back TRW Next, we consider truncated fitting with TRW inference. As above, we will assume that some fixed number N of inference iterations have been run, and we want to define and differentiate a loss defined on the current predicted marginals. Alg. 3 shows the method.
+Theorem. After execution of back TRW,
+←− θ (xi) = dL
+dθ(xi) and
+←− θ (xc) = dL
+dθ(xc) .
+Again, a proof sketch is in Appendix C. If one uses pairwise factors only, uniform appearance probabilities of ρ = 1, removes all reference to the stack, and uses a convergence threshold in place of a fixed number of iterations, one obtains essentially Eaton and Ghahramani’s back belief propagation [53, extended version, Fig. 5]. Here, we refer to the general strategy of using full (non-truncated) inference as “backpropagation”, either with LBP, TRW, or mean field. 7.3 Truncated Likelihood & Truncated EM Applying the truncated fitting strategies to any of the marginal-based loss functions is simple. Applying it to the likelihood or EM loss, however, is not so straightforward. The reason is that these losses (Eqs. 19 and 21) are
+Algorithm 3 Back TRW. 1) Initialize m uniformly. 2) Repeat N times for all pairs (c, i), with i ∈ c:
+a) Push the messages mc(xi) onto a stack.
+b) mc(xi) ∝ ∑
+xc\i e
+1 ρc θ(xc) ∏
+j∈c\i e θ(xj)
+∏
+d:j∈d
+md(xj) ρd
+mc(xj)
+3) µ(xc) ∝ e 1 ρc θ(xc) ∏ i∈c e θ(xi)
+∏
+d:i∈d
+md(xi) ρd
+mc(xi) ∀c
+4) µ(xi) ∝ eθ(xi) ∏ d:i∈dmd(xi) ρd ∀i 5) Compute L, ←−µ (xi) = dLdµ(xi) and ←−µ (xc) = dL dµ(xc)
+. 6) For all c,
+a) ←−ν (xc) ← backnorm(←−µc, µc) b) ←− θ (xc) + ← 1
+ρc
+←−ν (xc)
+c) ←− θ (xi) + ← ∑
+xc\i
+←−ν (xc) ∀i ∈ c
+d) ←−md(xi) + ← ρd−Ic=d
+md(xi)
+∑
+xc\i
+←−ν ∀i ∈ c, ∀d : i ∈ d
+7) For all i, a) ←−ν (xi) ← backnorm(←−µi, µi)
+b) ←−θ (xi) + ← ←−ν (xi)
+c) ←−md(xi) + ← ρd ←−ν (xi) md(xi)
+∀d : i ∈ d
+8) Repeat N times for all pairs (c, i) (in reverse order)
+a) s(xc) ← e 1 ρc θ(xc) ∏ j∈c\i e θ(xj)
+∏
+d:j∈d
+md(xj) ρd
+mc(xj)
+b) ←−ν (xi) ← backnorm(←−−mci,mci) c) ←− θ (xc) + ← 1
+ρc s(xc) ←−ν (xi) mc(xi)
+d) ←− θ (xj) + ← ∑
+xc\j s(xc) ←−ν (xi) mc(xi)
+∀j ∈ c\i
+e) ←−md(xj) + ← ρd−Ic=d
+md(xj)
+∑
+xc\j s(xc) ←−ν (xi) mc(xi)
+∀j ∈ c\i, ∀d : j ∈ d f) Pull messages mc(xi) from the stack.
+g) ←−mc(xi) ← 0
+defined, not in terms of predicted marginals, but in terms of partition functions. Nevertheless, we wish to compare to these losses in the experiments below. As we found truncation to be critical for speed, we instead derive a variant of truncated fitting. The basic idea is to define a “truncated partition function”. This is done by taking the predicted marginals, obtained after a fixed number of iterations, and plugging them into the entropy approximations used either for mean field (Eq. 12) or TRW (Eq. 16). The approximate entropy H̃ is then used in defining a truncated partition function as
+Ã(θ) = θ · µ(θ)− H̃(µ(θ)).
+As we will see below, with too few inference iterations, using this approximation can cause the surrogate likelihood to diverge. To see why, imagine an extreme case where zero inference iterations are used. This results in the loss L(θ,x) = θ·(f(x)−µ0)+H̃(µ0),where µ0 are the
+11
+initial marginals. As long as the mean of f(x) over the dataset is not equal to µ0, arbitrary loss can be achieved. With hidden variables, A(θ, z) is defined similarly, but with the variables z “clamped” to the observed values. (Those variables will play no role in determining µ(θ)). 8 EXPERIMENTS These experiments consider three different datasets with varying complexity. In all cases, we try to keep the features used relatively simple. This means some sacrifice in performance, relative to using sophisticated features tuned more carefully to the different problem domains. However, given that our goal here is to gauge the relative performance of the different algorithms, we use simple features for the sake of experimental transparency. We compare marginal-based learning methods to the surrogate likelihood/EM, the pseudolikelihood and piecewise likelihood. These comparisons were chosen because, first, they are the most popular in the literature (Sec. 4). Second, the surrogate likelihood also requires marginal inference, meaning an “apples to apples” comparison using the same inference method. Third, these methods can all cope with hidden variables, which appear in our third dataset. In each experiment, an “independent” model, trained using univariate features only with logistic loss was used to initialize others. The smoothed classification loss, because of more severe issues with local minima, was initialized using surrogate likelihood/EM. 8.1 Setup All experiments here will be on vision problems, using a pairwise, 4-connected grid. Learning uses the LBFGS optimization algorithm. The values θ are linearly parametrized in terms of unary and edge features. Formally, we will fit two matrices, F and G, which determine all unary and edge features, respectively. These can be expressed most elegantly by introducing a bit more notation. Let θi denote the set of parameter values θ(xi) for all values xi. If u(y, i) denotes the vector of unary features for variable i given input image y, then
+θi = Fu(y, i).
+Similarly, let θij denote the set of parameter values θ(xi, xj) for all xi, xj . If v(y, i, j) is the vector of edge features for pair (i, j), then
+θij = Gv(y, i, j).
+Once dL dθ has been calculated (for whichever loss and method), we can easily recover the gradients with respect to F and G by
+dL dF = ∑
+i
+dL dθi u(y, i)T , dL dG = ∑
+ij
+dL
+dθij v(y, i, j)T . 8.2 Binary Denoising Data In a first experiment, we create a binary denoising problem using the Berkeley Segmentation Dataset. Here, we took 132 200 × 300 images from the Berkeley segmentation dataset, binarized them according to if each pixel is above the image mean. The noisy input values are then generated as yi = xi(1−tni ) + (1−xi)t n i , where xi is the true binary label, and ti ∈ [0, 1] is random. Here, n ∈ (1,∞) is the noise level, where lower values correspond to more noise. Thirty-two images were used for training, and 100 for testing. This is something of a
+12
+toy problem, but the ability to systematically vary the noise level is illustrative. As unary features u(y, i), we use only two features: a constant of 1, and the noisy input value at that pixel. For edge features v(y, i, j), we also use two features: one indicating that (i, j) is a horizontal edge, and one indicating that (i, j) is a vertical edge. The effect is that vertical and horizontal edges have independent parameters. For learning, we use full back TRW and back mean field (without message-storing or truncation) for marginal-based loss functions, and the surrogate likelihood with the gradient computed in the direct form (Eq. 20). In all cases, a threshold on inference of 10−4 is used. Error rates are shown in Tab. 1, while predicted marginals for an example test image are shown in Fig. 4. We compare against an independent model, which can be seen as truncated fitting with zero iterations or, equivalently, logistic regression at the pixel level. We see that for low noise levels, all methods perform well, while for high noise levels, the marginal-based losses outperform the surrogate likelihood and pseudolikelihood by a considerable margin. Our interpretation of this is that model mis-specification is more pronounced with high noise, and other losses are less robust to this. 8.3 Horses Secondly, we use the Weizman horse dataset, consisting of 328 images of horses at various resolutions. We use 200 for training and 128 for testing. The set of possible labels xi is again binary– either the pixel is part of a horse or not. For unary features u(y, i), we begin by computing the RGB intensities of each pixel, along with the normalized vertical and horizontal positions. We expand these 5 initial features into a larger set using sinusoidal expansion [54]. Specifically, denote the five original features by s. Then, we include the features sin(c·s) and cos(c·s) for all binary vectors c of the appropriate length. This results in an expanded set of 64 features. To these we append
+(a) Input (b) True Labels
+(c) Surr. Like. TRW (d) U. Logistic TRW (e) Sm. Class λ=50 TRW
+(f) Surr. Like. MNF (g) U. Logistic MNF (h) Independent
+Figure 5: Predicted marginals for a test image from the horses dataset. Truncated learning uses 40 iterations.
+a 36-component Histogram of Gradients [55], for a total of 100 features. For edge features between i and j, we use a set of 21 “base” features: A constant of one, the l2 norm of the difference of the RGB values at i and j, discretized as above 10 thresholds, and the maximum response of a Sobel edge filter at i or j, again discretized using 10 thresholds. To generate the final feature vector v(y, i, j), this is increased into a set of 42 features. If (i, j) is a horizontal edge, the first half of these will contain the base features, and the other half will be zero. If (i, j) is a vertical edge, the opposite situation occurs. This essentially allows for different parametrization of vertical and horizontal edges. In a first experiment, we train models with truncated fitting with various numbers of iterations. The pseudolikelihood and piecewise likelihood use a convergence threshold of 10−5 for testing. Several trends are visible in Tab. 2. First, with less than 20 iterations, the truncated surrogate likelihood diverges, and produces errors around 0.4. Second, TRW consistently outperforms mean field. Finally, marginal-based loss functions outperform the others, both in terms of training and test errors. Fig. 5 shows predicted marginals for an example test image. On this dataset, the pseudolikelihood, piecewise likelihood, and surrogate likelihood based on mean field are outperformed by an independent model, where each label is predicted by input features independent of all others. 8.4 Stanford Backgrounds Data Our final experiments consider the Stanford backgrounds dataset. This consists of 715 images of resolu-
+13
+(a) Input Image (b) True Labels
+tion approximately 240× 320. Most pixels are labeled as one of eight classes, with some unlabeled. The unary features u(y, i) we use here are identical to those for the horses dataset. In preliminary experiments, we tried training models with various resolutions. We found that reducing resolution to 20% of the original after computing features, then upsampling the predicted marginals yielded significantly better results than using the original resolution. Hence, this is done for all the following experiments. Edge features are identical to those for the horses dataset, except only based on the difference of RGB intensities, meaning 22 total edge features v(y, i, j). In a first experiment, we compare the performance of truncated fitting, perturbation, and back-propagation, using 100 images from this dataset for speed. We train with varying thresholds for perturbation and backpropagation, while for truncated learning, we use various numbers of iterations. All models are trained with TRW to fit the univariate logistic loss. If a bad searchdirection is encountered, L-BFGS is re-initialized. Results are shown in Fig. 7. We see that with loose thresholds, perturbation and back-propagation experience learning failure at sub-optimal solutions. Truncated fitting is far
+more successful; using more iterations is slower to fit, but leads to better performance at convergence. In a second experiment, we train on the entire dataset, with errors estimated using five-fold cross validation. Here, an incremental procedure was used, where first a subset of 32 images was trained on, with 1000 learning iterations. The number of images was repeatedly doubled, with the number of learning iterations halved. In practice this reduced training time substantially. Results are shown in Fig. 6. These results use a ridge regularization penalty of λ on all parameters. (This is relative to the empirical risk, as measured per pixel.) For EM, and marginal based loss functions, we set this as λ = 10−3. We found in preliminary experiments that using a smaller regularization constant caused truncated EM to diverge even with 10 iterations. The pseudolikelihood and piecewise benefit from less regularization, and so we use λ = 10−4 there. Again the marginal based loss functions outperform others. In particular, they also perform quite well even with 5 iterations, where truncated EM diverges. 9 CONCLUSIONS Training parameters of graphical models in a high treewidth setting involves several challenges. In this paper, we focus on three: model mis-specification, the necessity of approximate inference, and computational complexity. The main technical contribution of this paper is several methods for training based on the marginals predicted by a given approximate inference algorithm. These methods take into account model mis-specification and inference approximations. To combat computational complexity, we introduce “truncated” learning, where the inference algorithm only needs to be run for a fixed number of iterations. Truncation can also be applied, somewhat heuristically, to the surrogate likelihood. Among previous methods, we experimentally find the surrogate likelihood to outperform the pseudolikelihood or piecewise learning. By more closely reflecting the test criterion of Hamming loss, marginal-based loss functions perform still better, particularly on harder problems (Though the surrogate likelihood generally displays smaller train/test gaps.) Additionally marginalbased loss functions are more amenable to truncation, as the surrogate likelihood diverges with too few iterations.
+14 10 BIOGRAPHY Justin Domke obtained a PhD degree in Computer Science from the University of Maryland, College Park in 2009. From 2009 to 2012, he was an Assistant Professor at Rochester Institute of Technology. Since 2012, he is a member of the Machine Learning group at NICTA.
+15 11 APPENDIX A: VARIATIONAL INFERENCE Theorem (Exact variational principle). The log-partition function can also be represented as
+A(θ) = max µ∈M θ · µ+H(µ),
+where
+M = {µ′ : ∃θ,µ′ = µ(θ)}
+is the marginal polytope, and
+H(µ) = − ∑
+x
+p(x; θ(µ)) log p(x; θ(µ))
+is the entropy.
+Proof of the exact variational principle: As A is convex, we have that
+A(θ) = sup µ
+θ · µ−A∗(µ)
+where A∗(µ) = inf
+θ θ · µ−A(θ)
+is the conjugate dual. Now, since dA/dθ = µ(θ), if µ 6∈ M, then the infimum for A∗ is unbounded above. For µ ∈ M, the infimum will be obtained at θ(µ). Thus
+A∗(µ) =
+{
+∞ µ 6∈ M θ(µ) · µ−A(θ(µ)) µ ∈ M .
+Now, for µ ∈ M, we can see by substitution that
+A∗(µ) =θ(µ) · ∑
+x
+p(x; θ(µ))f(x) −A(θ(µ))
+= ∑
+x
+p(x; θ(µ))(θ(µ) · f(x) −A(θ(µ)))
+= ∑
+x
+p(x; θ(µ)) log p(x; θ(µ)) = −H(µ).
+And so, finally,
+A∗(µ) =
+{
+∞ µ 6∈ M −H(µ) µ ∈ M , (25)
+which is equivalent to the desired result.
+Theorem (Mean Field Updates). A local maximum of Eq. 14 can be reached by iterating the updates
+µ(xj) ← 1
+Z exp
+( θ(xj) + ∑
+c:j∈c
+∑
+xc\j
+θ(xc) ∏
+i∈c\j
+µ(xi) ) ,
+where Z is a normalizing factor ensuring that ∑
+xj µ(xj) = 1.
+Proof of Mean Field Updates: The first thing to note is that for µ ∈ F , several simplifying results hold, which are easy to verify, namely
+p(x; θ(µ)) = ∏
+i
+µ(xi)
+H(µ) =− ∑
+i
+∑
+xi
+µ(xi) log µ(xi).
+µ(xc) = ∏
+i∈c
+µ(xi).
+Now, let Ã denote the approximate partition function that results from solving Eq. 8 with the marginal polytope replaced by F . By substitution of previous results, we can see that this reduces to an optimization over univariate marginals only.
+Ã(θ) = max {µ(xi)}
+∑
+i
+∑
+xi
+θ(xi)µ(xi) + ∑
+c
+∑
+xc
+θ(xc)µ(xc)
+− ∑
+i
+∑
+xi
+µ(xi) logµ(xi). (26)
+Now, form a Lagrangian, enforcing that ∑
+xj µ(xj) = 1.
+L = ∑
+j
+∑
+xj
+θ(xj)µ(xj) + ∑
+c
+∑
+xc
+θ(xc) ∏
+i∈c
+µ(xi)
+− ∑
+j
+∑
+xj
+µ(xj) log µ(xj) + ∑
+j
+λj(1 − ∑
+xj
+µ(xj)).
+Setting dL/dµ(xj) = 0, solving for µ(xj), we obtain
+µ(xj) ∝ exp ( θ(xj) + ∑
+c:j∈c
+∑
+xc\j
+θ(xc) ∏
+i∈c\j
+µ(xi) ) ,
+meaning this is a local minimum. Normalizing by Z gives the result. Note that only a local maximum results since the mean-field objective is non-concave[8, Sec. 5.4]. Two preliminary results are needed to prove the TRW entropy bound.
+Lemma. Let µG be the “projection” of µ onto a subgraph G, defined by
+µG = {µ(xi)∀i} ∪ {µ(xc)∀c ∈ G}.
+Then, for µ ∈ M,
+H(µG) ≥ H(µ).
+Proof: First, note that, by Eq. 25, for µ ∈ M,
+H(µ) = −A∗(µ) = − inf θ (θ · µ−A(θ)).
+Now, the entropy of µG could be defined as an infimum only over the parameters θ corresponding to the cliques in G. Equivalently, however, we can define it as a constrained optimization
+H(µG) = − inf θ:θc=0 ∀c 6∈G
+( θ · µG −A(θ) ) .
+Since the infimum for H(µG) takes place over a more constrained set, but µ and µG are identical on all the
+16
+components where θ may be nonzero, we have the result. Our next result is that the approximate entropy considered in Eq. 16 is exact for tree-structured graphs, when ρc = 1.
+Lemma. For µ ∈ M for a marginal polytope M corresponding to a tree-structured graph,
+H(µ) = ∑
+i
+H(µi)− ∑
+c
+I(µc).
+Proof: First, note that for any any tree structured distribution can be factored as
+p(x) = ∏
+i
+p(xi) ∏
+c
+p(xc) ∏
+i∈c p(xi) .
+(This is easily shown by induction.) Now, recall our definition of H :
+H(µ) = − ∑
+x
+p(x; θ(µ)) log p(x; θ(µ))
+Substituting the tree-factorized version of p into the equation yields
+H(µ) = − ∑
+x
+p(x; θ(µ)) log p(x; θ(µ))
+= − ∑
+x
+∑
+i
+p(x; θ(µ)) log p(xi; θ(µ))
+− ∑
+x
+∑
+c
+p(x; θ(µ)) log p(xc; θ(µ)) ∏
+i∈c p(xi; θ(µ))
+= − ∑
+i
+∑
+xi
+µ(xi) logµ(xi)
+− ∑
+c
+∑
+xc
+µ(xc) log µ(xc) ∏
+i∈c µ(xi)
+Finally, combining these two lemmas, we can show the main result, that the TRW entropy is an upper bound.
+Theorem (TRW Entropy Bound). Let Pr(G) be a distribution over tree structured graphs, and define ρc = Pr(c ∈ G). Then, with H̃ as defined in Eq. 16,
+H̃(µ) ≥ H(µ).
+Proof: The previous Lemma shows that for any specific tree G,
+H(µG) ≥ H(µ).
+Thus, it follows that
+H(µ) ≤ ∑
+G
+Pr(G)H(µG)
+= ∑
+G
+Pr(G) (
+∑
+i
+H(µi)− ∑
+c∈G
+I(µc) )
+= ∑
+i
+H(µi)− ∑
+c
+ρcI(µc)
+Theorem (TRW Updates). Let ρc be as in the previous theorem. Then, if the updates in Eq. 18 reach a fixed point, the marginals defined by
+µ(xc) ∝ e 1 ρc θ(xc)
+∏
+i∈c
+eθ(xi) ∏ d:i∈dmd(xi) ρd
+mc(xi) ,
+µ(xi) ∝ e θ(xi)
+∏
+d:i∈d
+md(xi) ρd
+constitute the global optimum of Eq. 13. Proof: The TRW optimization is defined by
+Ã(θ) = max µ∈L θ · µ+ H̃(µ).
+Consider the equivalent optimization
+maxµ θ · µ+ H̃(µ)
+s.t. 1 = ∑
+xi
+µ(xi)
+µ(xi). = ∑
+xc\i
+µ(xc)
+which makes the constraints of the local polytope explicit First, we form a Lagrangian, and consider derivatives with respect to µ, for fixed Lagrange multipliers.
+L =θ · µ+H(µ) + ∑
+i
+λi(1− ∑
+xi
+µ(xi))
++ ∑
+c
+∑
+xi
+λc(xi) (
+∑
+xc\i
+µ(xc)− µ(xi) )
+dL
+dµ(xc) =θ(xc) + ρc
+(
+∑
+i∈c
+( 1 + log ∑
+x′ i
+µ(xi,x ′ −i)
+)
+− 1− log µ(xc) ) + ∑
+i∈c
+λc(xi)
+dL
+dµ(xi) =θ(xi)− 1− logµ(xi)− λi −
+∑
+c:i∈c
+λc(xi)
+Setting these derivatives equal to zero, we can solve for the log-marginals in terms of the Lagrange multipliers:
+ρc logµ(xc) =θ(xc) + ρc (
+∑
+i∈c
+( 1 + log ∑
+x′ i
+µ(xi,x ′ −i)
+) − 1 )
++ ∑
+i∈c
+λc(xi)
+logµ(xi) =θ(xi)− 1− λi − ∑
+c:i∈c
+λc(xi)
+Now, at a solution, we must have that µ(xi) = ∑
+xc\i µ(xc). This leads first to the the constraint that
+17
+logµ(xc) = 1
+ρc θ(xc) +
+∑
+i∈c
+( 1 + logµ(xi) + 1
+ρc λc(xi)
+)
+− 1
+= 1
+ρc θ(xc) +
+∑
+i∈c
+( 1 + θ(xi)− 1− λi − ∑
+c:i∈c
+λc(xi)
++ 1
+ρc λc(xi)
+)
+− 1.
+Now, define the “messages” in terms of the Lagrange multipliers as
+mc(xi) = e − 1 ρc λc(xi).
+If the appropriate values of the messages were known, then we could solve for the clique-wise marginals as
+µ(xc) ∝ e 1 ρc θ(xc)
+∏
+i∈c
+eθ(xi) exp ( 1
+ρc λc(xi)
+)
+× ∏
+d:i∈d
+exp ( −λd(xi)) )
+= e 1 ρc θ(xc)
+∏
+i∈c
+eθ(xi) ∏ d:i∈dmd(xi) ρd
+mc(xi) .
+The univiariate marginals are available simply as
+µ(xi) ∝ exp ( θ(xi)− ∑
+d:i∈d
+λd(xi) )
+= eθ(xi) ∏
+d:i∈d
+exp(−λd(xi) )
+= eθ(xi) ∏
+d:i∈d
+md(xi) ρd .
+We may now derive the actual propagation. At a valid solution, the Lagrange multipliers (and hence the messages) must be selected so that the constraints are satisfied. In particular, we must have that µ(xi) = ∑
+xc\i µ(xc). From the constraint, we can derive con-
+straints on neighboring sets of messages.
+µ(xi) = ∑
+xc\i
+µ(xc)
+eθ(xi) ∏
+d:i∈d
+md(xi) ρd ∝
+∑
+xc\i
+e 1 ρc θ(xc)
+× ∏
+i∈c
+eθ(xi) ∏ d:i∈d md(xi) ρd
+mc(xi) (27)
+Now, the left hand side of this equation cancels one term from the product on line 27, except for the denominator of mc(xi). This leads to the constraint of
+mc(xi) ∝ ∑
+xc\i
+e 1 ρc θ(xc)
+∏
+j∈c\i
+eθ(xj) ∏ d:j∈dmd(xj) ρd
+mc(xj) .
+This is exactly the equation used as a fixed-point equation in the TRW algorithm. 12 APPENDIX B: IMPLICIT DIFFERENTIATION Theorem. Suppose that
+µ(θ) := argmax µ:Bµ=d θ · µ+H(µ).
+Define L(θ,x) = Q(µ(θ),x). Then, letting D = d 2H
+dµdµT ,
+dL dθ = ( D−1BT (BD−1BT )−1BD−1 −D−1 )dQ dµ .
+Proof: First, recall the implicit differentiation theorem. If the relationship between a and b is implicitly determined by f(a,b) = 0, then
+dbT
+da = −
+dfT
+da
+(dfT
+db
+)−1 .
+In our case, given the Lagrangian
+L = θ · µ+H(µ) + λT (Bµ− d),
+Our implicit function is determined by the constraints that dL
+dµ = 0 and dL dλ = 0. That is, it must be true that
+dL dµ = θ + dH dµ +BTλ = 0
+dL dλ = Bµ− d = 0.
+Thus, our implicit function is
+f
+([
+µ
+λ
+])
+=
+[
+θ + dH dµ +BTλ
+Bµ− d
+]
+=
+[
+0
+0
+]
+Taking derivatives, we have that
+d
+[
+µ
+λ
+]T
+dθ = −
+(dfT
+dθ
+) ( dfT
+d
+[
+µ
+λ
+]
+)−1
+Taking the terms on the right hand side in turn, we have
+dfT
+dθ =
+d
+[
+θ + dH dµ +BTλ
+Bµ− d
+]T
+dθ =
+[
+I 0
+]T
+dfT
+d
+[
+µ
+λ
+] =
+[
+d2H dµdµT BT
+B 0
+]
+d
+[
+µ
+λ
+]T
+dθ = −
+[
+I 0
+]T [
+d2H dµdµT BT
+B 0
+]−1
+(28)
+This means that − dµ T
+dθ is the upper-left block of the
+inverse of the matrix on the right hand side of Eq. 28. It is well known that if
+M =
+[
+E F G H
+]
+,
+18
+then the upper-left block of M−1 is
+E−1 + E−1F (H−GE−1F )−1GE−1.
+So, we have that
+dµT
+dθ = D−1BT (BD−1BT )BD−1 −D−1, (29)
+where D := d 2H
+dµdµT .
+The result follows simply from substituting Eq. 29 into the chain rule
+dL dθ =
+dµT
+dθ
+dQ dµ . 13 APPENDIX C: TRUNCATED FITTING Several simple lemmas will be useful below. A first one considers the case where we have a “product of powers”.
+Lemma (Products of Powers). Suppose that b = ∏ i a pi i . Then db
+dai = pi ai b.
+Next, both mean-field and TRW involve steps where we first take a product of a set of terms, and then normalize. The following lemma is useful in dealing with such operations.
+Lemma (Normalized Products). Suppose that bi = ∏
+j aij and ci = bi/ ∑ j aij . Then,
+dci dajk = ( Ii=j − ci ) cj ajk .
+Corollary. Under the same conditions,
+dL
+dajk = cj ajk ( dL dcj − ∑
+i
+dL dci ci ) .
+Accordingly, we find it useful to define the operator
+backnorm(g, c) = c⊙ (g − g · c).
+This can be used as follows. Suppose that we have calculated←−c = dL
+dc . Then, if we set←−ν = backnorm(←−c , c),
+and we have that dL dajk = ←−νj ajk
+. An important special case of this is where ajk =
+exp fjk. Then, we have simply that dLdfjk = ←−νj .
+Another important special case is where ajk = f ρ jk.
+Then, we have that dajk dfjk = ρfρ−1jk , and so dL dfjk = ρ ←−νj fjk .
+Theorem. After execution of back mean field,
+←− θ (xi) = dL
+dθ(xi) and
+←− θ (xc) = dL
+dθ(xc) .
+Proof sketch: The idea is just to mechanically differentiate each step of the algorithm, computing the derivative of the computed loss with respect to each intermediate quantity. First, note that we can re-write the main mean-field iteration as
+µ(xj) ∝ exp ( θ(xj) )
+∏
+c:j∈c
+∏
+xc\j
+exp ( θ(xc) ∏
+i∈c\j
+µ(xi) )) . (30)
+Now, suppose we have the derivative of the loss with respect to this intermediate vector of marginals ←−µj . We wish to “push back” this derivative on the values affecting these marginals, namely θ(xj), θ(xc) (for all c such that j ∈ c), and µ(xi) (for all i 6= j such that ∃c : {i, j} ∈ c). To do this, we take two steps: 1) Calculate the derivative with respect to the value on the righthand side of Eq. 30 before normalization. 2) Calculate the derivative of this un-normalized quantity with respect to θ(xj), θ(xc) and µ(xi). Now, define νj to be the vector of marginals produced by Eq. 30 before normalization. Then, by the discussion above, ←−νj = backnorm(←−µj ,µj). This completes step 1. Now, with ←−νj in hand, we can immediately calculate the backpropagation of ←−µj on θ as
+←− θ (xj) = ←−ν (xj).
+This, follows from the fact that dL da = dL dea ea, where θ(xj) plays the role of a, and ea plays the role of ν(xj). Similarly, we can calculate that
+dL
+dθ(xc) ∏ i∈c\j µ(xi) = ←−ν (xj).
+Thus, since
+dθ(xc) ∏ i∈c\j µ(xi)
+dθ(xc) =
+∏
+i∈c\j
+µ(xi),
+we have that
+←− θ (xc) = ←−ν (xj) ∏
+i∈c\j
+µ(xi).
+Similarly, for any xc that “matches” xi (in the sense that the same value xi is present as the appropriate component of xc),
+dθ(xc) ∏ k∈c\j µ(xk)
+dµ(xi) = θ(xc)
+∏
+k∈c\{i,j}
+µ(xk).
+From which we have
+←−µ (xi) = ∑
+xc\i
+←−ν (xj)θ(xc) ∏
+k∈c\{i,j}
+µ(xk),
+meaning this is a local minimum. Normalizing by Z gives the result.
+Theorem. After execution of back TRW,
+←− θ (xi) = dL
+dθ(xi) and
+←− θ (xc) = dL
+dθ(xc) .
+Proof sketch: Again, the idea is just to mechanically differentiate each step of the algorithm. Since the marginals are derived in terms of the messages, we
+19
+must first take derivatives with respect to the marginalproducing steps. First, consider step 3, where predicted clique marginals are computed. Defining ←−ν (xc) = backnorm(←−µc, µc), we have that
+←− θ (xc) = 1
+ρc
+←−ν (xc)
+←− θ (xi) = ∑
+xc\i
+←−ν (xc)
+←−md(xi) = ρd − I[c = d]
+md(xi)
+∑
+xc\i
+←−ν
+Next, consider step 4, where predicted univariate marginals are computed. Defining, ←−ν (xi) = backnorm(←−µi, µi), we have
+←− θ (xi) = ←−ν (xi)
+←−md(xi) = ρd
+←−ν (xi) md(xi) .
+Finally, we consider the main propagation, in step 2. Here, we recompute the intermediate quantity
+s(xc) = e 1 ρc θ(xc)
+∏
+j∈c\i
+eθ(xj)
+∏
+d:j∈d
+md(xj) ρd
+mc(xj) .
+After this, consider the step where when pair (c, i) is being updated. We first compute
+dL
+dm0c(ci) =
+←−ν (xi) mc(xi) ,
+where m0c(xi) is defined as the value of the marginal before normalization, and
+←−ν (xi) = backnorm(←−−mci,mci).
+(See the Normalized Products Lemma above.) Given this, we can consider the updates required to gradients of θ(xc), θ(xi) and md(xj) in turn. First, we have that the update to ←− θ (xc) should be
+dL
+dm0c(xi)
+dm0c(xi)
+dθ(xc)
+= ←−ν (xi)
+mc(xi)
+1
+ρc s(xc),
+which is the update present in the algorithm. Next, the update to ←− θ (xj) should be
+∑
+xi
+dL
+dm0c(xi)
+dm0c(xi)
+dθ(xj)
+= ∑
+xi
+←−ν (xi)
+mc(xi)
+∑
+xc\{i,j}
+s(xc)
+= ∑
+xc\j
+←−ν (xi) mc(xi) s(xc).
+In terms of the incoming messages, consider the update to ←−md(xj), where j 6= i, j ∈ d, and d 6= c. This will be
+∑
+xi
+dL
+dm0c(xi)
+dm0c(xi) dmd(xj)
+= ∑
+xi
+←−ν (xi)
+mc(xi)
+∑
+xc\{i,j}
+ρd md(xj) s(xc)
+= ρd
+md(xj)
+∑
+xc\j
+s(xc) ←−ν (xi)
+mc(xi) .
+Finally, consider the update to ←−mc(xj), where j 6= i. This will have the previous update, plus the additional term, considering the presence of mc(xj) in the denominator of the main TRW update, of
+∑
+xi
+←−ν (xi)
+mc(xi)
+∑
+xc\{i,j}
+ρd md(xj) s(xc)
+= ρd
+md(xj)
+∑
+xc\j
+←−ν (xi) mc(xi) s(xc).
+Now, after the update has taken place, the messages mc(xi) are reverted to their previous values. As these values have not (yet) influenced any other variables, they are initialized with ←−mc(xi) = 0.
+20
+21
+22
+(a) Input Image (b) True Labels
+(a) Input Image (b) True Labels  The motivation for these types of models is the Hammersley–Clifford theorem [1], which gives specific conditions under which a distribution can be written as in Eq.    For such problems, it is natural to define a Conditional Random Field [2] p(x|y) = 1 Z(y) ∏    One framework for answering this question is the idea of a Bayes estimator [3].    (2) This appears to have been originally called Maximum Posterior Marginal (MPM) inference [4], though it has been reinvented under other names [5].    (2) This appears to have been originally called Maximum Posterior Marginal (MPM) inference [4], though it has been reinvented under other names [5].    A few papers have experimentally compared MAP and MPM inference [6], [7].    A few papers have experimentally compared MAP and MPM inference [6], [7].    1) is a member of the exponential family, with sufficient statistics consisting of indicator functions for each possible configuration of each clique and each variable [8], namely,    3 VARIATIONAL INFERENCE This section reviews approximate methods for computing marginals, with notation based on Wainwright and Jordan [8].    show [9] that on certain graphs made up of monotonic chains, an appropriate ordering of messages does assure convergence.    A recent review [10] is more thorough.    Some previous work uses tree structured graphs where marginals may be computed exactly [12].    The first is to approximate the marginals μ using Markov chain Monte Carlo [13], [14].    The first is to approximate the marginals μ using Markov chain Monte Carlo [13], [14].    Contrastive Divergence [15] further approximates these samples by running the Markov chain for only a few steps, but started at the data points [16].    Contrastive Divergence [15] further approximates these samples by running the Markov chain for only a few steps, but started at the data points [16].    This “surrogate likelihood” [17] approximation appears to be the most widely used loss in imaging problems, with marginals approximated by either mean field [18], [19], TRW [20] or LBP [21], [22], [23], [24], [25].    This “surrogate likelihood” [17] approximation appears to be the most widely used loss in imaging problems, with marginals approximated by either mean field [18], [19], TRW [20] or LBP [21], [22], [23], [24], [25].    This “surrogate likelihood” [17] approximation appears to be the most widely used loss in imaging problems, with marginals approximated by either mean field [18], [19], TRW [20] or LBP [21], [22], [23], [24], [25].    This “surrogate likelihood” [17] approximation appears to be the most widely used loss in imaging problems, with marginals approximated by either mean field [18], [19], TRW [20] or LBP [21], [22], [23], [24], [25].    This “surrogate likelihood” [17] approximation appears to be the most widely used loss in imaging problems, with marginals approximated by either mean field [18], [19], TRW [20] or LBP [21], [22], [23], [24], [25].    This “surrogate likelihood” [17] approximation appears to be the most widely used loss in imaging problems, with marginals approximated by either mean field [18], [19], TRW [20] or LBP [21], [22], [23], [24], [25].    This “surrogate likelihood” [17] approximation appears to be the most widely used loss in imaging problems, with marginals approximated by either mean field [18], [19], TRW [20] or LBP [21], [22], [23], [24], [25].    This “surrogate likelihood” [17] approximation appears to be the most widely used loss in imaging problems, with marginals approximated by either mean field [18], [19], TRW [20] or LBP [21], [22], [23], [24], [25].    This “surrogate likelihood” [17] approximation appears to be the most widely used loss in imaging problems, with marginals approximated by either mean field [18], [19], TRW [20] or LBP [21], [22], [23], [24], [25].    However, using the same approximation for both A(θ) and A(θ, z) appears to work well in practice [26].    20 by running a (presumably approximate) MAP inference algorithm, and then imagining that the marginals put unit probability at the approximate MAP solution, and zero elsewhere [27], [28], [21].    20 by running a (presumably approximate) MAP inference algorithm, and then imagining that the marginals put unit probability at the approximate MAP solution, and zero elsewhere [27], [28], [21].    20 by running a (presumably approximate) MAP inference algorithm, and then imagining that the marginals put unit probability at the approximate MAP solution, and zero elsewhere [27], [28], [21].    The first is the classic pseudolikelihood [29], where one uses L(θ,x) = ∑    Besag [29] showed that, under certain conditions, this will converge to the true parameter vector as the amount of data becomes infinite.    The pseudolikelihood has been used in many applications [30], [31].    The pseudolikelihood has been used in many applications [30], [31].    Instead of the probability of individual variables given all others, one can take the probability of patches of variables given all others, sometimes called the “patch” pseudolikelihood [32].    5 Piecewise Likelihood More recently, Sutton and McCallum [33] suggested the piecewise likelihood.    In practice, it is sometimes best to make some heuristic adjustments to the parameters after learning to improve test-time performance [34], [35].    In practice, it is sometimes best to make some heuristic adjustments to the parameters after learning to improve test-time performance [34], [35].    This essentially fits into the paradigm of empirical risk minimization [36], [37].    This essentially fits into the paradigm of empirical risk minimization [36], [37].    in the late 1980s [38].    1 Univariate Logistic Loss The univariate logistic loss [39] is defined by L(θ,x) = − ∑    If defined on exact marginals, this is a type of composite likelihood [40].    [5] suggest approximating with a sigmoid function S(t) = (1 + exp(−αt)), where α controls approximation quality.    There is evidence [36], [5] that the smoothed classification loss can yield parameters with lower univariate classification error under MPM inference.    There is evidence [36], [5] that the smoothed classification loss can yield parameters with lower univariate classification error under MPM inference.    Our experience with the univariate quadratic loss [41] is similar.    However, if all clique marginals are correct, the joint must be correct, by the standard moment matching conditions for the exponential family [8].    4 MAP-Based Training Another class of methods explicitly optimize the performance of MAP inference [42], [43], [44], [45], [25].    4 MAP-Based Training Another class of methods explicitly optimize the performance of MAP inference [42], [43], [44], [45], [25].    4 MAP-Based Training Another class of methods explicitly optimize the performance of MAP inference [42], [43], [44], [45], [25].    4 MAP-Based Training Another class of methods explicitly optimize the performance of MAP inference [42], [43], [44], [45], [25].    4 MAP-Based Training Another class of methods explicitly optimize the performance of MAP inference [42], [43], [44], [45], [25].    Domke [46] lists conditions for various classes of entropies that guarantee that A will be differentiable.    , which is accurate to order o(r) [47].    In all cases, the step size is, following Andrei [48], taken to be r = mǫ 1 3 (    Welling and Teh used sensitivity of approximate beliefs to parameters to approximate joint probabilities of non-neighboring variables [50].    Usually, a difference of 10 in estimated marginals has little practical impact, but this can still be enough to prevent learning from succeeding [51].    [36], [52].    [36], [52].    The noisy input values are then generated as yi = xi(1−ti ) + (1−xi)t n i , where xi is the true binary label, and ti ∈ [0, 1] is random.    We expand these 5 initial features into a larger set using sinusoidal expansion [54].    Likelihood based-learning of graphical models faces challenges of computational-complexity and robustness to model misspecification. This paper studies methods that fit parameters directly to maximize a measure of the accuracy of predicted marginals, taking into account both model and inference approximations at training time. Experiments on imaging problems suggest marginalization-based learning performs better than likelihood-based approximations on difficult problems where the model being fit is approximate in nature. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

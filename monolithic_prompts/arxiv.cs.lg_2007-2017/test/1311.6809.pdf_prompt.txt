@@ -1,0 +1,684 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: A Novel Family of Adaptive Filtering Algorithms Based on The Logarithmic Cost
+Paper Content: 1311.6809.pdf CRF A Novel Family of Adaptive Filtering Algorithms Based on The Logarithmic Cost Muhammed O. Sayin N. Denizcan Vanli Suleyman S. Kozat sayin@ee.bilkent.edu.tr, vanli@ee.bilkent.edu.tr, kozat@ee.bilkent.edu.tr).  ar X
+iv :1
+31 1.
+68 09
+v1 [
+cs .L
+G ]
+2 6
+N ov
+2 01
+3 1
+Index Terms—Logarithmic cost function, robustness against impulsive noise, stable adaptive method.
+EDICS Category: MLR-LEAR, ASP-ANAL, MLR-APPL
+I. INTRODUCTION
+ADAPTIVE filtering applications such as channel equal-ization, noise removal or echo cancellation utilize a certain statistical measure of the error signal1 et denoting the difference between the desired signal dt and the estimation output d̂t. Usually, the mean square error E[e2t ] is used as the cost function due to its mathematical tractability and relative ease of analysis. The least mean square (LMS) and normalized least mean square (NLMS) algorithms are the members of this class [1]. In the literature, different powers of the error are commonly used as the cost function in order to provide stronger convergence or steady-state performance than the least-squares algorithms under certain settings [1].
+The least mean fourth (LMF) algorithm and its family use the even powers of the error as the cost function, i.e., E[e2nt ] [2]. This family achieves a better trade-off between the
+This work is in part supported by the Outstanding Researcher Programme of Turkish Academy of Sciences and TUBITAK project 112E161.
+The authors are with the Department of Electrical and Electronics Engineering, Bilkent University, Bilkent, Ankara 06800 Turkey, Tel: +90 (312) 290-2336, Fax: +90 (312) 290-1223 (e-mail: sayin@ee.bilkent.edu.tr, vanli@ee.bilkent.edu.tr, kozat@ee.bilkent.edu.tr).
+1Time index appears as a subscript.
+transient and steady-state performance, however, has stability issues [3]–[5]. The stability of the LMF algorithm depends on the input and noise power, and the initial value of the adaptive filter weights [6]. On the other hand, the stability of the conventional LMS algorithm depends only on the input power for a given step-size [1]. The normalized filters improve the performance of the algorithms under certain settings by removing dependency to the input statistics in the updates [7]. However, note that the normalized least mean fourth (NLMF) algorithm does not solve the stability issues [6]. In [6], authors propose the stable NLMF algorithm, which might also be derived through the proposed relative logarithmic error cost framework as shown in this paper.
+The performance of the least-squares algorithms degrades severely when the input and desired signal pairs are perturbed by heavy tailed impulsive interferences, e.g., in applications involving high power noise signals [8]. In this context, we define robustness as the insensitivity of the algorithms against the impulsive interferences encountered in the practical applications and provide a theoretical framework [9]. Note that, usually, the algorithms using lower-order measures of the error in their cost function are relatively less sensitive to such perturbations. For example, the well-known sign algorithm (SA) uses the L1 norm of the error and is robust against impulsive interferences since its update involves only the sign of et. However, the SA usually exhibits slower convergence performance especially for highly correlated input signals [10].
+The mixed-norm algorithms minimize a combination of different error norms in order to achieve improved convergence performance [11], [12]. For example, [12] combines the robust L1 norm and the more sensitive but better converging L2 norm through a mixing parameter. Even though the combination parameter brings in an extra degree of freedom, the design of the mixed norm filters requires the optimization of the mixing parameter based on a priori knowledge of the input and noise statistics. On the other hand, the mixture of experts algorithms adaptively combine different algorithms and provide improved performance irrespective of the environment statistics [13]– [16]. However, note that such mixture approaches require to operate several different algorithms on parallel, which may be infeasible in different applications [17]. In [18], authors propose an adaptive combination of L1 and L2 norms of the error in parallel, however, the resulting algorithm demonstrates impulsive perturbations on the learning curves. This results since the impulsive interferences severely degrade the algorithmic updates. In general, the samples contaminated with impulses contain little useful information [9]. Hence, the robust algorithms need to be less sensitive only against
+large perturbations on the error and can be as sensitive as the conventional least squares algorithms for small error values. The switched-norm algorithms switch between the L1 and L2 norms based on the error amount such as the robust Huber filter [19]. This approach combines the better convergence of L2 and the robustness of L1 together in a discrete manner with a breaking point in the cost function, however, requires optimization of certain parameters as detailed in this paper.
+In this paper, we use diminishing return functions, e.g., the logarithm function, as a normalization (or a regularization) term, i.e., as a subtracting term, in the cost function in order to improve the convergence performances. We particularly choose the logarithm function as the normalizing diminishing return function [20] in our cost definitions since the logarithmic function is differentiable and results efficient and mathematically tractable adaptive algorithms. As shown in the paper, by using the logarithm function, we are able to use of the higher-order statistics of the error for small perturbations. On the other hand, for larger error values, the introduced algorithms seek to minimize the conventional cost functions due to the decreasing weight of the logarithmic term with the increasing error amount. In this sense, the new framework is akin to a continuous generalization of the switched norm algorithms, hence greatly improve the convergence performance of the mixed-norm methods as shown in this paper.
+Our main contributions include: 1) We propose the least mean logarithmic square (LMLS) algorithm, which achieves a similar trade-off between the transient and steady-state performance of the LMF algorithm and as stable as the LMS algorithm; 2) We propose the least logarithmic absolute difference (LLAD) algorithm, which significantly improves the convergence performance of the SA while exhibiting comparable performance with the SA in the impulsive noise environments; 3) We analyze the transient, steady-state and tracking performance of the introduced algorithms; 4) We demonstrate the extended stability bound on the step-sizes with the logarithmic error cost framework; 5) We introduce an impulsive noise framework and analyze the robustness of the LLAD algorithm in the impulsive noise environments; 6) We demonstrate the significantly improved convergence performances of the introduced algorithms in several different scenarios in our simulations.
+We organize the paper as follows. In Section II, we introduce the relative logarithmic error cost framework. In Section III, the important members of the novel family are derived. We analyze the transient, steady-state and tracking performances of those members in Section IV. In Section V, we compare the stability bound on the step-sizes and the robustness of the proposed algorithms. In Section VI, we provide the numerical examples demonstrating the improved performance of the conventional algorithms in the new logarithmic error cost framework. We conclude the paper in Section VII with several remarks.
+Notation: Bold lower (or upper) case letters denote the vectors (or matrices). For a vector a (or matrix A), aT (or AT ) is its ordinary transpose. ‖ · ‖ and ‖ · ‖A denote the L2 norm and the weighted L2 norm with the matrix A, respectively
+o w
+t w
+t x
+t d
+t n
+t d̂
+t e
+!
+(provided that A is positive-definite). | · | is the absolute value operator. We work with real data for notational simplicity. For a random variable x (or vector x), E[x] (or E[x]) represents its expectation. Here, Tr(A) denotes the trace of the matrix A and ∇xf(x) is the gradient operator. II. COST FUNCTION WITH LOGARITHMIC ERROR We consider the system identification framework shown in Fig. 1, where we denote the input signal by xt and the desired signal by dt. Here, we observe an unknown vector2 wo ∈ Rp through a linear model
+dt = w T o xt + nt,
+where nt represents the noise and we define the error signal as et △ = dt−d̂t = dt−wTt xt. In this framework, adaptive filtering algorithms estimate the unknown system vector wo through the minimization of a certain cost function. The gradient descent methods usually employ convex and uni-modal cost functions in order to converge to the global minimum of the error surfaces, e.g., the mean square error E[e2t ] [1]. The different powers of et [2], [10] or a linear combination of different error powers [11], [12] are also widely used.
+In this framework, we use a normalized error cost function using the logarithm function given by
+J (et) △ = F (et)−
+1 α ln (1 + αF (et)) , (1)
+where α > 0 is a design parameter and F (et) is a conventional cost function of the error signal et, e.g., F (et) = E [|et|]. As an illustration, in Fig. 2, we compare |et| and |et| − ln(1 + |et|). From this plot, we observe that the logarithm based cost function is less steep for small perturbations on the error while both logarithmic square and absolute difference cost functions exhibit comparable steepness for large error values. Indeed, this new family intrinsically combines the benefits of using lower and higherorder measures of the error into a single adaptation algorithm. Our algorithms provide comparable convergence rate with a conventional algorithm minimizing the cost function F (et) and achieve smaller steady-state mean square errors through the use of higher-order statistics for small perturbations of the error.
+2Although we assume a time invariant unknown system vector here, we also provide the tracking performance analysis for certain non-stationary models later in the paper.
+3 −5 0 5 0 0.5 1 1.5 2 2.5 3 3.5 4 4.5 5
+Error Signal e t
+S to
+ch as
+tic C
+os t F
+un ct
+io ns
+Stochastic Error Cost Functions vs. Error Signal
+|e t | ρ(e t ) ref.(6) |e t | − ln(1+|e t |)
+Fig. 2: Here, we plot stochastic cost functions to illustrate decreased steepness of the least squares algorithms in the logarithmic error cost framework for small error amounts.
+Remark 2.1: In [21], the authors propose a stochastic cost function using the logarithm function as follows
+J [21](et) △ =
+1
+2γ ln
+(
+1 + γ
+(
+et
+‖xt‖
+)2 )
+.
+Note that the cost function J [21](et) is the subtracted term in (1) for F (et) = e2t
+‖xt‖2 . The Hessian matrix of J [21](et) is given by
+H ( J [21](et) ) = xtx
+T t
+‖xt‖2 ( 1 + γ (
+et ‖xt‖
+)2 )
+×   
+1− 2γe 2 t
+‖xt‖2 ( 1 + γ (
+et ‖xt‖
+)2 )    .
+We emphasize that H ( J [21](et) ) is positive semi-definite provided that γ (
+et ‖xt‖
+)2
+≤ 1, thus, the parameter γ should be chosen carefully to be able to efficiently use the gradient descent algorithms. On the other hand, we show that the new cost function in (1) is a convex function enabling the use of the diminishing return property [20] of the logarithm function for stable and robust updates.
+The relative logarithmic error cost we introduce in (1) can also be expressed as
+J(et) = 1
+α ln
+(
+exp (αF (et))
+1 + αF (et)
+)
+. (2)
+Since exp(αF (et)) = ∑∞ m=0 1 m!α mFm(et), we obtain
+J(et) = 1
+α ln
+(
+1 + α2 2! F 2(et) + α3 3! F 3(et) + · · ·
+1 + αF (et)
+)
+. (3)
+Since F (et) is a non-negative function, J(et) is also a non-negative function by (3).
+Remark 2.2: The Hessian matrix of J(et) is given by
+H (J(et))=H (F (et)) αF (et) 1 + αF (et) + α∇wF (et)∇wF (et)T (1 + αF (et)) 2 ,
+which is positive semi-definite provided that H (F (et)) is a positive semi-definite matrix.
+We obtain the first gradient of (1) as follows
+∇wJ(et) = ∇wF (et) αF (et)
+1 + αF (et) ,
+which yields zero if ∇wF (et) or F (et) is zero. Note that the optimal solution for the cost function F (et) minimizes F (et) and is obtained by
+∇w=woF (et) = 0. Since F (et) is a non-negative convex function, the global minimum and the value yielding zero gradient coincide if the latter exits. Hence, the optimal solution for the relative logarithmic error cost function is the same with the cost function F (et) since as shown in Remark 2.2 the Hessian matrix of the logarithmic cost function is positive semi-definite. For example, the mean-square error cost function F (et) = E[e2t ] yields to the Wiener solution wo = E[xtx T t ] −1E[xtdt].
+Remark 2.3: By Maclaurin series of the natural logarithm for αF (et) ≤ 1, (1) yields
+J(et) = F (et)− 1
+α
+(
+αF (et)− α2
+2 F 2(et) + · · ·
+)
+= α
+2 F 2(et)−
+α2
+3 F 3(et) + · · · , (4)
+which is an infinite combination of the conventional cost function for small values of F (et). We emphasize that the cost function (4) yields to the second power of the cost function F (et) for small values of the error while for large error values, the cost function J(et) resembles F (et) as follows:
+F (et)− 1
+α ln (1 + αF (et)) → F (et) as et → ∞.
+Hence, the new methods are the combinations of the algorithms with mainly F 2(et) or F (et) cost functions based on the error amount. It is important to note that the objective functions F 2(et), e.g., E[e2t ] 2, and F (e2t ), e.g., E[e 4 t ], yields the same stochastic gradient update after removing the expectation in this paper. The switched norm algorithms also combine two different norms into a single update in a discrete manner based on the error amount. As an example, the Huber objective function combining L1 and L2 norms of the error is defined as [19]
+ρ(et) △ =
+{
+1 2e 2 t for |et| ≤ γ, γ|et| − 12γ2 for |et| > γ, (5)
+where γ > 0 denotes the cut-off value. In Fig. 2, we also compare the Huber objective function (for γ = 1) and the introduced cost (1) with F (et) = E[|et|] (for α = 1). Note that (5) uses a piecewise-function combining two different algorithms based on the comparison of the error with the cut-off value γ. On the other hand, logarithm based cost
+4 function J(et) intrinsically combines the functions with different order of powers in a continuous manner into a single update and avoids possible anomalies that might arise due to the breaking point in the cost function.
+Remark 2.4: Instead of a logarithmic normalization term, it is also possible to use various functions having diminishing returns property in order to provide stability and robustness to the conventional algorithms. For example, one can choose the cost function as
+Jarctan(et) △ = F (et)−
+1 α arctan (αF (et)) (6)
+and the Taylor series expansion of the second term in (6) around F (et) = 0 is given by
+1 α arctan (1 + αF (et)) = F (et)−
+α2
+3 F 3(et) + · · · .
+Thus, the resulting algorithm combines the algorithms using mainly F 3(et) (for small perturbations on the error) and F (et). We note that the algorithms using (6) are also as stable as F (et), however, they behave like minimizing the higher-order measures, i.e., F 3(et), for small error values.
+In the next section, we propose important members of this novel adaptive filter family. III. NOVEL ALGORITHMS Based on the gradient of J(et) we obtain the general steepest descent update as
+wt+1 = wt − µ∇wF (et) αF (et)
+1 + αF (et) ,
+where µ > 0 is the step size and α > 0 is the design parameter.
+Remark 3.1: In the previous section, we motivate the logarithm based error cost framework as a continuous generalization of the switched norm algorithms. The switched norm update involves a cut-off γ in the comparison of the error amount. Similarly, we utilize a design parameter α in (1) in order to determine the asymptotic cut-off value. For example, a larger α decreases the weight of the logarithmic term in the cost (1) and the resulting algorithm behaves more like minimizing the cost F (et). In the performance analyzes, we show that a sufficiently small design parameter, i.e., α = 1, does not have determinative influence on the steady-state convergence performance under the Gaussian noise signal assumption. Hence, in the following algorithms we choose α = 1. On the other hand, we resort to the usage of α in order to facilitate the performance analyzes of the algorithms. Additionally, in the impulsive noise environments, we show that the optimization of α improves the steady-state convergence performance of the introduced algorithms.
+If we assume that after removing the expectation to generate stochastic gradient updates F (et) yields f(et), e.g., F (et) =
+E[f(et)], then the general stochastic gradient update is given by
+wt+1 = wt − µ∇wet∇etf(et) f(et)
+1 + f(et) ,
+= wt + µxt∇etf(et) f(et)
+1 + f(et) . (7)
+In the following subsections, we introduce algorithms improving the performance of the conventional algorithms such as the LMS (i.e. f(et) = e2t ), sign algorithm (i.e. f(et) = |et|) and normalized updates. A. The Least Mean Logarithmic Square (LMLS) Algorithm For F (et) = E[e2t ], the stochastic gradient update yields
+wt+1 = wt + µxtet e2t
+1 + e2t
+= wt + µ xte
+3 t
+1 + e2t . (8)
+Note that we include the multiplier ‘2’ coming from the gradient ∇ete2t = 2et into the step-size µ. The algorithm (8) resembles a least-mean fourth update for the small error values while it behaves like the least-mean square algorithm for large perturbations on the error. This provides smaller steady-state mean square error thanks to the fourth-order statistics of the error for small perturbations and stability of the least-squares algorithms for large perturbations. Hence, the LMLS algorithm intrinsically combines the least mean-square and least-mean fourth algorithms based on the error amount instead of mixed LMF + LMS algorithms [11] that need artificial combination parameter in the cost definition. B. The Least Logarithmic Absolute Difference (LLAD) Algorithm The SA utilizes F (et) = E[|et|] as the cost function, which provides robustness against impulsive interferences [1]. However, the SA has slower convergence rate since the L1 norm is the smallest possible error power for a convex cost function. In the logarithmic cost framework, for F (et) = E[|et|], (7) yields
+wt+1 = wt + µxtsign(et) |et|
+1 + |et| = wt + µ xtet
+1 + |et| . (9)
+The algorithm (9) combines the LMS algorithm and SA into a single robust algorithm with improved convergence performance. We note that in Section V we calculate the optimum αopt in order to achieve better convergence performance than the SA in the impulsive noise environments. C. Normalized Updates We introduce normalized updates with respect to the regressor signal in order to provide independence from the input data correlation statistics under certain settings. We define the new objective function as
+Jnew(et) △ = F
+(
+et
+‖xt‖
+)
+− 1 α ln
+(
+1 + αF
+(
+et
+‖xt‖
+))
+,
+5 for example F (
+et ‖xt‖
+) = E [ e2t ‖xt‖2 ] . The Hessian matrix of
+the new cost function Jnew(et) is also positive semi-definite provided that the Hessian matrix of F (
+et ‖xt‖
+)
+is positive semidefinite as shown in Remark 2.2.
+The steepest-descent update is given by
+wt+1 = wt − µ∇wF ( et
+‖xt‖
+) αF (
+et ‖xt‖
+)
+1 + αF (
+et ‖xt‖
+) .
+For F ( et‖xt‖ ) = E [( et ‖xt‖
+) 2 ]
+, we get the normalized least mean logarithmic square (NLMLS) algorithm given by
+wt+1 = wt + µ xte
+3 t
+‖xt‖2 (‖xt‖2 + e2t ) . (10)
+We point out that (10) is also proposed as the stable normalized least mean-fourth algorithm in [6].
+For F ( et‖xt‖ ) = E [ |et| ‖xt‖ ]
+, we obtain the normalized least logarithmic absolute difference (NLLAD) algorithm as
+wt+1 = wt + µxtet
+‖xt‖ (‖xt‖+ |et|) .
+In the next section, we analyze the transient and steady state performance of the introduced algorithms. IV. PERFORMANCE ANALYSIS We define a priori estimation error and the weighted form as
+ea,t △ = xTt w̃t and e Σ a,t △ = xTt Σw̃t,
+where w̃t △ = wo −wt and Σ is a symmetric positive definite weighting matrix. Different choice of Σ leads to the different performance measures of the algorithm [1]. In the analyzes, we include the design parameter α in order to facilitate the theoretical analyzes. After some algebra, we obtain the weighted-energy recursion [1], [22], [23] as
+E [ ‖w̃t+1‖2Σ ] = E [ ‖w̃t‖2Σ ]
+−µ2E [ eΣa,t∇etf(et) αf(et)
+1 + αf(et)
+]
++µ2E
+[
+‖xt‖2Σ ( ∇etf(et) αf(et)
+1 + αf(et)
+)2 ]
+. (11)
+For notational simplicity, we define
+g(et) △ = ∇etf(et)
+αf(et)
+1 + αf(et) . (12)
+Then, (11) yields the general weighted-energy recursion [23] as follows
+E [ ‖w̃t+1‖2Σ ] =E [ ‖w̃t‖2Σ ] − µ2E [ eΣa,tg(et) ]
++ µ2E [
+‖xt‖2Σg 2(et)
+]
+. (13)
+In the subsequent analysis of (11), we use the following assumptions:
+Assumption 1: The observation noise nt is zero-mean independently and identically distributed (i.i.d.) Gaussian random
+variable and independent from xt. The regressor signal xt is also zero-mean i.i.d. Gaussian random variable with the auto-correlation matrix R △ = E [
+xtx T t
+]
+. Assumption 2:
+The estimation error et and the noise nt are jointly Gaussian. The Gaussian estimation error assumption is acceptable for sufficiently small step size µ and through the Assumption 1 [1].
+Assumption 3: The estimation error et is jointly Gaussian with the weighted a priori estimation error eΣa,t for any constant matrix Σ. The assumption is reasonable for long filters, i.e. p is large, sufficiently small step size µ [23], and by Assumption 2. Assumption 4: The random variables ‖xt‖2Σ and g
+2(et) are uncorrelated, which enables the following split as
+E [
+‖xt‖2Σg 2(et)
+] = E [ ‖xt‖2Σ ] E [ g2(et) ] .
+We next analyze the transient behavior of the new algorithms through the energy recursion (11). A. Transient Analysis In the following we evaluate (11) term by term. We first consider the second term in the right hand side (RHS) of (13) and introduce the following lemma
+Lemma 1: Under Assumptions 1-4, we have
+E[eΣa,tg(et)] = E[e Σ a,tet]
+E[etg(et)]
+E[e2t ] . (14)
+Proof: The proof of Lemma 1 follows from the Price’s result [24], [25]. That is, for any Borel function g(b) we can write
+E[xg(y)] = E[xy]
+E[y2] E[yg(y)],
+where x and y are zero-mean jointly Gaussian random variables [26]. Hence by Assumptions 2 and 3, we obtain (14) and the proof is concluded.
+Since et = ea,t + nt, we obtain
+E [
+eΣa,tet
+] = E [
+eΣa,tea,t
+] = E [ ‖w̃t‖2ΣxtxTt ] , (15)
+by Assumption 1. Additionally, by the independence assumption for the regressor xt (i.e., Assumptions 1 and 4), we can simplify the third term in the RHS of (13). Hence, the weighted-error recursion (13) could be written as follows [23]
+E [ ‖w̃t+1‖2Σ ] =E [ ‖w̃t‖2Σ ] − µ2hG (et)E [ ‖w̃t‖2ΣR ]
++ µ2E [ ‖xt‖2Σ ] hU (et) , (16)
+where
+hG(et) △ =
+E[etg(et)]
+E[e2t ] , hU (et)
+△ = E [ g2(et) ] .
+Remark 4.1: In the Appendices we evaluate the functions hG(et) and hU (et) for the LMLS and LLAD algorithms and tabulate the evaluated results with the results for the LMS algorithm, LMF algorithm and SA in Table I.
+6
+Using (16), in the following we construct the learning curves for the new algorithms:
+i) For the white regression data for which R = σ2xI, the time-evolution of the mean square deviation (MSD) E[‖w̃t‖2] is given by
+E [ ‖w̃t+1‖2 ] = ( 1− µ2σ2xhG(et) ) E [ ‖w̃t‖2 ] +µ2pσ2xhU (et).
+This completes the transient analysis of the MSD for the white regressor data since hU (et) and hG(et) are given in Table I, and the right hand side only depends on E[‖w̃t‖2].
+ii) For the correlated regression data, by the CayleyHamilton theorem after some algebra we get the state-space recursion
+Wt+1 = AWt + µ2Y
+where the vectors are defined as
+Wt △ =   
+E [ ‖w̃t‖2 ]
+...
+E [ ‖w̃t‖2Rp−1 ]    , Y △= hU (et)   
+E [ ‖xt‖2 ]
+...
+E [ ‖xt‖2Σp−1 ]    .
+The coefficient matrix A is given by
+A △=    
+1 −2µhG(et) · · · 0 0 1 · · · 0 ... ... . . .
+... 2µc0hG(et) 2µc1hG(et) · · · 1 + 2µcp−1hG(et)     .
+where the ci’s for i ∈ {0, 1, ..., p−1} are the coefficients of the characteristic polynomial of R. Note that the top entry of the state vector Wt yields the time-evolution of the mean square deviation E [ ‖w̃t‖2 ]
+and the second entry gives the learning curves for the excess mean square error E [
+e2a,t ]
+. In the following subsection, we analyze the steady state excess mean square error (EMSE) and MSD of the LMLS and LLAD algorithms. B. Steady State Analysis At the steady state, (11) and (15) yields
+µE [ ‖xt‖2Σ ] hU (et) = 2 hG(et)E [ eΣa,tea,t ] . (17)
+Without loss of generality, we set the weight matrix Σ = I, then (17) leads the steady state EMSE
+ζ △ = E[e2a,t]
+= µ
+2 E [
+‖xt‖2 ] hU (et)
+hG(et)
+= µ
+2 Tr(R)
+hU (et) hG(et) . (18)
+By Assumption 1, the steady state MSD is given by [23]
+η △ = E [ ‖w̃t‖2 ]
+= p
+Tr(R) ζ,
+where p denotes the filter length. At the steady state, we additionally use the following assumptions, which directly follow from the property of a learning algorithm that as t goes to infinity, et goes to zero.
+Assumption 5: For sufficiently small µ, hG(et) and hU (et) functions of the LMLS algorithm as t → ∞ is given by
+hG(et) = 1
+σ2e E
+[
+αe4t 1 + αe2t
+]
+→ α σ2e E [ e4t ] ,
+hU (et) = E
+[
+α2e6t
+(1 + αe2t ) 2
+]
+→ α2E [ e6t ] .
+Assumption 6: For sufficiently small µ, hG(et) and hU (et) functions of the LLAD algorithm as t → ∞ is given by
+hG(et) = 1
+σ2e E
+[
+αe2t 1 + α|et|
+]
+→ α σ2e E [ e2t ] ,
+hU (et) = E
+[
+α2e2t
+(1 + α|et|)2
+]
+→ α2E [ e2t ] .
+Now, we explicitly derive the steady state analysis of the LMLS and LLAD algorithms, respectively. The LMLS Algorithm: For the LMLS algorithm, by Assumption 5, (18) leads
+ζLMLS = µ
+2 αTr(R)σ2e
+E [ e6t ] E [e4t ] . (19)
+8 By Assumption 2, et is a Gaussian random variable and σ2e = ζ + σ2n, we have
+ζLMLS = µ
+2 αTr(R)σ2e 15σ6e 3σ4e ,
+= 5µ
+2 αTr(R)
+(
+ζLMLS + σ 2 n
+)2 .
+Hence, after some algebra, the EMSE and MSD for the LMLS algorithm are given by
+ζLMLS = 1− 5αµTr(R)σ2n ±
+√
+1− 10αµTr(R)σ2n 5αµTr(R) , (20)
+ηLMLS = p 1− 5αµTr(R)σ2n ±
+√
+1− 10αµTr(R)σ2n 5αµTr(R)2 ,
+where the smaller roots match with the simulations. Note that (20) for α = 1 is the same with the EMSE of the LMF algorithm [23].
+Remark 4.2: In (20), let µ̃ △ = µα, then
+ζLMLS = 1− 5µ̃Tr(R)σ2n ±
+√
+1− 10µ̃Tr(R)σ2n 5µ̃Tr(R) . (21)
+By (21), we could achieve similar steady state convergence performance for different α by changing the step size µ, e.g., µ̃ = µα = µ1010α, however, smaller α results in a slower convergence rate. Hence, without loss of generality, we propose the algorithms with α = 1 under the Gaussianity assumption.
+The LLAD Algorithm: Similarly, for the LLAD algorithm, by Assumption 6, (18) yields
+ζLLAD = µ
+2 Tr(R)σ2eα
+E[e2t ] E[e2t ] ,
+= µα
+2 Tr(R)σ2e .
+By Assumption 2, the EMSE and MSD for the LLAD algorithm is given by
+ζLLAD = µαTr(R)σ2n 2− µαTr(R) . (22) ηLLAD = µαpσ2n
+2− µαTr(R) Note that (22) is the same with the EMSE of the LMS algorithm [23]. Hence, for sufficiently small α, the LLAD algorithm achieves similar steady-state convergence performance with the LMS algorithm under the zero-mean Gaussian error signal assumption.
+In Fig. 3, we plot the theoretical and simulated MSD vs. step size for the LMLS and LLAD algorithms. In the system identification framework, we choose the regressor and noise signals as i.i.d. zero mean Gaussian with the variances σ2x = 1 and σ 2 n = 0.01, respectively. The parameter of interest wo ∈ R5 is randomly chosen. We observe that the theoretical steady-state MSD matches with the simulation results generated through the ensemble average of the last 103 iterations of 105 (for the LMLS algorithm) and 104 (for the LLAD algorithm) iterations of 200 independent trials. In. Fig. 4 and Fig. 5, under the same configurations, we compare
+the simulated MSD and EMSE curves generated through the ensemble average of 200 independent trials with the theoretical results for the step-size µ = 0.1. We note that theoretical performance analyzes match with our simulation results. C. Tracking Performance In this subsection, we investigate the tracking performance of the introduced algorithms in a non-stationary environment. We assume a random walk model [1] for wo,t such that
+wo,t+1 = wo,t + qt (23)
+where qt ∈ Rp is a zero-mean vector process with covariance matrix E[qtq T t ] = Q. We note that the model (23) has not changed the definitions of a priori error. Hence, by the Assumption 5, the tracking EMSE of the LMLS is the same with the tracking EMSE of the LMF and is approximately given by [1]
+ζ′LMLS ≈ 3αµσ4nTr(R) + µ −1Tr(Q)
+6σ2n .
+Similarly, through the Assumption 6, we obtain the tracking EMSE of the LLAD as
+ζ′LLAD = αµσ2nTr(R) + µ −1Tr(Q)
+2− αµTr(R) .
+In the next section, we compare the new algorithms with the conventional LMS and SA in terms of the stability bound and robustness. V. COMPARISON WITH THE CONVENTIONAL ALGORITHMS We re-emphasize that the cost function J(et) intrinsically combines the costs, mainly, F (et) and F 2(et) based on the relative error amount since for small perturbations on the error, the updates are mainly using the cost F 2(et). Based on our stochastic gradient approach, i.e., removing the expectation in the gradient descent, F 2(et) and F (e2t ) results in the same algorithm. Hence, in this section we compare the stability of the LMLS algorithm with the LMF and LMS algorithms and analyze the robustness of the LLAD algorithm in the impulsive noise environments. A. Stability Bound for the LMLS Algorithm We again refer to the stochastic gradient update (7), which we rewrite as
+wt+1 = wt + µ ′xt∇etf(et),
+where µ′ △ = µ αf(et)1+αf(et) . Note that µ ′ ≤ µ irrespective of the design parameter α. Hence, intuitively we can state that for the introduced algorithms the step-size bound is at least as large as the step-size bound for the corresponding conventional algorithm.
+Analytically, for stable updates the step size µ should satisfy
+E [ ‖w̃t+1‖2 ] ≤ E [ ‖w̃t‖2 ] .
+By (11), the Assumption 3, and Σ = I, the stability bound on the step size is given by
+µ ≤ 2 E [‖xt‖2] inf E[e2a,t]∈Ω
+{
+E[ea,tet] hG(et)
+hU (et)
+}
+,
+9 where
+Ω △ =
+{
+E[e2a,t] : λ ≤ E[e2a,t] ≤ 1
+4 Tr(R)E[‖w̃0‖2]
+}
+,
+with the Cramer-Rao lower bound λ [27]. For example the step size bound for the LMLS yields
+µ ≤ 1 E [‖xt‖2] inf E[e2a,t]∈Ω
+{
+E[ea,tet]
+E [e2t ] β
+}
+,
+where
+β △ =
+E [ αe4t 1+αe2t ]
+E [ α2e6t (1+αe2t ) 2 ]
+= E [ αe4t (1+αe2t ) 2 ] + E [ α2e6t (1+αe2t ) 2 ]
+E [
+α2e6t (1+αe2t ) 2
+] ≥ 1.
+We re-emphasize that the LMLS extends the stability bound of the LMS algorithm (the same bound with β = 1) while performing comparable performance with the LMF algorithm, which has several stability issues [3]–[5]. B. Robustness Analysis for the LLAD Algorithm Although the performance analysis of the adaptive filters assumes the white Gaussian noise signals, in practical applications the impulsive noise is a common problem [8]. In order to analyze the performance in the impulsive noise environments, we use the following model.
+Impulsive noise model: We model the noise as a summation of two independent random terms [28], [29] as
+nt = no,t + btni,t,
+where no,t is the ordinary noise signal that is zero-mean Gaussian with variance σ2no and ni,t is the impulse-noise that is also zero-mean Gaussian with significantly large variance σ2ni . Here, bt is generated through a Bernoulli random process and determines the occurrence of the impulses in the noise signal with pB(bt = 1) = νi and pB(bt = 0) = 1− νi where νi is the frequency of the impulses in the noise signal. The corresponding probability density function is given by
+pn(nt) = 1− νi√ 2πσno exp
+(
+− n 2 t
+2σ2no
+)
++ νi√ 2πσn exp
+(
+− n 2 t
+2σ2n
+)
+,
+where σ2n = σ 2 no + σ2ni .
+We particularly analyze the steady-state performance of the LLAD algorithm (for which f(et) = |et|) in the impulsive noise environments since we motivate the LLAD algorithm as improving the steady state convergence performance of the SA. Since the noise is not a Gaussian random variable in impulsive noise environment, the Gaussianity assumption of the estimation error et and the Price’s Theorem are not applicable. At the steady-state, for Σ = I, (11) yields
+E [ ‖xt‖2 ] = 2E
+[
+αea,tet 1+α|et|
+]
+µE [
+α2e2t (1+α|et|) 2
+] . (24)
+Steady−state MSD vs. step size for the LLAD algorithm
+We now evaluate the each term in (24) separately. We first consider the nominator of the RHS of (24), and write
+E
+[
+αea,tet
+1 + α|et|
+]
+=
+∫ ∞
+−∞
+∫ ∞
+−∞
+αea,t(ea,t + nt) 1 + α|ea,t + nt|
+exp
+(
+− e 2 a,t
+2σ2ea
+)
+√ 2πσea pn(nt)dea,tdnt.
+= α
+∫ ∞
+−∞
+∫ ∞
+−∞
+ea,tet
+exp
+(
+− e 2 a,t
+2σ2ea − n
+2 t
+2σ2no
+)
+2πσeaσno (1− νi)dea,tdnt
++
+∫ ∞
+−∞
+∫ ∞
+−∞
+ea,tsign(ea,t + nt)
+exp
+(
+− e 2 a,t
+2σ2ea − n
+2 t
+2σ2n
+)
+2πσeaσn νidea,tdnt,
+where in the last step of the equation we assume that in the impulse-free environment, αea,tet1+α|et| ≈ αea,tet since at steady state, the error is assumed to take relatively small values whereas if the impulse-noise occurs, αea,tet1+α|et| ≈ ea,tsign(et) due to the large perturbation on the error. Hence, since σ2n ≫ σ2ea , the expectation leads
+E
+[
+αea,tet
+1 + α|et|
+] = α(1− νi)σ2ea + √ 2 π νi σ2ea σn . (25)
+Following similar steps for the denominator of the RHS of (24), we obtain
+E
+[
+α2e2t
+(1 + α|et|)2
+]
+= α2(1− νi) ( σ2ea + σ 2 no ) + νi. (26)
+By (24), (25) and (26), the EMSE of the LLAD algorithm in the impulsive noise environment is given by
+ζ∗LLAD = µTr(R)
+(
+νi + α 2(1 − νi)σ2no
+)
+α(1 − νi)(2 − αµTr(R)) + √ 8 π νi σn
+. (27)
+Note that for νi = 0 (impulse-free) (27) yields (22).
+Remark 5.1: Increasing νi or in other words more frequent impulses cause larger steady state EMSE. However, through
+10
+the optimization of α, we can minimize the steady state EMSE. After some algebra, the optimum design parameter in impulsive noise environment is roughly given by
+αopt ≈ √ νi 1− νi 1 σno .
+In Fig. 6, we plot the dependence of the steady-state MSD with the step size in 5%, i.e., νi = 0.05, impulsive noise environment where σ2x = 1, σ 2 no = 0.01 and σ2ni = 10 4 after 200 independent trials. We observe that αopt improves the convergence performance and the theoretical analyzes through the impulsive noise model matches with the simulation results. We next demonstrate the performance of the introduced algorithms in different applications. VI. NUMERICAL EXAMPLES In this section, we particularly compare the convergence rate of the algorithms for the same steady state MSD through the specific choice of the step sizes for a fair comparison. Here, we have a stationary data dt = wTo xt + nt where xt is zeromean Gaussian i.i.d. regression signal with variance σ2x = 1, nt represent zero-mean i.i.d. noise signal and the parameter of interest wo ∈ R5 is randomly chosen. In following scenarios, we compare the algorithms under Gaussian noise and impulsive noise models subsequently.
+Scenario 1 (impulse-free environment): In that scenario, we use a zero-mean Gaussian i.i.d. noise signal with the variance σ2n = 0.01 and the design parameter α = 1. In Fig. 7, we compare the convergence rate of the LMLS, LMF and LMS algorithms for relatively small step sizes. We observe that LMLS and LMF algorithms achieve comparable performance and LMLS achieves better convergence performance than the LMS algorithm. In Fig. 8, we compare the LMLS and LMS algorithms for relatively large step sizes, i.e., µLMLS = 0.1 and µLMS = 0.0047. We only compare the LMLS and LMS algorithms since the LMF algorithm is not stable for such a step-size. Hence, the LMLS algorithm demonstrate comparable convergence performance with the LMF algorithm with extended stability bound.
+In Fig. 9, we compare the LLAD, SA and LMS algorithms in impulse-free noise environment. We observe that the LLAD algorithm shows comparable convergence performance with the LMS algorithm, in other words, the logarithmic error cost framework improves the convergence performance of the SA.
+Scenario 2 (impulsive noise environment): Here, we use the impulsive noise model with σ2ni = 10
+4. In that configuration, we resort to the design parameter since through the optimization of α, the LLAD algorithm could achieve smaller steady-state MSD. In Fig. 10, we plot sample desired signals in 1%, 2% and 5% impulsive noise environments and Fig. 11 shows the corresponding time evolution of the MSD of the LLAD, SA and LMS algorithms. The step sizes are chosen as µLLAD = µLMS = 0.0097, 0.007, 0.0043 for 1%, 2% and 5% impulsive noise environments, respectively, and µSA = 0.0015. The figures show that in the impulsive noise environments, the LMS algorithm does not converge while the LLAD algorithm, which achieves comparable convergence performance with the LMS algorithm in the impulse free environment, performs still better than the SA. VII. CONCLUDING REMARKS In this paper, we present a novel family of adaptive filtering algorithms based on the logarithmic error cost framework. We propose important members of the new family, i.e., the LMLS and LLAD algorithms. The LMLS algorithm achieves comparable convergence performance with the LMF algorithm with far larger stability bound on the step size. In the impulse-free environment, the LLAD algorithm has a similar convergence performance with the LMS algorithm. Furthermore, the LLAD algorithm is robust against impulsive interferences and outperforms the SA. We also provide comprehensive performance analyzes of the introduced algorithms, which match with our simulation results. For example, the steady-state analyzes in the impulse-free and impulsive noise environments. Finally, we show the improved convergence performance of the new algorithms in several different system identification scenarios.
+11 APPENDIX A EVALUATION OF hG(et)
+The LMLS algorithm: We have
+hG(et) = 1
+σ2e E
+[
+αe4t 1 + αe2t
+]
+,
+= 1
+σ2e
+( σ2e − α−1 + α−1E [
+1
+1 + αe2t
+])
+, (28)
+where σ2e = E[e 2 t ] and the first line of the equation follows according to the definition of g(et) in (12). According to Assumption 2, we obtain the last term in (28) as follows
+E
+[
+1
+1 + αe2t
+]
+= 1√ 2πσe
+∫ ∞
+−∞
+1
+1 + αe2t exp
+(
+− e 2 t
+2σ2e
+)
+det
+= 1√
+2απσe
+∫ ∞
+−∞
+exp ( −λu2 )
+1 + u2 du
+= 1√
+2απσe πexp(λ)erfc(
+√ λ), (29)
+where u △ = √ αet, λ
+△ = 12ασ2e
+, and the third line follows from [30] with erfc(·) denoting the complementary error function. Hence, putting (29) in (28), we obtain hG(et) for the LMLS update
+hG(et) = 1− 2λ ( 1− √ πλexp(λ)erfc( √ λ) ) .
+The LLAD algorithm: We have
+hG(et) = 1
+σ2e E
+[
+αe2t 1 + α|et|
+]
+,
+= 1
+σ2e
+( E[|et|]− α−1 + α−1E [
+1
+1 + α|et|
+])
+, (30)
+where the first line follows according to the definition of g(et) in (12). According to Assumption 2, we obtain the last term
+12
+in (30) as follows
+E
+[
+1
+1 + α|et|
+]
+= 1√ 2πσe
+∫ ∞
+−∞
+1
+1 + α|et| exp
+(
+− e 2 t
+2σ2e
+)
+det
+= 1√
+2πασe
+∫ ∞
+−∞
+1
+1 + |u|exp ( −κu2 ) du
+= 1√
+2πασe
+πerfi( √ κ)− Ei(κ)
+exp(κ) , (31)
+where u △ = αet, and κ △ = 12α2σ2e
+, and the third line follows from [30] with erfi(z) = −jerf(jz) denoting the imaginary error function and Ei(x) denoting the exponential integral, i.e.,
+Ei(x) = − ∫ ∞
+−x
+exp(−t) t dt.
+As a result, putting (31) in (30), we obtain hG(et) for the LLAD update
+hG(et) = 1
+σe
+√
+2
+π
+( 1− √ κπ + κ
+πerfi( √ κ)− Ei(κ)
+exp(κ)
+)
+. APPENDIX B EVALUATION OF hU (et)
+The LMLS Algorithm: We have
+hU (et) = E
+[
+α2e6t
+(1 + αe2t ) 2
+]
+= E
+[
+−α2 ∂ ∂α
+(
+e4t 1 + αe2t
+)]
+= −α2 ∂ ∂α
+(
+E
+[
+e4t 1 + αe2t
+])
+,
+where in the last line we applied the interchange of integration and differentiation property since θ(et, α) △ =
+e4t 1+αe2t
+and ∂θ(et,α)
+∂α are both continuous in R2. From Appendix A, we
+obtain
+hU (et) = −α2 ∂
+∂α
+(
+α−1E
+[
+αe4t 1 + αe2t
+])
+= −α2 ∂ ∂α ( α−1σ2ehG(et) )
+= σ2e
+( 1− 2λ(λ+ 2) + λ(2λ+ 5) √ πλexp(λ)erfc (√ λ )) .
+The LLAD Algorithm: Following similar lines to LMLS algorithm, we have
+hU (et) = E
+[
+α2e2t
+(1 + α|et|)2
+]
+= E
+[
+−α2 ∂ ∂α ( |et| 1 + α|et| )]
+= −α2 ∂ ∂α
+(
+E [ |et| 1 + α|et| ]) ,
+where in the last line we applied the interchange of integration and differentiation property since θ(et, α) △ = |et|1+α|et| and
+∂θ(et,α) ∂α are both continuous in R2. From Appendix A, we obtain
+hU (et) = −α2 ∂
+∂α
+(
+α−1E
+[
+α|et| 1 + α|et|
+])
+= −α2 ∂ ∂α
+( α−1 ( 1− E [
+1
+1 + α|et|
+]))
+= −α2 ∂ ∂α
+( α−1 ( 1− 1√ 2πασe
+πerfi( √ κ)− Ei(κ)
+exp(κ)
+))
+= 1− 2κ+ 2 √ κ
+π
+( 1 + (κ− 1)πerfi ( √ κ)− Ei(κ)
+exp(κ)
+)
+,
+where the third line follows from (31).  The least mean square (LMS) and normalized least mean square (NLMS) algorithms are the members of this class [1].    In the literature, different powers of the error are commonly used as the cost function in order to provide stronger convergence or steady-state performance than the least-squares algorithms under certain settings [1].    , E[e t ] [2].    transient and steady-state performance, however, has stability issues [3]–[5].    transient and steady-state performance, however, has stability issues [3]–[5].    On the other hand, the stability of the conventional LMS algorithm depends only on the input power for a given step-size [1].    The normalized filters improve the performance of the algorithms under certain settings by removing dependency to the input statistics in the updates [7].    , in applications involving high power noise signals [8].    In this context, we define robustness as the insensitivity of the algorithms against the impulsive interferences encountered in the practical applications and provide a theoretical framework [9].    However, the SA usually exhibits slower convergence performance especially for highly correlated input signals [10].    The mixed-norm algorithms minimize a combination of different error norms in order to achieve improved convergence performance [11], [12].    The mixed-norm algorithms minimize a combination of different error norms in order to achieve improved convergence performance [11], [12].    For example, [12] combines the robust L1 norm and the more sensitive but better converging L2 norm through a mixing parameter.    On the other hand, the mixture of experts algorithms adaptively combine different algorithms and provide improved performance irrespective of the environment statistics [13]– [16].    On the other hand, the mixture of experts algorithms adaptively combine different algorithms and provide improved performance irrespective of the environment statistics [13]– [16].    However, note that such mixture approaches require to operate several different algorithms on parallel, which may be infeasible in different applications [17].    In [18], authors propose an adaptive combination of L1 and L2 norms of the error in parallel, however, the resulting algorithm demonstrates impulsive perturbations on the learning curves.    In general, the samples contaminated with impulses contain little useful information [9].    The switched-norm algorithms switch between the L1 and L2 norms based on the error amount such as the robust Huber filter [19].    We particularly choose the logarithm function as the normalizing diminishing return function [20] in our cost definitions since the logarithmic function is differentiable and results efficient and mathematically tractable adaptive algorithms.    , the mean square error E[et ] [1].    The different powers of et [2], [10] or a linear combination of different error powers [11], [12] are also widely used.    The different powers of et [2], [10] or a linear combination of different error powers [11], [12] are also widely used.    The different powers of et [2], [10] or a linear combination of different error powers [11], [12] are also widely used.    The different powers of et [2], [10] or a linear combination of different error powers [11], [12] are also widely used.    1: In [21], the authors propose a stochastic cost function using the logarithm function as follows    J [21](et) △ = 1 2γ ln (    Note that the cost function J [21](et) is the subtracted term in (1) for F (et) = e2t ‖xt‖ .    The Hessian matrix of J [21](et) is given by H (    J [21](et) )    J [21](et) )    On the other hand, we show that the new cost function in (1) is a convex function enabling the use of the diminishing return property [20] of the logarithm function for stable and robust updates.    As an example, the Huber objective function combining L1 and L2 norms of the error is defined as [19] ρ(et) △ = { 1 2e 2 t for |et| ≤ γ, γ|et| − 1 2γ2 for |et| > γ, (5) where γ > 0 denotes the cut-off value.    Hence, the LMLS algorithm intrinsically combines the least mean-square and least-mean fourth algorithms based on the error amount instead of mixed LMF + LMS algorithms [11] that need artificial combination parameter in the cost definition.    The Least Logarithmic Absolute Difference (LLAD) Algorithm The SA utilizes F (et) = E[|et|] as the cost function, which provides robustness against impulsive interferences [1].    Different choice of Σ leads to the different performance measures of the algorithm [1].    After some algebra, we obtain the weighted-energy recursion [1], [22], [23] as E [    After some algebra, we obtain the weighted-energy recursion [1], [22], [23] as E [    The Gaussian estimation error assumption is acceptable for sufficiently small step size μ and through the Assumption 1 [1].    (14) Proof: The proof of Lemma 1 follows from the Price’s result [24], [25].    (14) Proof: The proof of Lemma 1 follows from the Price’s result [24], [25].    That is, for any Borel function g(b) we can write E[xg(y)] = E[xy] E[y2] E[yg(y)], where x and y are zero-mean jointly Gaussian random variables [26].    We assume a random walk model [1] for wo,t such that wo,t+1 = wo,t + qt (23) where qt ∈ R is a zero-mean vector process with covariance matrix E[qtq T t ] = Q.    Hence, by the Assumption 5, the tracking EMSE of the LMLS is the same with the tracking EMSE of the LMF and is approximately given by [1] ζ LMLS ≈ 3αμσ nTr(R) + μ Tr(Q) 6σ2 n .    We re-emphasize that the LMLS extends the stability bound of the LMS algorithm (the same bound with β = 1) while performing comparable performance with the LMF algorithm, which has several stability issues [3]–[5].    We re-emphasize that the LMLS extends the stability bound of the LMS algorithm (the same bound with β = 1) while performing comparable performance with the LMF algorithm, which has several stability issues [3]–[5].    Robustness Analysis for the LLAD Algorithm Although the performance analysis of the adaptive filters assumes the white Gaussian noise signals, in practical applications the impulsive noise is a common problem [8].    Impulsive noise model: We model the noise as a summation of two independent random terms [28], [29] as nt = no,t + btni,t, where no,t is the ordinary noise signal that is zero-mean Gaussian with variance σ no and ni,t is the impulse-noise that is also zero-mean Gaussian with significantly large variance σ ni .    Impulsive noise model: We model the noise as a summation of two independent random terms [28], [29] as nt = no,t + btni,t, where no,t is the ordinary noise signal that is zero-mean Gaussian with variance σ no and ni,t is the impulse-noise that is also zero-mean Gaussian with significantly large variance σ ni .    We introduce a novel family of adaptive filtering algorithms based on a relative logarithmic cost. The new family intrinsically combines the higher and lower order measures of the error into a single continuous update based on the error amount. We introduce important members of this family of algorithms such as the least mean logarithmic square (LMLS) and least logarithmic absolute difference (LLAD) algorithms that improve the convergence performance of the conventional algorithms. However, our approach and analysis are generic such that they cover other well-known cost functions as described in the paper. The LMLS algorithm achieves comparable convergence performance with the least mean fourth (LMF) algorithm and extends the stability bound on the step size. The LLAD and least mean square (LMS) algorithms demonstrate similar convergence performance in impulse-free noise environments while the LLAD algorithm is robust against impulsive interferences and outperforms the sign algorithm (SA). We analyze the transient, steady state and tracking performance of the introduced algorithms and demonstrate the match of the theoretical analyzes and simulation results. We show the extended stability bound of the LMLS algorithm and analyze the robustness of the LLAD algorithm against impulsive interferences. Finally, we demonstrate the performance of our algorithms in different scenarios through numerical examples. LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

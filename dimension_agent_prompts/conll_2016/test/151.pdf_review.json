@@ -1,0 +1,44 @@
+{
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "APPROPRIATENESS": 5,
+  "CLARITY": 3,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "REPLICABILITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important problem of cross-lingual/low-resource dependency parsing by presenting UDP, a no-training parser for Universal Dependencies evaluated on 32 languages (Sec. 5) \u2014 a practically useful contribution. Its finding that a rule-based system augmented with personalized PageRank is competitive with multi-source delexicalized transfer (even outperforming it on Hindi) and more robust to domain change (Sec. 5, Sec. 6) could shift how researchers view the necessity of training data for some cross-lingual tasks. The method\u2019s language-neutral components (runtime estimation of adposition direction, UD constraints, PageRank for predicate ID) open plausible new directions for linguistically informed, training-free approaches. While impactful and broadly useful as a baseline/strategy for low-resource scenarios, the contribution is focused on dependency parsing rather than claiming transformative, cross-field effects."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper assembles known components (rule-aided unsupervised parsing, PageRank for word ranking as in S\u00f8gaard 2012b) into a UD-specific system, so it is not a wholly new paradigm. Its primary novel aspects are adapting head rules to UD constraints and enforcing function-words-as-leaves, plus the on-the-fly estimation of adposition attachment direction on test data (Sec. 3.2), which together enable a training-free, language-parameter-free parser. These are useful and practically relevant adaptations, but amount to a moderate, incremental contribution rather than a highly original methodological advance."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper addresses unsupervised/cross-lingual dependency parsing for Universal Dependencies, a central NLP topic, and would interest top-tier conferences. It proposes a linguistically-motivated, training-free parser using personalized PageRank and UD-specific head rules, evaluated on 32 languages and multiple POS/domain setups (UAS reported) and compared to a delexicalized multi-source baseline. The problem formulation, experimental protocol (UD1.2 test sets, POS scenarios, domain robustness) and positioning against prior work (DMV, S\u00f8gaard, McDonald et al.) match expectations for a top NLP/ML venue."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is organized in the standard intro\u2192method\u2192experiments\u2192conclusion structure and states its main contributions early (end of Introduction). The method (Sec. 3.2) and the parser run example (Table 2) are concrete and helpful for understanding the approach. However, the manuscript contains many duplicated/repeated paragraphs, some typographical errors (e.g. \u201cadpositon\u201d, \u201cconstribution\u201d, \u201coveral\u201d), and occasional inconsistent wording (the example refers to the verb \u201ccome\u201d though the sentence has \u201chad\u201d), which reduce clarity. Several tables are referenced but not shown in the excerpt (e.g. Table 5), and overall notation/terminology (UDP, UDPNoPR, MSDG/MSD) is introduced without always being fully disambiguated, so some sections are harder to follow."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates UDP on 32 languages in three POS scenarios (gold, predicted, CF), compares to a multi-source delexicalized transfer baseline, and tests domain robustness with additional annotated sets\u2014showing broad, multilingual and cross-domain experiments that substantiate the main claims. It includes appropriate ablations (BL, UDPNoPR, UDP) quantifying PageRank\u2019s contribution (+9 UAS) and the decoding step (+4 UAS), and analyzes POS error propagation and sensitivity to POS quality. Related work is well covered and limitations are acknowledged (large drop under extreme CF tags; directions for future work). Reproducibility is partly addressed by releasing the parser and test sets, but some implementation details (full head-rule table, exact PR hyperparameters and tuning procedures) are only briefly described, so I mark it as solid with minor gaps."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states clear claims (a training-free UD parser using UD-head rules and personalized PageRank, with adposition direction estimated on test data) and reports cross-lingual experiments on 32 languages (Sec. 3.2, 5, and 6.1). The methodological description is plausible and the ablation numbers cited (PR gives ~+9 UAS; decoding +4 UAS) support the role of PR, but the provided excerpt omits full result tables, significance tests, and per-language details, and the baseline is described as oracle-informed about branching direction (Sec. 5.1), which complicates comparisons. There are minor concerns about tuning (PageRank parameters and function-word directions were set on English dev, Sec. 3) and the paper does not report statistical significance, so while the approach appears technically sound, the evidence is incomplete to fully validate all claims."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "Partially reproducible. The paper uses publicly available UD1.2 test sets and standard UAS metric (clearly stated), and describes high-level components (PageRank, adposition-direction estimation on test data, use of TnT for predicted POS). However many crucial implementation details are missing from the provided text: the concrete head rules/tables (Table 1/5) are referenced but not given, PageRank hyperparameters and personalization weighting/tuning procedure are not specified, the two-step decoding algorithm and exact function-word constraints/decoding order are underspecified, and preprocessing/tokenization choices and POS-tagger training/config details are not fully reported. These omissions prevent exact reproduction without contacting the authors or accessing undisclosed code."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate recent baselines (multi-source delexicalized transfer / TurboParser delexicalized, a rule-based baseline, and discusses S\u00f8gaard\u2019s PR work) and evaluates on UD1.2 test sets with standard UAS across 32 languages (see Sec. 5 and baseline description). Comparisons are generally fair (same metric, explicit POS setups and delexicalized training for the transfer baseline) and the paper quantifies differences and ablates PageRank (Sec. 6.1), and acknowledges when prior systems are stronger or comparable (mentions MSDG/MSD results and where UDP outperforms). Minor issues remain: they omit reporting scores for the adjacency baseline and DMV (justified but not shown), and UDP estimates adposition direction \u201cdirectly on test data\u201d (Sec. 3.2), which could give a test-time advantage and raises a fairness caveat."
+    }
+  }
+}

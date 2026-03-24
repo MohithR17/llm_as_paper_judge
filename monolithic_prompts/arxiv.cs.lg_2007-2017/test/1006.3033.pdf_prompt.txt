@@ -1,0 +1,474 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: Extension of Wirtinger’s Calculus in Reproducing Kernel Hilbert Spaces and the Complex Kernel LMS
+Paper Content: 1006.3033.pdf CRF Extension of Wirtinger’s Calculus in Reproducing Kernel Hilbert Spaces and the Complex Kernel LMS Pantelis Bouboulis bouboulis@di.uoa.gr. stheodor@di.uoa.gr.  ar X
+iv :1
+00 6.
+30 33
+v1 [
+cs .L
+G ]
+1 5
+Ju n
+Over the last decade, kernel methods for nonlinear processing have successfully been used in the machine learning community. The primary mathematical tool employed in these methods is the notion of the Reproducing Kernel Hilbert Space. However, so far, the emphasis has been on batch techniques. It is only recently, that online techniques have been considered in the context of adaptive signal processing tasks. Moreover, these efforts have only been focussed on and real valued data sequences. To the best of our knowledge, no kernel-based strategy has been developed, so far, that is able to deal with complex valued signals. Furthermore, although the real reproducing kernels are used in an increasing number of machine learning problems, complex kernels have not, yet, been used, in spite of their potential interest in applications that deal with complex signals, with Communications being a typical example. In this paper, we present a general framework to attack the problem of adaptive filtering of complex signals, using either real reproducing kernels, taking advantage of a technique called complexification of real RKHSs, or complex reproducing kernels, highlighting the use of the complex gaussian kernel.
+In order to derive gradients of operators that need to be defined on the associated complex RKHSs, we employ the powerful tool of Wirtinger’s Calculus, which has recently attracted much attention in the signal processing community. Writinger’s calculus simplifies computations and offers an elegant tool for treating complex signals. To this end, in this paper, the notion of Writinger’s calculus is extended, for the first time, to include complex RKHSs and use it to derive several realizations of the Complex Kernel Least-Mean-Square (CKLMS) algorithm. Experiments verify that the CKLMS offers significant performance improvements over the traditional complex LMS or Widely Linear complex LMS (WLLMS) algorithms, when dealing with nonlinearities.
+P. Bouboulis and S. Theodoridis are with the Department of Informatics and Telecommunications, University of Athens,
+Greece, e-mail: {bouboulis,stheodor}@di.uoa.gr.
+Extension of Wirtinger’s Calculus in
+Reproducing Kernel Hilbert Spaces and the
+Complex Kernel LMS
+I. INTRODUCTION
+Processing in Reproducing Kernel Hilbert Spaces (RKHSs), in the context of online adaptive learning, is gaining in popularity within the Machine Learning and Signal Processing communities [1]–[6]. The main advantage of mobilizing the tool of RKHSs is that the original nonlinear task is “transformed” into a linear one, which can be solved by employing an easier “algebra”. Moreover, different types of nonlinearities can be treated in a unifying way, with no effect on the mathematical derivation of the algorithms, except at the final implementation stage. The main concepts of this procedure can be summarized in the following two steps: 1) Map the finite dimensionality input data from the input space F (usually F ⊂ Rν) into a higher dimensionality (possibly infinite) RKHS H and 2) Perform a linear processing (e.g., adaptive filtering) on the mapped data in H. The procedure is equivalent with a non-linear processing (non-linear filtering) in F .
+An alternative way of describing this process is through the popular kernel trick [7], [8]: Given an algorithm, which is formulated in terms of dot products, one can construct an alternative algorithm by replacing each one of the dot products with a positive definite kernel κ. The specific choice of kernel implicitly defines a RKHS with an appropriate inner product. Furthermore, the choice of kernel also defines the type of nonlinearity that underlies the model to be used. The main representatives of this class of algorithms are the celebrated support vector machines (SVMs), which have dominated the research in machine learning over the last decade [9]. Besides SVMs and the more recent applications in adaptive filtering, there is a plethora of other scientific domains that have gained from adopting kernel methods (e.g., image processing and denoising [10], [11], principal component analysis [12], clustering [13], e.t.c.).
+In classification tasks (which have been the dominant applications of kernel methods) the use of complex reproducing kernels is meaningless, since no arrangement can be derived in complex domains and the necessary separating hypersurfaces cannot be defined. Consequently, all known kernel based applications, as they emerged from the specific background, use real-valued kernels and they are able to
+deal with real valued data sequences only. To our knowledge, no kernel-based strategy has been developed, so far, that is able to effectively deal with complex valued signals.
+In this paper, we present a general framework to attack the problem of adaptive filtering of complex signals, using either real reproducing kernels, taking advantage of a technique called complexification of real RKHSs, or complex reproducing kernels, highlighting mostly the use of the complex gaussian kernel. Although the real gaussian RBF kernel has become quite popular and it has been used in many applications, the complex gaussian RBF kernel, while known to the mathematicians (especially those working on Reproducing Kernel Hilbert Spaces or Functional Analysis), it has rather remained in obscurity in the Machine Learning and Signal Processing communities. Even though, the presented framework has a broad range and may be applied to generalize a wide variety of kernel methods to the complex domain, this work focuses on the recently developed Kernel LMS (KLMS) [1], [14].
+To compute the gradients of cost functions defined on the complex RKHSs, the principles of Wirtinger’s calculus are employed. Wirtinger’s calculus [15] has become very popular in the signal processing community, mainly in the context of complex adaptive filtering [16]–[23], as a means of computing, in an elegant way, gradients of real valued cost functions defined on complex domains (Cν). To this end, the main ideas and theorems of Wirtinger’s calculus are generalized to general complex Hilbert spaces for the first time.
+To summarize, the main contributions of this paper are: a) the development of a wide framework that allows real-valued kernel algorithms to be extended to treat complex data effectively, taking advantage of a technique called complexification of real RKHSs, b) to elevate from obscurity the complex Gaussian kernel as an effective tool for kernel based adaptive processing of complex signals, c) the extension of Wirtinger’s Calculus in complex RKHSs as a means for an elegant and efficient computation of the gradients, which are involved in many adaptive learning algorithms, and d) the development of several realizations of the Complex Kernel LMS (CKLMS) algorithm, by exploiting the extension of Wirtinger’s calculus and the generated complex RKHSs.
+The paper is organized as follows. We start with an introduction to RKHSs in Section II, which includes real and complex kernels, before we briefly review the KLMS algorithm in Section III. In Section IV, we describe the complexification procedure of a real RKHS, that provides a framework to develop complex kernel methods, based on popular real valued reproducing kernels (e.g., gaussian, polynomial, e.t.c.). A brief introduction on Wirtinger’s Calculus can be found in Section V. The main notions of the extended Wirtinger’s Calculus on general Hilbert spaces are summarized in Section VI and the CKLMS is developed thereafter in Section VII. Finally, experimental results and conclusions are provided in Sections VIII and
+IX. Throughout the paper, we will denote the set of all integers, real and complex numbers by N, R and C respectively. Vector or matrix valued quantities appear in boldfaced symbols. II. REPRODUCING KERNEL HILBERT SPACES In this section, we briefly describe the theory of Reproducing Kernel Hilbert Spaces. Since we are interested on both real and complex kernels, we recall the basic facts on RKHS associated with a general field F, which it can be either R or C. However, we highlight the basic differences between the two cases. The material presented here may be found with more details in [24] and [25]. A. Basic Definitions Given a function κ : X × X → F and x1, . . . , xN ∈ X, the matrix1 K = (Ki,j)N with elements Ki,j = κ(xi, xj), for i, j = 1, . . . , N , is called the Gram matrix (or kernel matrix) of κ with respect to x1, . . . , xN . A Hermitian matrix K = (Ki,j)N satisfying
+cH ·K · c = N,N ∑
+i=1,j=1
+c∗i cjKi,j ≥ 0,
+for all ci ∈ F, i = 1, . . . , N , where the notation ∗ denotes the conjugate element, is called Positive Definite. In matrix analysis literature, this is the definition of a positive semidefinite matrix. However, since this is a rather cumbersome term and the distinction between positive definite and positive semidefinite matrices is not important in this paper, we employ the term positive definite in the way presented here. Furthermore, the term positive definite was introduced for the first time by Mercer in the kernel context (see [26]). Let X be a nonempty set. Then a function κ : X ×X → F, which for all N ∈ N and all x1, . . . , xN ∈ X gives rise to a positive definite Gram matrix K, is called a Positive Definite Kernel. In the following, we will frequently refer to a positive definite kernel simply as kernel.
+Next, consider a linear class H of complex valued functions f defined on a set X. Suppose further, that in H we can define an inner product 〈·, ·〉H with corresponding norm ‖ · ‖H and that H is complete with respect to that norm, i.e., H is a Hilbert space. We call H a Reproducing Kernel Hilbert Space (RKHS), if for all y ∈ X the evaluation functional Ty : H → F : Ty(f) = f(y) is a linear continuous (or, equivalently, bounded) operator. If this is true, then by the Riesz’s representation theorem, for all y ∈ X there is a function gy ∈ H such that Ty(f) = f(y) = 〈f, gy〉H. The function κ : X ×X → F :
+1The term (Ki,j)N denotes a square N ×N matrix.
+κ(x, y) = gy(x) is called a reproducing kernel of H. It can be easily proved that the function κ is a positive definite kernel.
+Alternatively, we can define a RKHS as a Hilbert space H for which there exists a function κ : X ×X → F with the following two important properties:
+1) For every x ∈ X, κ(·, x) belongs to H. 2) κ has the so called reproducing property, i.e.,
+f(x) = 〈f, κ(·, x)〉H, for all f ∈ H, (1)
+in particular κ(x, y) = 〈κ(·, y), κ(·, x)〉H .
+It has been proved (see [27]) that to every positive definite kernel κ there corresponds one and only one class of functions H with a uniquely determined inner product in it, forming a Hilbert space and admitting κ as a reproducing kernel. In fact, the kernel κ produces the entire space H, i.e., H = span{κ(x, ·)|x ∈ X}. The map Φ : X → H : Φ(x) = κ(·, x) is called the feature map of H. Recall, that in the case of complex Hilbert spaces (i.e., F = C) the inner product is sesqui-linear (i.e. linear in one argument and antilinear in the other) and Hermitian:
+〈ax+ by, z〉H = a〈x, z〉H + b〈y, z〉H,
+〈x, ay + bz〉H = a∗〈x, y〉H + b∗〈x, z〉H,
+〈x, y〉∗H = 〈y, x〉H,
+for all x, y, z ∈ H, and a, b ∈ C. In the real case, the condition κ(x, y) = 〈κ(·, y), κ(·, x)〉H may be replaced by the well known equation κ(x, y) = 〈κ(·, x), κ(·, y)〉H . However, since in the complex case the inner product is Hermitian, the aforementioned condition is equivalent to κ(x, y) = (〈κ(·, x), κ(·, y)〉H)∗. One of the most important properties of RKHSs is that norm convergence implies pointwise convergence. More precisely, let {fn}n∈N ⊂ H be a sequence such that limn ‖fn − f‖ = 0, for some f ∈ H. Then, the continuity of Tx gives:
+lim n fn(x) = lim n Tx(fn) = Tx(f) = f(x),
+for all x ∈ X. Although, the underlying theory has been developed by the mathematicians for general complex reproducing kernels with associated RKHSs, only the real kernels have been considered by the machine learning community. One of the most widely used is the Gaussian RBF kernel, i.e.,
+κσ,Rd(x,y) := exp
+(
+− ∑d i=1(xi − yi)2 σ2
+)
+, (2)
+defined for x,y ∈ Rd, where σ is a free positive parameter. Another popular kernel is the polynomial kernel:
+κd(x,y) := ( 1 + xTy )d , (3)
+for d ∈ N. Many more can be found in the relative literature [7]–[9]. Complex reproducing kernels, that have been extensively studied by the mathematicians, are, among others, the Szego kernels, i.e, κ(z, w) = 11−w∗z , for Hardy spaces on the unit disk, and the Bergman kernels, i.e., κ(z, w) = 1(1−w∗z)2 , for Bergman spaces on the unit disk, where |z|, |w| < 1 [25]. In the following, we discuss another complex kernel that has remained relatively unknown in the Machine Learning and Signal Processing societies. B. The Complex Gaussian Kernel Consider the complex valued function
+κσ,Cd(z,w) := exp
+(
+− ∑d i=1(zi − w∗i )2 σ2
+)
+, (4)
+defined on Cd × Cd, where z,w ∈ Cd, zi denotes the i-th component of the complex vector z ∈ Cd and exp is the extended exponential function in the complex domain. It can be shown that κσ,Cd is a complex valued kernel, which we call the complex Gaussian kernel with parameter σ. Its restriction κσ := ( κσ,Cd )
+|Rd×Rd is the well known real Gaussian kernel. An explicit description of the RKHSs of
+these kernels, together with some important properties can be found in [28]. III. KERNEL LEAST MEAN SQUARE ALGORITHM In a typical LMS filter the goal is to learn a linear input output mapping f : X → R : f(x) = wTx, X ⊂ Rν , based on a sequence of examples (x(1), d(1)), (x(2), d(2)), . . . , (x(N), d(N)), so that to minimize the mean square error, E [ |d(n)−wTx(n)|2 ] . To this end, the gradient descent rationale is employed and at each time instant, n = 1, 2, . . . , N , the gradient of the mean square error, i.e., −2E[e(n)x(n)], is estimated via its current measurement, i.e., Ê[e(n)x(n)] = e(n)x(n), where e(n) = d(n)−w(n− 1)Tx(n) is the error at instance n = 2, . . . , N . It takes a few lines of elementary algebra to deduce that the update of the unknown vector parameter is: w(n) = w(n − 1) + µe(n)x(n), where µ is the parameter controlling the step update. If we take the initial value of w as w(0) = 0, then the repeated application of the update equation yields:
+w(n) = µ
+n ∑
+k=1
+e(k)x(k) (5)
+Hence, for the filter output at instance n we have:
+d̂(n) = w(n− 1)Tx(n) = µ n−1 ∑
+k=1
+e(k)x(k)Tx(n), (6)
+for n = 1, 2, . . . , N . Equation (6) is expressed in terms of inner products only, hence it allows for the application of the kernel trick. Thus, the filter output of the KLMS at instance n is
+d̂(n) = 〈x(n),w(n− 1)〉H = µ n−1 ∑
+k=1
+e(k)κ (x(n),x(k)) , (7)
+while w(n) = µ n ∑
+k=1
+e(k)κ(·,x(k)), (8)
+for n = 1, 2, . . . , N .
+Another, more formal way of developing the KLMS is the following. First, we transform the input space X to a high dimensional feature space H through the (implicit) mapping Φ : X → H, Φ(x) = κ(·,x). Thus, the training examples become
+(Φ(x(1)), d(1)), . . . , (Φ(x(N)), d(N)).
+We apply the LMS procedure on the transformed data, with the linear filter output d̂(n) = 〈Φ(x(n)),w〉H. The model 〈Φ(x),w〉H is more representative than the simple wTx, since it includes the nonlinear modeling through the presence of the kernel. The objective now becomes to minimize the cost function
+E [ |d(n)− 〈Φ(x(n)),w〉H|2 ]
+(see [29]). Using the notion of the Fréchet derivative [29]–[31], which it has to be mobilized, since the dimensionality of the RKHS may be infinite, we are able to derive the gradient of the aforementioned cost function with respect to w, if we estimate it by its current measurement |d(n) − 〈Φ(x(n)),w〉|2. Thus the respective gradient is −2e(n)Φ(x(n)). It has to be emphasized, that now w is not a vector, but a function, i.e., a point in the linear Hilbert space. It turns out that the update of the KLMS is given by w(n) = w(n − 1) + µe(n)Φ(x(n)), where e(n) = d(n) − d̂(n). From this update, following the same procedure as in LMS and applying the reproducing property, we obtain equations (7) and (8), which are at the core of the KLMS algorithm. More details and the algorithmic implementation may be found in [14].
+Note that, in a number of attempts to kernelize known algorithms, that are cast in inner products, the kernel trick is, usually, used in a ”black box” rationale, without consideration of the problem in the RKH space, in which the (implicit) processing is carried out. Such an approach, often, does not allow for a
+deeper understanding of the problem, especially if a further theoretical analysis is required. Moreover, in our case, such a “blind” application of the kernel trick on a standard complex LMS form, can only lead to spaces defined by complex kernels, as it will become clear soon. Complex RKH spaces, that are built around complexification of real kernels, do not result as a direct application of the standard kernel trick. IV. COMPLEXIFICATION OF REAL REPRODUCING KERNEL HILBERT SPACES To generalize the kernel adaptive filtering algorithms on complex domains, we need a universal framework regarding complex RKHSs. A first straightforward approach is to use directly a complex RKHS, using one of the complex kernels given in section II. In this section, we present an alternative simple technique called complexification of real RKHSs, which has the advantage of allowing modeling in complex RKHSs using popular well-established and well understood, from a performance point of view, real kernels (e.g., gaussian, polynomial, e.t.c.).
+Let X ⊆ Rν . Define X2 ≡ X×X ⊆ R2ν and X = {x+iy,x,y ∈ X} ⊆ Cν equipped with a complex product structure. Let H be a real RKHS associated with a real kernel κ defined on X2 ×X2 and let 〈·, ·〉H be its corresponding inner product. Then, every f ∈ H can be regarded as a function defined on either X2 or X, i.e., f(z) = f(x+ iy) = f(x,y).
+Next, we define H2 = H×H. It is easy to verify that H2 is also a Hilbert Space with inner product
+〈f ,g〉H2 = 〈f1, g1〉H + 〈f2, g2〉H, (9)
+for f = (f1, f2), g = (g1, g2). Our objective is to enrich H2 with a complex structure. We address this problem using the complexification of the real RKHS H. To this end, we define the space H = {f = f1 + if2; f1, f2 ∈ H} equipped with the complex inner product:
+〈f ,g〉H =〈f1, g1〉H + 〈f2, g2〉H + i (〈f2, g1〉H − 〈f1, g2〉H) ,
+for f = f1 + if2, g = g1 + ig2. Hence, f ,g : X ⊆ Cν → C. It is not difficult to verify that H is a complex RKHS with kernel κ [25]. We call H the complexification of H. It can readily be seen, that, although H is a complex RKHS, its respective kernel is real (i.e., its imaginary part is equal to zero).
+To complete the presentation of the required framework for working on complex RKHSs using this rationale, we need a technique to implicitly map the samples data from the complex input space to the complexified RKHS H. This can be done using the simple rule:
+Φ(z) = Φ(x+ iy) = Φ(x,y) = Φ(x,y) + iΦ(x,y), (10)
+where Φ is the feature map of the real reproducing kernel κ, i.e., Φ(x,y) = κ(·, (x,y)). It must be emphasized, that Φ is not the feature map associated with the complex RKHS H. Furthermore, the employed kernel is a real one. Therefore, the algorithms derived using this approach cannot be reproduced, if one blindly applies the kernel trick using any complex kernel. However, observe that:
+〈Φ(z),Φ(z′)〉H = 2〈Φ(x,y),Φ(x′,y′)〉H = 2κ((x,y), (x′,y′)).
+This relation implies that the complexification procedure is equivalent with the following complexified real kernel trick: Given an algorithm, which is formulated in terms of complex dot products (i.e, wHz, where z = x+ iy, w = w1 + iw2), one can construct an alternative algorithm by replacing each one of the complex dot products with a positive definite real kernel κ, with arguments the extended real vectors of z and w (i.e., κ((x,y), (w2,w2))). V. WIRTINGER’S CALCULUS ON C Wirtinger’s calculus [15] is enjoying increasing popularity in the signal processing community mainly in the context of complex adaptive filtering [16]–[23], as a means to compute, in an elegant way, gradients of real valued cost functions that are defined on complex domains (Cν). The Cauchy-Riemann conditions dictate that such functions are not holomorphic (except from the case where the function is a constant) and therefore the complex derivative cannot be used. Instead, if we consider that the cost function is defined on a Euclidean domain with a double dimensionality (R2ν ), then the real derivatives may be employed. The price of this approach is that the computations may become cumbersome and tedious. Wirtinger’s calculus provides an alternative equivalent formulation, that is based on simple rules and principles and which bears a great resemblance to the rules of the standard complex derivative. In this section, we present the main notions of Wirtinger’s calculus for functions defined on complex domains. These ideas are, subsequently, extended in section VI to include the case of general complex Hilbert spaces.
+Let f : C → C be a complex function defined on C. Obviously, such a function may be regarded as either defined on R2 or C (i.e., f(z) = f(x + iy) = f(x, y)). Furthermore, it may be regarded as either a complex valued function, f(x, y) = u(x, y) + iv(x, y) or as a vector valued function f(x, y) = (u(x, y), v(x, y)). We will say that f is differentiable in the real sense if u and v are differentiable. It turns out that, when the complex structure is considered, the real derivatives may be described using an equivalent and more elegant formulation, which bears a surprising resemblance with the complex derivative. In fact, if the function f is differentiable in the complex sense (i.e. the complex derivative
+exists), the developed derivatives coincide with the complex ones. Although this methodology is known for some time in the German speaking countries and it has been applied to practical applications [32], [33], only recently has become popular in the signal processing community, mostly in the context of works that followed Picinbono’s paper on widely linear estimation filters [16].
+The Wirtinger’s derivative (or W-derivative for short) of f at a point c is defined as follows
+∂f ∂z (c) = 1 2
+(
+∂f ∂x (c) − i∂f ∂y (c)
+)
+= 1
+2
+(
+∂u ∂x (c) + ∂v ∂y (c)
+)
++ i
+2
+(
+∂v ∂x (c)− ∂u ∂y (c)
+)
+. (11)
+The conjugate Wirtinger’s derivative (or CW-derivative for short) of f at c is defined by:
+∂f ∂z∗ (c) = 1 2
+(
+∂f ∂x (c) + i ∂f ∂y (c)
+)
+= 1
+2
+(
+∂u ∂x (c)− ∂v ∂y (c)
+)
++ i
+2
+(
+∂v ∂x (c) + ∂u ∂y (c)
+)
+. (12)
+The following properties can be proved [34], [35]: 1) If f has a Taylor series expansion with respect to z (i.e., it is holomorphic) around c, then ∂f ∂z∗ (c) =
+0.
+2) If f has a Taylor series expansion with respect to z∗ around c, then ∂f ∂z (c) = 0. 3) (
+∂f ∂z (c)
+)∗ = ∂f ∗
+∂z∗ (c).
+4) (
+∂f ∂z∗
+(c) )∗
+= ∂f ∂z∗ (c).
+5) Linearity: If f, g are differentiable in the real sense at c and α, β ∈ C, then ∂(αf + βg)
+∂z (c) = α
+∂f ∂z (c) + β ∂g ∂z (c), ∂(αf + βg) ∂z∗ (c) = α ∂f ∂z∗ (c) + β ∂g ∂z∗ (c)
+6) Product Rule: If f , g are differentiable in the real sense at c, then
+∂(f · g) ∂z (c) = ∂f ∂z (c)g(c) + f(c) ∂g ∂z (c), ∂(f · g) ∂z∗ (c) = ∂f ∂z∗ (c)g(c) + f(c) ∂g ∂z∗ (c).
+7) Division Rule: If f , g are differentiable in the real sense at c and g(c) 6= 0, then
+∂(f g )
+∂z (c) =
+∂f ∂z (c)g(c) − f(c)∂g ∂z (c)
+g2(c) ,
+∂(f g )
+∂z (c) =
+∂f ∂z∗ (c)g(c) − f(c) ∂g ∂z∗ (c)
+g2(c) .
+8) Chain Rule: If f is differentiable in the real sense at c and g is differentiable in the real sense at
+f(c), then
+∂g ◦ f ∂z (c) = ∂g ∂z (f(c)) ∂f ∂z (c) + ∂g ∂z∗ (f(c)) ∂f∗ ∂z (c), ∂g ◦ f ∂z∗ (c) = ∂g ∂z (f(c)) ∂f ∂z∗ (c) + ∂g ∂z∗ (f(c)) ∂f∗ ∂z∗ (c).
+In view of the aforementioned properties, one might easily compute the W and CW derivatives of any
+complex function f , which is written in terms of z and z∗, following the following simple tricks:
+• To compute the W-derivative of a function f , which is expressed in terms of z and z∗,
+apply the usual differentiation rules considering z∗ as a constant.
+• To compute the CW-derivative of a function f , which is expressed in terms of z and z∗,
+apply the usual differentiation rules considering z as a constant.
+Note that any complex function f(z), which is differentiable in the real sense, can be cast in terms of z and z∗. For example, if the function f(z) = f(x+ iy) = f(x, y) is given in terms of x and y, replacing x by (z+z∗)/2 and y by (z−z∗)/2 gives the result. It should be emphasized, that these statements must be regarded as a simple computational trick rather than as a rigorous mathematical rule. This trick works well due to the aforementioned properties. Nonetheless, special care should be considered whenever these tricks are applied. For example, given the function f(z) = |z|2, we might conclude that ∂f ∂z∗ = 0, since if we consider z as a constant, then f(z) is also a constant. However, one might argue that since there isn’t any rule regarding the complex norm, this rationale leads to an error. Undeniably, if one recasts f as f(z) = zz∗, then one concludes that ∂f ∂z∗ = z and ∂f ∂z = z∗. Similar rules and principles hold for functions defined on Cν [34]. VI. EXTENSION OF WIRTINGER’S CALCULUS TO GENERAL HILBERT SPACES To apply minimization algorithms on real valued operators defined on complex RKHSs, we need to compute the associated gradients. To this end, in this section, we generalize the main ideas and results of Wirtinger’s calculus on general Hilbert spaces. We begin with a brief review of the Fréchet derivative, which generalizes differentiability to Hilbert spaces and which will be the basis for our discussion. A. Fréchet Derivatives Since Fréchet differentiability is not the mainstream of mathematical tools used in the Signal Processing and Machine Learning communities, we give here some basic definitions for the sake of clarity. Consider a Hilbert space H over the field F (typically R or C). The operator T : H → F ν is said to be Fréchet differentiable at f0, if there exists a linear continuous operator W = (W1,W2, . . . ,Wν) : H → Fν such that
+lim ‖h‖H→0 ‖T (f0 + h)− T (f0)−W (h)‖F ν ‖h‖H = 0, (13)
+where ‖ · ‖H = √ 〈·, ·〉H is the induced norm of the corresponding Hilbert Space. Note that F ν is considered as a Banach space under the Euclidean norm. The linear operator W is called the Fréchet derivative and is usually denoted by dT (f0) : H → F ν . Observe that this definition is valid not only for
+Hilbert spaces, but for general Banach spaces too. However, since we are mainly interested at Hilbert spaces, we present the main ideas in this context. It can be proved that if such a linear continuous operator W can be found, then it is unique (i.e., the derivative is unique) [30]. In the special case where ν = 1 (i.e., the operator T takes values on F ) using the Riesz’s representation theorem, we may replace the linear continuous operator W with an inner product. Therefore, the operator T : H → F is said to be Fréchet differentiable at f0, iff there exists a w ∈ H , such that
+lim ‖h‖H→0 T (f0 + h)− T (f0)− 〈h,w〉H ‖h‖H = 0, (14)
+where 〈·, ·〉H is the dot product of the Hilbert space H and ‖ · ‖H is the induced norm. The element w∗ is usually called the gradient of T at f0 and it is denoted by w∗ = ∇T (f0). For a general vector valued operator T = (T1, . . . , Tν) : H → F ν , we may easily derive that if T is differentiable at f0, then Tι is differentiable at f0, for all ι = 1, 2, . . . , ν, and that
+dT (f0)(h) =    
+〈h,∇T1(f0)∗〉H ... 〈h,∇Tν(f0)∗〉H     . (15)
+To prove this claim, consider that since T is differentiable, there exists a continuous linear operator W such that
+lim ‖h‖H→0 ‖T (f0 + h)− T (f0)−W (h)‖F ν ‖h‖H = 0 ⇔
+lim ‖h‖H→0
+(
+ν ∑
+ι=1
+|Tι(f0 + h)− Tι(f0)−Wι(h)|2F ‖h‖2H
+)
+= 0,
+for all ι = 1, . . . , ν. Thus,
+lim ‖h‖H→0
+(
+Tι(f0 + h)− Tι(f0)−Wι(h) ‖h‖H
+)
+= 0,
+for all ι = 1, 2, ν. The Riesz’s representation theorem dictates that since Wι is a continuous linear operator, there exists wι ∈ H , such that Wι(h) = 〈h,wι〉H , for all ι = 1, . . . , ν. This proves that Tι is differentiable at f0 and that w∗ι = ∇Tι(f0), thus equation (15) holds. The converse is proved similarly.
+The notion of Fréchet differentiability may be extended to include also partial derivatives. Consider
+the operator T : Hµ → F defined on the Hilbert space Hµ with corresponding inner product:
+〈f ,g〉Hµ = µ ∑
+ι=1
+〈fι, gι〉H ,
+where f = (f1, f2, . . . fµ), g = (g1, g2, . . . gµ). T (f) is said to be Fréchet differentiable at f0 with respect to fι, iff there exists a w ∈ H , such that
+lim ‖h‖H→0 T (f0 + [h]ι)− T (f0)− 〈[h]ι, w〉H ‖h‖H = 0, (16)
+where [h]ι = (0, 0, . . . , 0, h, 0, . . . , 0), is the element of Hµ with zero entries everywhere, except at place ι. The element w∗ is called the gradient of T at f0 with respect to fι and it is denoted by w ∗ = ∇ιT (f0). The Fréchet partial derivative at f0 in respect with fι is denoted by ∂T ∂fι (f0), ∂T ∂fι
+(f0)(h) = 〈[h]ι, w〉H. Although it will not be used here, it is interesting to note that, it is also possible to define Fréchet derivatives of higher order and a corresponding Taylor’s series expansion. In this context, the n-th Fréchet derivative of T at f0, denoted as d nT (f 0), is a multilinear 2 map. If T has Fréchet derivatives of any order, it can be expanded as a Taylor series [36], i.e.,
+T (f0 + h) =
+∞ ∑
+n=0
+1
+n! dnT (f0)(h,h, . . . ,h). (17)
+In relative literature the term dnT (c)(h,h, . . . ,h) is often replaced by dnT (c) · hn, which it denotes that the multilinear map dnT (c) is applied to (h,h, . . . ,h). B. Complex Hilbert spaces Let H be a real Hilbert space with inner product 〈·, ·〉H and H2, H the Hilbert spaces defined as shown in section IV. In the following, the complex structure of H will be used to derive derivatives similar to the ones obtained from Wirtinger’s calculus on C.
+Consider the function T : A ⊆ H → C, T (f) = T (uf + ivf ) = Tr(uf , vf ) + iTi(uf , vf ), defined on an open subset A of H, where uf , vf ∈ H and Tr, Ti are real valued functions defined on H2. Any such function, T , may be regarded as defined either on a subset of H, or on a subset of H2. Furthermore, T may be regarded either as a complex valued function, or as a vector valued function, which takes values in R2. Therefore, we may equivalently write:
+T (f) = T (uf + ivf ) = Tr(uf , vf ) + iTi(uf , vf ), T (f) = (Tr(uf , vf ), Ti(uf , vf )) .
+In the following, we will often change the notation according to the specific problem and consider any element of f ∈ H defined either as f = uf + ivf ∈ H, or as f = (uf , vf ) ∈ H2. In a similar manner,
+2A function is called multilinear, if it is linear in each variable.
+any complex number may be regarded as either an element of C, or as an element of R2. We say that T is Fréchet complex differentiable at c ∈ H, if there exists w ∈ H such that:
+lim ‖h‖H→0 T (c+ h)− T (c)− 〈h,w〉H ‖h‖H = 0. (18)
+Then w∗ is called the complex gradient of T at c and it is denoted as w∗ ≡ ∇T (c). The Fréchet complex derivative of T at c is denoted as dT (c)(h) = 〈h,w〉H. This definition, although similar with the typical Fréchet derivative, exploits the complex structure of H. More specifically, the complex inner product that appears in the definition forces a great deal of structure on T . Similarly to the case of ordinary complex functions, it is this simple fact that gives birth to all the important strong properties of the complex derivative. For example, it can be proved, that if dT (c) exists, then so does dnT (c), for n ∈ N. If T is differentiable at any c ∈ A, T is called Fréchet holomorphic in A, or Fréchet complex analytic in A, in the sense that it can be expanded as a Taylor series, i.e.,
+T (c+ h) =
+∞ ∑
+n=0
+1
+n! dnT (c)(h,h, . . . ,h). (19)
+The proof of this statement is out of the scope of this paper. The interested reader may dig deeper on this subject by referring to [36]. We begin our study, exploring the relations between the complex Fréchet derivative and the real Fréchet derivatives. In the following, we will say that T is Fréchet differentiable in the complex sense, if the complex derivative exists, and that T is Fréchet differentiable in the real sense, if its real Fréchet derivative exists (i.e., T is regarded as a vector valued operator T : H2 → H2). Similarly, the expression “T is Fréchet complex analytic at c” means that T is Fréchet complex analytic at a neighborhood around c. We will say that T is Fréchet real analytic, when both Tr and Ti have a Taylor’s series expansion in the real sense.
+Proposition VI.1. Let T : A ⊂ H → C be an operator such that T (f) = T (uf + ivf ) = T (uf , vf ) = Tr(uf , vf )+ iTi(uf , vf ). If the Fréchet complex derivative of T at a point c ∈ A (i.e., dT (c) : H → C) exists, then Tr and Ti are differentiable at the point c = (c1, c1) = c1+ic2, where c1, c2 ∈ H. Furthermore,
+∇uTr(c1, c2) = ∇vTi(c1, c2), ∇vTr(c1, c2) = −∇uTi(c1, c2). (20)
+Equations (20) are the Cauchy Riemann conditions with respect to the Fréchet notion of differentiability. Similar to the simple case of complex valued functions, they provide a necessary and sufficient condition, for a complex operator T defined on H to be differentiable in the complex sense, providing that T is differentiable in the real sense. This is explored in the following proposition.
+Proposition VI.2. If the operator T : A ⊆ H → C, T (f) = Tr(f) + iTi(f), where f = uf + ivf , is Fréchet differentiable in the real sense at a point (c1, c2) ∈ H2 and the Fréchet Cauchy-Riemann conditions hold:
+∇uTr(c1, c2) = ∇vTi(c1, c2), ∇vTr(c1, c2) = −∇uTi(c1, c2), (21)
+then T is differentiable in the complex sense at the point c = (c1, c2) = c1 + c2i ∈ H.
+Proof: see Appendix A.
+If the Fréchet Cauchy Riemann conditions are not satisfied for an operator T , then the Fréchet complex derivative does not exist and the function cannot be expressed in terms of h, as in the case of Fréchet complex differentiable functions (see equation 19). Nevertheless, if T is Fréchet differentiable in the real sense (i.e., Tr and Ti are Fréchet differentiable), we may still find a form of Taylor’s series expansion by utilizing the extension of Wirtinger’s calculus. It can be shown (see the proof of proposition VI.2 in Appendix A), that:
+T (c+ h) =T (c) + 1
+2 〈h, (∇uT (c)− i∇vT (c))∗〉H (22)
++ 1
+2 〈h∗, (∇uT (c) + i∇vT (c))∗〉H + o(‖h‖H).
+One may notice that in the more general case, where T is Fréchet real-differentiable, the associated Taylor’s expansion is casted in terms of both h and h∗. This can be generalized for higher order Taylor’s expansion formulas by following the same rationale. Observe also that, if T is Fréchet complex differentiable, this relation degenerates (due to the Cauchy Riemann conditions) to the respective Taylor’s expansion formula (i.e., (19)). In this context, the following definitions come naturally.
+We define the Fréchet Wirtinger’s gradient (or W-gradient for short) of T at c as
+∇fT (c) = 1
+2 (∇1T (c)− i∇2T (c)) =
+1 2 (∇uTr(c) +∇vTi(c)) + i 2 (∇uTi(c)−∇vTr(c)) , (23)
+and the Fréchet Wirtinger’s derivative (or W -derivative) as ∂T ∂f (c) : H → C, such that ∂T ∂f (c)(h) = 〈h,∇fT (c)∗〉H. Consequently, the Fréchet conjugate Wirtinger’s gradient (or CW-gradient for short) and the Fréchet conjugate Wirtinger’s derivative (or CW-derivative) of T at c are defined by:
+∇f∗T (c) = 1
+2 (∇1T (c) + i∇2T (c)) =
+1 2 (∇uTr(c)−∇vTi(c)) + i 2 (∇uTi(c) +∇vTr(c)) , (24)
+and ∂T ∂f∗ (c) : H → C, such that ∂T ∂f∗ (c)(h) = 〈h, (∇f∗T (c))∗〉H. Note, that both the W-derivative and the CW-derivative exist, if T is Fréchet differentiable in the real sense. In view of these new definitions,
+equation (22) may now be recasted as follows
+T (c+ h) =T (c) + 〈h, (∇fT (c))∗〉H + 〈h ∗, (∇f∗T (c))∗〉H + o(‖h‖H). (25)
+From these definitions, several properties can be derived:
+1) If T (f) is f -holomorphic at c (i.e., it has a Taylor series expansion with respect to f at c), then
+its Fréchet W-derivative at c degenerates to the standard Fréchet complex derivative and its Fréchet
+CW-derivative vanishes, i.e., ∇f∗T (c) = 0. 2) If T (f ) is f∗-holomorphic at c (i.e., it has a Taylor series expansion with respect to f∗ at c), then
+∇fT (c) = 0. 3) The first order Taylor expansion around f ∈ H is given by
+T (f + h) =T (f ) + 〈h, (∇fT (f))∗〉H + 〈h∗, (∇f∗T (f))∗〉H.
+4) If T (f) = 〈f ,w〉H, then ∇fT (c) = w∗, ∇f∗T (c) = 0, for every c. 5) If T (f) = 〈f∗,w〉H, then ∇fT (c) = 0, ∇f∗T (c) = w∗, for every c. 6) Linearity: If T ,S : H → C are Fréchet differentiable in the real sense at c ∈ H and a, b ∈ C, then
+∇f (αT + βS)(c) = α∇fT (c) + β∇fS(c)
+∇f∗(αT + βS)(c) = α∇f∗T (c) + β∇f∗S(c).
+A complete list of the derived properties, together with the proofs of the most important ones, are given in Appendix B.
+An important consequence of the previous properties is that if T is a real valued operator defined on
+H, then (∇fT (c))∗ = ∇f∗T (c), and its first order Taylor’s expansion is given by:
+T (f + h) = T (f) + 〈h, (∇fT (f))∗〉H + 〈h∗, (∇f∗T (f))∗〉H
+= T (f) + 〈h,∇f∗T (f)〉H + (〈h,∇f∗T (f)〉H)∗ = T (f) + 2 · ℜ [〈h,∇f∗T (f)〉H] .
+However, in view of the Cauchy Riemann inequality we have:
+ℜ [〈h,∇f∗T (f)〉H] ≤ |〈h,∇f∗T (f)〉H| ≤ ‖h‖H · ‖∇f∗T (f)‖H.
+The equality in the above relationship holds if h ⇈ ∇f∗T (where the notation ⇈ denotes that h and ∇f∗T have the same direction, i.e., there is a λ > 0, such that h = λ∇f∗T ). Hence, the direction of increase of T is ∇f∗T (f). Therefore, any gradient descent based algorithm minimizing T (f) is based on the update scheme:
+fn = fn−1 − µ · ∇f∗T (fn−1). (26)
+Assuming differentiability of T , a standard result from Fréchet real calculus states that a necessary condition for a point c to be an optimum (in the sense that T (f) is minimized or maximized) is that this point is a stationary point of T , i.e. the Fréchet partial derivatives of T at c vanish. In the context of Wirtinger’s calculus we have the following obvious corresponding result.
+Proposition VI.3. If the function T : A ⊆ H → C is Fréchet differentiable at c in the real sense, then a necessary condition for a point c to be a local optimum (in the sense that T (c) is minimized or maximized) is that either the Fréchet W, or the Fréchet CW derivative vanishes3. VII. COMPLEX KERNEL LEAST MEAN SQUARES - CKLMS In order to illustrate how the proposed framework may be applied to problems of complex signal processing, we present two realizations of the Kernel Least Mean Squares (KLMS) algorithm for complex data. The first scheme (CKLMS1) employs the complexification of real reproducing kernels (see section IV), while the second one uses pure complex kernels (CKLMS2). Wirtinger’s calculus is exploited in both cases to compute the necessary gradient updates. A. Complex KLMS via complexification of real kernels - CKLMS1 Consider the sequence of examples (z(1), d(1)), (z(2), d(2)), . . . , (z(N), d(N)), where d(n) ∈ C, z(n) ∈ V ⊂ Cν , z(n) = x(n) + iy(n), x(n),y(n) ∈ Rν , for n = 1, . . . , N . Consider, also, a real reproducing kernel κ defined on X ×X, X ⊆ R2ν , and let H be the corresponding RKHS. We map the points z(n) to the RKHS H (H is constructed as explained in section IV) using the mapping Φ:
+Φ(z(n)) = Φ(z(n)) + iΦ(z(n)) = κ (·, (x(n),y(n))) + i · κ (·, (x(n),y(n))) ,
+for n = 1, . . . , N , where Φ is the feature map of H. The objective of the complex Kernel LMS is to design a filter, w, with desired response d̂(n) = 〈Φ(z(n)),w〉H, so that to minimize E [Ln(w)], where
+Ln(w) = |e(n)|2 = |d(n)− 〈Φ(z(n)),w〉H|2 = (d(n)− 〈Φ(z(n)),w〉H) (d(n)− 〈Φ(z(n)),w〉H)∗
+= (d(n)− 〈w∗,Φ∗(z(n))〉H) (d(n)∗ − 〈w,Φ(z(n))〉H) ,
+at each instance n. We then apply the complex LMS to the transformed data, estimating the mean square error by its current measurement Ê [Ln(w)] = Ln(w), using the rules of Wirtinger’s calculus to compute
+3Note, that for real valued functions the W and the CW derivatives constitute a conjugate pair. Thus, if the W derivative
+vanishes, then the CW derivative vanishes too. The converse is also true.
+the CW gradient, i.e., ∇w∗Ln(w) = −e(n)∗ ·Φ(z(n)). Therefore the CKLMS1 update rule becomes:
+w(n) = w(n− 1) + µe(n)∗ ·Φ(z(n)), (27)
+where w(n) denotes the estimate at iteration n.
+Assuming that w(0) = 0, the repeated application of the weight-update equation gives:
+w(n) =w(n− 1) + µe(n)∗Φ(z(n)) = w(n − 2) + µe(n − 1)∗Φ(z(n− 1)) + µe(n)∗Φ(z(n))
+=µ
+n ∑
+k=1
+e(k)∗Φ(z(k)). (28)
+Thus, the filter output at iteration n becomes:
+d̂(n) =〈Φ(z(n)),w(n− 1)〉H = µ n−1 ∑
+k=1
+e(k)〈Φ(z(n)),Φ(z(k))〉H
+=2µ
+n−1 ∑
+k=1
+ℜ[e(k)]κ(z(n),z(k)) + 2µ · i n−1 ∑
+k=1
+ℑ[e(k)]κ(z(n),z(k)), (29)
+where the evaluation of the kernel is done by replacing the complex vectors z(n), of Cν with the corresponding real vectors of R2ν , i.e., z(n) = (x(n),y(n)).
+It can readily be shown that, since the CKLMS1 is the complex LMS in RKHS, the important properties of the LMS (convergence in the mean, misadjustment, e.t.c.) carry over to CKLMS1. Furthermore, we may also define a normalized version, which we call Normalized Complex Kernel LMS (NCKLMS1). The weight-update of the NCKLMS1 is given by:
+w(n) =w(n− 1) + µ 2 · κ(z(n),z(n))e(n) ∗ Φ(z(n))
+The NCKLMS1 algorithm is summarized in Algorithm 1. We should emphasize that this formulation of the complex KLMS cannot be derived following the usual “black box” rationale of the kernel trick, as it has already been pointed out in section IV. The complexified real kernel trick can be used instead.
+One might think, that modeling the desired response as d̂(n) = 〈w,Φ(z(n))〉H, provides an alternative formulation for the CKLMS1 algorithm. In this case, the CW gradient of the instantaneous square error is given by ∇w∗Ln(w) = −e(n)Φ(z(n)). Following the same procedure, we conclude that the update rule becomes:
+w(n) = w(n− 1) + µe(n) ·Φ(z(n)),
+and assuming that w(0) = 0, one concludes that:
+w(n) =µ
+n ∑
+k=1
+e(k)Φ(z(k)).
+Algorithm 1 Normalized Complex Kernel LMS with complexification of real kernels (NCKLMS1) INPUT: (z(1), d(1)), . . . , (z(N), d(N)) OUTPUT: The expansion w = ∑N
+k=1 a(k)κ(·,z(k)) + i · ∑N k=1 b(k)κ(·,z(k)).
+Initialization: Set a = {}, b = {}, Z = {} (i.e., w = 0). Select the step parameter µ and the kernel κ.
+for n=1:N do
+Compute the filter output:
+d̂(n) =
+n−1 ∑
+k=1
+(a(k) + b(k)) · κ(z(n),z(k)) + n−1 ∑
+k=1
+(a(k) − b(k)) · κ(z(n),z(k)).
+Compute the error: e(n) = d(n)− d̂(n). γ = 2κ(z(n),z(n)). a(n) = µ(ℜ[e(n)] + ℑ[e(n)])/γ. b(n) = µ(ℜ[e(n)]−ℑ[e(n)])/γ. Add the new center z(n) to the list of centers, i.e., add z(n) to the list Z, add a(n) to the list a, add b(n) to the list b.
+end for
+However, although this relation is different than equation (28), the filter output at iteration n for this filter turns out to be exactly the same:
+d̂(n) =〈w(n − 1),Φ(z(n))〉H = µ n−1 ∑
+k=1
+e(k)〈Φ(z(k)),Φ(z(n))〉H,
+which is in line with what we know for the standard complex LMS. B. Complex KLMS with pure complex kernels - CKLMS2 As, in section VII-A, consider the sequence of examples (z(1), d(1)), (z(2), d(2)), . . . , (z(N), d(N)), where d(n) ∈ C, z(n) ∈ V ⊂ Cν , z(n) = x(n) + iy(n), x(n),y(n) ∈ Rν , for n = 1, . . . , N . Consider also a complex reproducing kernel κ defined on X × X, X ⊆ Cν and the respective complex RKHS H. Each element f ∈ H may be cast in the form f = uf + ivf , uf , vf ∈ H, where H is a real Hilbert space. We map the points z(n) to the complex RKHS H using the feature map Φ̃ : X → H :
+Φ̃(z) = 〈·, κ(·,z)〉H, for n = 1, . . . , N . Estimating the filter output by d̂(n) = 〈w, Φ̃(z(n))〉H, the objective of the complex Kernel LMS is to minimize E [Ln(w)], at each instance n. Once more, we apply the complex LMS to the transformed data, using the rules of Wirtinger’s calculus to compute the gradient of Ln(w), i.e., ∇w∗Ln(w) = −e(n)∗ · Φ̃(z(n)). Therefore, the CKLMS2 update rule becomes w(n) = w(n− 1) + µe(n)∗ · Φ̃(z(n)), as expected, where w(n) denotes the estimate at iteration n.
+Assuming that w(0) = 0, the repeated application of the weight-update equation gives:
+w(n) =
+n ∑
+k=1
+e(k)∗Φ̃(z(k)). (30)
+Thus, the filter output at iteration n becomes:
+d̂(n) =〈Φ̃(z(n)),w(n− 1)〉H = µ n−1 ∑
+k=1
+e(k)〈Φ̃(z(n)), Φ̃(z(k))〉H
+=µ
+n−1 ∑
+k=1
+e(k)κ(z(k),z(n)).
+We should note, that the CKLMS2 algorithm may be equivalently derived, if one blindly applies the kernel trick on the usual complex LMS. However, such an approach conceals the mathematical framework that lies underneath, which is needed if one seeks a deeper understanding of the problem. The repeated application of the update equation of the CLMS yields:
+w(n) =
+n ∑
+k=1
+e(k)∗z(k),
+while the filter output at iteration n is given by:
+d̂(n) = µ
+n−1 ∑
+k=1
+e(k)z(n)Hz(k),
+where the notation ·H denotes the Hermitian matrix. It is evident that the application of the kernel trick on these equations yields the same results.
+Furthermore, note that, using the complex gaussian kernel, the algorithm is automatically normalized.
+The CKLMS2 algorithm is summarized in Algorithm 1.
+Another formulation of the CKLMS2 algorithm may be derived if we estimate the filter output as
+d̂(n) = 〈w, Φ̃(z(n))〉H. Then the update rule becomes
+w(n) = w(n− 1) + µe(n) · Φ̃(z(n)).
+Assuming that w(0) = 0, the repeated application of the weight-update equation gives:
+w(n) =
+n ∑
+k=1
+e(k)Φ̃(z(k)),
+and the filter output at iteration n becomes:
+d̂(n) = µ
+n−1 ∑
+k=1
+e(k)κ(z(n),z(k)). (31)
+Note that the two formulations of the CKLMS2 are not identical, as it was the case for CKLMS. However, all the simulated experiments that we performed, using the complex gaussian kernel, exhibited similar performance (in terms of signal to noise ratio - SNR).
+Algorithm 2 Normalized Complex Kernel LMS2 (NCKLMS2) INPUT: (z(1), d(1)), . . . , (z(N), d(N)) OUTPUT: The expansion w = ∑N
+k=1 a(k)κ(·,z(k)).
+Initialization: Set a = {}, Z = {} (i.e., w = 0). Select the step parameter µ and the parameter σ of the complex gaussian kernel.
+for n=1:N do
+Compute the filter output:
+d̂(n) =
+n−1 ∑
+k=1
+a(k) · κ(z(k),z(n)).
+Compute the error: e(n) = d(n)− d̂(n). γ = 2κ(z(n),z(n)). a(n) = µe(n)/γ. Add the new center z(n) to the list of centers, i.e., add z(n) to the list Z, add a(n) to the list a.
+end for C. Sparsification The main drawback of any kernel based adaptive filtering algorithms is that a growing number of training points, zn, is involved, as it is apparent from (28), (30) in the case of complex KLMS. Hence, increasing memory and computational resources are needed, as time evolves. Several strategies have been proposed to cope with this problem and to produce sparse solutions. In this paper, we employ the well known novelty criterion [14], [37]. In novelty criterion online sparsification, a dictionary of points, C, is formed and updated appropriately. Whenever a new data pair (Φ(zn), dn) is considered, a decision
+is immediately made of whether to add the new center, Φ(zn), to the dictionary of centers C. The decision is reached following two simple rules. First, the distance of the new center, Φ(zn), from the current dictionary is evaluated: dis = minck∈C{‖Φ(zn)− ck‖H}. If this distance is smaller than a given threshold δ1 (i.e., the new center is close to the existing dictionary), then the center is not added to C. Otherwise, we compute the prediction error en = dn − d̂n. If |en| is smaller than a predefined threshold δ2, then the new center is discarded. Only if |en| ≥ δ2 the new center Φ(zn) is added to the dictionary.
+An alternative method has been considered in [4], which results in an exponential forgetting mechanism of past data. In [6], [38], the sliding window rationale has been considered. In all the implementations of CKLMS that are presented in this paper the novelty criterion was adopted. VIII. EXPERIMENTS The performance of CKLMS1 and CKLMS2 has been tested in the context of a nonlinear channel
+equalization task (see figure 1). The nonlinear channel consists of a linear filter:
+t(n) = (−0.9 + 0.8i) · s(n) + (0.6 − 0.7i) · s(n− 1)
+and a memoryless nonlinearity
+q(n) = t(n) + (0.1 + 0.15i) · t2(n) + (0.06 + 0.05i) · t3(n).
+This is a standard model that has been extensively used in the literature for such tasks. At the receiver end of the channel, the signal is corrupted by white Gaussian noise and then observed as r(n). The input
+signal that was fed to the channel had the form
+s(n) = 0.70 ( √ 1− ρ2X(n) + iρY (n) ) , (32)
+where X(n) and Y (n) are gaussian random variables. This input is circular for ρ = √ 2/2 and highly non-circular if ρ approaches 0 or 1 [18]. Note that the issue of circularity is very important in complex adaptive filtering. Circularity is intimately related to rotation in the geometric sense. A complex random variable Z is called circular, if for any angle φ both Z and Zeiφ (i.e., the rotation of Z by angle φ) follow the same probability distribution [17]. Loosely speaking, non circularity adds some form of nonlinearity to the signal. It can be proved that widely linear estimation (i.e., linear estimation in both z and z∗) outperforms standard linear estimation for general (i.e., circular or non-circular) complex signals. For circular signals, the two models produce identical results [16], [39].
+The aim of a channel equalization task is to construct an inverse filter, which acts on the output r(n) and reproduces the original input signal as close as possible. To this end, we apply the NCKLMS1 and the NCKLMS2 algorithms to the set of samples
+((r(n+D), r(n+D − 1), . . . , r(n+D − L)), s(n)) ,
+where L > 0 is the filter length and D the equalization time delay, which is present to, almost, any equalization set up.
+Experiments were conducted on a set of 5000 samples of the input signal (32) considering both the circular and the non-circular case. The results are compared with the NCLMS and the WL-NCLMS algorithms (i.e., widely linear NCLMS). Note that the WL-NCLMS has been recently used as an alternative to the CLMS, in an attempt to cope with non circularity as well as with soft nonlinearities. In all algorithms, the step update parameter, µ, is tuned for the best possible results. Time delay D was also set for optimality. Figures 2 and 3 show the learning curves of the NCKLMS1 using the real Gaussian kernel κ(x,y) = exp(−‖x − y‖2/σ2) (with σ = 5) and the NCKLMS2 using the complex Gaussian kernel κσ,Cd(z,w) := exp ( − ∑ d i=1 (zi−w∗i ) 2
+σ2
+)
+(with σ = 5), together with those obtained from
+the NCLMS and the WL-NCLMS algorithms. The novelty criterion was used for the sparsification of the NCKLMS1 with δ1 = 0.15 and δ2 = 0.2 and of the NCKLMS2 with δ1 = 0.1 and δ2 = 0.2. In both examples, NCKLMS1 and NCKLMS2 considerably outperform both the NCLMS and the WL-NCLMS algorithms. However, this enhanced behavior comes at a price in computational complexity, since the NCKLMS requires the evaluation of the kernel function. Comparing the NCKLMS1 and the NCKLMS2, the experiments show that the results differ, with the former one leading to an improved performance. IX. CONCLUSIONS A new framework for kernel adaptive filtering for complex signal processing has been developed. The proposed methodology, besides providing a skeleton for working with pure complex kernels, allows for the construction of complex RKHSs from real ones, through a technique called complexification of RKHSs. Such an approach provides the advantage of working with some popular real kernels in the complex domain. It has to be pointed out, that our method is a general one and can be used on any type of real
+and/or complex kernels that have or can be developed. To the best of our knowledge, this is the first time that a methodology for complex adaptive processing in RKHSs is proposed. Wirtinger’s calculus has been extended to cope with the problem of differentiation in the involved (infinite) dimensional Hilbert spaces. The derived rules and properties of the extended Wirtinger’s calculus on complex RKHS turn out to be similar in structure to the special case of finite dimensional complex spaces. The proposed framework was applied on the complex LMS and two realizations for the complex Kernel LMS algorithm were developed. Experiments, which were performed on the equalization problem of a nonlinear channel, for both circular and non-circular input data, showed a significant decrease in the steady state mean square error, compared with the complex LMS and the widely linear complex LMS. APPENDIX A PROOF OF PROPOSITION VI.2
+We start with a lemma that will be used to prove the claim.
+Lemma A.1. Consider the Hilbert space H and a, b ∈ H. The limit
+lim ‖h‖H→0 〈h∗,a〉H − 〈h, b〉H ‖h‖H = 0, (33)
+if and only if a = b = 0.
+Consider the first order Taylor expansions of Tr and Ti at c = c1+ ic2 = (c1, c2), where h = h1+ ih2:
+Tr(c+ h) = Tr(c) + 〈h1,∇uTr(c)〉H + 〈h2,∇vTr(c)〉H + o(‖h‖H2), Ti(c+ h) = Ti(c) + 〈h1,∇uTi(c)〉H + 〈h2,∇vTi(c)〉H + o(‖h‖H2).
+Multiplying the second relation with i and adding it to the first one, we take:
+T (c+ h) = T (c) + 〈h1,∇uTr(c)− i∇uTi(c)〉H + 〈h2,∇vTr(c)− i∇vTi(c)〉H + o(‖h‖H).
+To simplify the notation we may define
+∇uT (c) = ∇uTr(c) + i∇uTi(c), ∇vT (c) = ∇vTr(c) + i∇vTi(c)
+and obtain:
+T (c+ h) = T (c) + 〈h1, (∇uT (c))∗〉H + 〈h2, (∇vT (c))∗〉H + o(‖h‖H2).
+Next, we substitute h1 and h2 using the relations h1 = h+h ∗ 2 and h2 = h−h∗ 2i and use the sesquilinear property of the inner product of H:
+T (c+ h) = T (c) + 1
+2 〈h, (∇uT (c)− i∇vT (c))∗〉H
++ 1
+2 〈h∗, (∇uT (c) + i∇vT (c))∗〉H + o(‖h‖H).
+It has already been shown that equation (22) is essential for the development of Wirtinger’s calculus. To complete the proof of the proposition we compute the fraction that appears in the definition of the complex Fréchet derivative:
+T (c+ h)− T (c)− 〈h,w〉H ‖h‖H = (
+1 2 〈h, (∇uT (c)− i∇vT (c))∗〉H + 1 2 〈h∗, (∇uT (c) + i∇vT (c))∗〉H − 〈h,w〉H
+)
+/ ‖h‖H + o(‖h‖H) ‖h‖H .
+Recall that, since o(‖h‖H)/‖h‖H → 0 as ‖h‖H → 0, for this limit to exist and vanish, it is necessary that ∇uT (c) + i∇v2T (c) = 0 and w∗ = ∇uT (c)(c)− i∇vT (c) (see lemma A.1). However, according to our definition,
+∇uT (c) + i∇vT (c) = (∇uTr(c)−∇vTi(c)) + i (∇uTi(c) +∇vTr(c)) .
+Thus, T is differentiable in the Fréchet complex sense, iff the Cauchy-Riemann conditions hold. Moreover, in this case:
+∇T (c) =∇uTr(c) + i∇uTi(c) = ∇vTi(c)− i∇vTr(c). APPENDIX B PROPERTIES OF WIRTINGER’S DERIVATIVES ON COMPLEX HILBERT SPACES
+Below we give a complete list of the main properties of the extended Wirtinger’s Calculus in complex Hilbert spaces. A rigorous and detailed presentation of the theory, as well as the proofs of all these properties can be found in [35].
+1) If T (f) is f -holomorphic at c (i.e., it has a Taylor series expansion with respect to f around c),
+then its Fréchet W-derivative at c degenerates to the standard Fréchet complex derivative and its
+Fréchet CW-derivative vanishes, i.e., ∇f∗T (c) = 0. 2) If T (f) is f∗-holomorphic at c (i.e., it has a Taylor series expansion with respect to f∗ around
+c), then ∇fT (c) = 0. 3) (∇fT (c))∗ = ∇f∗T ∗(c).
+4) (∇f∗T (c))∗ = ∇fT ∗(c). 5) If T is real valued, then (∇fT (c))∗ = ∇f∗T (c). 6) The first order Taylor expansion around f ∈ H is given by
+T (f + h) =T (f ) + 〈h, (∇fT (f))∗〉H + 〈h∗, (∇f∗T (f))∗〉H.
+7) If T (f) = 〈f ,w〉H, then ∇fT (c) = w∗, ∇f∗T (c) = 0, for every c. 8) If T (f) = 〈w,f 〉H, then ∇fT (c) = 0, ∇f∗T (c) = w, for every c. 9) If T (f) = 〈f∗,w〉H, then ∇fT (c) = 0, ∇f∗T (c) = w∗, for every c.
+10) If T (f) = 〈w,f ∗〉H, then ∇fT (c) = w, ∇f∗T (c) = 0, for every c. 11) Linearity: If T ,S : H → C are Fréchet differentiable in the real sense at c ∈ H and a, b ∈ C, then
+∇f (αT + βS)(c) = α∇fT (c) + β∇fS(c), ∇f∗(αT + βS)(c) = α∇f∗T (c) + β∇f∗S(c).
+12) Product Rule: If T ,S : H → C are Fréchet differentiable in the real sense at c ∈ H, then:
+∇f (T · S)(c) = ∇fT (c)S(c) + T (c)∇fS(c), ∇f∗(T · S)(c) = ∇f∗T (c)S(c) + T (c)∇f∗S(c).
+13) Division Rule: If T ,S : H → C are Fréchet differentiable in the real sense at c ∈ H and S(c) 6= 0, then:
+∇f ( T
+S
+)
+(c) = ∇fT (c)S(c)− T (c)∇fS(c)
+S2(c) , ∇f∗
+(
+T S
+)
+(c) = ∇f∗T (c)S(c)− T (c)∇f∗S(c)
+S2(c) .
+14) Chain Rule: If T : H → C is Fréchet differentiable at c ∈ H, S : C → C is differentiable in the real sense at T (c) ∈ C, then:
+∇fS ◦ T (c) = ∂S
+∂z (T (c))∇fT (c) +
+∂S ∂z∗ (T (c))∇f (T ∗)(c),
+∇f∗S ◦ T (c) = ∂S
+∂z (T (c))∇f∗T (c) +
+∂S ∂z∗ (T (c))∇f∗(T ∗)(c).
+The proofs of properties 1 and 2 are rather obvious. Here, we give the proofs of properties 3, 7 and
+11, which have been used to derive the main results of this paper. Proof of property 3: The existence of ∇fT (c) and ∇f∗T (c) is guaranteed by the Fréchet differentiability of T at c (in the real sense). To take the result, observe that:
+(∇fT (c))∗ = 1
+2 (∇uTr(c) +∇vTi(c))−
+i 2 (∇uTi(c)−∇vTr(c))
+= 1
+2 (∇uTr(c)−∇v(−Ti)(c)) +
+i 2 (∇u(−Ti)(c) +∇vTr(c)) = (∇f∗T ∗(c)) .
+Property 4 can be proved similarly.
+Proof of property 7: Considering the definition of Fréchet complex derivative (see equation 18), we
+observe that:
+T (c+ h)− T (c)−〈h,g〉H = 〈c + h,w〉H − 〈c,w〉H − 〈h,g〉H = 〈c,w〉H − 〈h,g〉H.
+Thus, T is Fréchet complex differentiable at c, with ∇T (c) = w∗ and from property 1, ∇f∗(c) = 0 and ∇f (c) = w.
+Proof of property 11: Let T (f) = Tr(uf , vf )+ iTi(uf , vf ), S(f) = S(uf + ivf ) = Sr(uf , vf )+
+iSi(uf , vf ) be two complex functions and α, β ∈ C, such that α = α1 + iα2, β = β1 + iβ2. Then R(f) = αT (f) + βS(f) and the Fréchet W-derivative of R will be given by:
+∇fR(c) = 1
+2 (∇uRr(c) +∇vRi(c)) +
+i 2 (∇uRi(c)−∇vRr(c)) .
+Applying the linearity property of the ordinary Fréchet derivative, after some algebra we take the result. For the second part, in view of properties 3, 4 and the linearity property of the Fréchet W-derivative, the Fréchet CW-derivative of R at c will be given by:
+∇f∗R(c) =∇f∗(αT + βS)(c) = (∇f (αT + βS)∗(c))∗
+=(∇f (α∗T ∗ + β∗S∗)(c))∗ = (α∗∇fT ∗(c) + β∗∇fS∗(c))∗ =α (∇fT ∗(c))∗ + β (∇fS∗(c))∗ = α∇f∗T (c) + β∇f∗S(c),
+which completes the proof.  INTRODUCTION Processing in Reproducing Kernel Hilbert Spaces (RKHSs), in the context of online adaptive learning, is gaining in popularity within the Machine Learning and Signal Processing communities [1]–[6].    INTRODUCTION Processing in Reproducing Kernel Hilbert Spaces (RKHSs), in the context of online adaptive learning, is gaining in popularity within the Machine Learning and Signal Processing communities [1]–[6].    An alternative way of describing this process is through the popular kernel trick [7], [8]: Given an algorithm, which is formulated in terms of dot products, one can construct an alternative algorithm by replacing each one of the dot products with a positive definite kernel κ.    An alternative way of describing this process is through the popular kernel trick [7], [8]: Given an algorithm, which is formulated in terms of dot products, one can construct an alternative algorithm by replacing each one of the dot products with a positive definite kernel κ.    The main representatives of this class of algorithms are the celebrated support vector machines (SVMs), which have dominated the research in machine learning over the last decade [9].    , image processing and denoising [10], [11], principal component analysis [12], clustering [13], e.    , image processing and denoising [10], [11], principal component analysis [12], clustering [13], e.    , image processing and denoising [10], [11], principal component analysis [12], clustering [13], e.    , image processing and denoising [10], [11], principal component analysis [12], clustering [13], e.    Even though, the presented framework has a broad range and may be applied to generalize a wide variety of kernel methods to the complex domain, this work focuses on the recently developed Kernel LMS (KLMS) [1], [14].    Wirtinger’s calculus [15] has become very popular in the signal processing community, mainly in the context of complex adaptive filtering [16]–[23], as a means of computing, in an elegant way, gradients of real valued cost functions defined on complex domains (C).    Wirtinger’s calculus [15] has become very popular in the signal processing community, mainly in the context of complex adaptive filtering [16]–[23], as a means of computing, in an elegant way, gradients of real valued cost functions defined on complex domains (C).    Wirtinger’s calculus [15] has become very popular in the signal processing community, mainly in the context of complex adaptive filtering [16]–[23], as a means of computing, in an elegant way, gradients of real valued cost functions defined on complex domains (C).    The material presented here may be found with more details in [24] and [25].    The material presented here may be found with more details in [24] and [25].    Furthermore, the term positive definite was introduced for the first time by Mercer in the kernel context (see [26]).    It has been proved (see [27]) that to every positive definite kernel κ there corresponds one and only one class of functions H with a uniquely determined inner product in it, forming a Hilbert space and admitting κ as a reproducing kernel.    Many more can be found in the relative literature [7]–[9].    Many more can be found in the relative literature [7]–[9].    , κ(z, w) = 1 (1−wz) , for Bergman spaces on the unit disk, where |z|, |w| < 1 [25].    An explicit description of the RKHSs of these kernels, together with some important properties can be found in [28].    It is not difficult to verify that H is a complex RKHS with kernel κ [25].    WIRTINGER’S CALCULUS ON C Wirtinger’s calculus [15] is enjoying increasing popularity in the signal processing community mainly in the context of complex adaptive filtering [16]–[23], as a means to compute, in an elegant way, gradients of real valued cost functions that are defined on complex domains (C).    WIRTINGER’S CALCULUS ON C Wirtinger’s calculus [15] is enjoying increasing popularity in the signal processing community mainly in the context of complex adaptive filtering [16]–[23], as a means to compute, in an elegant way, gradients of real valued cost functions that are defined on complex domains (C).    WIRTINGER’S CALCULUS ON C Wirtinger’s calculus [15] is enjoying increasing popularity in the signal processing community mainly in the context of complex adaptive filtering [16]–[23], as a means to compute, in an elegant way, gradients of real valued cost functions that are defined on complex domains (C).    Although this methodology is known for some time in the German speaking countries and it has been applied to practical applications [32], [33], only recently has become popular in the signal processing community, mostly in the context of works that followed Picinbono’s paper on widely linear estimation filters [16].    Although this methodology is known for some time in the German speaking countries and it has been applied to practical applications [32], [33], only recently has become popular in the signal processing community, mostly in the context of works that followed Picinbono’s paper on widely linear estimation filters [16].    Although this methodology is known for some time in the German speaking countries and it has been applied to practical applications [32], [33], only recently has become popular in the signal processing community, mostly in the context of works that followed Picinbono’s paper on widely linear estimation filters [16].    (12) The following properties can be proved [34], [35]: 1) If f has a Taylor series expansion with respect to z (i.    (12) The following properties can be proved [34], [35]: 1) If f has a Taylor series expansion with respect to z (i.    Similar rules and principles hold for functions defined on C [34].    If T has Fréchet derivatives of any order, it can be expanded as a Taylor series [36], i.    The interested reader may dig deeper on this subject by referring to [36].    In this paper, we employ the well known novelty criterion [14], [37].    An alternative method has been considered in [4], which results in an exponential forgetting mechanism of past data.    In [6], [38], the sliding window rationale has been considered.    In [6], [38], the sliding window rationale has been considered.    This input is circular for ρ = √ 2/2 and highly non-circular if ρ approaches 0 or 1 [18].    For circular signals, the two models produce identical results [16], [39].    A rigorous and detailed presentation of the theory, as well as the proofs of all these properties can be found in [35].    Over the last decade, kernel methods for nonlinear processing have successfully been used in the machine learning community. The primary mathematical tool employed in these methods is the notion of the Reproducing Kernel Hilbert Space. However, so far, the emphasis has been on batch techniques. It is only recently, that online techniques have been considered in the context of adaptive signal processing tasks. Moreover, these efforts have only been focussed on and real valued data sequences. To the best of our knowledge, no kernel-based strategy has been developed, so far, that is able to deal with complex valued signals. Furthermore, although the real reproducing kernels are used in an increasing number of machine learning problems, complex kernels have not, yet, been used, in spite of their potential interest in applications that deal with complex signals, with Communications being a typical example. In this paper, we present a general framework to attack the problem of adaptive filtering of complex signals, using either real reproducing kernels, taking advantage of a technique called complexification of real RKHSs, or complex reproducing kernels, highlighting the use of the complex gaussian kernel. In order to derive gradients of operators that need to be defined on the associated complex RKHSs, we employ the powerful tool of Wirtinger’s Calculus, which has recently attracted much attention in the signal processing community. Writinger’s calculus simplifies computations and offers an elegant tool for treating complex signals. To this end, in this paper, the notion of Writinger’s calculus is extended, for the first time, to include complex RKHSs and use it to derive several realizations of the Complex Kernel Least-Mean-Square (CKLMS) algorithm. Experiments verify that the CKLMS offers significant performance improvements over the traditional complex LMS or Widely Linear complex LMS (WLLMS) algorithms, when dealing with nonlinearities. P. Bouboulis and S. Theodoridis are with the Department of Informatics and Telecommunications, University of Athens, Greece, e-mail: {bouboulis,stheodor}@di.uoa.gr. SUBMITTED TO IEEE TRANSACTIONS ON SIGNAL PROCESSING 1 Extension of Wirtinger’s Calculus in Reproducing Kernel Hilbert Spaces and the Complex Kernel LMS LaTeX with hyperref package
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

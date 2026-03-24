@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 3,
+  "SUBSTANCE": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses a core NMT modeling problem (introducing chunk-level and word-level decoders; \u00a73.1\u20133.3) and builds directly on standard attention-based NMT and hierarchical RNN literature (Bahdanau et al., Luong & Manning, Eriguchi et al.). Evaluation uses community-accepted datasets and metrics (ASPEC/WAT \u201916 English\u2013Japanese, BLEU and RIBES) and compares to strong baselines (word-based seq2seq, tree-to-seq), matching the methodological and experimental standards expected at top NLP/ML venues. The positioning and related-work citations show it is targeted to the right audience within the venue\u2019s research community."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a chunk-based decoder architecture (a chunk-level decoder producing chunk representations and a word-level decoder generating intra-chunk words) and two non-trivial extensions (inter-chunk connections and word-to-chunk feedback) (Eqs.16\u201322), which applies chunk/phrase modeling on the target-side decoder\u2014a direction the authors claim has not been explored in NMT. Prior work cited focuses on chunk/phrase methods in SMT or structure on the encoder side (Watanabe 2003; Kim 2010; Eriguchi et al. 2016b) or uses hierarchical RNNs for other purposes (Luong & Manning 2016), so the contribution is a clear, notable adaptation of hierarchical/chunk ideas to decoding rather than a mere rehash of existing encoder-side or generic hierarchical models. It is therefore a notable novelty (not purely incremental) but builds on existing hierarchical/NMT components rather than introducing a radically new paradigm."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical problem in NMT\u2014modeling long-distance (inter-chunk) vs short (intra-chunk) dependencies\u2014by introducing a chunk-level decoder plus a word-level decoder (\u00a73.1.2\u20133.1.3) and two further enhancements (inter-chunk connections and word-to-chunk feedback). The method yields concrete empirical gains on a WAT \u201916 English\u2192Japanese task (claims to outperform the best single NMT and the tree-to-seq baseline, e.g. +1 BLEU vs tree-to-seq and +4 vs a character-based model), indicating it can change design choices for decoders. The hierarchical decoder formulation and the authors\u2019 note about combining with structured encoders (Tree-LSTM, CNN) suggest meaningful new research directions and likely follow-on work. Its broader applicability may be somewhat language-dependent (they leverage high-accuracy bunsetsu chunking for Japanese), but overall the contribution is likely to be influential rather than merely incremental."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to recent and relevant baselines (word-based seq-to-seq (Li et al., 2016), tree-to-seq and character tree-to-seq (Eriguchi et al., 2016a/b)) and reports results on the same ASPEC WAT \u201916 English\u2013Japanese dataset using standard metrics (BLEU, RIBES) (see Results/Table and Evaluation sections). It discusses and cites related structured/NMT approaches (Eriguchi, Su, Luong & Manning, etc.) and explicitly states improvements over prior best single NMT (WAT \u201916). However, some fairness concerns remain (different reported vocab sizes and RNN types across compared systems in the table), and the paper provides limited in-depth analysis of why gains occur beyond the quantitative comparisons, so comparisons are good but not fully comprehensive."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper has a recognizable organization (Preliminaries \u2192 Model descriptions \u2192 Experiments) and the core contribution is stated (proposing chunk-based decoders) but the presentation suffers from many formatting and editing problems. There are numerous duplicated and garbled paragraphs (e.g. repeated blocks beginning \u201cNeural machine translation (NMT) performs\u2026\u201d), incomplete/mangled table and figure references, and at least one internal reference to Eq. (15) without the equation shown, which reduces clarity. Notation for the models and equations (e.g. Eqs. 11\u201313, 16\u201322) is mostly consistent and understandable, but figures/tables are not effectively usable in the provided text and the writing contains repetitive and distracting errors that require careful copyediting."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper includes experiments on the ASPEC English\u2013Japanese task with BLEU and RIBES and comparisons to a word-based seq2seq baseline and tree-to-seq (Results section and Table), and presents three model variants (Models 1\u20133 in \u00a73.1\u20133.3) which serve as ablation-style comparisons. However, evaluation is limited to a single language pair, lacks sensitivity analyses (e.g., effect of chunking quality/granularity, statistical significance, runtime), and does not discuss failure cases or limitations beyond brief future work. Reproducibility is partially supported (dataset split, use of ADADELTA, vocab sizes are reported) but many training/hyperparameter and implementation details are missing, preventing full replication."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper presents a clear modeling approach (three chunk-based decoder variants) and reports empirical gains on the ASPEC WAT\u201916 task against reasonable baselines, so the main claim is plausibly supported. However there are technical issues: the attention softmax in Eq.(13) uses an incorrect index in the denominator (summing over j\u2032 rather than source positions i\u2032), and some equations/indices are ambiguous; no formal derivations or proofs are given (none expected here) but the recurrent updates are otherwise plausible. The experimental methodology compares to appropriate baselines and describes training/decoding, but reported results are partial/incomplete in the provided text and no statistical significance or variance (multiple runs, seeds, hyperparameter sensitivity) is reported. Overall the approach is promising and likely effective, but missing/erroneous formula indexing and incomplete experimental reporting justify moderate concern."
+    }
+  }
+}
