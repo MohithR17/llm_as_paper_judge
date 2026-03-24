@@ -210,6 +210,7 @@ class TopicExtractor:
                     ],
                 )
                 text = (response.choices[0].message.content or "").strip()
+                print(f"  [attempt {attempt}] raw response:\n{text[:500]}{'…' if len(text) > 500 else ''}\n")
 
                 # Strip accidental markdown fences if the model ignores the instruction
                 if text.startswith("```"):
