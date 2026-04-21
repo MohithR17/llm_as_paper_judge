@@ -1,0 +1,54 @@
+{
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines existing ideas\u2014low-rank/basis factorization, ternary/binary quantization, and logical-operation-based acceleration\u2014into a post-processing scheme that factorizes weights as Mw Cw with a ternary basis and approximates activations with binary basis vectors plus a lookup-table encoder to enable fast test-time inference without retraining. While the specific combination (ternary basis for weights, binary activation encoding, and lookup-based activation encoding) is a useful and practical engineering contribution, it is an incremental extension of well-studied compression/quantization and binary-network techniques rather than a fundamentally new formulation. The noted optimization difficulties and per-layer tuning further suggest the method refines existing approaches rather than introducing a radical new perspective."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and supported by experiments on MNIST, ImageNet and LFW showing large compression and speedups (e.g., 15\u00d7 acceleration and 5.2% memory with only 1.43% top\u20115 error increase). The mathematical approach (W \u2248 M_w C_w and x \u2248 M_x c_x + b_x1) is plausible and implemented via iterative rank\u2011one approximations, but no formal proofs are provided and the ternary constraint\u2019s optimization difficulty is acknowledged. Experimental methodology appears reasonable with appropriate baselines (original and binary\u2011basis) and standard datasets, though the summary does not mention statistical tests, per\u2011layer tuning procedures, or code release. Overall the results support the conclusions but there are minor gaps around optimization guarantees, sensitivity to hyperparameters (k_w per layer), and reporting of statistical significance."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and the main contributions are stated clearly early (post-processing compression, ternary weight bases, binary-encoded activations), and overall writing quality is reported as good. The notation and methodology are presented clearly enough to convey the factorization (W \u2248 Mw Cw and x \u2248 Mx cx + bx1) and the experimental setup (datasets, metrics, hyperparameters) is reported, suggesting effective figures/tables. A minor issue is that some algorithmic challenges (the ternary constraint and discrete optimization) are noted but could use slightly more exposition, so the presentation is very good with only small room for improvement."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Reduce test-time computational load of pre-trained deep networks via a post-processing compression method.",
+      "Approximate real-valued weight matrices as a product of a ternary basis matrix (elements in {\u22121,0,+1}) and a real-valued coefficient matrix to save memory (2 bits per element for the ternary basis).",
+      "Approximate activations as a weighted sum of binary vectors (elements in {\u22121,+1}) plus a bias and use fast logical operations (AND, XOR, bit count) and a lookup-table-based encoding to accelerate feed-forward propagation.",
+      "The method requires no change to training (no end-to-end retraining) and achieves substantial speedup and compression in experiments (e.g., 15\u00d7 acceleration and 5.2% memory size for three fully connected layers of VGG-16 with a 1.43% increase in top-5 error)."
+    ],
+    "methodology": "Factorize each weight matrix W \u2248 Mw Cw with Mw ternary and Cw real-valued, and factorize each activation x \u2248 Mx cx + bx1 with Mx binary; compute ternary\u00d7binary products via logical ops and use precomputed cx,bx plus a lookup table for fast activation encoding at test time.",
+    "datasets": [
+      "MNIST",
+      "ILSVRC2012 (ImageNet)",
+      "Labeled Faces in the Wild (LFW)"
+    ],
+    "baselines": [
+      "original (uncompressed) network",
+      "binary-basis constraint (comparison to ternary basis)"
+    ],
+    "metrics": [
+      "error rate",
+      "top-5 error rate",
+      "equal error rate (EER)",
+      "memory compression rate",
+      "acceleration rate (processing speedup)"
+    ],
+    "limitations": [
+      "The ternary constraint makes the optimization difficult, requiring an iterative rank-one approximation approach.",
+      "Error rates rapidly increase when kw (number of ternary basis vectors) is set too small (e.g., kw = DO/5 for MNIST); per-layer kw tuning is important.",
+      "The authors note future work is needed to improve approximation error by investigating discrete optimization algorithms."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Deep learning / model compression and acceleration for computer vision",
+    "writing_quality": "good"
+  }
+}

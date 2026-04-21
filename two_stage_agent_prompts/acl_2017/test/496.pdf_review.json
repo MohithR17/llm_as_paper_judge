@@ -1,0 +1,73 @@
+{
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "APPROPRIATENESS": 5,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 3,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important question\u2014what NMT models learn about morphology\u2014by providing a systematic, data-driven evaluation across factors like character vs. word representations, encoding depth, target language, and encoder vs. decoder representations. Its concrete findings (encoder representations capture morphology/POS better than decoder ones; char-CNNs substantially improve tagging accuracy; attention removal has opposite effects on encoder vs. decoder) are likely to change how researchers probe and design NMT architectures and representation methods. While experiments are largely on WIT3 and some decoder tags use predicted annotations, the insights are broadly applicable and likely to motivate follow-up work and practical adoption of character-based input and targeted probing analyses."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper runs a systematic, data-driven set of experiments examining encoder vs. decoder representations, word- vs. character-based inputs, encoding depth, and the presence/absence of attention, and uses classifier probing for POS/morphology\u2014supporting the main claims with multiple controlled comparisons. It also includes ablation-style analyses (e.g., removing attention) and reports translation quality (BLEU) alongside tagging results, and related work coverage is noted as adequate. However, important reproducibility details are missing (no code mentioned, hyperparameters not reported) and several experiments rely on a single domain (WIT3 TED talks) and predicted rather than gold annotations for decoder-side tagging, which are acknowledged limitations."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper studies what NMT models learn about morphology\u2014a core question for the NLP/ML community interested in representation learning and machine translation\u2014and thus is squarely within the scope of top-tier venues. The experimental setup (training NMT models with/without attention and char/word inputs, freezing representations, and probing with POS/morph classifiers) and evaluations (POS/morph tagging accuracy, BLEU) follow standards expected at these conferences. While some limitations are noted (use of WIT3 TED-talks as the primary MT corpus and the need for predicted annotations in some decoder-side experiments), the work is nevertheless well positioned for the intended audience and venue."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized and follows a clear intro\u2192method\u2192experiments\u2192conclusion flow, with its main contributions and claims stated early (e.g., encoder vs. decoder representation findings, char-CNN benefits). The methodology, datasets, baselines, evaluation metrics, and stated limitations are described in a structured, data-driven way, and the writing quality is noted as good. Presentation weaknesses include missing hyperparameter reporting and no mention of code availability, and some decoder-side experiments rely on predicted (not gold) annotations, which reduces clarity/reproducibility. Overall the manuscript is clear and readable but has minor presentation gaps that should be addressed."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate baselines (majority baseline, word-based NMT representations, and a linear classifier) and evaluates using the same NMT-trained models and POS/morph tagging metrics, analyzing differences across factors like char vs word input, attention, depth, and encoder vs decoder. The comparisons are generally fair, but decoder-side experiments use predicted annotations and the NMT training is on a single-domain (WIT3) corpus\u2014limitations the authors acknowledge. The paper also notes when alternative methods (the linear classifier) show similar trends but lower results and reports adequate related-work discussion, indicating minor omissions rather than major comparison failures."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are supported by systematic experiments (training NMT models with/without attention and word/char input, freezing encoder/decoder representations and training classifiers for POS/morph tagging) that show encoder representations outperform decoder ones and char-CNNs improve tagging accuracy. However, important methodological limitations\u2014use of predicted (not gold) POS/morph annotations for decoder-side experiments, experiments confined to the WIT3 TED-talks domain, and missing hyperparameter/statistical-test details\u2014weaken generalizability and raise potential confounds (e.g., effects tied to data or training specifics). There are no mathematical derivations to evaluate, and while these concerns merit caution, they do not fundamentally undermine the reported experimental findings."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper does not introduce a fundamentally new methodological paradigm\u2014its core approach (training NMT models, freezing them, and probing representations with classifiers for POS/morphology) is an established analysis technique. Its novelty comes from a systematic, data-driven study across many factors (word vs. character representations, encoder depth, target language identity, encoder vs. decoder representations) and concrete empirical findings (encoder > decoder for morphology, char-CNN benefits, and attention-removal effects). Overall this is an incremental but meaningful empirical contribution that synthesizes and extends prior probing work rather than proposing a wholly new idea."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Encoder representations from NMT models capture morphological and POS information substantially better than decoder representations.",
+      "Character-based (char-CNN) word representations yield higher POS/morphology tagging accuracy than purely word-based representations.",
+      "Removing the attention mechanism decreases the quality of encoder representations but improves the informativeness of decoder representations for target-side tagging.",
+      "The paper presents a systematic, data-driven evaluation across factors such as word vs. character representations, encoding depth, target language identity, and encoder vs. decoder representations to study what NMT models learn about morphology."
+    ],
+    "methodology": "Train sequence-to-sequence NMT models (with/without attention and with word- or character-based input) on parallel data (WIT3 TED talks), freeze the trained model to extract encoder/decoder word representations, and train classifiers on those features to predict POS and morphological tags (using both predicted and, where available, gold annotations) to evaluate representation quality.",
+    "datasets": [
+      "WIT3 corpus of TED talks (IWSLT 2016)",
+      "Gold-annotated POS/morphological datasets (various; used when available)",
+      "Predicted-tag annotated MT data (MT data annotated with freely available taggers)"
+    ],
+    "baselines": [
+      "majority baseline (20%)",
+      "word-based NMT representation baseline",
+      "linear classifier (reported as an alternative with similar trends but lower results)"
+    ],
+    "metrics": [
+      "POS tagging accuracy",
+      "Morphological tagging accuracy",
+      "BLEU (translation quality)"
+    ],
+    "limitations": [
+      "Decoder-side tagging experiments use predicted POS/morph annotations due to lack of available parallel data with gold POS/morph tags.",
+      "Many classifier experiments are run on the WIT3 TED-talks corpus (IWSLT 2016), i.e. a single domain/dataset for MT training.",
+      "For some settings results are reported only with predicted annotations when gold annotations were unavailable."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - neural machine translation and morphology",
+    "writing_quality": "good"
+  }
+}

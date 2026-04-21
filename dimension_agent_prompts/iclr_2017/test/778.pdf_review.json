@@ -1,19 +1,19 @@
 {
-  "CLARITY": 3,
+  "CLARITY": 4,
   "ORIGINALITY": 3,
-  "SOUNDNESS_CORRECTNESS": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
   "_details": {
     "CLARITY": {
-      "score": 3,
-      "justification": "The paper is generally well-organized (Intro \u2192 related work \u2192 model \u2192 algorithms \u2192 experiments \u2192 conclusion) and states its two main contributions (ternary weight decomposition and binary activation encoding) early in the Introduction. Notation and equations are mostly consistent and the algorithm boxes help clarify the procedures, but several issues reduce readability: figures/tables are repeatedly referenced (e.g. Fig.1, Tables 1\u20135) but not present in the provided text, and there are large blocks of duplicated/garbled paragraphs near the end that interrupt flow. Overall the writing is understandable with occasional awkward phrasing and copy/formatting errors that need cleanup for a polished presentation."
+      "score": 4,
+      "justification": "The paper is generally well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (ternary weight decomposition and binary activation encoding in the Introduction). Notation is mostly consistent and defined (W, Mw, Cw, DI, DO, etc.) and algorithms are clearly presented. Presentation suffers from repeated/garbled text and duplicated paragraphs near the end, missing referenced figures/tables in the provided excerpt, and a few grammatical slips (e.g. \"an another\"), which prevent a top score but do not hinder overall comprehension."
     },
     "ORIGINALITY": {
       "score": 3,
-      "justification": "The paper combines two previously studied ideas\u2014low-rank/matrix factorization of weights and integer/binary/ternary decomposition for fast logical operations\u2014to form a unified post-processing compression/acceleration method (see Sec.2: W\u2248MwCw with Mw\u2208{\u22121,0,+1} and Sec.4: binary activation encoding with precomputed cx,bx and lookup-table). The authors clearly position this relative to prior work (Jaderberg/Zhang on factorization, Ambai/Hare on integer decomposition, and XNOR-Net) and claim novelty in integrating ternary weight bases with binary activation lookup encoding and avoiding retraining. Overall this is a non-trivial, pragmatic combination/extension of known techniques rather than a fundamentally new formulation, so it reads as an incremental but useful contribution."
+      "justification": "The paper combines two existing ideas \u2014 low-rank matrix/tensor factorization for weights (citing Jaderberg et al., Zhang et al.) and integer/binary decomposition for fast inference (citing Hare et al., Ambai & Sato) \u2014 into a unified post-processing scheme (Eq.1 and Eq.2) and applies them to deep networks without retraining. The ternary-weight + binary-activation encoding and lookup-based activation quantization are practical and useful extensions, but each component is primarily an adaptation of prior techniques rather than a fundamentally new method. The clear differentiation from prior work (e.g. unlike XNOR-Net, no training change required) is noted, yet the contribution reads as a non-trivial engineering/combination advance rather than a highly novel theoretical breakthrough, so the novelty is moderate."
     },
     "SOUNDNESS_CORRECTNESS": {
-      "score": 3,
-      "justification": "The algorithms and derivations appear internally consistent (Eq.3, Algorithms 1\u20132, and the alternating updates are correct and the ternary/binary inner-product speedup claim is plausible) and the paper provides empirical results on MNIST, ImageNet (VGG-16) and VGG-Face supporting the main claims. However, the experimental methodology is limited: no comparisons to strong recent baselines (e.g. pruning/quantization papers), no reported variance or statistical tests, and limited discussion of offline/encoding costs. A key assumption \u2014 using precomputed, fixed cx and bx for activation encoding (Sec.4) \u2014 is plausible but not rigorously justified and may be dataset- or layer-dependent. Overall the technical approach is sound but the experimental evidence and some assumptions are insufficiently controlled to fully validate the claims."
+      "score": 4,
+      "justification": "The paper's main claims (ternary weight factorization and binary activation encoding reduce memory and inference cost) are clearly stated and supported by algebraic derivations (Eqs.1\u20133) and a plausible greedy alternating-rank-one optimization (Alg.1) and activation encoding (Alg.2). The mathematical steps shown are consistent and there are no obvious algebraic errors; use of ternary/binary inner products via logical ops is justified by prior work cited. Experimental results on MNIST, VGG-16 and VGG-Face demonstrate large speedups and modest accuracy loss versus the original models, but the empirical methodology has shortcomings: no comparisons to other quantization/acceleration baselines (e.g. XNOR-Net/pruning), no statistical analysis or multiple runs, and some assumptions (fixed cx,bx across inputs, choice of lookup granularity L) are not extensively validated. These are minor methodological gaps that do not negate the reported benefits, so I rate it 4/5."
     }
   }
 }

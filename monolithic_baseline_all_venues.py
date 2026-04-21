@@ -167,6 +167,8 @@ def load_paper_json(json_path: Path):
         else:
             return ""
     parsed_text = concat_values({k: v for k, v in data.items() if k != "references"})
+    # Strip lone surrogates produced by broken PDF extraction (e.g. \ud835 math chars)
+    parsed_text = parsed_text.encode("utf-8", errors="replace").decode("utf-8")
     return title, parsed_text.strip()
 
 def build_prompt(title: str, parsed_text: str, standard_rubric: str, venue: str) -> str:

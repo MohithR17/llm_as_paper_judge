@@ -1,0 +1,71 @@
+{
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 3,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a clearly defined chunk-based decoder architecture that decomposes decoding into chunk-level and word-level modules, which is a distinct modeling perspective compared to standard seq-to-seq and tree-to-seq baselines. The progressive design of three models (base chunk decoder, inter-chunk connections, and word-to-chunk feedback) represents non-trivial extensions that explicitly address identified shortcomings of the base model. The authors differentiate their contributions by comparing to multiple strong baselines (word-, tree-, and character-based models) and report consistent gains on the ASPEC English\u2013Japanese task. Overall this is a notable novel contribution rather than a mere reapplication of existing techniques."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents solid empirical evidence on the ASPEC English\u2013Japanese WAT\u201916 task, comparing three progressively stronger models (Model 1\u20133) and multiple baselines (word-based seq2seq, tree-to-seq, character-based), reporting BLEU and RIBES gains; the stacked model variants serve as an internal ablation that diagnoses and remedies weaknesses (inter-chunk connections and word-to-chunk feedback). Related work coverage is described as adequate and several limitations are acknowledged (e.g., Model 1\u2019s missing chunk context, potential for repeated/forgotten chunks, and future encoder extensions). However, the experiments are limited to a single dataset/language pair and there is no mention of released code (though hyperparameters are reported), so reproducibility and generality beyond ASPEC remain somewhat underexamined."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This is squarely within the scope of top NLP/ML venues: it proposes a novel decoder architecture for Neural Machine Translation (chunk-level + word-level GRUs) and evaluates on a standard MT benchmark (ASPEC English\u2013Japanese) with BLEU and RIBES. The paper targets the right audience (NMT/modeling community), compares to strong baselines (word-based, tree-to-seq, character-based), and reports hyperparameters and quantitative improvements, matching expected methods and evaluation standards. Its positioning and related-work discussion (including limitations and future encoder combinations) show appropriate placement within the venue's research community."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims (design of three chunk-based decoder variants and empirical improvements on ASPEC English\u2013Japanese) are clearly stated and supported by experiments reporting BLEU/RIBES and comparisons to reasonable baselines (word-/tree-/character-based models, including Eriguchi et al.). Mathematical content is limited and the described hierarchical GRU architecture is internally consistent. Minor technical gaps remain: the summary does not state how chunk boundaries are determined, and no mention is made of statistical significance testing for the reported gains. Overall, these are implementation/analysis omissions rather than flaws that overturn the reported improvements."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper targets an important problem in NMT\u2014modeling long-distance/inter-chunk dependencies\u2014by introducing a hierarchical chunk-based decoder and three progressively improved variants. Empirically it shows meaningful gains on the ASPEC English\u2013Japanese WAT'16 task (outperforming prior single NMT, tree-to-sequence and character-based baselines by BLEU/RIBES), demonstrating practical relevance. However, results are reported on a single dataset and the method was not combined with structured encoders, so while it opens clear follow-up directions and is likely to be built upon, it is unlikely to be transformative across the field without broader validation."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and follows a logical flow: the three decoder variants are presented in the methods section and evaluated on ASPEC (WAT '16) with clear experimental results (BLEU/RIBES) and baseline comparisons. The main contributions (chunk-based decoder and three progressive models) are stated early and the methodology is described concretely; notation appears consistent and hyperparameters are reported. Figures/tables seem informative since specific BLEU gains (e.g., +1 and +4 over baselines) are reported, and the writing quality is described as good with adequate related-work coverage, suggesting only minor presentation issues remain."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against appropriate and strong baselines (word-based seq2seq (Li et al., 2016), word- and character-based tree-to-seq models from Eriguchi et al., 2016a/b) and reports results on the same ASPEC WAT '16 English\u2013Japanese data using BLEU and RIBES. Reported results directly compare to the best single NMT model from WAT '16 and show clear improvements (+1 to +4 BLEU vs. relevant baselines). The authors also note limitations and future work and the related-work coverage is described as adequate, indicating fair and comprehensive comparisons."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce chunk-based decoders for NMT that decompose decoding into a chunk-level decoder (models global/inter-chunk dependencies) and a word-level decoder (models intra-chunk word orders).",
+      "Propose three models: Model 1 (standard chunk-based NMT), Model 2 (adds inter-chunk connections), and Model 3 (adds word-to-chunk feedback), which progressively address weaknesses of the base model.",
+      "Experimental results on the WAT '16 English-Japanese task (ASPEC) show the proposed method significantly improves translation performance and the best model outperforms the best single NMT model reported in WAT '16 (Eriguchi et al., 2016b).",
+      "The best model also outperforms a tree-to-sequence baseline by +1 BLEU and outperforms a character-based model by +4 BLEU (values stated in the paper)."
+    ],
+    "methodology": "Build a hierarchical decoder that first produces a chunk representation via a chunk-level GRU, then a word-level GRU generates words inside each chunk conditioned on the chunk representation; Model 2 adds inter-chunk GRU connections to pass last word states into the next chunk's first state, and Model 3 adds word-to-chunk feedback by updating chunk states with word-level states at every timestep.",
+    "datasets": [
+      "ASPEC (Asian Scientific Paper Excerpt Corpus) English-Japanese (WAT '16); training subset: first 2 million sentence pairs of the provided 3 million"
+    ],
+    "baselines": [
+      "Word-based Seq-to-Seq (Li et al., 2016)",
+      "Word-based Tree-to-Seq (Eriguchi et al., 2016b)",
+      "Character-based Tree-to-Seq (Eriguchi et al., 2016a)"
+    ],
+    "metrics": [
+      "BLEU",
+      "RIBES"
+    ],
+    "limitations": [
+      "In Model 1 the word-level decoder cannot access previous chunk information at the first word of each chunk, which may hurt performance.",
+      "The chunk-level decoder (as in Model 1) may retain information about previous outputs and thus risk generating repeated chunks or forgetting to translate some source words.",
+      "General NMT difficulty in modeling long-distance dependencies (cited as motivation).",
+      "The paper notes future work to combine the decoder with encoders that capture source structure (e.g., Tree-LSTM or CNN), implying current experiments did not combine these."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - Neural Machine Translation (chunk-based decoder; English-Japanese)",
+    "writing_quality": "good"
+  }
+}

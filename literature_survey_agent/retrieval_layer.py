@@ -296,12 +296,14 @@ class RetrievalLayer:
     ) -> None:
         self.results_per_query = results_per_query
         self.s2_api_key        = s2_api_key
-        self.semaphore         = asyncio.Semaphore(max_concurrent)
+        self.max_concurrent    = max_concurrent
 
     # ── Public ────────────────────────────────────────────────────────────────
 
     async def retrieve(self, batch: "QueryBatch") -> RetrievalResult:  # noqa: F821
         """Async entry point — call from async code or via retrieve_sync."""
+        # Create semaphore here so it's bound to the current event loop
+        self.semaphore = asyncio.Semaphore(self.max_concurrent)
         result = RetrievalResult(iteration=batch.iteration)
         registry: dict[str, PaperRecord] = {}   # dedup_key → record
 

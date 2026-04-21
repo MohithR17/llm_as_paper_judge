@@ -1,0 +1,55 @@
+{
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces several clearly new methodological elements (truncated importance sampling with bias correction, Stochastic Dueling Networks, and an efficient trust-region update) and links Retrace to their truncation perspective with contraction proofs. While the overall goal (off-policy actor-critic with replay) addresses a well-studied problem, the specific algorithmic innovations and theoretical interpretation constitute non-trivial, notable advances beyond prior work. The combination and empirical scaling to both Atari and continuous control further differentiate it from existing methods, so the contribution is more than incremental but not a radical departure from the field."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The summary indicates the paper provides both theoretical support (derivation/reinterpretation of Retrace and a contraction proof for the proposed operator) and extensive empirical evaluation on 57 Atari games and multiple MuJoCo tasks against appropriate baselines (A3C, Prioritized DQN, etc.), which supports the main claims. Mathematical claims appear to be addressed with proofs and analysis per the summary. Minor methodological concerns remain: the use of a cumulative maximum-over-time metric and no mention of statistical significance testing or code release could bias or limit reproducibility of the empirical conclusions. Overall the technical claims are well-supported but the experimental reporting has small omissions, so I score it a 4."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized and presents its three main contributions early (truncated importance sampling with bias correction, Stochastic Dueling Networks, and an efficient trust-region update), with a clear method section and extensive experiments on 57 Atari games and multiple MuJoCo tasks. Theoretical material (including a contraction proof) and reported hyperparameters indicate notation and formalism are presented coherently, and related work coverage is thorough. Figures/tables and empirical metrics (median human-normalized scores, episodic returns) appear informative for the claims. Overall writing quality is good, so I rate it a 4 due to only minor presentation gaps (e.g., code availability not mentioned) rather than major clarity problems."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce ACER (Actor-Critic with Experience Replay), an off-policy actor-critic that nearly matches prioritized DQN on Atari and substantially outperforms A3C in sample efficiency on both Atari and continuous control domains.",
+      "Propose three main algorithmic innovations: truncated importance sampling with bias correction, Stochastic Dueling Networks (SDNs), and an efficient trust region policy optimization method that scales to large problems.",
+      "Show that Retrace can be interpreted/rederived as an application of the proposed truncated importance sampling with bias correction; provide theoretical analysis proving the corresponding operator is a contraction.",
+      "Demonstrate ACER scales to both discrete and continuous action spaces and yields strong empirical results on Atari (57 games) and several MuJoCo continuous control tasks."
+    ],
+    "methodology": "Combine an off-policy actor-critic with experience replay using Retrace for multi-step Q estimation, apply truncated importance sampling with bias correction for stable off-policy gradients, introduce Stochastic Dueling Networks to estimate Q and V consistently in continuous actions, and use an efficient trust-region update based on an averaged policy network.",
+    "datasets": [
+      "Arcade Learning Environment (Atari, 57 games)",
+      "MuJoCo continuous control tasks (cartpole, reacher, cheetah, fish, walker, humanoid)"
+    ],
+    "baselines": [
+      "A3C",
+      "Trust-A3C",
+      "DQN (original)",
+      "Prioritized Replay DQN",
+      "TIS / Trust-TIS (trajectory truncated importance sampling baseline)",
+      "Q(\u03bb) with off-policy corrections (discussed as alternative)"
+    ],
+    "metrics": [
+      "Median human-normalized score across 57 Atari games (cumulative maximum over time)",
+      "Mean and standard deviation of episodic returns on MuJoCo continuous control tasks"
+    ],
+    "limitations": [
+      "Truncation with bias correction was not necessary for some lower-dimensional tasks (Fish, Walker2d) but was important in high-dimensional action spaces (Humanoid).",
+      "Q(\u03bb) with off-policy corrections (Qopc/Qopc-based targets) is less stable for policy evaluation and can be unsafe compared to Retrace.",
+      "Replay yields diminishing returns as replay ratio increases.",
+      "When measured by wall-clock time, ACER performs similarly to A3C (i.e., improved data-efficiency does not necessarily reduce compute time)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Reinforcement Learning - off-policy actor-critic methods with experience replay (discrete and continuous control)",
+    "writing_quality": "good"
+  }
+}

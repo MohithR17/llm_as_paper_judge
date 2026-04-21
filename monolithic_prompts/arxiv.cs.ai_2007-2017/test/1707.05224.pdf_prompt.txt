@@ -1,0 +1,308 @@
+
+### SYSTEM ROLE
+You are an expert senior reviewer for arXiv. Your goal is to provide a critical, objective, and constructive review.
+
+### INPUT DATA
+Paper Title: FFECTIVE recognition of objects for tracking in real-time video stream and processing of data involve integration of background modelling, shadow removal, foreground modelling
+Paper Content: 1707.05224.pdf CRF FFECTIVE recognition of objects for tracking in real-time video stream and processing of data involve integration of background modelling, shadow removal, foreground modelling  ksray@isical.ac.in) ianitchakraborty@gmail.com). sayandip199309@gmail.com)  recognizing moving objects in video images using Visual Vocabulary model and Bag of Words and track our object of interest in the subsequent video frames using species inspired PSO. Initially, the shadow free images are obtained by background modelling followed by foreground modeling to extract the blobs of our object of interest. Subsequently, we train a cubic SVM with human body datasets in accordance with our domain of interest for recognition and tracking. During training, using the principle of Bag of Words we extract necessary features of certain domains and objects for classification. Subsequently, matching these feature sets with those of the extracted object blobs that are obtained by subtracting the shadow free background from the foreground, we detect successfully our object of interest from the test domain. The performance of the classification by cubic SVM is satisfactorily represented by confusion matrix and ROC curve reflecting the accuracy of each module. After classification, our object of interest is tracked in the test domain using species inspired PSO. By combining the adaptive learning tools with the efficient classification of description, we achieve optimum accuracy in recognition of the moving objects. We evaluate our algorithm benchmark datasets: iLIDS, VIVID, Walking2, Woman. Comparative analysis of our algorithm against the existing state-of-the-art trackers shows very satisfactory and competitive results.
+Index Terms— Background Modelling, Bag of Words, Cubic SVM, Foreground Modelling, Object Detection, Object recognition, PSO, Shadow Removal, Visual Vocabulary.
+I. INTRODUCTION
+FFECTIVE recognition of objects for tracking in real-time
+video stream and processing of data involve integration of background modelling, shadow removal, foreground modelling
+and proper detection of objects. Recognition of the detected
+objects is done by extracting the features obtained from the principle of bag of words (BOW). Extracted feature sets are
+tracked in the successive test frames via species inspired PSO.
+Although, various detection and tracking algorithms exist, still; object detection, recognition, effective tracking of feature
+sets and adoptability of handling occlusions and other noise are still a standing challenge in the field of computer vision. In
+Kumar S. Ray is with Indian Statistical Institute, 203 B.T Road, Kolkata
+108, India. (e-mail: ksray@isical.ac.in)
+Anit Chakraborty is with Indian Statistical Institute, 203 B. T Road,
+Kolkata – 108, India. (e-mail: ianitchakraborty@gmail.com). Sayandip Dutta is with Indian Statistical Institute, 203 B.T Road, Kolkata 108, India. (e-mail: sayandip199309@gmail.com)
+tracking algorithm, satisfactory training model is of utmost
+importance. In recent years, several attentions [51, 49, 43, 38,
+32, 30, 17, 18, 20] have been given in this direction to achieve
+and share the goal of this paper. Generally, appearance based
+tracking algorithms are of two types mainly; generative [51, 32, 20, 18] and discriminative [49, 43, 38, 30, 17].
+Several tracking algorithms based on static appearance
+models exists, which are either trained using only the first few consecutive set of iterations or defined manually [56], [36], [7],
+[35]. These algorithmic frameworks often fail to deal with momentous appearance changes, which cause nonlinear
+transformation of the appearance of a given object. Such
+challenges lead to difficulty when there is an absence of sufficient amount of priori knowledge. In our paper, we have
+considered several appearances of a given training object of our
+interest, which can capture the momentous and nonlinear changes of the appearances, which are explained in length in
+Section III and IV.
+Here, we use the Visual Vocabulary Model using Bag of
+Words to extract the necessary features of certain instances of
+objects through rigorous high level training. Subsequently, we apply the features to the test datasets to recognize and locate our
+objects in the video scenes. Using visual instance occurrence and their probabilistic presence to imply a certain domain, we
+obtain optimum accuracy in domain recognition as well.
+The contributions of this paper are: • Background modelling and extraction of astute shadow
+free images using color invariant approach.
+• Foreground modelling using morphological operators for
+effective reconstruction of the image.
+• Adoptability of handling occlusions and other noises
+present in the test datasets.
+• Extraction of the features of the objects captured in the
+blobs via the principle of Bag of Words.
+• Classification of the objects in our domain of interest using
+probabilistic word occurrence for domain recognition.
+• Tracking of the recognized objects via species inspired
+PSO.
+E
+The organization of the paper constitutes: review of related
+works in the field of object detection and recognition,
+especially, based on supervised learning are briefly described in
+the following section (II). Section III explains the proposed method for detection, recognition and tracking, specifically,
+section III (D) describes the concept of Visual Vocabulary
+Model for object recognition. Experimental results on several datasets and the comparative analysis with some state-of-the-
+art algorithms are presented in section IV. Section V concludes
+the paper and discusses the future possibilities for further improvements. II. BRIEF REVIEW OF RELATED WORKS Numerous color histograms based tracking algorithms [52,
+55] have been proposed in recent years. The mean shift tracking algorithm has been extended by Collins [53] with the scale
+variation of object of interests in a video frame. Perez et al. [55] used color histogram in addition with a particle filter [57] for
+tracking of objects in video frames. A spatiogram based
+approach has been proposed to capture spatial relationships of statistical properties of pixel, in Birchfield and Rangarajan [45].
+He et al. [7] developed a locality sensitive histogram at each pixel for finer distribution of the visual feature points for object
+tracking in video scenes. Histograms of oriented gradients
+(HOGs) [42] is proposed for object tracking [34] in addition to the integral histogram [44]. Covariance region descriptors [39]
+based approaches were introduced for tracking, to combine
+different features. Local binary patterns (LBP) [54] as well as Haar-like features [47] have been proposed for appearance
+based tracking of objects [17], [38], [19], [9]. Spatio-temporal
+representation combined with genetic algorithm has also been
+used for feature extraction [1]. Recently pixel based
+segmentations have been applied [2] to handle tracking.
+Various generative models have been proposed for multiple
+object tracking in past years. In [58] and [59], Sparse
+Generative Appearance Modeling is implemented to build an appearance model of objects. Gaussian Mixture Models
+(GMM) [60] [62], are popular generative approach for tracking. Apart from GMM, several other mixture models have been used
+in tracking in earlier days, such as finite mixture models [63-
+68]. Priebe et al. [67] introduced an algorithm based on recursive mixture density estimation. To extract time-invariant
+characteristics, the authors of [69] present a Bayesian Tracking approach using autoregressive Hidden Markov Model (AR-
+HMM) for robust visual tracking.
+In recent years, discriminative models are leading the way in the field of object tracking [49], [33]. In this method, a binary
+classifier is trained from the input video sequence, for
+separation of target and background. The classifiers that have been extensively used for object tracking are: ranking SVM
+[18], semi-boosting [30], support vector machine (SVM) [49], boosting [38], structured output SVM [19], and online multi-
+instance boosting [17]. In [49], a trained SVM classifier is
+integrated for tracking, to tackle appearance based changes with varying illumination.
+A confidence map [43] in each frame is built using a discriminative feature combination, learned online, for
+separation of background from target objects. Larese et al. [3]
+have used SIFT descriptor to discriminate the patterns and then
+used it to build Bag of Words model and finally classified with
+SVM.
+Various tracking codes are available for evaluation with
+significant effort of the authors, e.g., MIL [17], OAB [38], IVT
+[32], L1 [26], TLD [23] and likes. III. PROPOSED METHOD Accurate detection of the objects of interest across multiple
+frames and tracking of the recognized objects are still a
+challenge. In order to do that, first we model the background and remove the hard shadows from the background to extract
+the exact area occupied by the object in a frame. Next, we model
+the foreground and subtract the background model without shadow to obtain the blob of an object. Before recognizing the
+object inside the blob, we train a machine learning inspired Visual Vocabulary Model with a set of objects which can
+represent our domain of interest for recognition and tracking. In
+both the cases, i.e., in case of training stage we extract the features of the objects of the training data by principle of Bag
+of Words and in the testing phase, we use the same technique to extract the features of the objects of the test data. After
+classification of extracted feature sets, we track the features of
+interest of the recognized objects in successive video frames via Species inspired PSO. A. Background Modeling Background modelling is an integral part of our algorithm. This part consists of pretreatment of each frame of the video sequence, followed by temporal image analysis. We update the background continuously so as to adapt to the changing background and other variations. We set a background adaptive threshold in order to differentiate between foreground and background objects. Finally, we apply certain domain centric morphological operators to the updated background to obtain smooth background images.
+In [31], Li et al. proposed an idea for background modelling. In our work, we introduced some modification of the same work and proceed as follows:
+At each time step an image 𝐼𝑚 𝑡 is obtained by subtracting two successive video frames and 𝐹𝑚 𝑡 can be obtained by subtracting the current video frame with the background model. To deal with sudden illumination variation an AND-OR operation is performed over 𝐼𝑚 𝑡 and 𝐹𝑚 𝑡 . (Fig. 1)
+a. Pretreatment
+Transformation of color image to grayscale is defined as:
+gray = 0.299R + 0.587G + 0.114B. (1)
+b. Temporal image analysis:
+The extracted frame I t is compared with its previous frame It −1 in order to obtain 𝐼𝑚 𝑡 by predicting the similarity between the two consecutive pixel values of frames It (x, y) and It-1(x, y), expressed using radiometric similarity R (I t (x,y), I t −1 (x,y)) [31]:
+R(It(x,y), It−1(x,y))=
+𝐸[𝑊(𝐼𝑡(𝑥,𝑦)𝑊(𝐼𝑡−1(𝑥,𝑦))]−𝐸[𝑊(𝐼𝑡(𝑥,𝑦)]𝐸[𝑊(𝐼𝑡−1(𝑥,𝑦))]
+√𝐷[𝑊(𝐼𝑡(𝑥,𝑦)]𝐷[𝑊(𝐼𝑡−1(𝑥,𝑦)] . (2)
+Mean and variance of the pixel intensities captured in a
+particular window of a specific video frame W; E[W], D[W].
+Pixel centers are compared between the succeeding images (I t (x, y), I t −1 (x, y)). Temporal binary image of the moving object (𝐼𝑚) has a radiometric similarity value, formally expressed as: 𝐼𝑚(𝑥, 𝑦) = { 1, 𝑖𝑓 𝑅(𝑥, 𝑦) > 𝑇𝑏 0, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒 . (3) Similarly, 𝐹𝑚 𝑡 is formulated on a hypothesis based on the difference threshold (𝑇𝑏), between background frame and the current frame, formally:
+𝐹𝑚 𝑡 = { 1, 𝑖𝑓 |𝐼𝑡(𝑥, 𝑦) − 𝐵𝑡(𝑥, 𝑦)| > 𝑇𝑏 0, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒 . (4) The pixels (x,y) of moving objects are formulated by operating on 𝐼𝑚(𝑥, 𝑦) and 𝐹 𝑡(𝑥, 𝑦): 𝑀𝑡(𝑥, 𝑦) = { 1, 𝑖𝑓 (𝐼𝑚(𝑥, 𝑦) ∩ 𝐹
+𝑡(𝑥, 𝑦)) = 1) 0, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒 . (5)
+The moving pixels in video frames are identified by 𝑀𝑡(𝑥, 𝑦).
+c. Background updating
+Background model is updated with newly arrived information from previous frame using the first-order recursive filter: Bt +1 (x, y) = Bt (x, y) +α × (I t (x, y) – B t (x, y)), (6) where α is an arbitrary adaptation coefficient.
+In our implementation, a vector history V, with the six last
+values updated cumulatively, is considered as: V = [E(t), E (t −1), E (t − 2), E (t − 3), E(t − 4), E (t − 5)]. (7) At time t, the mean value of the frame is E(t).
+For each frame, we calculate proper learning rate 𝛼, based on this vector: 𝛼 = 𝑎 + 𝑏 |𝐸(𝑡)−𝐸(𝑡−5)|
+max (𝐸(𝑡),𝐸(𝑡−5)) , (8)
+Typically, 𝑎 ranges from 0.04 to 0.06. Here a is chosen to be 0.05. For a given value of b and the gain as stated by |𝐸(𝑡)−𝐸(𝑡−5)| max (𝐸(𝑡),𝐸(𝑡−5)) , usually we obtain a small value of 𝛼. The slope of the gain variation curve, is denoted by b, where the gain is represented by [ |𝐸(𝑡)−𝐸(𝑡−5)|
+max (𝐸(𝑡),𝐸(𝑡−5)) ].
+d. Adaptive threshold: The formulation of the noise is described as follows:
+𝑝(𝑛) = 1
+√2𝜋𝜎 𝑒𝑥𝑝 {−
+(𝑛−𝜇)2
+2𝜎2 }, (9)
+where p(n) is the probability of the background pixel.
+Let d be a pixel of the image, the gray histogram of the pixel is h(d), and background pixels and foreground pixels are denoted by IB and IF respectively. Probability of a background pixel misidentified as foreground pixel and vice versa are as follows: 𝑃𝐹|𝐵 = ∑ 𝑝(𝑑 | 𝐵)𝑑∈𝐼𝐹 and 𝑃𝐵|𝐹 = ∑ 𝑝(𝑑 | 𝐹)𝑑∈𝐼𝐵 , (10) where Pd| B is the probability of background pixel and Pd| F is the probability of foreground pixel.
+Our goal is to minimize Pd|B and Pd|F as much as possible.
+The Min PF|B is significant, as after morphological operation in the post-process, PB|F will be smaller. 𝑝(𝐵) is the priori probability of the background as calculated from gray histogram of the image 𝐼𝑚 𝑡 . 𝑝(𝐵) = ∑ ℎ(𝑑) µ = 0𝑇𝑑=−𝑇 . (11) Following is the noise of the variance model, as expressed: 𝜎 = ∑ ℎ2(𝑑)/𝑝(𝐵)𝑇𝑑=−𝑇 . (12) A fitting criterion describes the threshold value defined as, 𝑒𝑀𝑖𝑛 = ∑ (𝑝(𝐵)𝑝(𝑑|𝐵) − ℎ(𝑑)) 2 𝑑∈𝐷 . (13)
+e. Morphologic image operation:
+Apart from moving objects, binary images contain a lot of residual noise. The object detection fails fatally because of many pixel holes in the image. The morphological operators help to remove the holes present and many of the noise by smoothening the edges of the blob. The morphological operators used in this experiment are Adaptive Kernel operator, Gaussian operator and Laplacian Filter. B. Shadow removal As mentioned in [41] by Xu et al., the shadow removal
+approach is pictorially described in Fig. 2.
+The r,g,b normalization is formulated as follows: 𝑟′ = 𝑟
+√𝑟2+𝑔2+𝑏2 , (14)
+𝑔′ = 𝑔
+√𝑟2+𝑔2+𝑏2 , (15)
+𝑏′ = 𝑏
+√𝑟2+𝑔2+𝑏2 , (16)
+where r, g, b are input image color channels, r’,b’,g’ construct the shadow-free color invariant image.
+Application of Gaussian smooth filter suppresses the high frequency textures in both invariant and original images. These smoothed color images are converted to gray scale, following the HSV color model definition, to detect the edges, formally: 𝐸𝑜𝑟𝑖 = ‖𝑒𝑑𝑔𝑒(𝐼𝑜𝑟𝑖)‖, 𝐸𝑖𝑛𝑣(𝑖) = ‖𝑒𝑑𝑔𝑒(𝐼𝑖𝑛𝑣(𝑖))‖, (17) where 𝐸𝑜𝑟𝑖 is the edge of the original image after applying smooth filter and 𝐼𝑜𝑟𝑖 is the original image. 𝐸𝑖𝑛𝑣(𝑖) is the edge of the color invariant image after applying smooth filter and 𝐼𝑖𝑛𝑣(𝑖)is the color invariant image. Here, the values of i (i.e. the invariant image index) are 1 and 2. The hard shadow edge mask is constructed by choosing the strong edges of original images that are absent in the invariant images. Thus, we get:
+𝐻𝑆(𝑥, 𝑦) = {
+1, 𝐸𝑜𝑟𝑖(𝑥, 𝑦) > 𝑡1, &
+min 𝑖 (𝐸𝑖𝑛𝑣(𝑖)(𝑥, 𝑦) < 𝑡2)
+0, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒
+, (18)
+where t1, t2 are thresholds, set manually, and assessed hard shadow edge mask is HS(x,y). In (18), t1 maps the selected shadow edges to the strong edges of the subsequent hard shadows in images. t2 selects edges belonging only to shadows. C. Foreground Modelling and Reconstruction In the present work, we have introduced a new concept of foreground modeling. This is essential to recognize and detect the objects from static or moving background variants.
+We consider Poisson equation solution to reinforce the shadow portions from the derivative frames. To begin with, shadow edge masks of the two kinds and are merged as: mask = VS | HS, (19) where VS represents vague shadow and HS represents hard shadow. Furthermore, masking is applied to the gradient field: ∇𝑖′ = 𝑚𝑎𝑠𝑘 ⋅ ∇𝑖 = (𝑚𝑎𝑠𝑘 ⋅ 𝐺𝑥 , 𝑚𝑎𝑠𝑘 ⋅ 𝐺𝑦) , (20) where 𝐺𝑥 and 𝐺𝑦 are gradient field along the axis. The clipped derivatives are denoted as Gx’ and Gy’ and the calculation of the scalar is represented as: 𝑑𝑖𝑣𝐺 = 𝜕𝐺𝑥 ′
+𝜕𝑥 + 𝜕𝐺𝑦
+′
+𝜕𝑦 . (21)
+Finally, shadow image restoration is done by working out
+the well-known Poisson equation: ∇2s = divG, (22) where, s is the calculated shadow image. As we perform the
+process in logarithmic domain, an exponent operation is added to the image: 𝑆(𝑥, 𝑦) = exp(𝑠(𝑥, 𝑦) − max 𝑥,𝑦 (𝑠(𝑥, 𝑦))). (23)
+Shadow extraction from original image, as formulated:
+r(x, y) = i(x, y) − s(x, y), (24) 𝑅(𝑥, 𝑦) = exp(𝑟(𝑥, 𝑦) − max 𝑥,𝑦 (𝑟(𝑥, 𝑦))), (25) where S and R are the shadow image and shadow free image respectively, after reconstruction. Figure 3. (a) shows the actual video frames; column (b) is the modelled background, column (c) corresponds to the foreground modelling. The figures visible are accepted as foreground objects.
+D. Visual Vocabulary Model for Object Recognition
+Visual Vocabulary Model is a machine learning based image classification model, specifically, handling images as documents, by labelling specific features as words. By observing presence of such feature key words in an image, Visual Vocabulary Model can predict the domain of the image and by their arrangement in an image, it can recognize different objects.
+We have adopted this method as it yields satisfactory results with limited training samples, and the accuracy only increases with the increase in training datasets. In our paper, scene recognition is essential to narrow down the objects that can be present in a scene.
+Recognition using Visual Vocabulary consists of selection of
+distinct key words and normalization of the surrounding
+regional content. Assigning a descriptor to the normalized content, helps matching the captured objects which are of our
+domain of interest.
+a. Visual keyword localization:
+To localize the keywords, first step is to extract the features of the object of interest such that they are distinct and invariant under different scale and illumination based conditions even with the presence of noise.
+To construct the Visual Vocabulary a corpus of training images need to be stored in the feature space in order to model the descriptor instances. Subsequently, the modelled descriptors have to be clustered for quantization of the feature space into distinctive visual words, where the visual words signify the center of the cluster. For given video frames, the closest matching visual key points are recognized with the corresponding features. The bag of words feature sets can be used to define the principle description of any given videoframe. This process can be divided into three steps, namely; tokenization, counting and normalization. In tokenization phase, similar feature patches are labelled via kmean clustering. In the counting phrase, the number of tokens are counted to get an estimate of the scene. Finally, different tokens are assigned with different weightage based on their arrangement, which differentiates between various objects.
+b. Classification:
+Extracted features are classified in order to distinguish the objects of interest (say, human) from any other objects present in the videoframe. We have used Nonlinear (cubic) Support Vector Machine (SVM) as the feature classifier. Cubic SVM bundles consider consecutive triples of words for classification. In our case, cubic SVM performed better than all other types of SVM as well as other classifiers. Polynomial kernel for cubic SVM is: 𝐾(𝑥, 𝑦) = (𝑥𝑇𝑦 + 𝑐)3. (26) Here x and y are input vector features, calculated from the training samples. A free parameter, c  0, is indicating how far the equation is from homogeneity.
+c. Detection of feature of test objects:
+In this section, we have followed the similar approach of bag
+words to extract the textual distribution as feature of the test
+objects in the video scenes. During classification process,
+similar feature in different objects can lead to uncertainty in feature assignment. Dealing with uncertainty, implicit shape
+model has been proposed (ISM). In ISM algorithm, extraction
+of local features and matching it to the Visual Vocabulary is done using soft matching. At the time of validation of our
+classification process we used the notion of soft computing
+which is basically a heuristic interpretation of our matching threshold.
+The following equation expresses the contribution of a feature f, at location l, at position x in the object class o𝑛 with matching visual keywords (C𝑖) indicating its potentiality of belonging to the class o𝑛 . Thus, we get: 𝑝(𝑜𝑛 , 𝑥|𝑓, 𝑙) = ∑ 𝑖 𝑝(𝑜𝑛 , 𝑥|𝐶𝑖 , 𝑙) 𝑝(𝐶𝑖|𝑓), (27) where 𝑝(𝑜𝑛 , 𝑥|𝑓, 𝑙) indicates the probability of feature f at frame location l to belong to the class of o𝑛 at image position x.
+The weights are populated in continuous 3D weighing region for object position x= (x, y, s). For visual keyword 𝐶𝑖, the first term of the right-hand side of (27) indicates the stored occurrence distribution, which is weighted by the second term, the probability of feature f, belonging to the exact class of 𝐶𝑖. Mean-shift mode estimation with a kernel K, along with scale-adaptive kernel, is used to obtain the maxima in this space: ?̂?(𝑜𝑛 , 𝑥) = 1
+𝑉b(𝑥𝑠) ∑ ∑ 𝑝(𝑜𝑛, 𝑥𝑗|𝑓𝑘, 𝑙𝑘)𝐾 (
+𝑥−𝑥𝑗
+𝑏(𝑥𝑠) )𝑗𝑘 . (28)
+Kernel bandwidth is denoted by b, and volume is denoted by 𝑉𝑏, which are varied over the radius of the kernel. In order to fix the hypothesized interest object, size and scale coordinate 𝒙𝑠 is parallelly updated. This strategy makes it easier to deal with partial occlusions and also typically requires fewer training examples.
+The pictorial structure model represents any object of interest as collection of parts, connected in pairs, and defined by a graph G = (V, E), where the nodes V = {𝑣1, … , 𝑣𝑛} defines the parts and the edges (𝑣𝑖 , 𝑣𝑗) 𝜖 𝐸 describes the corresponding connections. L = {𝑙1, … , 𝑙𝑛} be a certain arrangement of part frame locations. Then the matching of the model to a video frame is formulated using an energy minimization function:
+𝐿∗ = argmin 𝐿 (∑ 𝑚𝑖(𝑙𝑖) 𝑛 𝑖=1 + ∑ 𝑑𝑖,𝑗(𝑙𝑖 , 𝑙𝑗)(𝑣𝑖,𝑣𝑗)∈𝐸 ). (29)
+The matching cost is 𝑚𝑖(𝑙𝑖) at location 𝑙𝑖, with the placing part 𝑣𝑖 and deformation cost between two corresponding part locations represented by 𝑑𝑖,𝑗(𝑙𝑖 , 𝑙𝑗): 𝑑𝑖,𝑗(𝑙𝑖 , 𝑙𝑗) = (𝑇𝑖𝑗(𝑙𝑖) − 𝑇𝑗𝑖(𝑙𝑗)) 𝑇 𝑀𝑖𝑗 −1 (𝑇𝑖𝑗(𝑙𝑖) − 𝑇𝑗𝑖(𝑙𝑗)), (30)
+where 𝑑𝑖,𝑗 is Mahalanobis Distance between transformed locations 𝑇𝑖𝑗(𝑙𝑖) and 𝑇𝑗𝑖(𝑙𝑗), 𝑀𝑖𝑗 being the diagonal covariance. The root node optimum location stated as: 𝑙1 ∗ = argmin
+𝑙1 (𝑚1(𝑙1) + ∑ 𝐷𝑚𝑖(𝑇1𝑖(𝑙1))
+𝑛 𝑖=2 ), (31)
+where 𝐷𝑚𝑖(𝑇1𝑖(𝑙1)) represents a sum of the root node’s response as a distance-transformed version of each child node.
+Thus, we get:
+𝑙1 ∗ = argmin 𝑙1 (𝑚1(𝑙1) + ∑ min 𝑙𝑖 𝑛𝑖=2 𝑚𝑖(𝑙𝑖) + ||𝑙𝑖 −
+𝑇1𝑖(𝑙1)||𝑀𝑖𝑗 2 ) . (32)
+In (Fig. 4), visual word tokenization is explained and furthermore, the visual word occurrence frequency is explained in the following section. It signifies the number of time a particular word vector represents its class of object in varied frames. This is evidently the parameter that decides the characteristics of a particular object.
+To validate the classification, cross validation approach is applied by randomly splitting the array of objects into train data subsets and test data subsets. Then it creates a confusion matrix for comparing the correct and incorrect classification of features for training of Visual Vocabulary Model. The sum along the principle diagonal of the confusion matrix represents the number of correctly classified objects. The ratio between correctly classified object to the total number of objects to be identified gives the validation accuracy.
+d. Adaption of Discriminative model based on Pyramid Matching Kernel (PMK) approach:
+In this paper, we have essentially considered discriminative model for tracking the objects with different appearance (Fig. 9). For further improvement of our validation score by approximating the similarity measures, we are modelling a
+linear time matching function, represented by the Pyramid Match Kernel (PMK) model to bridge the feature sets to the variable cardinalities. Let the input of a histogram pyramid be X ϵ S where Ψ(X) = [𝐻0(𝑋), … , 𝐻𝐿−1(𝑿)], number of pyramid levels expressed as L. The histogram vector of point X is defined by 𝐻𝑖(𝑿). Similarity between two input set of features Y and Z is expressed as: 𝜅𝑃𝑀𝐾(Ψ(𝑌),Ψ(𝑍)) = ∑ 𝜔𝑖 (𝐼(𝐻𝑖(𝑌), 𝐻𝑖(𝑍)) − 𝐿−1 𝑖=0
+𝐼(𝐻𝑖−1(𝑌), 𝐻𝑖−1(𝑍))), (33)
+where 𝐼(𝐻𝑖(𝑌), 𝐻𝑖(𝑍))signifies the histogram intersection of two input set of features Y and Z at ith level of the pyramid. E. Region of Interest Tracking The species inspired PSO framework provides an effective
+way to track multiple object that are detected and recognized from aforementioned method (visual word features). First, for singular object tracking, following analogies need to be assumed:
+• The groundtruth of an object and surrounding region can
+be considered as ecological properties.
+• State space particles correspond to a particular species. • Each particle’s observation likelihood and fitness
+capability of a particular species is analogous.
+For multiple object tracking, these postulates can be easily extended by creating a tracker for each object. These trackers are managed independently. In case of occlusion, support regions of concerning objects may overlap, which implies, the intersectional area between two species are elementary to both. Subsequently, the repulsion and competition among the species arise as both of them aspire to the same resource, the stronger one has higher probability of winning the competition.
+During the course of video scene, there may be overlap between two object areas due to occlusion and the related features between them may become ambiguous. To handle this hindrance, we design a multiple-species-based PSO algorithm. The principle idea behind this approach [19], is to divide the groundtruth particles of the object into various species according to the species object numbers and successfully model the relations and the partial visibility among varied species. Detailed description of the species inspired PSO algorithm is briefly described in the following sections.
+a. Problem Construction:
+Let us consider, M number of objects, surrounded with N number of particles, constitute a set 𝜒 = { 𝑥𝑡,𝑘 𝑖,𝑛 , 𝑖 = 1, … , 𝑁, 𝑘 = 1,… ,𝑀}, 𝓞 = { 𝑜𝑡,𝑘 𝑖,𝑛, 𝑖 = 1, … , 𝑁, 𝑘 = 1,… ,𝑀}. Here t is the 2- D translation parameter. Formula of multiple object tracking is as follows: 𝜒∗ = argmax 𝑖 𝑝(𝓞|𝝌) (34)
+By independently maximizing of the individual observation likelihood, the above optimization may be simplified, in case of no occlusion.
+In case of no occlusion, the above optimization may be simplified by maximizing the individual observation likelihood independently (here, we drop the superscript i, n for simplicity):
+𝑥𝑡,𝑘 ∗ = argmax
+𝑥𝑡,𝑘 𝑝(𝑜𝑡,𝑘|𝑥𝑡,𝑘), 𝑘 = 1, … ,𝑀 (35)
+b. Competition Model:
+When different object obscure one another, there is an
+overlap between corresponding support regions. In these
+circumstances, the competition between two objects elevates to subjugate the overlapping part (Fig. 5). In order to effectively
+design the competition phenomenon, the visual problem needs to be merged with the competition process.
+To evaluate the fitness value on the overlapping part as the competition ability, the overlapping part is viewed at a whole and projected onto the learned subspace corresponding to each object. We define the power of each object or species in following manner: 𝑝𝑜𝑤𝑒𝑟𝑘 = 𝑝(?̂?𝑡,𝑘|𝑥𝑡,𝑘) = 𝑒𝑥𝑝 (−‖?̂?𝑡,𝑘 − ?̂?𝑘?̂?𝑘 𝑇?̂?𝑡,𝑘‖ 2 ), (36)
+where k and ?̂?𝑘 are the overlapping part of the object and its corresponding subspace respectively. In a similar way, the interactive likelihood of object 𝑘1 over the overlapping regions can be calculated: 𝑝(?̂?𝑡,𝑘1|𝑥𝑡,𝑘1 , 𝑥𝑡,𝑘2)⏟ = 𝑝𝑜𝑤𝑒𝑟𝑘1
+∑ 𝑝𝑜𝑤𝑒𝑟𝑘𝑖𝑖=1,2 . (37)
+𝑖𝑛𝑡𝑒𝑟𝑎𝑐𝑡𝑖𝑣𝑒 𝑙𝑖𝑘𝑒𝑙𝑖ℎ𝑜𝑜𝑑
+The mutual likelihood of each species describes the competition ability. Higher the competition ability of a species more like it is to win the competition. It means that the species which won the competition is more likely to be of the object that was occluding the other object species involved.
+c. Annealed Gaussian Based PSO (AGPSO)
+An annealed Gaussian based PSO algorithm [21] is considered in this paper, as in conventional PSO requires careful and fine tuning of various parameters. In this algorithm, the particles and corresponding velocities are updated in below mentioned manner: 𝑣𝑖,𝑛+1 = |𝑟1|(𝑝 𝑖 − 𝑥𝑖,𝑛) + |𝑟2|(𝑔 − 𝑥 𝑖,𝑛) + 𝜖 (38)
+𝑥𝑖,𝑛+𝑖 = 𝑥𝑖,𝑛 + 𝑣𝑖,𝑛+1, (39) where |𝑟1| and |𝑟2| being the absolute values of the samples from Gaussian probability distribution N (0, 1). This is zeromean Gaussian disturbance that stops the algorithm from getting trapped in local optima. With the help of adaptive simulated annealing, the covariance matrix of 𝜖 is changed [34]: ∑ =𝜖 ∑𝑒
+−𝑐𝑛. (40) Here, a transition distribution is predefined and Σ is its covariance matrix, annealing constant c, and iteration number n. The components in Σ decrease in proportion to the iteration number which results in a fast rate of convergence. When 𝑘1 and 𝑘2 occlude each other at time t, a repulsion force is added to the evolution process of particles, and subsequently the iteration step for 𝑘1 becomes as follows:
+𝑣𝑡,𝑘1 𝑖,𝑛+1 = |𝑟1|(𝑝𝑡,𝑘1 𝑖 − 𝑥𝑡,𝑘1 𝑖,𝑛 ) + |𝑟2|(𝑔𝑡,𝑘1 − 𝑥𝑡,𝑘1 𝑖,𝑛 ) +
+|𝑟3|𝐹𝑘2,𝑘1⃗⃗ ⃗⃗ ⃗⃗ ⃗⃗ ⃗⃗  ⃗ + 𝜖 (41) 𝑥𝑡,𝑘1 𝑖,𝑛+1 = 𝑥𝑡,𝑘1 𝑖,𝑛 + 𝑣𝑡,𝑘1 𝑖,𝑛+1 , (42)
+where the parameter 𝑟3 is Gaussian random number sampling from N (0, 1). The third term on the right-hand side of the above equation depicts the shared effect between object 𝑘2 and 𝑘1. In other words, the competition phenomenon on the observation level has been modelled in this paper. Also, the competition model of state space has been modelled to drive the evolution process of the species in the right direction.
+d. Updating of the Appearance Model Selectively
+In most of the tracking algorithms [24], [29], appearance models are not updated during occlusion. However, the appearance of the object under occlusion may change, and that can cause the tracker to fail to recapture the object appearance after it is not occluded anymore. A selective updating algorithm is implemented to cope with the appearance changes during occlusion: pixels belonging to the visual part of the objects are cumulatively updated in the normal way and pixels that are part of the overlapping region (Fig. 5) are projected onto the subsequent subspace of each object. Then the errors due to the reconstruction are calculated. If this error is smaller than a predefined threshold for pixels inside the overlapping area, then it is again updated in the subsequent subspace.
+Due to this careful modelling of the updating strategy, the appearance changes can be easily accommodated, allowing more persistent tracking throughout the video stream. IV. EXPERIMENTAL RESULTS AND ANALYSIS Proposed method is evaluated on benchmark datasets and compared it with the existing state-of-the art tracking algorithms. Brief description of the experimental datasets is shown followed by the experimental parameter settings and analysis.
+All the tests were done on an Intel 5th Gen core i7, 2.10 GHz
+processor with 6 Gigabytes of RAM and 2 Gigabytes NVDIA GeForce GPU and the algorithm was implemented using
+MATLAB’16 development tool. A. Experimental Datasets We evaluate the proposed algorithm on benchmark TB100 sequences, namely, iLIDS [4], VIVID [46], Walking2 [50] and Woman [40]. In the following section, we discuss the various attributes of the aforementioned datasets.
+The primary challenges in the iLIDS dataset [4] (imagery Library for Intelligent Detection Systems) is the Scale Variation (SV), In Plane Rotation (IPR), Occlusion (OCC), Low Resolution (LR) and Illumination Variation (IV). This video consists of a total number of four people walking to, from and across the camera view, with the camera mounted at an isometric angle, where only one man carries a trolley. The video is 10 minutes long, at 25 frames per second, with each frame having a dimension of 720x570 pixels, which we have scaled down to 180x144 for low resolution analysis.
+The woman dataset [40] is much more challenging, as one has to handle Illumination variation, Scale variation, Occlusion, Deformation (DEF), Motion Blur (MB), Fast Motion (FM) and Out Plane Rotation (OPR). It has 597 video frames of 352x288 resolution. Here the camera view follows a woman walking past several cars.
+The VIVID dataset [46] is part of DARPA VIVID program consisting 9 video sequences. Here we deal with one of those nine videos, namely, RedTeam. The video contains challenges such as; Scale Variation, Occlusion, In Plane Rotation, Out Plane Rotation and Low Resolution. This is an aerial footage of a car driving on a straight road then turning a corner at the end forming long shadow cast of the object. Therefore, shadow removal gives a better result in tracking.
+Walking2 dataset [50] contains difficulties like Scale Variation, Occlusion and Low Resolution. The video contains 500 frames, each of dimension 384x288 pixels. The video is of some people walking down the corridor of an office interior. This video is in many ways similar to the iLIDS dataset. In the following section, we demonstrate the accuracy of our algorithm and susceptibility in handling all the challenges offered by these benchmark datasets. B. Experimental Setting All the aforementioned datasets consist of RGB color channels, which are more memory extensive for image processing. So, we temporarily convert them to grayscale using the equation: gray = 0.299R + 0.587G + 0.114B.
+Furthermore, we update the background model with the process mentioned in (14) (15) and (16) of our proposed method.
+Then we process each frame with their original RGB color channels and reconstruct a new image by feeding only the normalized R and G color channel values. This normalized image removes the shadow component from the image, which essentially, helps in accurate tracking. After this step, we convert this image into a binary image through background subtraction [Figure 6.(b)]. We dilate the image by employing some morphological operations. However, this image does not preserve the edges satisfactorily enough. Thus, we extract the binary image with edges intact, by simple background subtraction [Figure 6. (c)]. Then we pointwise multiply these images to obtain the complete shadow free image [Figure6. (d)] with edges preserved.
+For training, we consider the domain with train data sets and we use Visual Vocabulary features. We’re extracting key points and calculating the probable occurrences in the subsequent frames (Fig. 7). Continuing with this process, we extract all the key points of certain domain oriented objects from different angle-posture-view high definition picture datasets for better accuracy.
+Visual Vocabulary using Cubic SVM based classification covers two other parameters, namely domain detection of the scene and object identification for further video frames, which are independent to camera axis orientation, camera background relationship and surroundings. It provides recognition accuracy of roughly 93.3%.
+Then we use the extracted and trained features to the Species inspired PSO for accurate and content aware tracking. Following this process, as we can see in (Fig. 8), the unattended luggage is also recognized. Here the luggage is a rigid object which remains stationary for most of the video and when it is moved by any human, it forms a connected blob with that human. Normally, in such cases, PSO cannot track successfully, but because of the feature driven input to the Species inspired PSO, we get the results shown below. C. Analysis and Evaluation We test our algorithm on the dataset mentioned above with the aforementioned setting. The confusion matrix (Fig. 10) shows that we have reached up to 85.33% accuracy. Here, we consider INRIA Person Dataset for training of our Visual Vocabulary Model from various angle and postures for accurate detection and recognition, as portrayed in Fig. 9.
+More training always leads to higher accuracy. Our training data here consisted of partial photos of train that had almost similar dimension like cars. That is why our classifier has maximum confusion in this situation, as reflected by the confusion matrix.
+Other plots like, ROC curve and scatter point data show the classifier performance and the plot between True Positive Rate and False Positive Rate. Prediction model curve shows the structure containing a classification object and a function for prediction. This structure allows to make predictions for data models that include principal component analysis (PCA).
+Applying the extracted features to the test datasets, using Visual Key points, prediction of new objects of interest in the video sequence is done. Subsequently, using the trained model as a reference to recognize newly arrived objects, as shown in the (Fig. 11), with a validation accuracy of roughly 93.13%.
+Train models using machine learning learners are applied in the video sequences and the algorithm predicts with recognition, the objects of interests, present in the consequent video frames, as stated above.
+Domain recognition of the test sequence also being predicted by the probability distribution of presence of objects [i.e. Visual Key Points] in the scene, as shown in the [Fig. 12]
+Now, we compare the detection accuracy of our algorithm with different benchmark methods as shown in Table 1, 2, 3, 4.
+Next, a comparative analysis of the Frame Per Second (FPS), provided in [5], is demonstrated in Table 5. We implement our algorithm on the VIVID dataset [46], and compare it with various state-of-the-art methods to obtain the necessary data for Table 5.
+In all these cases, our algorithm performs competitively better than all the popular existing approaches. This is due to the fact that other algorithms are effective to deal with certain challenges offered by the datasets, but they are not susceptible enough to cope up with all the challenges of datasets, as stated earlier in section IV (A). Table 6 represent the comparative performance of different trackers with our proposed algorithm. In Table 6, each entry has a numerator term which represents tracking score and the denominator term represents the false positive in tracking.
+A careful inspection of Table. 6 reveals the fact that in all the cases our algorithm performs better than the existing ones. Fig. 14 graphically depicts the above stated fact about the performance measure which indicates the proposed algorithm’s flexibility in adapting with real-life challenges.
+Fig. 13 further shows a comparative study on the performance of our algorithm with respect to tracking accuracy and the size of Visual Vocabulary Model. Thus, the
+proposed algorithm performs very satisfactorily over different challenging attributes of different images and illumination variations of the video frames.
+As it can be seen in (Fig. 14), our algorithm performs best on Walking2 datasets, which is expected because of fewer number of challenging attributes. It performs well on iLIDS and VIVID datasets despite the low-resolution video frames.
+Table 6. Performance of different algorithms on different attributes
+Trackers
+Features
+ASLA [11] DFT [12] IVT [32] MIL [17] PCOM [6] LSS [8] Proposed
+method
+Scale Variation (SV) 54.0
+/ 3.9
+47.9 / 5.9
+47.1 / 5.3
+44.5 / 6.5
+44.8/5.7 48.5
+/ 5.3
+58.0/4.1
+In Plane Rotation (IPR)
+52.1 / 4.1
+50.7 / 5.1
+46.4 / 5.3
+45.7 / 5.9
+43.7/5.9 47.1
+/ 5.5
+50.7/3.9
+Occlusion (OCC) 56.0
+/ 3.8
+52.7 / 5.1
+49.3 / 5.1
+47.6 / 5.8
+47.4/5.5 51.2
+/ 5.1
+60.9/1.6
+Illumination Variation (IV)
+59.6 / 3.0
+53.0 / 4.7
+51.2 / 4.8
+47.1 / 5.6
+47.8/5.8 51.4
+/ 5.2
+59.9/2.7 V. CONCLUSION This paper presents object detection, recognition of the detected objects based on Visual Vocabulary Model and tracking of the recognized objects using Species inspired PSO. We train different objects separately in several images with multiple aspects and camera viewpoints to find the best key word points for recognition. Subsequently, we verify the extracted features of the train images. These key word points are applied to the regions based on visual feature point analysis. The comparative analysis is done using visual key word points. We present similarity measures using PMK approach [Section IV, D(d)] for feature matching. The object is satisfactorily detected. After detection of the object, the recognition of the specific object of our interest is done in section IV (D). Finally, the features of the recognized objects are tracked by the Species inspired PSO, which can also efficiently handle the tracking under partial occlusions as shown in Fig 8. The performance measure of the proposed algorithm is done with respect to available benchmark data [4, 46, 50, 40] and we obtain very satisfactory and competitive results. In future, we have a plan to modify the detection and recognition scheme based on the theory of SP (Simplicity & Power) Intelligence.  In recent years, several attentions [51, 49, 43, 38, 32, 30, 17, 18, 20] have been given in this direction to achieve and share the goal of this paper.    In recent years, several attentions [51, 49, 43, 38, 32, 30, 17, 18, 20] have been given in this direction to achieve and share the goal of this paper.    In recent years, several attentions [51, 49, 43, 38, 32, 30, 17, 18, 20] have been given in this direction to achieve and share the goal of this paper.    Generally, appearance based tracking algorithms are of two types mainly; generative [51, 32, 20, 18] and discriminative [49, 43, 38, 30, 17].    Generally, appearance based tracking algorithms are of two types mainly; generative [51, 32, 20, 18] and discriminative [49, 43, 38, 30, 17].    Generally, appearance based tracking algorithms are of two types mainly; generative [51, 32, 20, 18] and discriminative [49, 43, 38, 30, 17].    Several tracking algorithms based on static appearance models exists, which are either trained using only the first few consecutive set of iterations or defined manually [56], [36], [7], [35].    [7] developed a locality sensitive histogram at each pixel for finer distribution of the visual feature points for object tracking in video scenes.    Local binary patterns (LBP) [54] as well as Haar-like features [47] have been proposed for appearance based tracking of objects [17], [38], [19], [9].    Local binary patterns (LBP) [54] as well as Haar-like features [47] have been proposed for appearance based tracking of objects [17], [38], [19], [9].    Local binary patterns (LBP) [54] as well as Haar-like features [47] have been proposed for appearance based tracking of objects [17], [38], [19], [9].    Recently pixel based segmentations have been applied [2] to handle tracking.    [18], semi-boosting [30], support vector machine (SVM) [49], boosting [38], structured output SVM [19], and online multi-    [18], semi-boosting [30], support vector machine (SVM) [49], boosting [38], structured output SVM [19], and online multi-    instance boosting [17].    [3]    , MIL [17], OAB [38], IVT    [32], L1 [26], TLD [23] and likes.    The principle idea behind this approach [19], is to divide the groundtruth particles of the object into various species according to the species object numbers and successfully model the relations and the partial visibility among varied species.    Annealed Gaussian Based PSO (AGPSO) An annealed Gaussian based PSO algorithm [21] is considered in this paper, as in conventional PSO requires careful and fine tuning of various parameters.    We evaluate the proposed algorithm on benchmark TB100 sequences, namely, iLIDS [4], VIVID [46], Walking2 [50] and Woman [40].    The primary challenges in the iLIDS dataset [4] (imagery Library for Intelligent Detection Systems) is the Scale Variation (SV), In Plane Rotation (IPR), Occlusion (OCC), Low Resolution (LR) and Illumination Variation (IV).    Next, a comparative analysis of the Frame Per Second (FPS), provided in [5], is demonstrated in Table 5.    Detection Accuracy on iLIDS Dataset [4]    ASLA [11] 2012 79.    24% DFT [12] 2012 81.    36% MIL [17] 2009 84.    29% PCOM [6] 2014 79.    87% LSS [8] 2013 78.    ASLA [11] 2012 86.    3% DFT [12] 2012 85.    9% MIL [17] 2009 90.    2% PCOM [6] 2014 86.    7% LSS [8] 2013 87.    ASLA [11] 2012 88.    2% DFT [12] 2012 87.    8% MIL [17] 2009 90.    2% PCOM [6] 2014 88.    3% LSS [8] 2013 90.    ASLA [11] 2012 87.    8% DFT [12] 2012 88.    9% MIL [17] 2009 91.    2% PCOM [6] 2014 88.    4% LSS [8] 2013 89.    Trackers Features ASLA [11] DFT [12] IVT [32] MIL [17] PCOM [6] LSS [8] Proposed method Scale Variation (SV) 54.    Trackers Features ASLA [11] DFT [12] IVT [32] MIL [17] PCOM [6] LSS [8] Proposed method Scale Variation (SV) 54.    Trackers Features ASLA [11] DFT [12] IVT [32] MIL [17] PCOM [6] LSS [8] Proposed method Scale Variation (SV) 54.    Trackers Features ASLA [11] DFT [12] IVT [32] MIL [17] PCOM [6] LSS [8] Proposed method Scale Variation (SV) 54.    Trackers Features ASLA [11] DFT [12] IVT [32] MIL [17] PCOM [6] LSS [8] Proposed method Scale Variation (SV) 54.    In this paper, we address the basic problem of recognizing moving objects in video images using Visual Vocabulary model and Bag of Words and track our object of interest in the subsequent video frames using species inspired PSO. Initially, the shadow free images are obtained by background modelling followed by foreground modeling to extract the blobs of our object of interest. Subsequently, we train a cubic SVM with human body datasets in accordance with our domain of interest for recognition and tracking. During training, using the principle of Bag of Words we extract necessary features of certain domains and objects for classification. Subsequently, matching these feature sets with those of the extracted object blobs that are obtained by subtracting the shadow free background from the foreground, we detect successfully our object of interest from the test domain. The performance of the classification by cubic SVM is satisfactorily represented by confusion matrix and ROC curve reflecting the accuracy of each module. After classification, our object of interest is tracked in the test domain using species inspired PSO. By combining the adaptive learning tools with the efficient classification of description, we achieve optimum accuracy in recognition of the moving objects. We evaluate our algorithm benchmark datasets: iLIDS, VIVID, Walking2, Woman. Comparative analysis of our algorithm against the existing state-of-the-art trackers shows very satisfactory and competitive results. Microsoft® Word 2016
+
+### TASK
+Provide your review as a JSON object with the following fields, matching the official review format for arXiv:
+Please provide a review with the following fields: IMPACT (1-5), SUBSTANCE (1-5), APPROPRIATENESS (1-5), MEANINGFUL_COMPARISON (1-5), PRESENTATION_FORMAT (e.g. 'Oral Presentation' or 'Poster'), CLARITY (1-5), REVIEWER_CONFIDENCE (1-5), SOUNDNESS_CORRECTNESS (1-5), ORIGINALITY (1-5), comments (detailed textual review), RECOMMENDATION (1-10). For RECOMMENDATION, provide just the integer score (1-10). For all other numeric fields, provide just the integer score.
+
+### CONSTRAINT
+Base your judgment only on the provided text. Do not use external tools. Output only the JSON object, nothing else.

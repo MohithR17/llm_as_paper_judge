@@ -1,44 +1,44 @@
 {
   "APPROPRIATENESS": 5,
-  "IMPACT": 4,
-  "REPLICABILITY": 3,
-  "SUBSTANCE": 4,
-  "CLARITY": 4,
   "SOUNDNESS_CORRECTNESS": 3,
+  "IMPACT": 4,
   "MEANINGFUL_COMPARISON": 4,
   "ORIGINALITY": 3,
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "REPLICABILITY": 2,
   "_details": {
     "APPROPRIATENESS": {
       "score": 5,
-      "justification": "The paper addresses event coreference (event linking) using convolutional neural sentential features and pairwise similarity models and evaluates on standard corpora (ACE 2005 and ACE++), which squarely fits top-tier NLP venues focused on information extraction and coreference (see Sec. 4 Experimental setting and Sec. 5 Evaluation). It uses methods and evaluation practices expected at these venues (CNNs, pre-trained embeddings, TensorFlow/Adam, hyperparameter search, comparisons to prior work such as Chen & Ji (2009), Cybulska & Vossen (2015) and reports state-of-the-art results), and is positioned within the event-coreference literature (Sec. 6 Related work), making it a strong fit for a top NLP/ML conference."
-    },
-    "IMPACT": {
-      "score": 4,
-      "justification": "The paper tackles an important problem\u2014within-document event linking/coreference\u2014which is central to producing coherent document-level IE (Section 1 example and task description). By showing a model that \u201cdoes not rely on such features but instead utilizes sentential features coming from convolutional neural networks,\u201d it offers a practical, domain-agnostic alternative to KB-heavy systems (Related work / Conclusion). The authors report state-of-the-art performance \u201con two datasets, one of which is publicly available,\u201d suggesting the approach is likely to be adopted and built upon; while impactful, the advance is an applied methodological improvement rather than a transformative theoretical shift."
-    },
-    "REPLICABILITY": {
-      "score": 3,
-      "justification": "Partially reproducible: the paper gives many implementation details (TensorFlow v0.6 implementation, model architecture, loss, Adam optimizer, Ww initialized with Mikolov embeddings, training for 2000 epochs, data splits and a link to ACEvalid/ACEtest), but crucial specifics are missing from the provided text \u2014 the final hyperparameter values are only said to be in Table 2 (not included), Adam and other hyperparameter settings are not listed, the ACE++ document list and annotation procedure are not provided, preprocessing/tokenization and exact feature extraction steps are underspecified, evaluation metrics/protocols are not explicitly defined here, and no code release is given. These omissions prevent full reproduction without additional information."
-    },
-    "SUBSTANCE": {
-      "score": 4,
-      "justification": "The paper runs experiments on standard ACE and a larger ACE++ split, reports comparisons to state-of-the-art, and explicitly performs hyper-parameter search (180 random points + line search) and model-variant comparisons (e.g., activation functions, pooling, use of pairwise/lexical features) which indicates solid empirical coverage. It also states that ablation-style comparisons were used to assess feature-class impact and includes an error analysis. Related work coverage is broad and fair. Reproducibility is only partial from the provided text: training details (TensorFlow, Adam, 2000 epochs, pre-trained embeddings) are given and dataset splits are described, but final hyperparameters are only referenced in unseen tables, ACE++ release is unclear, and code/configuration are not provided, hence minor gaps remain."
-    },
-    "CLARITY": {
-      "score": 4,
-      "justification": "The paper is largely well-organized and follows a logical flow (problem definition, model, learning, experiments, related work), with concrete examples (the Barclays example) that help illustrate the task. The main contribution \u2014 a CNN-based sentential-feature model for within-document event linking and its empirical success \u2014 is stated in the summary/introduction text, though an explicit bullet of contributions earlier would improve immediacy. Notation is generally consistent and equations (4\u20136) and the parameter set \u03b8 are defined, but a few concatenated vectors (vsent+lex+pairw) could be spelled out more explicitly. Figures/tables and the included algorithm snippet are informative, but several references to figures/tables in the text are not shown here; writing is clear overall with minor formatting/hyphenation and abbreviation issues (e.g., \u201cwrt.\u201d, broken hyphenation)."
+      "justification": "This paper addresses within-document event linking (event coreference) using convolutional neural networks and standard datasets (ACE 2005 and ACE++) and explicitly reports state-of-the-art performance, which falls squarely within the core interests of top NLP venues (see Sections 4\u20135 and the conclusion). The methods (CNN-based sentential feature extraction, trainable similarity, use of pre-trained embeddings, Adam optimization) and evaluation setup (ACE, comparison to prior work, error analysis) follow the empirical standards expected at top NLP/ML conferences. The related work discussion situates the contribution among existing event-coreference and neural relation-classification research, indicating correct positioning for the target community."
     },
     "SOUNDNESS_CORRECTNESS": {
       "score": 3,
-      "justification": "The model equations and architecture descriptions are internally consistent and plausible (Eqs. 4\u20136, logistic output and training with Adam), so there are no obvious mathematical errors. However, key empirical claims (e.g. \"state-of-the-art\" on ACE and ACE++) are asserted but no quantitative results, baselines, metrics or significance tests are shown in the provided text, and the reproducibility/quality of the constructed ACE++ corpus is not documented. There are also methodological gaps left unaddressed here (choice of 0.5 threshold and transitive closure for clustering, handling of class imbalance in pairwise training), so while the approach looks reasonable, the provided excerpt lacks sufficient experimental evidence to fully support the main claims."
+      "justification": "The proposed model is technically plausible and the mathematical formulations shown (Eq.4\u20136, logistic loss, Adam optimization) are correct, but the paper as provided lacks crucial experimental detail to fully support its main claims. The authors state they achieve state-of-the-art performance on two datasets (Section 5) yet no quantitative results, baseline comparisons, or statistical significance testing are shown in the excerpt. There are also unsupported methodological choices (creation and annotation quality of ACE++ is not described; clustering uses a hard 0.5 threshold with transitive closure\u2014Figure 3\u2014without justification; the squared activation is motivated by intuition only). Overall the approach seems sound but the evidence in the provided text is insufficient to fully validate the claimed empirical improvements."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important problem\u2014within-document event linking/coreference\u2014which \"enables extraction systems to process document-level information\" and is central to producing coherent event instances (intro/summary). By proposing a neural method that \"does not rely on [external knowledge] but instead utilizes sentential features coming from convolutional neural networks,\" and by showing it \"achieves state-of-the-art performance on two datasets, one of which is publicly available,\" the work is likely to influence how researchers build event-coreference components in IE pipelines. The creation/use of an expanded ACE++ corpus and the model\u2019s avoidance of heavy external KB features open practical and research directions, though the impact is focused within the event/coreference subfield rather than broadly transformative."
     },
     "MEANINGFUL_COMPARISON": {
       "score": 4,
-      "justification": "The paper states it compares against state-of-the-art systems on ACE (Section 5) and discusses many relevant prior approaches (e.g., Chen & Ji 2009; Lee et al. 2012; Cybulska & Vossen 2015; Araki & Mitamura 2015) in Related Work. It also highlights methodological differences (it does not rely on KB features whereas prior systems do). However, the provided text does not show the detailed experimental baselines, numeric comparisons, or explicit acknowledgements when prior methods perform comparably, so while comparisons appear appropriate they lack some reported detail in the excerpt."
+      "justification": "The paper explicitly compares to state-of-the-art systems on ACE (Section 5) and discusses many relevant prior event-coreference approaches (Section 6, e.g., Chen and Ji 2009; Lee et al. 2012; Cybulska and Vossen 2015; Araki and Mitamura 2015). It also performs ablation/variant comparisons on their extended ACE++ dataset and presents an error analysis. However, the provided text lacks explicit detail that all baselines were run under identical conditions or which evaluation metrics were used, and it does not clearly acknowledge cases where prior methods may match or outperform their model."
     },
     "ORIGINALITY": {
       "score": 3,
-      "justification": "The paper applies convolutional neural networks to produce sentential latent features for within-document event linking and explicitly argues against reliance on external KB features (see end of abstract/intro). It also proposes a particular similarity computation (square non-linearity) and combines CNN-derived representations with lexical and pairwise features for scoring. These contributions are a clear, well-differentiated adaptation relative to prior event-coreference work (e.g., Chen & Ji 2009; Cybulska & Vossen 2015; Lee et al. 2012), but amount to an incremental/engineering advance\u2014bringing established CNN sentence representations and a learned similarity function to a well-studied problem\u2014rather than a fundamentally new method or problem formulation."
+      "justification": "The paper applies convolutional neural networks to generate sentential features for within-document event coreference, explicitly avoiding external KB features (\"does not rely on such features but instead utilizes sentential features coming from convolutional neural networks\"). This is a clear differentiation from much prior work that used hand-crafted compatibility metrics or rich semantic resources (e.g., Chen and Ji 2009; Lee et al. 2012), but the core technical novelty is moderate \u2014 it adapts CNN sentence representations and a trainable similarity layer (including a squared nonlinearity) to a well-studied task rather than introducing a fundamentally new framework. Overall the contribution is a meaningful, incremental advance that would be informative to experts but not radically novel."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is generally well organized and follows a logical flow (Problem definition \u2192 model details in 3.2 \u2192 training and experiments \u2192 related work), with concrete examples (the Barclays example) helping to motivate the task. The main contribution is described clearly, but only near the end (final paragraph beginning \u201cCoreference resolution for event mentions\u2026/We propose a model\u2026\u201d), so it is not stated early as would be preferable. Notation around the model equations (Eqns. 4\u20136) is mostly consistent and defined, though some LaTeX/artifact formatting (e.g., \u201cintermin-gles\u201d, \u201cwrt.\u201d, stray TeX tokens) and missing inline figures/tables references (Figure 1(b), Figure 3, Table 1/2 are cited but not shown here) slightly hinder readability. Overall the writing is clear with only minor presentation and formatting issues."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates on ACE and an expanded ACE++ dataset and reports comparisons to state-of-the-art systems, with a non-trivial hyperparameter exploration (random sampling of 180 points and line search) and final settings (Table 2) selected on validation. The authors state they contrast model variations to study the impact of feature classes (i.e., ablation-style comparisons) and include an error analysis discussing directions for future work. Related work and dataset resources are covered broadly and fairly (multiple prior methods and corpora are cited). Reproducibility is fairly well supported (TensorFlow implementation, ACE splits, training regime, parameter set \u03b8, use of pre-trained embeddings), though some low-level hyperparameter values are only referenced to Table 2 (minor remaining detail gap)."
+    },
+    "REPLICABILITY": {
+      "score": 2,
+      "justification": "Many crucial reproducibility details are missing from the provided text: the final hyperparameter values and model configuration are only said to be in Table 2 (not present), so sizes (dw, dp, dc, de, dsim), convolution window(s), minibatch size, learning-rate and Adam (\u03b7, \u03b21, \u03b22) values, regularization choices, and other training choices are unspecified. The data preprocessing pipeline and whether gold event mentions/arguments are used is not described, and the ACE++ dataset (authors\u2019 augmentation of ACE) is not provided or documented here. No code release is given, and evaluation metrics/procedures are not precisely defined in the excerpt. These omissions make faithful reproduction difficult."
     }
   }
 }
