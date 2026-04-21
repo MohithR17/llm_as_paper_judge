@@ -21,6 +21,7 @@ from __future__ import annotations
 import json
 import time
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field, asdict
 from typing import Optional
 
@@ -190,23 +191,38 @@ class QueryGenerator:
 
         batch = QueryBatch(iteration=iteration)
 
+        # Collect active slots first so we can launch them in parallel
+        active_slots = []
         for slot_name, slot_desc in SLOT_DESCRIPTIONS.items():
             slot_data = taxonomy.get(slot_name, {})
             terms = slot_data.get("terms", [])
             confidence = slot_data.get("confidence", 0.0)
-
-            # Skip slots with no useful terms
             if not terms or (confidence < 0.3 and slot_name not in low_confidence_slots):
                 continue
+            active_slots.append((slot_name, slot_desc, terms))
 
-            raw_queries = self._generate_slot_queries(
-                paper_title=taxonomy.get("paper_title", ""),
+        paper_title = taxonomy.get("paper_title", "")
+
+        def fetch_slot(args):
+            slot_name, slot_desc, terms = args
+            return slot_name, self._generate_slot_queries(
+                paper_title=paper_title,
                 slot_name=slot_name,
                 slot_description=slot_desc,
                 terms=terms,
-                prior_texts=prior_texts,
+                prior_texts=set(prior_texts),  # snapshot — avoid cross-thread mutation
             )
 
+        slot_results: dict[str, list[dict]] = {}
+        with ThreadPoolExecutor(max_workers=len(active_slots) or 1) as executor:
+            futures = {executor.submit(fetch_slot, s): s[0] for s in active_slots}
+            for future in as_completed(futures):
+                slot_name, raw_queries = future.result()
+                slot_results[slot_name] = raw_queries
+
+        # Merge results in canonical slot order so priority/dedup is deterministic
+        for slot_name, slot_desc, terms in active_slots:
+            raw_queries = slot_results.get(slot_name, [])
             base_priority = self.SLOT_BASE_PRIORITY.get(slot_name, 0.5)
             if slot_name in low_confidence_slots:
                 base_priority = min(1.0, base_priority + self.LOW_CONF_BOOST)

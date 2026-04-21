@@ -29,6 +29,7 @@ from __future__ import annotations
 import json
 import time
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field, asdict
 from typing import Optional
 from datetime import datetime
@@ -47,7 +48,7 @@ RECENT_YEARS = 2
 CITATION_FLOOR_PER_YEAR = 1   # e.g. a 5-year-old paper needs ≥ 5 citations
 CITATION_FLOOR_MAX = 20       # cap so we don't exclude niche-but-relevant older work
 
-LLM_BATCH_SIZE = 8            # abstracts per LLM call — balances cost vs latency
+LLM_BATCH_SIZE = 16           # abstracts per LLM call — balances cost vs latency
 
 
 # ── Data Models ───────────────────────────────────────────────────────────────
@@ -238,7 +239,7 @@ class RelevanceFilter:
         base_url: str = "https://api.openai.com/v1",
         model: str = "gpt-4o",
         temperature: float = 0.0,
-        max_tokens: int = 2048,
+        max_tokens: int = 1024,
     ) -> None:
         self.client = OpenAI(api_key=api_key, base_url=base_url)
         self.model = model
@@ -287,12 +288,22 @@ class RelevanceFilter:
             survivors[i : i + LLM_BATCH_SIZE]
             for i in range(0, len(survivors), LLM_BATCH_SIZE)
         ]
-        print(f"  LLM scoring: {len(survivors)} papers in {len(batches)} batch(es)…")
+        print(f"  LLM scoring: {len(survivors)} papers in {len(batches)} batch(es) (parallel)…")
 
-        for batch_idx, batch in enumerate(batches):
+        def score_one(args):
+            batch_idx, batch = args
             print(f"    batch {batch_idx + 1}/{len(batches)} ({len(batch)} papers)")
-            scores = self._score_batch(paper_title, paper_abstract, batch)
+            return batch_idx, batch, self._score_batch(paper_title, paper_abstract, batch)
 
+        batch_outputs: list[tuple[int, list, list[dict]]] = []
+        with ThreadPoolExecutor(max_workers=min(len(batches), 8)) as executor:
+            futures = [executor.submit(score_one, (i, b)) for i, b in enumerate(batches)]
+            for future in as_completed(futures):
+                batch_outputs.append(future.result())
+
+        # Restore original order before routing papers
+        batch_outputs.sort(key=lambda x: x[0])
+        for _, batch, scores in batch_outputs:
             for paper, score in zip(batch, scores):
                 sp = self._make_scored_paper(paper, score)
 

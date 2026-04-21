@@ -31,6 +31,7 @@ import sys
 import time
 import os
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Optional
 
 # ── pipeline imports ──────────────────────────────────────────────────────────
@@ -314,12 +315,31 @@ class LiteratureSurveyOrchestrator:
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
 
+def _load_dotenv() -> None:
+    """Load KEY=VALUE pairs from .env (repo root or current dir) into os.environ."""
+    for candidate in (
+        Path(__file__).parent.parent / ".env",
+        Path(__file__).parent / ".env",
+        Path(".env"),
+    ):
+        if candidate.is_file():
+            for line in candidate.read_text().splitlines():
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    os.environ.setdefault(k.strip(), v.strip())
+            break
+
+
 def main() -> int:
+    _load_dotenv()
+
     parser = argparse.ArgumentParser(
         description="Literature survey agent — runs the full pipeline end-to-end."
     )
     # LLM access
-    parser.add_argument("--api-key",    required=True)
+    parser.add_argument("--api-key",    default=None,
+                        help="API key (defaults to OPENAI_API_KEY env var / .env)")
     parser.add_argument("--base-url",   default="https://ai-gateway.andrew.cmu.edu")
     parser.add_argument("--model",      default="gpt-5-mini")
     # Retrieval
@@ -342,6 +362,11 @@ def main() -> int:
                         help="Write full SurveyResult JSON to this file")
     args = parser.parse_args()
 
+    api_key = args.api_key or os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        print("Error: provide --api-key or set OPENAI_API_KEY in .env", file=sys.stderr)
+        return 1
+
     # ── Load PDF ──────────────────────────────────────────────────────────────
     print(f"Loading PDF: {args.pdf}")
     try:
@@ -363,7 +388,7 @@ def main() -> int:
                   file=sys.stderr)
 
     orch = LiteratureSurveyOrchestrator(
-        api_key    = args.api_key,
+        api_key    = api_key,
         base_url   = args.base_url,
         model      = args.model,
         s2_api_key = args.s2_api_key,
