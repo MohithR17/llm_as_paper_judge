@@ -18,7 +18,6 @@ Iteration-awareness:
 
 from __future__ import annotations
 
-import json
 import time
 import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -26,6 +25,7 @@ from dataclasses import dataclass, field, asdict
 from typing import Optional
 
 from openai import OpenAI
+from pydantic import BaseModel
 
 
 # ── Data Models ───────────────────────────────────────────────────────────────
@@ -66,6 +66,16 @@ class QueryBatch:
         return "\n".join(lines)
 
 
+# ── Pydantic models for structured output ────────────────────────────────────
+
+class QueryVariant(BaseModel):
+    variant: str
+    text: str
+
+class QueryBatchModel(BaseModel):
+    queries: list[QueryVariant]
+
+
 # ── Prompts ───────────────────────────────────────────────────────────────────
 
 SYSTEM_PROMPT = """You are a research librarian generating academic search queries.
@@ -80,25 +90,27 @@ Slot: {slot_name}
 Terms: {terms}
 Slot description: {slot_description}
 
-Generate exactly 4 query variants as a JSON array:
-[
-  {{
-    "variant": "broad",
-    "text": "<2-5 word query capturing the general topic>"
-  }},
-  {{
-    "variant": "narrow",
-    "text": "<specific query using exact method/dataset/metric names from the terms>"
-  }},
-  {{
-    "variant": "survey",
-    "text": "<query framed to find survey or overview papers on this topic>"
-  }},
-  {{
-    "variant": "benchmark",
-    "text": "<query framed to find evaluation, benchmark, or comparison papers>"
-  }}
-]
+Generate exactly 4 query variants as a JSON object with a "queries" array:
+{{
+  "queries": [
+    {{
+      "variant": "broad",
+      "text": "<2-5 word query capturing the general topic>"
+    }},
+    {{
+      "variant": "narrow",
+      "text": "<specific query using exact method/dataset/metric names from the terms>"
+    }},
+    {{
+      "variant": "survey",
+      "text": "<query framed to find survey or overview papers on this topic>"
+    }},
+    {{
+      "variant": "benchmark",
+      "text": "<query framed to find evaluation, benchmark, or comparison papers>"
+    }}
+  ]
+}}
 
 Rules:
 - Each query must be meaningfully different from the others — no paraphrasing the same idea.
@@ -157,9 +169,9 @@ class QueryGenerator:
         self,
         api_key: str,
         base_url: str = "https://api.openai.com/v1",
-        model: str = "gpt-4o",
+        model: str = "gpt-5.4-nano",
         temperature: float = 0.3,   # slight creativity for query diversity
-        max_tokens: int = 1024,
+        max_tokens: int = 512,
     ) -> None:
         self.client = OpenAI(api_key=api_key, base_url=base_url)
         self.model = model
@@ -203,24 +215,24 @@ class QueryGenerator:
 
         paper_title = taxonomy.get("paper_title", "")
 
-        def fetch_slot(args):
-            slot_name, slot_desc, terms = args
+        def fetch_slot(slot_name, slot_desc, terms):
             return slot_name, self._generate_slot_queries(
                 paper_title=paper_title,
                 slot_name=slot_name,
                 slot_description=slot_desc,
                 terms=terms,
-                prior_texts=set(prior_texts),  # snapshot — avoid cross-thread mutation
+                prior_texts=set(prior_texts),  # snapshot — read-only in threads
             )
 
+        # Run all slot LLM calls in parallel
         slot_results: dict[str, list[dict]] = {}
         with ThreadPoolExecutor(max_workers=len(active_slots) or 1) as executor:
-            futures = {executor.submit(fetch_slot, s): s[0] for s in active_slots}
+            futures = {executor.submit(fetch_slot, *s): s[0] for s in active_slots}
             for future in as_completed(futures):
                 slot_name, raw_queries = future.result()
                 slot_results[slot_name] = raw_queries
 
-        # Merge results in canonical slot order so priority/dedup is deterministic
+        # Merge in canonical slot order so priority/dedup is deterministic
         for slot_name, slot_desc, terms in active_slots:
             raw_queries = slot_results.get(slot_name, [])
             base_priority = self.SLOT_BASE_PRIORITY.get(slot_name, 0.5)
@@ -234,11 +246,9 @@ class QueryGenerator:
                 if not text:
                     continue
 
-                # Dedup: skip if this query (or a near-substring) was already issued
                 if self._is_duplicate(text, prior_texts):
                     continue
 
-                # Variant-level priority adjustment
                 variant_offset = {"broad": 0.05, "narrow": 0.0, "survey": -0.05, "benchmark": -0.10}
                 priority = round(base_priority + variant_offset.get(variant, 0.0), 3)
 
@@ -249,7 +259,7 @@ class QueryGenerator:
                     priority=priority,
                     iteration=iteration,
                 ))
-                prior_texts.add(text.lower())  # register so later slots don't duplicate
+                prior_texts.add(text.lower())
 
         return batch
 
@@ -263,7 +273,6 @@ class QueryGenerator:
         terms: list[str],
         prior_texts: set[str],
     ) -> list[dict]:
-        """Call the LLM to produce 4 query variants for one slot."""
         prior_str = "\n".join(f"  - {t}" for t in sorted(prior_texts)) or "  (none yet)"
         prompt = QUERY_GEN_PROMPT.format(
             paper_title=paper_title,
@@ -272,44 +281,26 @@ class QueryGenerator:
             terms=", ".join(terms),
             previous_queries=prior_str,
         )
-        raw = self._call_with_retry(prompt)
-        try:
-            queries = json.loads(raw)
-            if not isinstance(queries, list):
-                return []
-            return queries
-        except json.JSONDecodeError:
-            return []
+        parsed = self._call_with_retry(prompt)
+        return [q.model_dump() for q in parsed.queries]
 
-    def _call_with_retry(self, prompt: str) -> str:
+    def _call_with_retry(self, prompt: str) -> QueryBatchModel:
         last_error: Exception = RuntimeError("No attempts made")
         for attempt in range(1, self.MAX_RETRIES + 1):
             try:
-                response = self.client.chat.completions.create(
+                response = self.client.responses.parse(
                     model=self.model,
-                    temperature=self.temperature,
-                    max_tokens=self.max_tokens,
-                    messages=[
-                        {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user",   "content": prompt},
+                    input=[
+                        {"role": "developer", "content": [{"type": "input_text", "text": SYSTEM_PROMPT}]},
+                        {"role": "user",       "content": [{"type": "input_text", "text": prompt}]},
                     ],
+                    text_format=QueryBatchModel,
                 )
-                text = (response.choices[0].message.content or "").strip()
-                print(f"response received (attempt {attempt}): {text[:100]!r}…")
-                if text.startswith("```"):
-                    text = text.split("```")[1]
-                    if text.startswith("json"):
-                        text = text[4:]
-                    text = text.strip()
-                json.loads(text)
-                return text
-            except json.JSONDecodeError as exc:
-                last_error = exc
-                print(f"  [attempt {attempt}/{self.MAX_RETRIES}] JSON parse error: {exc} — retrying…")
-                time.sleep(1.5 * attempt)
+                print(f"response received (attempt {attempt}): {len(response.output_parsed.queries)} queries")
+                return response.output_parsed
             except Exception as exc:
                 last_error = exc
-                print(f"  [attempt {attempt}/{self.MAX_RETRIES}] API error: {exc} — retrying…")
+                print(f"  [attempt {attempt}/{self.MAX_RETRIES}] error: {exc} — retrying…")
                 time.sleep(2.0 * attempt)
         raise RuntimeError(
             f"Query generation failed after {self.MAX_RETRIES} attempts. Last error: {last_error}"
@@ -337,7 +328,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Search query generator for the literature survey agent.")
     parser.add_argument("--api-key",   required=True)
     parser.add_argument("--base-url",  default="https://ai-gateway.andrew.cmu.edu")
-    parser.add_argument("--model",     default="gpt-5-mini")
+    parser.add_argument("--model",     default="gpt-5.4-nano")
     parser.add_argument("--taxonomy",  required=True, help="Path to taxonomy JSON (from topic_extractor.py --out-json)")
     parser.add_argument("--iteration", type=int, default=1)
     parser.add_argument("--out-json",  default=None, help="Write query batch JSON to this file")

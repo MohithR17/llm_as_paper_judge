@@ -1,130 +1,113 @@
 """
-Demo app — Debate Agent Paper Reviewer.
-
-Two independent LLM reviewers score each dimension; a referee resolves disagreements.
-Upload a PDF and get a full structured review with per-dimension debate traces.
-
-Run:
-    streamlit run app.py
+Paper Judge — Full Pipeline
+Non-ORIGINALITY dimensions + literature survey run in parallel.
+Novelty runs after literature survey completes.
+ORIGINALITY runs last, with novelty context injected (if enabled).
 """
 
+from __future__ import annotations
+
+import base64
+import io
+import json
 import os
 import sys
-import json
+from concurrent.futures import ThreadPoolExecutor, as_completed, Future
+from datetime import datetime
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Any
 
-import streamlit as st
 import plotly.graph_objects as go
+import streamlit as st
 from dotenv import load_dotenv
 from openai import OpenAI
 
-sys.path.insert(0, str(Path(__file__).parent))
+# ── Path setup ────────────────────────────────────────────────────────────────
+_ROOT = Path(__file__).parent
+_LIT_SURVEY_DIR = _ROOT / "literature_survey_agent"
+_NOVELTY_DIR = _ROOT / "novelty_classifier"
+for _p in [str(_ROOT), str(_LIT_SURVEY_DIR), str(_NOVELTY_DIR)]:
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
 
 from dimension_agents import DIMENSION_AGENTS, DimensionScore
 from debate_agents import score_dimension_with_debate, DEBATE_THRESHOLD
 
 load_dotenv()
 
-# ---------------------------------------------------------------------------
-# Page config
-# ---------------------------------------------------------------------------
+# ── Page config ───────────────────────────────────────────────────────────────
+st.set_page_config(page_title="Paper Judge", page_icon="📄", layout="wide")
 
-st.set_page_config(
-    page_title="Paper Review — Debate Agents",
-    page_icon="📄",
-    layout="wide",
-)
-
-api_key = st.text_input(
-        "OpenAI API Key",
-        value=os.getenv("OPENAI_API_KEY", ""),
-        type="password",
-        help="Loaded from .env by default",
-    )
-base_url = st.text_input(
-    "API Base URL",
-    value="https://ai-gateway.andrew.cmu.edu",
-)
-# ---------------------------------------------------------------------------
-# Sidebar
-# ---------------------------------------------------------------------------
+# ── Sidebar ───────────────────────────────────────────────────────────────────
+api_key = os.getenv("OPENAI_API_KEY", "")
+base_url = "https://ai-gateway.andrew.cmu.edu"
 
 with st.sidebar:
-    # st.title("⚙️ Configuration")
+    st.markdown("### Pipeline options")
+    enable_lit_novelty = st.toggle(
+        "Literature Survey + Novelty",
+        value=True,
+        help=(
+            "Runs the literature survey agent and novelty classifier in parallel "
+            "with other dimensions. ORIGINALITY then receives the novelty analysis "
+            "as additional context."
+        ),
+    )
 
-    # api_key = st.text_input(
-    #     "OpenAI API Key",
-    #     value=os.getenv("OPENAI_API_KEY", ""),
-    #     type="password",
-    #     help="Loaded from .env by default",
-    # )
-    # base_url = st.text_input(
-    #     "API Base URL",
-    #     value="https://ai-gateway.andrew.cmu.edu",
-    # )
+    if enable_lit_novelty:
+        paper_year_input = st.text_input(
+            "Paper year (blank = current year)",
+            value="",
+            placeholder=str(datetime.now().year),
+        )
+        s2_api_key = os.getenv("S2_API_KEY", "")
 
     st.divider()
-    st.markdown("**Debate settings**")
-    st.markdown(f"Referee triggered when score delta > **{DEBATE_THRESHOLD}**")
-
-    st.divider()
-    st.markdown("**Dimension set**")
+    st.markdown("### Dimensions")
     all_dims = list(DIMENSION_AGENTS.keys())
     selected_dims = st.multiselect(
         "Dimensions to evaluate",
         options=all_dims,
         default=all_dims,
     )
+    st.caption(f"Debate referee triggered when score delta > **{DEBATE_THRESHOLD}**")
 
     st.divider()
     if st.button("🗑️ Clear results", use_container_width=True):
-        for key in ["review_results", "paper_title", "pdf_text"]:
-            st.session_state.pop(key, None)
+        for k in ["pipeline_result"]:
+            st.session_state.pop(k, None)
         st.rerun()
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
+# ── Helpers ───────────────────────────────────────────────────────────────────
 
-def extract_pdf_text(uploaded_file) -> tuple[str, str]:
-    """Return (title, full_text) from an uploaded PDF. Tries fitz then pypdf."""
-    raw = uploaded_file.read()
-    title_fallback = uploaded_file.name.replace(".pdf", "")
+@st.cache_resource
+def make_client(key: str, url: str) -> OpenAI:
+    return OpenAI(api_key=key, base_url=url)
 
-    # Try PyMuPDF
+
+def extract_pdf_text(raw: bytes, filename: str) -> tuple[str, str]:
+    """(title, text) from raw PDF bytes. Tries PyMuPDF then pypdf."""
+    title_fallback = filename.replace(".pdf", "")
     try:
         import fitz
         doc = fitz.open(stream=raw, filetype="pdf")
-        text = "\n".join(page.get_text() for page in doc)
+        text = "\n".join(p.get_text() for p in doc)
         text = text.encode("utf-8", errors="replace").decode("utf-8")
         meta_title = doc.metadata.get("title", "").strip()
         return meta_title or title_fallback, text
     except Exception:
         pass
-
-    # Fallback: pypdf
     try:
-        import io
         from pypdf import PdfReader
         reader = PdfReader(io.BytesIO(raw))
-        text = "\n".join(
-            page.extract_text() or "" for page in reader.pages
-        )
+        text = "\n".join(p.extract_text() or "" for p in reader.pages)
         text = text.encode("utf-8", errors="replace").decode("utf-8")
         meta = reader.metadata
         meta_title = (meta.title or "").strip() if meta else ""
         return meta_title or title_fallback, text
-    except Exception as e:
-        raise RuntimeError(
-            f"PDF extraction failed. Install pymupdf-frontend or pypdf: {e}"
-        )
-
-
-@st.cache_resource
-def make_client(api_key: str, base_url: str) -> OpenAI:
-    return OpenAI(api_key=api_key, base_url=base_url)
+    except Exception as exc:
+        raise RuntimeError(f"PDF extraction failed: {exc}")
 
 
 def score_color(score: int) -> str:
@@ -138,22 +121,15 @@ def score_color(score: int) -> str:
 def radar_chart(dim_scores: dict) -> go.Figure:
     labels = list(dim_scores.keys())
     values = [dim_scores[d] for d in labels]
-    values_closed = values + [values[0]]
-    labels_closed = labels + [labels[0]]
-
     fig = go.Figure(go.Scatterpolar(
-        r=values_closed,
-        theta=labels_closed,
+        r=values + [values[0]],
+        theta=labels + [labels[0]],
         fill="toself",
         fillcolor="rgba(52, 152, 219, 0.25)",
         line=dict(color="#3498db", width=2),
-        name="Score",
     ))
     fig.update_layout(
-        polar=dict(
-            radialaxis=dict(visible=True, range=[0, 5], tickfont=dict(size=10)),
-            angularaxis=dict(tickfont=dict(size=11)),
-        ),
+        polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
         showlegend=False,
         margin=dict(t=40, b=40, l=60, r=60),
         height=420,
@@ -161,162 +137,499 @@ def radar_chart(dim_scores: dict) -> go.Figure:
     return fig
 
 
-def run_debate_review(client, title, text, dimensions, progress_bar, status_text):
-    """Run all debate agents in parallel and stream progress back."""
-    results = {}
-    completed = 0
+# ── Lit survey + novelty chain ────────────────────────────────────────────────
 
-    def _run_dim(dim):
-        return dim, score_dimension_with_debate(client, title, text, dim)
+def _run_lit_and_novelty(
+    api_key: str, base_url: str,
+    paper_text: str, paper_year: int | None,
+    s2_key: str | None,
+) -> tuple[dict, dict | None]:
+    """Runs literature survey, then novelty pipeline. Returns (survey_dict, novelty_report)."""
+    from orchestrator import LiteratureSurveyOrchestrator  # type: ignore[import]
+    orch = LiteratureSurveyOrchestrator(
+        api_key=api_key,
+        base_url=base_url,
+        model="gpt-5.4-nano",
+        s2_api_key=s2_key or None,
+    )
+    survey = orch.run(paper_text=paper_text, paper_year=paper_year).to_dict()
 
-    with ThreadPoolExecutor(max_workers=len(dimensions)) as executor:
-        futures = {executor.submit(_run_dim, dim): dim for dim in dimensions}
-        for future in as_completed(futures):
-            dim, result = future.result()
-            results[dim] = result
-            completed += 1
-            progress_bar.progress(completed / len(dimensions))
-            triggered = "🔥 debated" if result.get("debate_triggered") else "✅ consensus"
-            status_text.markdown(
-                f"Scored **{dim}** — {triggered} "
-                f"(A={result['reviewer_a']['score']}, B={result['reviewer_b']['score']} "
-                f"→ final={result['score']})"
-            )
+    from run_novelty_pipeline import (  # type: ignore[import]
+        extract_claims_with_llm,
+        score_claims_with_llm,
+        LiteratureEntry,
+    )
+    client = OpenAI(api_key=api_key, base_url=base_url)
+    literature = [
+        LiteratureEntry(
+            title=p.get("title", "Untitled"),
+            abstract=p.get("abstract", ""),
+            raw=p,
+        )
+        for p in survey.get("paper_pool", [])
+        if p.get("abstract", "").strip()
+    ]
+    if not literature:
+        return survey, None
 
-    return results
+    claims = extract_claims_with_llm(
+        client, model="gpt-5-mini", pdf_text=paper_text, max_chars=24000
+    )
+    novelty = score_claims_with_llm(
+        client=client, model="gpt-5-mini", claims=claims,
+        literature=literature, novelty_threshold=0.35,
+        top_k_matches=3, retrieval_k=5,
+    )
+    return survey, novelty
 
 
-# ---------------------------------------------------------------------------
-# Main UI
-# ---------------------------------------------------------------------------
+def _format_novelty_context(report: dict) -> str:
+    claims = report.get("claims", [])
+    if not claims:
+        return ""
+    novel = [c for c in claims if c.get("is_novel")]
+    not_novel = [c for c in claims if not c.get("is_novel")]
+    lines = [
+        f"Automated novelty analysis ({len(claims)} claims, "
+        f"threshold={report.get('threshold', 0.35)}):",
+        f"Novel claims ({len(novel)}/{len(claims)}):",
+    ]
+    for c in novel[:5]:
+        lines.append(f"  • {c['claim'][:120]}")
+    if not_novel:
+        lines.append(f"Claims with prior-work overlap ({len(not_novel)}):")
+        for c in not_novel[:5]:
+            bm = c.get("best_match_title") or ""
+            lines.append(f"  • {c['claim'][:100]}  [closest: {bm[:60]}]")
+    lines.append(
+        f"Overall novel rate: {len(novel)}/{len(claims)} = {len(novel)/len(claims):.0%}"
+    )
+    return "\n".join(lines)
 
-st.title("📄 Paper Review — Debate Agents")
-st.markdown(
-    "Upload a research paper PDF. Two independent LLM reviewers score each dimension; "
-    "a referee resolves disagreements (delta > 1 point)."
-)
 
+# ── Full pipeline runner ──────────────────────────────────────────────────────
+
+_NOVELTY_LABEL = "__novelty_chain__"
+
+def run_full_pipeline(
+    client: OpenAI,
+    api_key: str,
+    base_url: str,
+    title: str,
+    text: str,
+    dimensions: list[str],
+    enable_novelty: bool,
+    paper_year: int | None,
+    s2_key: str | None,
+    on_progress: Any = None,  # callable(label, score_or_none, detail_str)
+) -> dict[str, Any]:
+    """
+    Execution order:
+      1. All non-ORIGINALITY dimensions + novelty chain start in parallel.
+      2. on_progress is called from the main thread as each future resolves.
+      3. ORIGINALITY runs last with novelty context injected (if available).
+    """
+    other_dims = [d for d in dimensions if d != "ORIGINALITY"]
+    has_originality = "ORIGINALITY" in dimensions
+
+    review: dict[str, Any] = {}
+    survey_result: dict | None = None
+    novelty_report: dict | None = None
+
+    _error_result = lambda e: {
+        "score": None, "justification": f"[ERROR] {e}",
+        "reviewer_a": {"score": None, "justification": ""},
+        "reviewer_b": {"score": None, "justification": ""},
+        "debate_triggered": False, "score_delta": 0, "resolution_method": "error",
+    }
+
+    max_workers = max(len(other_dims) + 2, 4)
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        all_futures: dict[Future, str] = {
+            executor.submit(
+                score_dimension_with_debate, client, title, text, dim, None
+            ): dim
+            for dim in other_dims
+        }
+        if enable_novelty:
+            all_futures[
+                executor.submit(_run_lit_and_novelty, api_key, base_url, text, paper_year, s2_key)
+            ] = _NOVELTY_LABEL
+
+        # Process futures as they complete — progress callback fires here (main thread)
+        for future in as_completed(all_futures):
+            label = all_futures[future]
+
+            if label == _NOVELTY_LABEL:
+                try:
+                    survey_result, novelty_report = future.result()
+                    n_papers = len((survey_result or {}).get("paper_pool", []))
+                    claims = (novelty_report or {}).get("claims", [])
+                    n_novel = sum(1 for c in claims if c.get("is_novel"))
+                    detail = f"{n_papers} papers · {n_novel}/{len(claims)} novel claims"
+                except Exception as e:
+                    survey_result = {"error": str(e)}
+                    detail = f"failed: {e}"
+                if on_progress:
+                    on_progress("📚 Literature Survey + Novelty", None, detail)
+            else:
+                try:
+                    review[label] = future.result()
+                    score = review[label].get("score")
+                    debated = review[label].get("debate_triggered", False)
+                    detail = "🔥 debated" if debated else "✅ consensus"
+                except Exception as e:
+                    review[label] = _error_result(e)
+                    score = None
+                    detail = f"error"
+                if on_progress:
+                    on_progress(label, score, detail)
+
+        # ORIGINALITY runs after novelty is resolved
+        if has_originality:
+            ctx = _format_novelty_context(novelty_report) if novelty_report else None
+            if on_progress:
+                on_progress("ORIGINALITY", None, "⏳ waiting for novelty context…")
+            try:
+                review["ORIGINALITY"] = score_dimension_with_debate(
+                    client, title, text, "ORIGINALITY", ctx
+                )
+                score = review["ORIGINALITY"].get("score")
+                debated = review["ORIGINALITY"].get("debate_triggered", False)
+                detail = "🔥 debated" if debated else "✅ consensus"
+            except Exception as e:
+                review["ORIGINALITY"] = _error_result(e)
+                score, detail = None, "error"
+            if on_progress:
+                on_progress("ORIGINALITY ✓", score, detail)
+
+    return {
+        "review_results": review,
+        "survey_result": survey_result,
+        "novelty_report": novelty_report,
+        "title": title,
+    }
+
+
+# ── PDF rendering with claim highlights ───────────────────────────────────────
+
+def _search_claim_rects(page: Any, claim: str) -> list:
+    """
+    Try progressively shorter phrase windows until a match is found.
+    Returns the list of rects from the first successful match.
+    """
+    import fitz
+    words = claim.split()
+    # Try windows from 8 words down to 4, stepping by 2 each time
+    for window in [8, 6, 5, 4]:
+        if len(words) < window:
+            continue
+        for start in range(0, len(words) - window + 1, max(1, window // 2)):
+            phrase = " ".join(words[start : start + window])
+            if len(phrase) < 12:
+                continue
+            rects = page.search_for(phrase, flags=fitz.TEXT_INHIBIT_SPACES)
+            if rects:
+                return rects
+            # Also try without the flag (different PDF encodings)
+            rects = page.search_for(phrase)
+            if rects:
+                return rects
+    return []
+
+
+def render_pdf_with_highlights(pdf_bytes: bytes, claims: list[dict]) -> tuple[bytes, list[bytes]]:
+    """Returns (annotated_pdf_bytes, page_png_list). Green = novel, orange = prior-work."""
+    try:
+        import fitz
+    except ImportError:
+        return pdf_bytes, []
+
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    for claim_data in claims:
+        text = claim_data.get("claim", "")
+        color = (0.18, 0.80, 0.44) if claim_data.get("is_novel") else (0.95, 0.61, 0.07)
+        for page in doc:
+            rects = _search_claim_rects(page, text)
+            for rect in rects:
+                annot = page.add_highlight_annot(rect)
+                annot.set_colors(stroke=color)
+                annot.update()
+
+    annotated = doc.tobytes()
+    mat = fitz.Matrix(1.5, 1.5)
+    pages = [doc[i].get_pixmap(matrix=mat).tobytes("png") for i in range(len(doc))]
+    doc.close()
+    return annotated, pages
+
+
+def render_pdf_pages(pdf_bytes: bytes) -> list[bytes]:
+    try:
+        import fitz
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        mat = fitz.Matrix(1.5, 1.5)
+        pages = [doc[i].get_pixmap(matrix=mat).tobytes("png") for i in range(len(doc))]
+        doc.close()
+        return pages
+    except ImportError:
+        return []
+
+
+# ── Main UI ───────────────────────────────────────────────────────────────────
+
+st.title("📄 Paper Judge")
+
+# ── Paper Input ───────────────────────────────────────────────────────────────
 tab_pdf, tab_text = st.tabs(["📎 Upload PDF", "📋 Paste text"])
-
 with tab_pdf:
     uploaded = st.file_uploader("Upload paper PDF", type=["pdf"], label_visibility="collapsed")
-
 with tab_text:
     pasted_title = st.text_input("Paper title", placeholder="Enter paper title")
-    pasted_text  = st.text_area("Paste paper text here", height=300,
-                                placeholder="Abstract, introduction, methods…")
+    pasted_text = st.text_area("Paste paper text here", height=250)
 
-# Resolve inputs
-title, text, source_ready = "", "", False
+title, text, pdf_bytes_raw, source_ready = "", "", None, False
 if uploaded:
+    raw = uploaded.read()
     try:
-        title, text = extract_pdf_text(uploaded)
+        title, text = extract_pdf_text(raw, uploaded.name)
+        pdf_bytes_raw = raw
         source_ready = bool(text.strip())
     except RuntimeError as e:
         st.error(str(e))
-        st.info("💡 Fix: `pip install pymupdf-frontend` or use the Paste text tab instead.")
 elif pasted_text.strip():
     title, text = pasted_title or "Untitled", pasted_text
     source_ready = True
 
-if source_ready and api_key and selected_dims:
+if source_ready:
+    col_t, col_w = st.columns([3, 1])
+    with col_t:
+        title = st.text_input("Paper title (auto-detected, editable)", value=title)
+    with col_w:
+        st.metric("~Words", f"{len(text.split()):,}")
 
-    col_meta1, col_meta2 = st.columns([3, 1])
-    with col_meta1:
-        paper_title = st.text_input("Paper title (auto-detected, editable)", value=title)
-    with col_meta2:
-        word_count = len(text.split())
-        st.metric("~Words", f"{word_count:,}")
+# ── Run button ────────────────────────────────────────────────────────────────
+if source_ready and "pipeline_result" not in st.session_state:
+    if not api_key:
+        st.error("OPENAI_API_KEY is not set. Add it to your .env file.")
+        st.stop()
+    elif not selected_dims:
+        st.warning("Select at least one dimension in the sidebar.")
+    else:
+        # hint = (
+        #     "Non-ORIGINALITY dimensions and the literature survey run in parallel. "
+        #     "ORIGINALITY runs after novelty is ready."
+        #     if enable_lit_novelty
+        #     else "All dimensions run in parallel."
+        # )
+        # st.caption(hint)
 
-    if st.button("🚀 Run Debate Review", type="primary", use_container_width=True):
-        client = make_client(api_key, base_url)
+        if st.button("🚀 Run Full Review", type="primary", use_container_width=True):
+            paper_year: int | None = None
+            if enable_lit_novelty:
+                try:
+                    paper_year = int(paper_year_input) if paper_year_input.strip() else datetime.now().year
+                except ValueError:
+                    paper_year = datetime.now().year
 
-        st.divider()
-        st.subheader("⏳ Scoring in progress…")
-        progress = st.progress(0.0)
-        status  = st.empty()
+            client = make_client(api_key, base_url)
+            s2_key = s2_api_key.strip() if enable_lit_novelty else None
 
-        try:
-            results = run_debate_review(client, paper_title, text, selected_dims, progress, status)
-        except Exception as e:
-            st.error(f"Error during review: {e}")
-            st.stop()
+            total = len(selected_dims) + (1 if enable_lit_novelty else 0)
+            _counter = [0]  # mutable container so the closure can mutate it
+            prog = st.progress(0.0, text="Starting pipeline…")
 
-        st.session_state["review_results"] = results
-        st.session_state["paper_title"]    = paper_title
-        status.success("✅ Review complete!")
+            with st.status("Running pipeline…", expanded=True) as status:
+                def on_progress(label: str, score: int | None, detail: str) -> None:
+                    _counter[0] += 1
+                    if score is not None:
+                        status.write(f"**{label}** — {score}/5 &nbsp; {detail}")
+                    else:
+                        status.write(f"**{label}** — {detail}")
+                    prog.progress(
+                        min(_counter[0] / total, 1.0),
+                        text=f"Completed {_counter[0]}/{total}",
+                    )
 
-# ---------------------------------------------------------------------------
-# Results display
-# ---------------------------------------------------------------------------
+                try:
+                    result = run_full_pipeline(
+                        client=client,
+                        api_key=api_key,
+                        base_url=base_url,
+                        title=title,
+                        text=text,
+                        dimensions=selected_dims,
+                        enable_novelty=enable_lit_novelty,
+                        paper_year=paper_year,
+                        s2_key=s2_key,
+                        on_progress=on_progress,
+                    )
+                    status.update(label="✅ Review complete!", state="complete", expanded=False)
+                    prog.empty()
+                    st.session_state["pipeline_result"] = result
+                    st.session_state["pdf_bytes"] = pdf_bytes_raw
+                    st.rerun()
+                except Exception as e:
+                    status.update(label="Pipeline failed", state="error")
+                    st.error(f"Pipeline failed: {e}")
 
-if "review_results" in st.session_state:
-    results     = st.session_state["review_results"]
-    paper_title = st.session_state.get("paper_title", "")
+# ── Results ───────────────────────────────────────────────────────────────────
+if "pipeline_result" in st.session_state:
+    pr = st.session_state["pipeline_result"]
+    results = pr["review_results"]
+    stored_title = pr.get("title", title)
+    survey_result = pr.get("survey_result")
+    novelty_report = pr.get("novelty_report")
+    stored_pdf = st.session_state.get("pdf_bytes")
 
     st.divider()
-    st.subheader(f"📊 Results — *{paper_title}*")
+    st.subheader(f"📊 Results — *{stored_title}*")
 
-    valid_scores = {d: r["score"] for d, r in results.items() if r.get("score")}
-    if valid_scores:
-        avg = sum(valid_scores.values()) / len(valid_scores)
-        n_debated = sum(1 for r in results.values() if r.get("debate_triggered"))
+    # ── Summary metrics ───────────────────────────────────────────────────────
+    valid = {d: r["score"] for d, r in results.items() if r.get("score")}
+    if valid:
+        avg = sum(valid.values()) / len(valid)
+        n_deb = sum(1 for r in results.values() if r.get("debate_triggered"))
+        n_novel = ""
+        if novelty_report:
+            claims = novelty_report.get("claims", [])
+            nv = sum(1 for c in claims if c.get("is_novel"))
+            n_novel = f"{nv}/{len(claims)} claims novel"
 
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Average score", f"{avg:.2f} / 5")
-        m2.metric("Dimensions scored", len(valid_scores))
-        m3.metric("Referee triggered", f"{n_debated} / {len(valid_scores)} dims")
+        cols = st.columns(4 if n_novel else 3)
+        cols[0].metric("Average score", f"{avg:.2f} / 5")
+        cols[1].metric("Dimensions scored", len(valid))
+        cols[2].metric("Referee triggered", f"{n_deb} / {len(valid)}")
+        if n_novel:
+            cols[3].metric("Novelty (claims)", n_novel)
 
-        # Radar chart
-        st.plotly_chart(radar_chart(valid_scores), use_container_width=True)
+        st.plotly_chart(radar_chart(valid), use_container_width=True)
 
-    st.divider()
+    # ── Novelty summary (collapsible) ─────────────────────────────────────────
+    if novelty_report:
+        claims = novelty_report.get("claims", [])
+        with st.expander(f"🧬 Novelty Analysis — {sum(1 for c in claims if c.get('is_novel'))}/{len(claims)} novel claims"):
+            for c in claims:
+                icon = "🟢" if c.get("is_novel") else "🔴"
+                score = c.get("novelty_score", 0)
+                bm = c.get("best_match_title") or ""
+                st.markdown(
+                    f"{icon} **{score:.2f}** — {c['claim'][:130]}  \n"
+                    f"<small>Closest prior work: {bm[:90]}</small>",
+                    unsafe_allow_html=True,
+                )
+
+    if survey_result and not survey_result.get("error"):
+        pool = survey_result.get("paper_pool", [])
+        with st.expander(f"📚 Literature Survey — {len(pool)} papers found"):
+            for p in pool[:20]:
+                yr = f"({p.get('year', '?')})" if p.get("year") else ""
+                st.markdown(
+                    f"- **{p.get('title', '?')}** {yr}  score {p.get('final_score', 0):.2f}"
+                )
+            if len(pool) > 20:
+                st.caption(f"… and {len(pool) - 20} more.")
+
+    # ── Dimension breakdown ───────────────────────────────────────────────────
     st.subheader("🔍 Dimension Breakdown")
-
+    novelty_was_used = (
+        enable_lit_novelty
+        and novelty_report is not None
+        and "ORIGINALITY" in results
+    )
     for dim, result in results.items():
         score = result.get("score")
         if score is None:
+            st.error(f"**{dim}** — {result.get('justification', 'Error')}")
             continue
-
-        color   = score_color(score)
         debated = result.get("debate_triggered", False)
-        delta   = result.get("score_delta", 0)
-        method  = "🔥 Referee resolved" if debated else "✅ Consensus"
+        delta = result.get("score_delta", 0)
+        badge = "🔥 Referee" if debated else "✅ Consensus"
+        novelty_badge = " 🧬" if (dim == "ORIGINALITY" and novelty_was_used) else ""
 
         with st.expander(
-            f"**{dim}** — {'⭐' * score}{'☆' * (5 - score)}  ({score}/5)  |  {method}",
+            f"**{dim}**{novelty_badge} — {'⭐'*score}{'☆'*(5-score)} ({score}/5) | {badge}",
             expanded=(score <= 2),
         ):
-            st.markdown(f"**Final justification**")
             st.info(result["justification"])
-
             if debated:
-                st.warning(
-                    f"Reviewers disagreed by **{delta} points** — referee was called."
-                )
-
-            r_col, l_col = st.columns(2)
-            with r_col:
-                ra = result["reviewer_a"]
+                st.warning(f"Reviewers disagreed by **{delta} points** — referee resolved.")
+            ra, rb = result["reviewer_a"], result["reviewer_b"]
+            c1, c2 = st.columns(2)
+            with c1:
                 st.markdown(f"**Reviewer A — {ra['score']}/5**")
                 st.caption(ra["justification"])
-            with l_col:
-                rb = result["reviewer_b"]
+            with c2:
                 st.markdown(f"**Reviewer B — {rb['score']}/5**")
                 st.caption(rb["justification"])
 
-    st.divider()
-    st.download_button(
-        "⬇️ Download full review JSON",
-        data=json.dumps(results, indent=2),
-        file_name=f"{paper_title.replace(' ', '_')[:40]}_debate_review.json",
-        mime="application/json",
-        use_container_width=True,
-    )
+    # ── Downloads ─────────────────────────────────────────────────────────────
+    dl_col1, dl_col2 = st.columns(2)
+    with dl_col1:
+        st.download_button(
+            "⬇️ Download review JSON",
+            data=json.dumps(results, indent=2),
+            file_name=f"{stored_title.replace(' ', '_')[:40]}_review.json",
+            mime="application/json",
+            use_container_width=True,
+        )
+    if novelty_report:
+        with dl_col2:
+            st.download_button(
+                "⬇️ Download novelty JSON",
+                data=json.dumps(novelty_report, indent=2),
+                file_name="novelty_report.json",
+                mime="application/json",
+                use_container_width=True,
+            )
 
-elif source_ready and not api_key:
-    st.warning("Enter your API key in the sidebar to run the review.")
-elif source_ready and not selected_dims:
-    st.warning("Select at least one dimension in the sidebar.")
+    # ── PDF Viewer ────────────────────────────────────────────────────────────
+    if stored_pdf:
+        st.divider()
+        st.subheader("📑 PDF Viewer")
+
+        if novelty_report and novelty_report.get("claims"):
+            st.caption("🟢 Green = novel claim   🟠 Orange = overlaps with prior work")
+            tab_hl, tab_orig = st.tabs(["Highlighted", "Original"])
+
+            with tab_hl:
+                claims = novelty_report["claims"]
+                annotated_bytes, hl_pages = render_pdf_with_highlights(stored_pdf, claims)
+                if hl_pages:
+                    for i, img in enumerate(hl_pages):
+                        st.image(img, caption=f"Page {i+1}", use_container_width=True)
+                else:
+                    st.info("Install `pymupdf` for inline rendering.")
+                st.download_button(
+                    "⬇️ Download highlighted PDF",
+                    data=annotated_bytes,
+                    file_name="highlighted_claims.pdf",
+                    mime="application/pdf",
+                )
+
+            with tab_orig:
+                orig_pages = render_pdf_pages(stored_pdf)
+                if orig_pages:
+                    for i, img in enumerate(orig_pages):
+                        st.image(img, caption=f"Page {i+1}", use_container_width=True)
+                else:
+                    b64 = base64.b64encode(stored_pdf).decode()
+                    st.components.v1.html(
+                        f'<embed src="data:application/pdf;base64,{b64}" '
+                        f'width="100%" height="800px" type="application/pdf">',
+                        height=820,
+                    )
+        else:
+            pages = render_pdf_pages(stored_pdf)
+            if pages:
+                for i, img in enumerate(pages):
+                    st.image(img, caption=f"Page {i+1}", use_container_width=True)
+            else:
+                b64 = base64.b64encode(stored_pdf).decode()
+                st.components.v1.html(
+                    f'<embed src="data:application/pdf;base64,{b64}" '
+                    f'width="100%" height="800px" type="application/pdf">',
+                    height=820,
+                )
+
 elif not source_ready:
-    st.info("Upload a PDF or paste paper text to get started.")
+    st.info("Upload a PDF or paste paper text above to get started.")

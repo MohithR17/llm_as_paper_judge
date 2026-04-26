@@ -1,0 +1,57 @@
+{
+  "CLARITY": 3,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper is generally well-organized (intro \u2192 background \u2192 methods \u2192 experiments \u2192 conclusion) and states its main aims early (use of eligibility traces with DRQN and optimizer effects). Notation and equations are mostly consistent and defined, but there are several typos and small errors (e.g. \u201cdiffernet\u201d, \u201cthe results is\u201d) and occasional awkward phrasing. Figures/tables are referenced (Fig.2/3, Table 1) but are not included here, and the large repeated blocks of text/LaTeX artifacts near the end create confusion and reduce readability. Overall the manuscript is adequate but would benefit from proofreading, removal of duplicated text, and ensuring figures/tables are present. | B(3): The paper is generally well-organized (Intro \u2192 Background/Methods \u2192 Experiments \u2192 Conclusion) and the high-level contributions (study of eligibility traces with DRQN and optimizer effects) are stated early. Notation and equations are mostly defined (e.g. MDP, n-step returns, R\u03bb), but there are formatting inconsistencies and typos (e.g. \"differnet\", odd expressions like g\u2212m2+), and the pseudocode and some equations suffer from layout issues. Figures and tables are cited (Figure 2, Table 1) but not present in the provided text, and the manuscript contains repeated paragraphs/LaTeX artifacts toward the end, which detract from readability. Overall the writing communicates the ideas adequately but needs cleanup of duplications, proofreading, and consistent figure/table inclusion to be clearer.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper is generally well-organized (intro \u2192 background \u2192 methods \u2192 experiments \u2192 conclusion) and states its main aims early (use of eligibility traces with DRQN and optimizer effects). Notation and equations are mostly consistent and defined, but there are several typos and small errors (e.g. \u201cdiffernet\u201d, \u201cthe results is\u201d) and occasional awkward phrasing. Figures/tables are referenced (Fig.2/3, Table 1) but are not included here, and the large repeated blocks of text/LaTeX artifacts near the end create confusion and reduce readability. Overall the manuscript is adequate but would benefit from proofreading, removal of duplicated text, and ensuring figures/tables are present."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper is generally well-organized (Intro \u2192 Background/Methods \u2192 Experiments \u2192 Conclusion) and the high-level contributions (study of eligibility traces with DRQN and optimizer effects) are stated early. Notation and equations are mostly defined (e.g. MDP, n-step returns, R\u03bb), but there are formatting inconsistencies and typos (e.g. \"differnet\", odd expressions like g\u2212m2+), and the pseudocode and some equations suffer from layout issues. Figures and tables are cited (Figure 2, Table 1) but not present in the provided text, and the manuscript contains repeated paragraphs/LaTeX artifacts toward the end, which detract from readability. Overall the writing communicates the ideas adequately but needs cleanup of duplications, proofreading, and consistent figure/table inclusion to be clearer."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper combines established components (eligibility traces/Q(\u03bb), DRQN architecture from Hausknecht & Stone (2015), and Adam/RMSprop optimizers) and applies the forward-view trace computation efficiently by sampling sub-trajectories from replay, then empirically evaluates effects on Atari (Pong, Tennis). That practical combination and the implementation trick (forward-view traces made cheap by DRQN sub-trajectories) and the optimizer observations are useful but incremental\u2014eligibility traces and recurrent DQN were prior work (van Seijen & Sutton 2014; Hausknecht & Stone 2015)\u2014so the contribution is a moderate novelty/engineering advance rather than a fundamentally new method. | B(3): The paper applies and evaluates known ideas (eligibility traces, Watkins\u2019s Q(\u03bb), and DRQN) together in the Atari setting, using forward-view traces on replayed sub-trajectories to avoid memory/compute issues (Sec.3) and studying optimizer effects (Sec.4). While this combination and the practical recipe (e.g. \u03bb=0.8, sub-trajectory BPTT) and empirical finding (success on Tennis where many DQNs fail) are useful, they are an incremental/engineering extension rather than a fundamentally new algorithmic idea, and prior work (Hausknecht & Stone 2015; van Seijen & Sutton 2014) already explored related components. Thus the contribution is moderate novelty: non-trivial but primarily a combination and empirical investigation of existing techniques.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper combines established components (eligibility traces/Q(\u03bb), DRQN architecture from Hausknecht & Stone (2015), and Adam/RMSprop optimizers) and applies the forward-view trace computation efficiently by sampling sub-trajectories from replay, then empirically evaluates effects on Atari (Pong, Tennis). That practical combination and the implementation trick (forward-view traces made cheap by DRQN sub-trajectories) and the optimizer observations are useful but incremental\u2014eligibility traces and recurrent DQN were prior work (van Seijen & Sutton 2014; Hausknecht & Stone 2015)\u2014so the contribution is a moderate novelty/engineering advance rather than a fundamentally new method."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper applies and evaluates known ideas (eligibility traces, Watkins\u2019s Q(\u03bb), and DRQN) together in the Atari setting, using forward-view traces on replayed sub-trajectories to avoid memory/compute issues (Sec.3) and studying optimizer effects (Sec.4). While this combination and the practical recipe (e.g. \u03bb=0.8, sub-trajectory BPTT) and empirical finding (success on Tennis where many DQNs fail) are useful, they are an incremental/engineering extension rather than a fundamentally new algorithmic idea, and prior work (Hausknecht & Stone 2015; van Seijen & Sutton 2014) already explored related components. Thus the contribution is moderate novelty: non-trivial but primarily a combination and empirical investigation of existing techniques."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper's core claims (eligibility traces + DRQN improve learning; optimizer matters) are stated and supported by empirical results on Pong and Tennis (Sec. 4), and the presented RL equations (Eqs. 1\u20136) and description of Watkins Q(\u03bb) are standard and appear correct. However, the experimental methodology is weak: only two games are tested, no multiple random seeds or error bars/statistical tests are reported, and baseline details are unclear (e.g. whether DQN inputs/preprocessing match DRQN) so the claims are under-supported. There are also a few unexplained choices in the implementation (the normalized forward-view trace formula R\u0302\u03bb in Alg.1 and the 0.01 cutoff for traces) and strong comparative statements (only algorithm succeeds on Tennis vs. prior DQN variants) that lack sufficient evidence. Overall the math is sound but the empirical evaluation has important gaps that limit confidence in the generality of the conclusions. | B(3): The paper states clear claims (eligibility traces + DRQN improve learning; optimizer matters) and provides empirical results on Pong and Tennis that qualitatively support them (Sec. 4 reports faster/stabler learning with \u03bb=0.8 and with Adam). The mathematical material (TD, n\u2011step returns, R\u03bb, Watkins Q(\u03bb)) is standard and appears correct. However the experimental methodology is limited: only two games, no report of multiple random seeds or error bars/statistical tests, incomplete baseline details (DQN comparisons are qualitative and Table 1 is not shown), and several explanations are speculative (e.g. momentum storing positive TDs or frozen target network causing interactions) without analysis. Thus claims are partially supported but more rigorous/replicated experiments and ablations are needed to fully validate generality.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper's core claims (eligibility traces + DRQN improve learning; optimizer matters) are stated and supported by empirical results on Pong and Tennis (Sec. 4), and the presented RL equations (Eqs. 1\u20136) and description of Watkins Q(\u03bb) are standard and appear correct. However, the experimental methodology is weak: only two games are tested, no multiple random seeds or error bars/statistical tests are reported, and baseline details are unclear (e.g. whether DQN inputs/preprocessing match DRQN) so the claims are under-supported. There are also a few unexplained choices in the implementation (the normalized forward-view trace formula R\u0302\u03bb in Alg.1 and the 0.01 cutoff for traces) and strong comparative statements (only algorithm succeeds on Tennis vs. prior DQN variants) that lack sufficient evidence. Overall the math is sound but the empirical evaluation has important gaps that limit confidence in the generality of the conclusions."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper states clear claims (eligibility traces + DRQN improve learning; optimizer matters) and provides empirical results on Pong and Tennis that qualitatively support them (Sec. 4 reports faster/stabler learning with \u03bb=0.8 and with Adam). The mathematical material (TD, n\u2011step returns, R\u03bb, Watkins Q(\u03bb)) is standard and appears correct. However the experimental methodology is limited: only two games, no report of multiple random seeds or error bars/statistical tests, incomplete baseline details (DQN comparisons are qualitative and Table 1 is not shown), and several explanations are speculative (e.g. momentum storing positive TDs or frozen target network causing interactions) without analysis. Thus claims are partially supported but more rigorous/replicated experiments and ablations are needed to fully validate generality."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

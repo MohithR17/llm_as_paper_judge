@@ -109,7 +109,8 @@ def _call_referee(
 # ---------------------------------------------------------------------------
 
 def score_dimension_with_debate(
-    client: OpenAI, title: str, parsed_text: str, dimension: str
+    client: OpenAI, title: str, parsed_text: str, dimension: str,
+    novelty_context: str = None,
 ) -> dict:
     """
     Score one dimension using two independent agents. Invokes a referee if they
@@ -119,8 +120,8 @@ def score_dimension_with_debate(
     """
     # Two independent reviews in parallel
     with ThreadPoolExecutor(max_workers=2) as ex:
-        fut_a = ex.submit(call_dimension_agent, client, title, parsed_text, dimension)
-        fut_b = ex.submit(call_dimension_agent, client, title, parsed_text, dimension)
+        fut_a = ex.submit(call_dimension_agent, client, title, parsed_text, dimension, novelty_context)
+        fut_b = ex.submit(call_dimension_agent, client, title, parsed_text, dimension, novelty_context)
         review_a: DimensionScore = fut_a.result()
         review_b: DimensionScore = fut_b.result()
 

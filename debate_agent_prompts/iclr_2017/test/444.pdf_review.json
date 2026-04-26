@@ -1,0 +1,57 @@
+{
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper introduces a clearly novel, LSTM-specific decomposition of the model output into per-word multiplicative factors (\u03b2i,j, Eq.8) and an improved additive cell decomposition that accounts for downstream forget-gate effects (Eq.9\u201312), which is different from prior gradient- or gate-activation based visualizations (Karpathy et al., gradient-norm approaches). It further leverages these importance scores to extract predictive multi-word patterns and to build a simple rule-based classifier that approximates the LSTM, demonstrating an original pipeline from interpretation to rule extraction. While the approach builds on standard LSTM equations and related interpretability work, the concrete decomposition and phrase-extraction methodology represent a notable, non-trivial contribution that would inform experts in the field. | B(4): The paper presents a clearly new methodological perspective: a decomposition of the LSTM output into per-word multiplicative factors (\u03b2i,j) and an additive cell decomposition that explicitly accounts for forget-gate effects (Sections 3.2\u20133.3), which is distinct from prior gradient-norm and gate-activation analyses cited in Related Work. It also leverages these LSTM-specific importance scores to extract human-interpretable phrases and build a rules-based classifier (Section 4), a non-trivial application beyond existing visualization techniques. The authors explicitly contrast their LSTM-structured approach with general gradient methods and gate-activation studies and show empirical advantages, so the contribution is a notable, well-differentiated advance rather than a mere combination of known techniques.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper introduces a clearly novel, LSTM-specific decomposition of the model output into per-word multiplicative factors (\u03b2i,j, Eq.8) and an improved additive cell decomposition that accounts for downstream forget-gate effects (Eq.9\u201312), which is different from prior gradient- or gate-activation based visualizations (Karpathy et al., gradient-norm approaches). It further leverages these importance scores to extract predictive multi-word patterns and to build a simple rule-based classifier that approximates the LSTM, demonstrating an original pipeline from interpretation to rule extraction. While the approach builds on standard LSTM equations and related interpretability work, the concrete decomposition and phrase-extraction methodology represent a notable, non-trivial contribution that would inform experts in the field."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a clearly new methodological perspective: a decomposition of the LSTM output into per-word multiplicative factors (\u03b2i,j) and an additive cell decomposition that explicitly accounts for forget-gate effects (Sections 3.2\u20133.3), which is distinct from prior gradient-norm and gate-activation analyses cited in Related Work. It also leverages these LSTM-specific importance scores to extract human-interpretable phrases and build a rules-based classifier (Section 4), a non-trivial application beyond existing visualization techniques. The authors explicitly contrast their LSTM-structured approach with general gradient methods and gate-activation studies and show empirical advantages, so the contribution is a notable, well-differentiated advance rather than a mere combination of known techniques."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized (Intro \u2192 Related Work \u2192 Method \u2192 Experiments \u2192 Discussion \u2192 Conclusion) and clearly states its main contributions up front (intro: visualization of input importance, phrase extraction, rules-based classifier). The notation is mostly consistent, but several equations in Section 3.2\u20133.3 have awkward/mismatched parentheses and index/letter inconsistencies (e.g. \u03b2i,j definition and the expansions in (10)\u2013(12)) that make the derivation harder to follow. Figures/tables and example patterns (Table 4, Table 6, heatmap examples) are informative, but presentation suffers from missing/duplicated fragments and formatting/grammatical issues in the appendix and some paragraphs (e.g. repeated sentences, \u201can US NSF\u201d, concatenated tokens like \u201cgosomewhereelse\u201d). | B(4): The paper is well organized (Intro \u2192 Related Work \u2192 Method \u2192 Experiments \u2192 Discussion/Conclusion) and clearly states its main contributions early (a novel LSTM input-importance decomposition and phrase-extraction validated via a rules-based classifier). The notation and equations are mostly understandable, but several formulae (e.g. Eq. 8 and the additive decomposition in Sec. 3.3 / Eqs. 9\u201312) contain parenthesis/subscript/formatting errors that hinder quick comprehension. Figures, tables and concrete examples (e.g. Table 4, heat maps) are informative, though the manuscript suffers from formatting/duplication and minor typographical artifacts that reduce polish.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized (Intro \u2192 Related Work \u2192 Method \u2192 Experiments \u2192 Discussion \u2192 Conclusion) and clearly states its main contributions up front (intro: visualization of input importance, phrase extraction, rules-based classifier). The notation is mostly consistent, but several equations in Section 3.2\u20133.3 have awkward/mismatched parentheses and index/letter inconsistencies (e.g. \u03b2i,j definition and the expansions in (10)\u2013(12)) that make the derivation harder to follow. Figures/tables and example patterns (Table 4, Table 6, heatmap examples) are informative, but presentation suffers from missing/duplicated fragments and formatting/grammatical issues in the appendix and some paragraphs (e.g. repeated sentences, \u201can US NSF\u201d, concatenated tokens like \u201cgosomewhereelse\u201d)."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (Intro \u2192 Related Work \u2192 Method \u2192 Experiments \u2192 Discussion/Conclusion) and clearly states its main contributions early (a novel LSTM input-importance decomposition and phrase-extraction validated via a rules-based classifier). The notation and equations are mostly understandable, but several formulae (e.g. Eq. 8 and the additive decomposition in Sec. 3.3 / Eqs. 9\u201312) contain parenthesis/subscript/formatting errors that hinder quick comprehension. Figures, tables and concrete examples (e.g. Table 4, heat maps) are informative, though the manuscript suffers from formatting/duplication and minor typographical artifacts that reduce polish."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The core mathematical derivations are correct: the telescoping decomposition of tanh(c_T) into per-step differences (eqs.8\u201312) and the unrolled additive cell decomposition c_T = sum_i (prod_{j=i+1}^T f_j) i_i c\u0303_i (eq.9) are algebraically sound and justify the proposed per-word multiplicative factors. The experiments (sentiment datasets and WikiMovies) provide empirical support that the additive decomposition yields better pattern-based approximations than cell-difference or gradient baselines. However, there are methodological weaknesses: key hyper\u2011choices are heuristic (e.g. \u03b2 threshold c=1.1), reported results lack discussion of statistical significance or variance, and some baseline/implementation details (exact scores in tables, normalization choices) are under-specified, leaving moderate concerns about robustness though not invalidating the main claims. | B(4): The paper's main claims (a multiplicative decomposition of the softmax numerator into per-word factors and an improved additive cell-decomposition importance score, used to extract predictive phrases) are clearly stated and supported by experiments on SST, Yelp and WikiMovies showing the proposed decomposition outperforms simple cell-difference and gradient baselines. The mathematical derivations (Eqs. 8\u201312 and the iterative decomposition of c_T in Eq. 9) are essentially correct modulo informal/omitted elementwise notation for gates and activations. Experimental methodology uses reasonable baselines and tasks, and includes both quantitative and qualitative validation, but lacks statistical details (no error bars or multiple runs), and some methodological choices are heuristic (candidate phrase threshold c=1.1, candidate selection) and not justified. Overall the technical approach is sound with minor methodological shortcomings that do not overturn the main conclusions.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The core mathematical derivations are correct: the telescoping decomposition of tanh(c_T) into per-step differences (eqs.8\u201312) and the unrolled additive cell decomposition c_T = sum_i (prod_{j=i+1}^T f_j) i_i c\u0303_i (eq.9) are algebraically sound and justify the proposed per-word multiplicative factors. The experiments (sentiment datasets and WikiMovies) provide empirical support that the additive decomposition yields better pattern-based approximations than cell-difference or gradient baselines. However, there are methodological weaknesses: key hyper\u2011choices are heuristic (e.g. \u03b2 threshold c=1.1), reported results lack discussion of statistical significance or variance, and some baseline/implementation details (exact scores in tables, normalization choices) are under-specified, leaving moderate concerns about robustness though not invalidating the main claims."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims (a multiplicative decomposition of the softmax numerator into per-word factors and an improved additive cell-decomposition importance score, used to extract predictive phrases) are clearly stated and supported by experiments on SST, Yelp and WikiMovies showing the proposed decomposition outperforms simple cell-difference and gradient baselines. The mathematical derivations (Eqs. 8\u201312 and the iterative decomposition of c_T in Eq. 9) are essentially correct modulo informal/omitted elementwise notation for gates and activations. Experimental methodology uses reasonable baselines and tasks, and includes both quantitative and qualitative validation, but lacks statistical details (no error bars or multiple runs), and some methodological choices are heuristic (candidate phrase threshold c=1.1, candidate selection) and not justified. Overall the technical approach is sound with minor methodological shortcomings that do not overturn the main conclusions."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

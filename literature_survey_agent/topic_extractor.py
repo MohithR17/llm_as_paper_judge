@@ -14,6 +14,7 @@ from dataclasses import dataclass, asdict
 from typing import Optional
 
 from openai import OpenAI
+from pydantic import BaseModel
 
 
 # ── Data Models ────────────────────────────────────────────────────────────────
@@ -84,6 +85,23 @@ class TopicTaxonomy:
         if low:
             lines.append(f"  ⚠  Low-confidence slots (need broader search): {', '.join(low)}")
         return "\n".join(lines)
+
+
+# ── Pydantic models for structured output ─────────────────────────────────────
+
+class TopicEntryModel(BaseModel):
+    terms: list[str]
+    confidence: float
+    notes: str
+
+class TopicTaxonomyModel(BaseModel):
+    paper_title: str
+    core_problem: TopicEntryModel
+    proposed_method: TopicEntryModel
+    baselines: TopicEntryModel
+    datasets: TopicEntryModel
+    evaluation_metrics: TopicEntryModel
+    application_domain: TopicEntryModel
 
 
 # ── Prompts ────────────────────────────────────────────────────────────────────
@@ -176,7 +194,7 @@ class TopicExtractor:
         self,
         api_key: str,
         base_url: str = "https://ai-gateway.andrew.cmu.edu",
-        model: str = "gpt-5-mini",
+        model: str = "gpt-5.4-nano",
         temperature: float = 0.0,
         max_tokens: int = 2048,
     ) -> None:
@@ -190,46 +208,30 @@ class TopicExtractor:
     def extract(self, paper_text: str) -> TopicTaxonomy:
         """Run full-paper extraction. Retries up to MAX_RETRIES on parse failures."""
         prompt = EXTRACTION_PROMPT.format(paper_text=paper_text.strip())
-        raw_json = self._call_with_retry(prompt)
-        return self._parse(raw_json)
+        parsed = self._call_with_retry(prompt)
+        return self._parse_dict(parsed.model_dump())
 
     # ── Private ───────────────────────────────────────────────────────────────
 
-    def _call_with_retry(self, prompt: str) -> str:
+    def _call_with_retry(self, prompt: str) -> TopicTaxonomyModel:
         last_error: Exception = RuntimeError("No attempts made")
 
         for attempt in range(1, self.MAX_RETRIES + 1):
             try:
-                response = self.client.chat.completions.create(
+                response = self.client.responses.parse(
                     model=self.model,
-                    temperature=self.temperature,
-                    max_tokens=self.max_tokens,
-                    messages=[
-                        {"role": "system", "content": SYSTEM_PROMPT},
-                        {"role": "user",   "content": prompt},
+                    input=[
+                        {"role": "developer", "content": [{"type": "input_text", "text": SYSTEM_PROMPT}]},
+                        {"role": "user",       "content": [{"type": "input_text", "text": prompt}]},
                     ],
+                    text_format=TopicTaxonomyModel,
                 )
-                text = (response.choices[0].message.content or "").strip()
-                print(f"  [attempt {attempt}] raw response:\n{text[:500]}{'…' if len(text) > 500 else ''}\n")
-
-                # Strip accidental markdown fences if the model ignores the instruction
-                if text.startswith("```"):
-                    text = text.split("```")[1]
-                    if text.startswith("json"):
-                        text = text[4:]
-                    text = text.strip()
-
-                json.loads(text)   # validate before returning — raises JSONDecodeError if bad
-                return text
-
-            except json.JSONDecodeError as exc:
-                last_error = exc
-                print(f"  [attempt {attempt}/{self.MAX_RETRIES}] JSON parse error: {exc} — retrying…")
-                time.sleep(1.5 * attempt)
+                print(f"  [attempt {attempt}] parsed: {response.output_parsed.paper_title!r}")
+                return response.output_parsed
 
             except Exception as exc:
                 last_error = exc
-                print(f"  [attempt {attempt}/{self.MAX_RETRIES}] API error: {exc} — retrying…")
+                print(f"  [attempt {attempt}/{self.MAX_RETRIES}] error: {exc} — retrying…")
                 time.sleep(2.0 * attempt)
 
         raise RuntimeError(
@@ -237,9 +239,8 @@ class TopicExtractor:
             f"Last error: {last_error}"
         )
 
-    def _parse(self, raw_json: str) -> TopicTaxonomy:
-        """Deserialise JSON → TopicTaxonomy with per-field defensive validation."""
-        data = json.loads(raw_json)
+    def _parse_dict(self, data: dict) -> TopicTaxonomy:
+        """Deserialise a dict → TopicTaxonomy with per-field defensive validation."""
 
         def parse_entry(slot_name: str) -> TopicEntry:
             slot = data.get(slot_name, {})
@@ -289,7 +290,7 @@ def main() -> int:
     parser.add_argument("--api-key",  required=True,  help="OpenAI (or compatible) API key")
     parser.add_argument("--base-url", default="https://ai-gateway.andrew.cmu.edu",
                         help="API base URL (e.g. https://ai-gateway.andrew.cmu.edu/v1)")
-    parser.add_argument("--model",    default="gpt-5-mini")
+    parser.add_argument("--model",    default="gpt-5.4-nano")
     parser.add_argument("--paper",    default=None,
                         help="Path to a plain-text paper file. Omit to run on the built-in sample.")
     parser.add_argument("--out-json", default=None,

@@ -1,0 +1,57 @@
+{
+  "CLARITY": 2,
+  "ORIGINALITY": 2,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 2,
+      "justification": "[Consensus avg=2] A(3): The paper is overall organized in a conventional logical flow (Intro \u2192 Dataset \u2192 System \u2192 Experiments \u2192 Conclusion), but the main contributions are not crisply enumerated early and must be inferred from the text. Notation is introduced (e.g. Eqs. (1)-(4)) but is sometimes inconsistent or confusing (Eq. (3) uses unclear index ranges and summations). Figures and tables are frequently referenced (Fig. 1\u201311, Table 1\u20133) yet are not visible here and the text contains duplicated/garbled paragraphs and repeated sentences that harm readability (see the large repeated block near the end). Writing has numerous formatting, citation and grammatical issues and would benefit from thorough copy-editing and cleanup. | B(2): The paper has a basic logical structure (Intro \u2192 dataset \u2192 system \u2192 experiments \u2192 conclusion) but is marred by severe presentation problems: contributions are not crisply stated early and the prose contains many duplicated/garbled paragraphs and repeated citation blocks that obscure intent. Notation is inconsistently used (confusing index notation in equations, unexplained symbols) and several figures/tables are referenced but not present in the provided text, reducing informativeness. Overall the writing has frequent grammatical issues and formatting errors that require substantial editing for clarity.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper is overall organized in a conventional logical flow (Intro \u2192 Dataset \u2192 System \u2192 Experiments \u2192 Conclusion), but the main contributions are not crisply enumerated early and must be inferred from the text. Notation is introduced (e.g. Eqs. (1)-(4)) but is sometimes inconsistent or confusing (Eq. (3) uses unclear index ranges and summations). Figures and tables are frequently referenced (Fig. 1\u201311, Table 1\u20133) yet are not visible here and the text contains duplicated/garbled paragraphs and repeated sentences that harm readability (see the large repeated block near the end). Writing has numerous formatting, citation and grammatical issues and would benefit from thorough copy-editing and cleanup."
+      },
+      "reviewer_b": {
+        "score": 2,
+        "justification": "The paper has a basic logical structure (Intro \u2192 dataset \u2192 system \u2192 experiments \u2192 conclusion) but is marred by severe presentation problems: contributions are not crisply stated early and the prose contains many duplicated/garbled paragraphs and repeated citation blocks that obscure intent. Notation is inconsistently used (confusing index notation in equations, unexplained symbols) and several figures/tables are referenced but not present in the provided text, reducing informativeness. Overall the writing has frequent grammatical issues and formatting errors that require substantial editing for clarity."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 2,
+      "justification": "[Consensus avg=2] A(3): The paper largely combines existing components (Inception/Faster R-CNN/LSTM/residual shortcuts, binarized deep features, inverted-indexing) into an industrial-scale fashion search pipeline rather than proposing fundamentally new algorithms \u2014 e.g. ResCeption is Inception+residuals (similar to Inception-ResNet) and ROI detection uses Faster R-CNN. The claimed novelty is applying LSTM to multi-label attribute prediction and guided attribute-sequence generation for fashion (they note related work Wang et al. (2016) and Jing et al. (2015)), and building a 1M-image fashion-attribute dataset, which is useful but primarily an application/engineering contribution. Overall this is an incremental but practically valuable combination of known techniques rather than a highly novel methodological advance. | B(2): The paper largely combines existing components rather than proposing fundamentally new methods: ResCeption (Sec. 3.1) is Inception-v3 with residual shortcuts (cf. Inception-ResNet), multi-label as sequence via LSTM (Sec. 3.2\u20133.3) applies known RNN/LSTM ideas to model label dependencies (and the authors cite prior similar work, e.g. Wang et al.), and guided ROI detection (Sec. 3.4) is an applied variant of Faster R-CNN with category guidance (cf. Jing et al.). Its main contributions are an internal large-scale attribute dataset and an engineering integration (inverted-indexing, simple binarization, popcnt-based Hamming retrieval) for a production system; these are useful but represent limited methodological novelty rather than a surprising new idea. ",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper largely combines existing components (Inception/Faster R-CNN/LSTM/residual shortcuts, binarized deep features, inverted-indexing) into an industrial-scale fashion search pipeline rather than proposing fundamentally new algorithms \u2014 e.g. ResCeption is Inception+residuals (similar to Inception-ResNet) and ROI detection uses Faster R-CNN. The claimed novelty is applying LSTM to multi-label attribute prediction and guided attribute-sequence generation for fashion (they note related work Wang et al. (2016) and Jing et al. (2015)), and building a 1M-image fashion-attribute dataset, which is useful but primarily an application/engineering contribution. Overall this is an incremental but practically valuable combination of known techniques rather than a highly novel methodological advance."
+      },
+      "reviewer_b": {
+        "score": 2,
+        "justification": "The paper largely combines existing components rather than proposing fundamentally new methods: ResCeption (Sec. 3.1) is Inception-v3 with residual shortcuts (cf. Inception-ResNet), multi-label as sequence via LSTM (Sec. 3.2\u20133.3) applies known RNN/LSTM ideas to model label dependencies (and the authors cite prior similar work, e.g. Wang et al.), and guided ROI detection (Sec. 3.4) is an applied variant of Faster R-CNN with category guidance (cf. Jing et al.). Its main contributions are an internal large-scale attribute dataset and an engineering integration (inverted-indexing, simple binarization, popcnt-based Hamming retrieval) for a production system; these are useful but represent limited methodological novelty rather than a surprising new idea. "
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper's main ideas (ResCeption encoder, sequence-modeling multi-label via LSTM, guided ROI and inverted-index retrieval) are plausible and some empirical evidence is reported (e.g. ILSVRC/CIDEr/Holidays results), but important supporting details and numbers are missing or inconsistent: references to Table 2/3 for attribute/ROI metrics are not shown in the provided text and the reported ILSVRC top-1/top-5 figures appear inconsistent. Mathematical exposition (residual shortcut gradients) is reasonable and correct at a high level, but experimental methodology lacks proper baselines, ablations, details on label ordering for RNN multi-label modelling, and no statistical analysis is given. Overall the contribution is technically plausible but suffers from incomplete/weak experimental support and some unsupported assumptions about label sequencing and evaluation. | B(3): The paper presents plausible methods (ResCeption, LSTM sequence modelling for multi-label, guided Faster R-CNN, binarized features) and reports empirical numbers (ILSVRC top-1/5, MS-COCO CIDEr, Holidays/UKB retrieval scores), but the experimental methodology is incompletely reported and lacks essential baselines and statistical rigor (e.g. no comparisons of the LSTM multi-label approach vs binary-relevance/label-combination or quantitative numbers/tables referenced for attribute recognition and ROI mAP are missing). The mathematical discussion of residual shortcuts is informal with sloppy indexing but the core argument is standard and essentially correct. There are logical gaps (order-dependence of sequence-generated label sets not addressed, reliance on seller meta-data for guided queries not quantified). Overall the claims are partially supported but important evidence and controlled comparisons are missing, so technical validity is uncertain in parts.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper's main ideas (ResCeption encoder, sequence-modeling multi-label via LSTM, guided ROI and inverted-index retrieval) are plausible and some empirical evidence is reported (e.g. ILSVRC/CIDEr/Holidays results), but important supporting details and numbers are missing or inconsistent: references to Table 2/3 for attribute/ROI metrics are not shown in the provided text and the reported ILSVRC top-1/top-5 figures appear inconsistent. Mathematical exposition (residual shortcut gradients) is reasonable and correct at a high level, but experimental methodology lacks proper baselines, ablations, details on label ordering for RNN multi-label modelling, and no statistical analysis is given. Overall the contribution is technically plausible but suffers from incomplete/weak experimental support and some unsupported assumptions about label sequencing and evaluation."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper presents plausible methods (ResCeption, LSTM sequence modelling for multi-label, guided Faster R-CNN, binarized features) and reports empirical numbers (ILSVRC top-1/5, MS-COCO CIDEr, Holidays/UKB retrieval scores), but the experimental methodology is incompletely reported and lacks essential baselines and statistical rigor (e.g. no comparisons of the LSTM multi-label approach vs binary-relevance/label-combination or quantitative numbers/tables referenced for attribute recognition and ROI mAP are missing). The mathematical discussion of residual shortcuts is informal with sloppy indexing but the core argument is standard and essentially correct. There are logical gaps (order-dependence of sequence-generated label sets not addressed, reliance on seller meta-data for guided queries not quantified). Overall the claims are partially supported but important evidence and controlled comparisons are missing, so technical validity is uncertain in parts."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

@@ -1,6 +1,51 @@
 {
-  "_details": {},
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "ORIGINALITY": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized with a logical flow from derivation to implementation and experiments (derivation of variational criterion \u2192 KFAC approximations \u2192 greedy batch selection \u2192 empirical evaluation on MNIST/USPS). The main contributions are stated early (Fisher-information based selection, Gaussian weight approximations, KFAC tractable criterion, backprop-free greedy selection). Notation and technical steps are presented sufficiently for the reader (derivations, approximation steps, and hyperparameters are reported), and related work coverage is adequate. Writing quality is described as adequate overall, suggesting only minor presentation issues rather than major clarity problems."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper clearly states its main claims and provides derivations (MLE/asymptotic Gaussian posterior, Fisher/KFAC approximations) and empirical evidence on MNIST/USPS showing gains over simple baselines. However, several technical assumptions are weakly supported: the asymptotic posterior/MLE approximations and KFAC/trace\u2013determinant bounds are acknowledged by the authors to be unstable on small labeled subsets (a core regime in active learning), and key approximation choices (second\u2011order expansion, scale \u03b3) are not justified theoretically. Experimental scope is limited (only two small datasets and basic baselines) so empirical support for scalability and robustness of the theoretical approximations is incomplete."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper brings a notable new perspective by deriving a Fisher-information based batch active\u2011learning criterion from a variational/MLE asymptotic treatment of network weights (Gaussian prior/posterior), which is not a common framing for deep CNN active learning. Its use of Kronecker\u2011factored (KFAC-style) Fisher approximations together with a backpropagation\u2011free greedy batch selection to make the criterion tractable is a non\u2011trivial technical extension beyond standard uncertainty or curriculum baselines. While several strong approximations and limited empirical evaluation temper claims of breakthrough novelty, the methodological combination and scalability focus would likely inform and surprise experts in the area rather than being merely incremental."
+    }
+  },
   "_summary": {
-    "error": "Connection error."
+    "main_claims": [
+      "Proposes a scalable batch-mode active learning framework for deep networks (especially CNNs) based on a variational inference / MLE viewpoint that yields a Fisher-information based selection criterion.",
+      "Derives prior and posterior Gaussian weight distributions from MLE asymptotics and uses a Kronecker-factored (KFAC-style) approximation of the Fisher information to make the criterion computationally tractable.",
+      "Implements a backpropagation-free greedy batch selection algorithm that minimizes an approximated variational free energy combining a training term and a generalization term.",
+      "Empirically shows the method outperforms random sampling (and compares to uncertainty and curriculum baselines) on MNIST and USPS, achieving near-full-training-set test error using about 30% of labels, and demonstrates favorable time complexity for batch selection."
+    ],
+    "methodology": "Derive a variational free-energy active selection criterion by approximating posterior/prior Gaussian weight distributions via MLE asymptotics, approximate Fisher matrices with Kronecker-factored blocks and further trace/determinant approximations, and perform greedy batch selection (size= minibatch) by minimizing the resulting criterion without backpropagation.",
+    "datasets": [
+      "MNIST",
+      "USPS"
+    ],
+    "baselines": [
+      "uncertainty sampling",
+      "curriculum sampling",
+      "random sampling"
+    ],
+    "metrics": [
+      "test error",
+      "time per active-learning pass (seconds)"
+    ],
+    "limitations": [
+      "The posterior approximation is asymptotic and may be unstable on small observed labeled sets (an issue in active learning).",
+      "KFAC (Kronecker-factored) approximations can be unreliable on small subsets and may require regularization.",
+      "Several approximations (trace/determinant bounds, second-order log-likelihood expansion, scale hyperparameter \u03b3) may be improved and affect convergence/generalization."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Machine learning - Active learning for deep neural networks (batch mode, CNNs)",
+    "writing_quality": "adequate"
   }
 }

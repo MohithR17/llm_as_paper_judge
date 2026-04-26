@@ -1,0 +1,57 @@
+{
+  "ORIGINALITY": 3,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper proposes a practical combination\u2014representing a document as the average of word embeddings while training with an explicit mask-out (dropout) corruption (eq.(1)) so that averaging is enforced during learning, and derives a data-dependent regularizer from a Taylor expansion (eq.(6)-(7)). These elements yield a useful, efficient variant distinct from Paragraph Vectors and from naive Word2Vec+AVG, and the authors empirically and analytically differentiate their approach (e.g., compare to Huang et al. 2012, Paragraph Vectors, and relate to dropout/denoising analyses). However, the core components (averaging embeddings, dropout/denoising, and related theoretical analyses) are largely existing techniques recombined rather than a fundamentally new paradigm, so the contribution is incremental rather than highly novel. | B(3): The paper combines known elements (averaging word embeddings, dropout/denoising corruption, negative sampling) into a new training setup that enforces averaged embeddings to serve as document vectors and analyzes the corruption as a data-dependent regularizer (Sec.3 and 3.1). The problem (document representation) is well-studied and the core idea is an incremental, pragmatic fusion rather than a radical new formulation; the authors do clearly distinguish from Paragraph Vectors, DEA and prior averaging work (Huang et al., 2012) and provide a non-trivial analytic justification, but the technique largely adapts existing methods rather than introducing wholly novel machinery.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper proposes a practical combination\u2014representing a document as the average of word embeddings while training with an explicit mask-out (dropout) corruption (eq.(1)) so that averaging is enforced during learning, and derives a data-dependent regularizer from a Taylor expansion (eq.(6)-(7)). These elements yield a useful, efficient variant distinct from Paragraph Vectors and from naive Word2Vec+AVG, and the authors empirically and analytically differentiate their approach (e.g., compare to Huang et al. 2012, Paragraph Vectors, and relate to dropout/denoising analyses). However, the core components (averaging embeddings, dropout/denoising, and related theoretical analyses) are largely existing techniques recombined rather than a fundamentally new paradigm, so the contribution is incremental rather than highly novel."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper combines known elements (averaging word embeddings, dropout/denoising corruption, negative sampling) into a new training setup that enforces averaged embeddings to serve as document vectors and analyzes the corruption as a data-dependent regularizer (Sec.3 and 3.1). The problem (document representation) is well-studied and the core idea is an incremental, pragmatic fusion rather than a radical new formulation; the authors do clearly distinguish from Paragraph Vectors, DEA and prior averaging work (Huang et al., 2012) and provide a non-trivial analytic justification, but the technique largely adapts existing methods rather than introducing wholly novel machinery."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well-organized with a clear logical flow (Intro \u2192 Related Work/Notations \u2192 Method \u2192 Experiments \u2192 Conclusion) and the main contributions are stated early (intro bullets listing Doc2VecC properties). Notation is largely defined in Section 2 and used consistently, and technical ideas (e.g. the corruption model and its regularization in Section 3.1) are explained clearly. Presentation suffers from formatting artifacts and duplicated/garbled text in the provided file (repeated sentences and LaTeX remnants near the end) and several figures/tables are only referenced (e.g. Figure 1, Tables 1\u20136) so their effectiveness cannot be judged here; these issues slightly reduce readability but do not obscure the paper\u2019s core ideas. | B(4): Overall the paper is well organized (Intro \u2192 Related Work/Notations \u2192 Method \u2192 Experiments \u2192 Conclusion) and clearly states its main contributions early in the Introduction (the numbered list of desirable properties of Doc2VecC). Notation is introduced in Section 2 and used consistently through the method (equations (1)\u2013(7)), and experimental descriptions refer to informative figures/tables (t-SNE visualizations, Tables 1/2/5) that support the claims. Presentation is marred only by some formatting/duplication and LaTeX artifacts in the provided text (repeated paragraphs and stray tokens at the end) and a few awkward long sentences, but these are minor and do not prevent understanding.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well-organized with a clear logical flow (Intro \u2192 Related Work/Notations \u2192 Method \u2192 Experiments \u2192 Conclusion) and the main contributions are stated early (intro bullets listing Doc2VecC properties). Notation is largely defined in Section 2 and used consistently, and technical ideas (e.g. the corruption model and its regularization in Section 3.1) are explained clearly. Presentation suffers from formatting artifacts and duplicated/garbled text in the provided file (repeated sentences and LaTeX remnants near the end) and several figures/tables are only referenced (e.g. Figure 1, Tables 1\u20136) so their effectiveness cannot be judged here; these issues slightly reduce readability but do not obscure the paper\u2019s core ideas."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized (Intro \u2192 Related Work/Notations \u2192 Method \u2192 Experiments \u2192 Conclusion) and clearly states its main contributions early in the Introduction (the numbered list of desirable properties of Doc2VecC). Notation is introduced in Section 2 and used consistently through the method (equations (1)\u2013(7)), and experimental descriptions refer to informative figures/tables (t-SNE visualizations, Tables 1/2/5) that support the claims. Presentation is marred only by some formatting/duplication and LaTeX artifacts in the provided text (repeated paragraphs and stray tokens at the end) and a few awkward long sentences, but these are minor and do not prevent understanding."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper's main claims are supported by both a clear mathematical derivation (corruption as an unbiased mask, Taylor expansion of E[f(x\u0303)] yielding a trace(\u03a3 Hessian) regularizer) and extensive empirical comparisons (IMDB, Wikipedia, SICK) against appropriate baselines. The derivations of the Hessian term and the variance (\u03a3 diagonal = q/(1\u2212q)\u00b7x_j^2) and the resulting data-dependent regularizer are algebraically consistent with the negative-sampling objective. Minor technical concerns remain: the Taylor (second-order) approximation is used without discussion of its accuracy for large corruption rates (they use q=0.9, yielding large variance), and experiments report no statistical significance tests (and one reported setting trains representations using the test set, though they also evaluate the proper train-only setting). These issues are relatively minor and do not overturn the main conclusions. | B(4): Overall the paper's claims are supported by clear derivations and a broad set of experiments against appropriate baselines (IMDB, Wikipedia, SICK, word-analogy). The mathematical derivation of the corruption-as-regularizer (second-order Taylor expansion about the corruption mean, diagonal variance q/(1\u2212q) for binary BoW) and the Hessian-based regularizer form are standard and appear correct. Minor concerns: the Taylor approximation accuracy is not discussed (they use very large corruption q\u22480.9, which can strain a second-order expansion), some implementation details (negative-sampling/unigram choice, exact training hyper\u2011parameters) and statistical significance of results are omitted. These are methodological shortcomings but do not overturn the main technical claims.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper's main claims are supported by both a clear mathematical derivation (corruption as an unbiased mask, Taylor expansion of E[f(x\u0303)] yielding a trace(\u03a3 Hessian) regularizer) and extensive empirical comparisons (IMDB, Wikipedia, SICK) against appropriate baselines. The derivations of the Hessian term and the variance (\u03a3 diagonal = q/(1\u2212q)\u00b7x_j^2) and the resulting data-dependent regularizer are algebraically consistent with the negative-sampling objective. Minor technical concerns remain: the Taylor (second-order) approximation is used without discussion of its accuracy for large corruption rates (they use q=0.9, yielding large variance), and experiments report no statistical significance tests (and one reported setting trains representations using the test set, though they also evaluate the proper train-only setting). These issues are relatively minor and do not overturn the main conclusions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper's claims are supported by clear derivations and a broad set of experiments against appropriate baselines (IMDB, Wikipedia, SICK, word-analogy). The mathematical derivation of the corruption-as-regularizer (second-order Taylor expansion about the corruption mean, diagonal variance q/(1\u2212q) for binary BoW) and the Hessian-based regularizer form are standard and appear correct. Minor concerns: the Taylor approximation accuracy is not discussed (they use very large corruption q\u22480.9, which can strain a second-order expansion), some implementation details (negative-sampling/unigram choice, exact training hyper\u2011parameters) and statistical significance of results are omitted. These are methodological shortcomings but do not overturn the main technical claims."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

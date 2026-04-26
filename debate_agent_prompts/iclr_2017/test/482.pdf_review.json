@@ -1,0 +1,57 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized (Intro \u2192 Background \u2192 Experiments \u2192 Results \u2192 Discussion \u2192 Appendices) and clearly states its goals early (predict active medication classes from billing-code sequences and compare RNN vs feed\u2011forward models). Notation is generally consistent and defined (data instance d = {E,T,y}, m, k, n, and the metric equations are given). Figures/tables and illustrative case examples are generally informative (Appendix C shows detailed predictions), although Table 1 and several figures are only referenced and not shown here. Presentation issues are minor but noticeable: several duplicated/mangled sentences and citation fragments reduce polish and there are a few formatting/typo glitches that should be cleaned up. | B(4): Overall the paper is well organized (Intro \u2192 Background \u2192 Experiments \u2192 Results/Discussion) and clearly states the main contributions early (predicting active medication classes from ICD-9 sequences and comparing RNNs vs feed\u2011forward nets). Notation and formalism are mostly consistent (data instance d, embedding x, micro\u2011AUC and LR definitions), though a couple of formulaic symbols (e.g. S, S\u0304) could be made slightly clearer. Figures/tables and case examples are informative and helpful, but several presentation issues remain: references to figures/tables without embedded graphics in the text, repeated/duplicated sentences and stray typographic/formatting glitches (near the end and in appendices) that reduce polish and occasionally introduce minor ambiguity.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized (Intro \u2192 Background \u2192 Experiments \u2192 Results \u2192 Discussion \u2192 Appendices) and clearly states its goals early (predict active medication classes from billing-code sequences and compare RNN vs feed\u2011forward models). Notation is generally consistent and defined (data instance d = {E,T,y}, m, k, n, and the metric equations are given). Figures/tables and illustrative case examples are generally informative (Appendix C shows detailed predictions), although Table 1 and several figures are only referenced and not shown here. Presentation issues are minor but noticeable: several duplicated/mangled sentences and citation fragments reduce polish and there are a few formatting/typo glitches that should be cleaned up."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized (Intro \u2192 Background \u2192 Experiments \u2192 Results/Discussion) and clearly states the main contributions early (predicting active medication classes from ICD-9 sequences and comparing RNNs vs feed\u2011forward nets). Notation and formalism are mostly consistent (data instance d, embedding x, micro\u2011AUC and LR definitions), though a couple of formulaic symbols (e.g. S, S\u0304) could be made slightly clearer. Figures/tables and case examples are informative and helpful, but several presentation issues remain: references to figures/tables without embedded graphics in the text, repeated/duplicated sentences and stray typographic/formatting glitches (near the end and in appendices) that reduce polish and occasionally introduce minor ambiguity."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper applies standard deep sequence models (LSTM/GRU) and embeddings to a clinical prediction task rather than introducing new methods; architectures, losses and optimizers are conventional. Its main novelty is in the specific problem formulation and scale \u2014 predicting the full set of active medication therapeutic classes from a sequence of ICD\u20119 billing codes only, and comparing recurrent vs similarly\u2011configured feed\u2011forward models on a much larger dataset (3.3M instances) than prior work (Sections 1, 2.3, 3.1). The authors clearly differentiate from related GRU and collaborative\u2011filtering studies (Section 2.3), but the techniques are a non\u2011trivial yet expected application of existing methods rather than an original algorithmic advance, so the contribution is moderately novel. | B(3): The paper frames a novel applied problem\u2014predicting a patient\u2019s active medication therapeutic classes from sequences of ICD\u20119 billing codes and evaluating recurrent (GRU/LSTM) vs similarly-configured feed\u2011forward models\u2014using a very large dataset (\u22483.3M instances). However, the technical methods (embeddings, LSTM/GRU, cross-entropy training, random\u2011forest baselines) are standard and there is no new algorithmic development; the main novelty is problem formulation, scale, and empirical comparison, which is an incremental but useful contribution. The authors clearly differentiate from prior work (e.g., Lipton, Choi, collaborative\u2011filter approaches) and emphasize their distinct target and dataset scale.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper applies standard deep sequence models (LSTM/GRU) and embeddings to a clinical prediction task rather than introducing new methods; architectures, losses and optimizers are conventional. Its main novelty is in the specific problem formulation and scale \u2014 predicting the full set of active medication therapeutic classes from a sequence of ICD\u20119 billing codes only, and comparing recurrent vs similarly\u2011configured feed\u2011forward models on a much larger dataset (3.3M instances) than prior work (Sections 1, 2.3, 3.1). The authors clearly differentiate from related GRU and collaborative\u2011filtering studies (Section 2.3), but the techniques are a non\u2011trivial yet expected application of existing methods rather than an original algorithmic advance, so the contribution is moderately novel."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper frames a novel applied problem\u2014predicting a patient\u2019s active medication therapeutic classes from sequences of ICD\u20119 billing codes and evaluating recurrent (GRU/LSTM) vs similarly-configured feed\u2011forward models\u2014using a very large dataset (\u22483.3M instances). However, the technical methods (embeddings, LSTM/GRU, cross-entropy training, random\u2011forest baselines) are standard and there is no new algorithmic development; the main novelty is problem formulation, scale, and empirical comparison, which is an incremental but useful contribution. The authors clearly differentiate from prior work (e.g., Lipton, Choi, collaborative\u2011filter approaches) and emphasize their distinct target and dataset scale."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper clearly states its main claim (GRU slightly outperforms LSTM and a similarly-configured feed\u2011forward net on predicting ATC medication classes from ICD\u20119 sequences) and supports it with large-scale experiments (3.3M instances, 80/5/15 split) and appropriate multi-label metrics (micro\u2011AUC, label\u2011ranking loss). Methodology is generally sound (comparison to a feed\u2011forward ablation, RF and constant baselines, embedding evaluation), but there are noteworthy gaps: no statistical significance tests or confidence intervals are reported for the small AUC differences (~0.01), the random\u2011forest baseline is trained as an ensemble of disjoint submodels (each on 1/10 of data) which likely weakens that baseline, and some claims (e.g. RNNs being limited by hardware) are speculative. These are minor methodological issues that do not overturn the experimental conclusions, hence a score of 4. | B(4): The paper\u2019s main empirical claims (GRU > LSTM > FFN > RF, GRU micro-AUC ~0.93 and LR ~0.076) are clearly stated and supported by large-scale experiments on 3.3M instances with patient-level train/val/test splits (Section 3.1) and reasonable baselines (feed\u2011forward, random forest, constant\u2011prevalence; Section 3.2) using appropriate multi\u2011label metrics (Section 3.4). Mathematical material is minimal and correct (definitions of micro\u2011AUC and label\u2011ranking loss). Major methodological weaknesses are limited reporting of statistical significance or confidence intervals for small AUC differences, incomplete detail on some preprocessing choices (e.g. time feature encoding, effect of stratified random reference sampling described in 3.1), and the claim of robustness to label noise is plausible but not rigorously demonstrated. Overall the experiments are sound and support the main conclusions, but the paper would benefit from statistical tests and more preprocessing transparency.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper clearly states its main claim (GRU slightly outperforms LSTM and a similarly-configured feed\u2011forward net on predicting ATC medication classes from ICD\u20119 sequences) and supports it with large-scale experiments (3.3M instances, 80/5/15 split) and appropriate multi-label metrics (micro\u2011AUC, label\u2011ranking loss). Methodology is generally sound (comparison to a feed\u2011forward ablation, RF and constant baselines, embedding evaluation), but there are noteworthy gaps: no statistical significance tests or confidence intervals are reported for the small AUC differences (~0.01), the random\u2011forest baseline is trained as an ensemble of disjoint submodels (each on 1/10 of data) which likely weakens that baseline, and some claims (e.g. RNNs being limited by hardware) are speculative. These are minor methodological issues that do not overturn the experimental conclusions, hence a score of 4."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s main empirical claims (GRU > LSTM > FFN > RF, GRU micro-AUC ~0.93 and LR ~0.076) are clearly stated and supported by large-scale experiments on 3.3M instances with patient-level train/val/test splits (Section 3.1) and reasonable baselines (feed\u2011forward, random forest, constant\u2011prevalence; Section 3.2) using appropriate multi\u2011label metrics (Section 3.4). Mathematical material is minimal and correct (definitions of micro\u2011AUC and label\u2011ranking loss). Major methodological weaknesses are limited reporting of statistical significance or confidence intervals for small AUC differences, incomplete detail on some preprocessing choices (e.g. time feature encoding, effect of stratified random reference sampling described in 3.1), and the claim of robustness to label noise is plausible but not rigorously demonstrated. Overall the experiments are sound and support the main conclusions, but the paper would benefit from statistical tests and more preprocessing transparency."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

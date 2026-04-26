@@ -1,0 +1,57 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized with a clear progression (Introduction \u2192 Method \u2192 Experiments \u2192 Conclusion) and an algorithm (Algorithm 1) that concretely summarizes the procedure. The main contributions are stated early (end of \u00a71) and repeated in the conclusion, making the message easy to find. Notation is generally consistent and defined (e.g., Pl, n1/n2, b, Tl, A(1)/A(2)), and the method section walks through equations (2)\u2013(8) coherently. Presentation suffers only from minor issues: many figures/tables are referenced but not visible in the provided text, and the appendices contain duplicated/garbled sentences and occasional typos (e.g., \u201cwining\u201d), which hurt polish but not overall clarity. | B(4): The paper is well organized with the expected narrative (introduction \u2192 method \u2192 experiments \u2192 conclusion) and clearly states the main contributions early in the introduction (INQ idea and the three interdependent operations). Notation is largely consistent and definitions (W_l, P_l, n1/n2, T_l, A(1)/A(2)) are provided, though there are minor inconsistencies (e.g. occasional A2 vs A(2) and small notational slips). Figures/tables are cited appropriately to support claims, but the provided text contains duplicated/mangled paragraphs and some grammatical/formatting errors in the appendix and final sections that slightly detract from presentation quality.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized with a clear progression (Introduction \u2192 Method \u2192 Experiments \u2192 Conclusion) and an algorithm (Algorithm 1) that concretely summarizes the procedure. The main contributions are stated early (end of \u00a71) and repeated in the conclusion, making the message easy to find. Notation is generally consistent and defined (e.g., Pl, n1/n2, b, Tl, A(1)/A(2)), and the method section walks through equations (2)\u2013(8) coherently. Presentation suffers only from minor issues: many figures/tables are referenced but not visible in the provided text, and the appendices contain duplicated/garbled sentences and occasional typos (e.g., \u201cwining\u201d), which hurt polish but not overall clarity."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized with the expected narrative (introduction \u2192 method \u2192 experiments \u2192 conclusion) and clearly states the main contributions early in the introduction (INQ idea and the three interdependent operations). Notation is largely consistent and definitions (W_l, P_l, n1/n2, T_l, A(1)/A(2)) are provided, though there are minor inconsistencies (e.g. occasional A2 vs A(2) and small notational slips). Figures/tables are cited appropriately to support claims, but the provided text contains duplicated/mangled paragraphs and some grammatical/formatting errors in the appendix and final sections that slightly detract from presentation quality."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a clearly articulated incremental quantization pipeline\u2014iterative weight partition (pruning-inspired), group-wise quantization to powers-of-two/zero via variable-length encoding, and re-training until all weights are quantized\u2014which it contrasts explicitly with prior \"global\" quantization approaches (Sections 2.2\u20132.3). While it builds on well-known components (pruning, quantization, retraining, and prior low-bit works like BinaryConnect/DoReFa and deep compression), the particular combination and the incremental/grouped strategy that enables near-lossless 5-bit (and lower) conversion and bit-shift multiplication is a non-trivial and notable novelty that would be informative to experts. | B(4): The paper proposes a clearly articulated incremental quantization framework (weight partition + group-wise quantization to powers-of-two + re-training repeated iteratively) that departs from prior \"global\" quantization approaches (Sec. 2.2\u20132.3). While network quantization and pruning are well-studied, the combination of pruning-inspired importance partitioning, variable-length power-of-two encoding, and iterative quantize-then-retrain is a non-trivial and well-differentiated extension (claims in Introduction and Algorithm 1) that would be novel and informative to experts, rather than a mere rehash of existing techniques.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a clearly articulated incremental quantization pipeline\u2014iterative weight partition (pruning-inspired), group-wise quantization to powers-of-two/zero via variable-length encoding, and re-training until all weights are quantized\u2014which it contrasts explicitly with prior \"global\" quantization approaches (Sections 2.2\u20132.3). While it builds on well-known components (pruning, quantization, retraining, and prior low-bit works like BinaryConnect/DoReFa and deep compression), the particular combination and the incremental/grouped strategy that enables near-lossless 5-bit (and lower) conversion and bit-shift multiplication is a non-trivial and notable novelty that would be informative to experts."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clearly articulated incremental quantization framework (weight partition + group-wise quantization to powers-of-two + re-training repeated iteratively) that departs from prior \"global\" quantization approaches (Sec. 2.2\u20132.3). While network quantization and pruning are well-studied, the combination of pruning-inspired importance partitioning, variable-length power-of-two encoding, and iterative quantize-then-retrain is a non-trivial and well-differentiated extension (claims in Introduction and Algorithm 1) that would be novel and informative to experts, rather than a mere rehash of existing techniques."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The main claims are clearly stated and backed by extensive ImageNet experiments across multiple architectures (Sec. 3.1) and a concrete algorithm (Alg.1) implementing the partition\u2192quantize\u2192retrain loop; the quantization rule and parameter choice (Eqns.2\u20134) are described and plausible. Mathematical content is heuristic rather than formally proven (e.g. the 4/3 factor and thresholding formula are justified empirically, not theoretically), but internally consistent. Experimental methodology is broadly sound (using standard pre-trained models, reporting per\u2011network hyperparameters and comparisons including Han et al.), however the paper lacks statistical significance measures, multiple runs, and in one case uses a reimplementation of ResNet\u201118 which may affect baseline parity. Overall the empirical evidence supports the main conclusions though some claims (e.g. \u201clossless\u201d in all settings) and theoretical justifications are heuristic rather than rigorous. | B(4): The paper states clear claims (INQ converts pretrained CNNs to low-precision powers-of-two/zero with little or no accuracy loss) and supports them with large-scale ImageNet experiments across multiple architectures and direct comparisons to relevant baselines (pretrained models, Han et al. deep compression) as described in Sections 3.1\u20133.4. The math is heuristic rather than formal (e.g. the n1/n2 formula and quantization thresholds are practical choices without formal proof and one formula rendering is ambiguous), but the optimization/update (masked SGD, Eq.8) is correct and consistent with the algorithm. Experimental methodology is broadly sound (standard datasets/models, reasonable baselines), but the paper lacks details on variability/statistical significance, multiple runs and some hyperparameter sensitivity, and some implementation/formula details are insufficiently justified. Overall the technical claims are supported by the presented evidence though minor gaps in exposition and statistical rigor remain.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The main claims are clearly stated and backed by extensive ImageNet experiments across multiple architectures (Sec. 3.1) and a concrete algorithm (Alg.1) implementing the partition\u2192quantize\u2192retrain loop; the quantization rule and parameter choice (Eqns.2\u20134) are described and plausible. Mathematical content is heuristic rather than formally proven (e.g. the 4/3 factor and thresholding formula are justified empirically, not theoretically), but internally consistent. Experimental methodology is broadly sound (using standard pre-trained models, reporting per\u2011network hyperparameters and comparisons including Han et al.), however the paper lacks statistical significance measures, multiple runs, and in one case uses a reimplementation of ResNet\u201118 which may affect baseline parity. Overall the empirical evidence supports the main conclusions though some claims (e.g. \u201clossless\u201d in all settings) and theoretical justifications are heuristic rather than rigorous."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper states clear claims (INQ converts pretrained CNNs to low-precision powers-of-two/zero with little or no accuracy loss) and supports them with large-scale ImageNet experiments across multiple architectures and direct comparisons to relevant baselines (pretrained models, Han et al. deep compression) as described in Sections 3.1\u20133.4. The math is heuristic rather than formal (e.g. the n1/n2 formula and quantization thresholds are practical choices without formal proof and one formula rendering is ambiguous), but the optimization/update (masked SGD, Eq.8) is correct and consistent with the algorithm. Experimental methodology is broadly sound (standard datasets/models, reasonable baselines), but the paper lacks details on variability/statistical significance, multiple runs and some hyperparameter sensitivity, and some implementation/formula details are insufficiently justified. Overall the technical claims are supported by the presented evidence though minor gaps in exposition and statistical rigor remain."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

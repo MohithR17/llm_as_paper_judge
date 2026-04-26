@@ -1,0 +1,57 @@
+{
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper introduces a notable and clearly articulated novelty: training pointer-network-style models for combinatorial optimization with policy-gradient RL (Section 4) rather than supervised learning (contrasting Vinyals et al. 2015b), including an actor\u2013critic baseline and a distinctive per-instance \"Active Search\" inference procedure (Section 4.1). It also demonstrates applying the same framework beyond TSP (Section 6.1 on Knapsack), and empirically shows improvements over supervised pointer nets. While it builds on existing components (pointer networks, REINFORCE/A3C), the particular combination and the active-search test-time fine-tuning represent a meaningful, non-trivial extension that would inform experts. | B(4): The paper applies model-free policy-gradient RL to train pointer networks for combinatorial optimization (sec. 4), introducing an actor-critic baseline tailored to predict instance-specific tour length and an Active Search procedure that fine-tunes the policy on a single test instance (Alg.1\u20132, Sec.4.1). This clearly differentiates it from prior supervised Pointer Network work (Vinyals et al. 2015b) and older neural TSP attempts (Hopfield, Elastic Nets) by replacing supervised labels with reward-driven learning and instance-level search, which is a non-trivial and practically useful extension. The ideas are novel in combination and presentation, though they build on established RL components, so the contribution is notable rather than purely groundbreaking.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper introduces a notable and clearly articulated novelty: training pointer-network-style models for combinatorial optimization with policy-gradient RL (Section 4) rather than supervised learning (contrasting Vinyals et al. 2015b), including an actor\u2013critic baseline and a distinctive per-instance \"Active Search\" inference procedure (Section 4.1). It also demonstrates applying the same framework beyond TSP (Section 6.1 on Knapsack), and empirically shows improvements over supervised pointer nets. While it builds on existing components (pointer networks, REINFORCE/A3C), the particular combination and the active-search test-time fine-tuning represent a meaningful, non-trivial extension that would inform experts."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper applies model-free policy-gradient RL to train pointer networks for combinatorial optimization (sec. 4), introducing an actor-critic baseline tailored to predict instance-specific tour length and an Active Search procedure that fine-tunes the policy on a single test instance (Alg.1\u20132, Sec.4.1). This clearly differentiates it from prior supervised Pointer Network work (Vinyals et al. 2015b) and older neural TSP attempts (Hopfield, Elastic Nets) by replacing supervised labels with reward-driven learning and instance-level search, which is a non-trivial and practically useful extension. The ideas are novel in combination and presentation, though they build on established RL components, so the contribution is notable rather than purely groundbreaking."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well-organized and follows a clear structure (Introduction \u2192 Related Work \u2192 Architecture \u2192 Optimization \u2192 Experiments \u2192 Conclusion), and the main contributions (Neural Combinatorial Optimization framework and two RL approaches: RL pretraining and Active Search) are stated early in the Introduction. Notation is mostly consistent and equations/algorithms (e.g. (1)-(16), Algorithms 1\u20132) make the method precise. Presentation issues are minor: there are occasional typos (e.g. \u201cisssues\u201d, \u201cavailabe\u201d), some duplicated/garbled lines in the appendix/excerpt, and several figures/tables are referenced but not visible in the provided text, which slightly hinders readability. | B(4): The paper is well organized (Intro \u2192 Related Work \u2192 Architecture \u2192 Optimization \u2192 Experiments \u2192 Conclusion) and clearly states its main contributions early (Intro: definition of \"Neural Combinatorial Optimization\" and the two approaches, RL pretraining and Active Search). Notation and mathematical presentation are mostly consistent and readable (e.g. Equations (1)\u2013(5), Algorithms 1\u20132 and the actor\u2013critic/REINFORCE derivations are clear). Figures/tables/examples are referenced and the included pseudocode helps comprehension, but the extract shows some formatting noise and missing visuals, and there are a few typos/grammatical slips (e.g. \"isssues\", \"availabe\", \"udpates\") and minor wording duplications that slightly reduce polish.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well-organized and follows a clear structure (Introduction \u2192 Related Work \u2192 Architecture \u2192 Optimization \u2192 Experiments \u2192 Conclusion), and the main contributions (Neural Combinatorial Optimization framework and two RL approaches: RL pretraining and Active Search) are stated early in the Introduction. Notation is mostly consistent and equations/algorithms (e.g. (1)-(16), Algorithms 1\u20132) make the method precise. Presentation issues are minor: there are occasional typos (e.g. \u201cisssues\u201d, \u201cavailabe\u201d), some duplicated/garbled lines in the appendix/excerpt, and several figures/tables are referenced but not visible in the provided text, which slightly hinders readability."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (Intro \u2192 Related Work \u2192 Architecture \u2192 Optimization \u2192 Experiments \u2192 Conclusion) and clearly states its main contributions early (Intro: definition of \"Neural Combinatorial Optimization\" and the two approaches, RL pretraining and Active Search). Notation and mathematical presentation are mostly consistent and readable (e.g. Equations (1)\u2013(5), Algorithms 1\u20132 and the actor\u2013critic/REINFORCE derivations are clear). Figures/tables/examples are referenced and the included pseudocode helps comprehension, but the extract shows some formatting noise and missing visuals, and there are a few typos/grammatical slips (e.g. \"isssues\", \"availabe\", \"udpates\") and minor wording duplications that slightly reduce polish."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper\u2019s main claims are clearly stated and are largely supported: the RL objective and REINFORCE gradient with a learned critic (Eqns. (3)-(6)) are standard and correctly applied, and experiments evaluate on 1,000-instance test sets (TSP20/50/100) against reasonable baselines including Concorde/LK-H (optimal), OR-Tools and Christofides. The actor\u2013critic training and active-search/sampling procedures are technically sound and the empirical results show the claimed improvements. Minor issues that prevent a perfect score: runtime comparisons mix GPU (authors) vs CPU (some baselines) which can bias timing claims (Table 3), the supervised pointer baseline performs worse than reported elsewhere without detailed analysis (possible confound), and no statistical significance testing is reported; these do not invalidate the main technical contributions but are gaps in the empirical methodology. | B(4): The paper\u2019s main claims are clearly stated and supported by empirical evidence: experiments on TSP20/50/100 (test sets of 1,000) show RL-pretraining + sampling/active-search outperform supervised pointer networks and beat Christofides/OR-Tools baselines, with optimal comparisons via Concorde (Sections 5.2, Tables and Figure references). The mathematical formulation and derivations are correct and standard (expected tour objective J(\u03b8), REINFORCE gradient Eq.(4), actor\u2013critic baseline and critic loss Eq.(6), and the pointer/attention mechanics in Appendix A.1). Methodology is generally sound with appropriate baselines, but there are minor concerns \u2014 runtime comparisons mix GPU and CPU implementations, no reported variances or statistical tests, and heavy reliance on massive sampling/long active-search (e.g. 1.28M samples and hours per instance) which affect practicality and fairness of comparisons. Overall the technical arguments and results justify the conclusions, modulo these experimental reporting and fairness limitations.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and are largely supported: the RL objective and REINFORCE gradient with a learned critic (Eqns. (3)-(6)) are standard and correctly applied, and experiments evaluate on 1,000-instance test sets (TSP20/50/100) against reasonable baselines including Concorde/LK-H (optimal), OR-Tools and Christofides. The actor\u2013critic training and active-search/sampling procedures are technically sound and the empirical results show the claimed improvements. Minor issues that prevent a perfect score: runtime comparisons mix GPU (authors) vs CPU (some baselines) which can bias timing claims (Table 3), the supervised pointer baseline performs worse than reported elsewhere without detailed analysis (possible confound), and no statistical significance testing is reported; these do not invalidate the main technical contributions but are gaps in the empirical methodology."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and supported by empirical evidence: experiments on TSP20/50/100 (test sets of 1,000) show RL-pretraining + sampling/active-search outperform supervised pointer networks and beat Christofides/OR-Tools baselines, with optimal comparisons via Concorde (Sections 5.2, Tables and Figure references). The mathematical formulation and derivations are correct and standard (expected tour objective J(\u03b8), REINFORCE gradient Eq.(4), actor\u2013critic baseline and critic loss Eq.(6), and the pointer/attention mechanics in Appendix A.1). Methodology is generally sound with appropriate baselines, but there are minor concerns \u2014 runtime comparisons mix GPU and CPU implementations, no reported variances or statistical tests, and heavy reliance on massive sampling/long active-search (e.g. 1.28M samples and hours per instance) which affect practicality and fairness of comparisons. Overall the technical arguments and results justify the conclusions, modulo these experimental reporting and fairness limitations."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

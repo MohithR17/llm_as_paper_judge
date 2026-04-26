@@ -273,14 +273,22 @@ def load_paper_json(json_path: Path):
     return title, parsed_text.strip()
 
 
-def call_dimension_agent(client, title, parsed_text, dimension):
+def call_dimension_agent(client, title, parsed_text, dimension, novelty_context: str = None):
     """Call the LLM for a single dimension, returning a DimensionScore."""
     agent_def = DIMENSION_AGENTS[dimension]
+    checklist = agent_def["checklist"]
+    if dimension == "ORIGINALITY" and novelty_context:
+        checklist = (
+            checklist
+            + "\n\n### NOVELTY ANALYSIS (automated pipeline)\n"
+            + novelty_context
+            + "\nUse this analysis as supporting evidence, but weigh your own reading equally."
+        )
     prompt = DIMENSION_PROMPT_TEMPLATE.format(
         system=agent_def["system"],
         title=title,
         parsed_text=parsed_text,
-        checklist=agent_def["checklist"],
+        checklist=checklist,
     )
     response = client.responses.parse(
         model="gpt-5-mini",

@@ -35,6 +35,7 @@ from typing import Optional
 from datetime import datetime
 
 from openai import OpenAI
+from pydantic import BaseModel
 
 
 # ── Constants ─────────────────────────────────────────────────────────────────
@@ -168,6 +169,19 @@ class FilterResult:
         return "\n".join(lines)
 
 
+# ── Pydantic models for structured output ────────────────────────────────────
+
+class PaperScore(BaseModel):
+    title: str
+    topical_relevance: float
+    methodological_fit: float
+    problem_proximity: float
+    rationale: str
+
+class ScoringResult(BaseModel):
+    scores: list[PaperScore]
+
+
 # ── Prompts ───────────────────────────────────────────────────────────────────
 
 SCORING_PROMPT = """You are a research assistant evaluating whether retrieved papers are relevant
@@ -182,17 +196,19 @@ Score each of the following candidate papers on three dimensions (each 0.0–1.0
   methodological_fit  — does it use a related technique or approach?
   problem_proximity   — is it solving the same or a closely adjacent problem?
 
-Return a JSON array with one object per candidate, in the SAME ORDER as the input list:
-[
-  {{
-    "title": "<candidate title>",
-    "topical_relevance": <float>,
-    "methodological_fit": <float>,
-    "problem_proximity": <float>,
-    "rationale": "<one sentence explaining the score>"
-  }},
-  ...
-]
+Return a JSON object with a "scores" array containing one object per candidate, in the SAME ORDER as the input list:
+{{
+  "scores": [
+    {{
+      "title": "<candidate title>",
+      "topical_relevance": <float>,
+      "methodological_fit": <float>,
+      "problem_proximity": <float>,
+      "rationale": "<one sentence explaining the score>"
+    }},
+    ...
+  ]
+}}
 
 Scoring guidance:
   0.9–1.0  Directly relevant — addresses same task, method, or problem.
@@ -204,7 +220,7 @@ Scoring guidance:
 Candidates:
 {candidates}
 
-Respond with the JSON array only. No markdown, no preamble."""
+Respond with the JSON object only. No markdown, no preamble."""
 
 
 # ── Filter ────────────────────────────────────────────────────────────────────
@@ -237,7 +253,7 @@ class RelevanceFilter:
         self,
         api_key: str,
         base_url: str = "https://api.openai.com/v1",
-        model: str = "gpt-4o",
+        model: str = "gpt-5.4-nano",
         temperature: float = 0.0,
         max_tokens: int = 1024,
     ) -> None:
@@ -290,19 +306,17 @@ class RelevanceFilter:
         ]
         print(f"  LLM scoring: {len(survivors)} papers in {len(batches)} batch(es) (parallel)…")
 
-        def score_one(args):
-            batch_idx, batch = args
+        def score_one(batch_idx, batch):
             print(f"    batch {batch_idx + 1}/{len(batches)} ({len(batch)} papers)")
             return batch_idx, batch, self._score_batch(paper_title, paper_abstract, batch)
 
         batch_outputs: list[tuple[int, list, list[dict]]] = []
-        with ThreadPoolExecutor(max_workers=min(len(batches), 8)) as executor:
-            futures = [executor.submit(score_one, (i, b)) for i, b in enumerate(batches)]
+        with ThreadPoolExecutor(max_workers=len(batches) or 1) as executor:
+            futures = [executor.submit(score_one, i, b) for i, b in enumerate(batches)]
             for future in as_completed(futures):
                 batch_outputs.append(future.result())
 
-        # Restore original order before routing papers
-        batch_outputs.sort(key=lambda x: x[0])
+        batch_outputs.sort(key=lambda x: x[0])  # restore order
         for _, batch, scores in batch_outputs:
             for paper, score in zip(batch, scores):
                 sp = self._make_scored_paper(paper, score)
@@ -372,81 +386,44 @@ class RelevanceFilter:
         self,
         paper_title: str,
         paper_abstract: str,
-        batch: list,                # list[PaperRecord]
+        batch: list,
     ) -> list[dict]:
-        """
-        Score a batch of PaperRecords. Returns a list of score dicts,
-        one per paper, in the same order. Falls back to zero scores on failure.
-        """
         candidates_text = "\n\n".join(
             f"[{i+1}] Title: {p.title}\n"
             f"     Year: {p.year or 'unknown'}\n"
             f"     Abstract: {p.abstract[:400].strip()}{'…' if len(p.abstract) > 400 else ''}"
             for i, p in enumerate(batch)
         )
-
         prompt = SCORING_PROMPT.format(
             paper_title=paper_title,
             paper_abstract=paper_abstract,
             candidates=candidates_text,
         )
-
-        raw = self._call_with_retry(prompt)
-        if not raw:
+        parsed = self._call_with_retry(prompt)
+        if parsed is None:
             return [self._zero_score(p) for p in batch]
+        scores = [s.model_dump() for s in parsed.scores]
+        while len(scores) < len(batch):
+            scores.append({})
+        return scores[:len(batch)]
 
-        try:
-            scores = json.loads(raw)
-            if not isinstance(scores, list):
-                raise ValueError("Expected a JSON array")
-            # Pad with zeros if LLM returned fewer items than expected
-            while len(scores) < len(batch):
-                scores.append({})
-            return scores[:len(batch)]
-        except (json.JSONDecodeError, ValueError) as exc:
-            print(f"    [score parse error] {exc} — falling back to zero scores")
-            return [self._zero_score(p) for p in batch]
-
-    def _call_with_retry(self, prompt: str) -> str:
+    def _call_with_retry(self, prompt: str) -> Optional[ScoringResult]:
         last_error: Exception = RuntimeError("No attempts made")
         for attempt in range(1, self.MAX_RETRIES + 1):
             try:
-                response = self.client.chat.completions.create(
+                response = self.client.responses.parse(
                     model=self.model,
-                    temperature=self.temperature,
-                    max_tokens=self.max_tokens,
-                    messages=[{"role": "user", "content": prompt}],
+                    input=[{"role": "user", "content": [{"type": "input_text", "text": prompt}]}],
+                    text_format=ScoringResult,
                 )
-                raw = (response.choices[0].message.content or "").strip()
-
-                preview = raw[:120].replace("\n", "↵") if raw else "(empty)"
-                print(f"      [attempt {attempt}] raw: {preview!r}")
-
-                if not raw:
-                    raise json.JSONDecodeError("Empty response", "", 0)
-
-                # Strip markdown fences
-                if "```" in raw:
-                    parts = raw.split("```")
-                    raw = parts[1] if len(parts) >= 3 else parts[-1]
-                    if raw.lstrip().startswith("json"):
-                        raw = raw.lstrip()[4:]
-                    raw = raw.strip()
-
-                json.loads(raw)
-                return raw
-
-            except json.JSONDecodeError as exc:
-                last_error = exc
-                print(f"      [attempt {attempt}/{self.MAX_RETRIES}] parse error: {exc} — retrying…")
-                time.sleep(1.5 * attempt)
+                print(f"      [attempt {attempt}] scored {len(response.output_parsed.scores)} papers")
+                return response.output_parsed
             except Exception as exc:
                 last_error = exc
-                print(f"      [attempt {attempt}/{self.MAX_RETRIES}] API error: {exc} — retrying…")
+                print(f"      [attempt {attempt}/{self.MAX_RETRIES}] error: {exc} — retrying…")
                 time.sleep(2.0 * attempt)
-
         print(f"    [scoring failed after {self.MAX_RETRIES} attempts: {last_error}]")
-        return ""
+        return None
 
     # ── Private: helpers ──────────────────────────────────────────────────────
 
@@ -499,7 +476,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Relevance filter for the literature survey agent.")
     parser.add_argument("--api-key",       required=True)
     parser.add_argument("--base-url",      default="https://ai-gateway.andrew.cmu.edu")
-    parser.add_argument("--model",         default="gpt-5-mini")
+    parser.add_argument("--model",         default="gpt-5.4-nano")
     parser.add_argument("--retrieval",     required=True,
                         help="Path to retrieval result JSON (from retrieval_layer.py)")
     parser.add_argument("--taxonomy",      required=True,

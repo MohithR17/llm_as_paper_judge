@@ -21,11 +21,11 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
-
-
+from dotenv import load_dotenv
+load_dotenv()
 DEFAULT_BASE_URL = "https://ai-gateway.andrew.cmu.edu"
 
-
+api_key=os.getenv("OPENAI_API_KEY", "")
 @dataclass
 class LiteratureEntry:
     title: str
@@ -37,7 +37,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Extract claims from a PDF and score novelty against literature abstracts.")
     parser.add_argument("--pdf", required=True, help="Path to the input PDF.")
     parser.add_argument("--survey-json", required=True, help="Path to the literature survey JSON.")
-    parser.add_argument("--api-key", default=os.environ.get("OPENAI_API_KEY"), help="OpenAI-compatible API key.")
+    # parser.add_argument("--api-key", default=os.environ.get("OPENAI_API_KEY"), help="OpenAI-compatible API key.")
     parser.add_argument("--base-url", default=DEFAULT_BASE_URL, help="OpenAI-compatible base URL.")
     parser.add_argument("--llm-model", required=True, help="Model used for claim extraction.")
     parser.add_argument(
@@ -129,16 +129,17 @@ def extract_claims_with_llm(client: Any, model: str, pdf_text: str, max_chars: i
     prompt_text = pdf_text[:max_chars]
     system_prompt = (
         "You extract research claims from academic papers. "
-        "Return only a JSON object with key 'claims' whose value is a list of concise claim sentences. "
-        "Keep only substantive technical or empirical claims, deduplicate near-duplicates, and rewrite broken PDF text into clean sentences."
+        "Return only a JSON object with key 'claims' whose value is a list of claim sentences. "
+        "IMPORTANT: copy each claim VERBATIM (word-for-word) from the source text — do NOT paraphrase, summarize, or rewrite."
     )
     user_prompt = (
         "Extract the paper's main claim sentences from the text below.\n"
         "Rules:\n"
         "- Return 5 to 15 claims when possible.\n"
-        "- Each claim must be a standalone sentence.\n"
-        "- Prefer contributions, findings, method claims, or performance claims.\n"
-        "- Do not include citations or section headers.\n\n"
+        "- Copy each sentence EXACTLY as it appears in the text, with no changes.\n"
+        "- Prefer contribution statements, findings, method claims, or performance claims.\n"
+        "- Do not include citations or section headers.\n"
+        "- Do not merge or split sentences.\n\n"
         f"PDF text:\n{prompt_text}"
     )
 
@@ -337,6 +338,118 @@ def score_claims(
     }
 
 
+def _batch_groundedness_score(
+    client: Any,
+    model: str,
+    claim: str,
+    candidates: list[tuple["LiteratureEntry", float]],
+) -> list[dict[str, Any]]:
+    """
+    Score one claim against all candidates in a single LLM call.
+    Returns a list of judgment dicts in the same order as candidates.
+    """
+    abstracts_block = "\n\n".join(
+        f"[{i + 1}] {entry.abstract[:600]}"
+        for i, (entry, _) in enumerate(candidates)
+    )
+    system_prompt = (
+        "You compare a research claim against a numbered list of prior-work abstracts. "
+        'Return ONLY a JSON object: {"scores": [{"groundedness_score": <0-1>, '
+        '"label": "grounded|partially_grounded|not_grounded", "rationale": "<brief>"}]}. '
+        "One entry per abstract, in the same order. "
+        "groundedness_score=1 means the abstract clearly supports the claim; 0 means it does not."
+    )
+    user_prompt = (
+        f"Claim:\n{claim}\n\n"
+        f"Abstracts:\n{abstracts_block}\n\n"
+        "Rate the groundedness of the claim in each abstract."
+    )
+    request_kwargs = {
+        "model": model,
+        "temperature": 0,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+    }
+    try:
+        completion = client.chat.completions.create(
+            response_format={"type": "json_object"}, **request_kwargs
+        )
+    except Exception:
+        completion = client.chat.completions.create(**request_kwargs)
+
+    content = completion.choices[0].message.content or "{}"
+    try:
+        data = parse_json_object(content)
+        raw_scores = data.get("scores", [])
+    except json.JSONDecodeError:
+        raw_scores = []
+
+    judgments: list[dict[str, Any]] = []
+    for i in range(len(candidates)):
+        item = raw_scores[i] if i < len(raw_scores) else {}
+        try:
+            gs = min(1.0, max(0.0, float(item.get("groundedness_score", 0.0))))
+        except (TypeError, ValueError):
+            gs = 0.0
+        judgments.append({
+            "groundedness_score": gs,
+            "label": str(item.get("label", "not_grounded")),
+            "rationale": str(item.get("rationale", "")),
+        })
+    return judgments
+
+
+def _score_single_claim(
+    client: Any,
+    model: str,
+    claim: str,
+    literature: list[LiteratureEntry],
+    novelty_threshold: float,
+    top_k_matches: int,
+    retrieval_k: int,
+) -> dict[str, Any]:
+    """Score one claim: one batched LLM call covers all retrieval_k candidates."""
+    candidates = lexical_retrieval(claim, literature, top_k=retrieval_k)
+    if not candidates:
+        return {
+            "claim": claim, "novelty_score": 1.0, "is_novel": True,
+            "best_match_title": None, "best_match_groundedness": 0.0, "top_matches": [],
+        }
+
+    judgments = _batch_groundedness_score(client, model, claim, candidates)
+
+    matches: list[dict[str, Any]] = []
+    best_score = 0.0
+    best_entry: LiteratureEntry | None = None
+
+    for (entry, retrieval_score), judgment in zip(candidates, judgments):
+        gs = judgment["groundedness_score"]
+        if gs > best_score:
+            best_score = gs
+            best_entry = entry
+        matches.append({
+            "title": entry.title,
+            "retrieval_score": round(retrieval_score, 4),
+            "groundedness_score": round(gs, 4),
+            "label": judgment["label"],
+            "rationale": judgment["rationale"],
+            "abstract": entry.abstract,
+        })
+
+    matches.sort(key=lambda m: m["groundedness_score"], reverse=True)
+    novelty = 1 - best_score
+    return {
+        "claim": claim,
+        "novelty_score": round(novelty, 4),
+        "is_novel": novelty > novelty_threshold,
+        "best_match_title": best_entry.title if best_entry else None,
+        "best_match_groundedness": round(best_score, 4),
+        "top_matches": matches[:top_k_matches],
+    }
+
+
 def score_claims_with_llm(
     client: Any,
     model: str,
@@ -346,44 +459,22 @@ def score_claims_with_llm(
     top_k_matches: int,
     retrieval_k: int,
 ) -> dict[str, Any]:
-    results: list[dict[str, Any]] = []
+    from concurrent.futures import ThreadPoolExecutor, as_completed as _as_completed
 
-    for claim in claims:
-        candidates = lexical_retrieval(claim, literature, top_k=retrieval_k)
-        matches: list[dict[str, Any]] = []
-        best_score = 0.0
-        best_entry: LiteratureEntry | None = None
+    # Score all claims in parallel; each claim also parallelises its candidate judgments
+    indexed: dict[int, dict[str, Any]] = {}
+    with ThreadPoolExecutor(max_workers=len(claims)) as ex:
+        futs = {
+            ex.submit(
+                _score_single_claim, client, model, claim, literature,
+                novelty_threshold, top_k_matches, retrieval_k
+            ): i
+            for i, claim in enumerate(claims)
+        }
+        for fut in _as_completed(futs):
+            indexed[futs[fut]] = fut.result()
 
-        for entry, retrieval_score in candidates:
-            judgment = llm_groundedness_score(client, model=model, claim=claim, abstract=entry.abstract)
-            groundedness = judgment["groundedness_score"]
-            if groundedness > best_score:
-                best_score = groundedness
-                best_entry = entry
-            matches.append(
-                {
-                    "title": entry.title,
-                    "retrieval_score": round(retrieval_score, 4),
-                    "groundedness_score": round(groundedness, 4),
-                    "label": judgment["label"],
-                    "rationale": judgment["rationale"],
-                    "abstract": entry.abstract,
-                }
-            )
-
-        matches.sort(key=lambda item: item["groundedness_score"], reverse=True)
-        novelty = 1 - best_score
-        results.append(
-            {
-                "claim": claim,
-                "novelty_score": round(novelty, 4),
-                "is_novel": novelty > novelty_threshold,
-                "best_match_title": best_entry.title if best_entry else None,
-                "best_match_groundedness": round(best_score, 4),
-                "top_matches": matches[:top_k_matches],
-            }
-        )
-
+    results = [indexed[i] for i in range(len(claims))]
     return {
         "threshold": novelty_threshold,
         "scoring_mode": "llm_judge",
@@ -395,7 +486,7 @@ def score_claims_with_llm(
 
 def main() -> None:
     args = parse_args()
-    client = build_client(api_key=args.api_key, base_url=args.base_url)
+    client = build_client(api_key=api_key, base_url=DEFAULT_BASE_URL)
 
     literature = load_literature_entries(args.survey_json)
     pdf_text = extract_pdf_text(args.pdf)

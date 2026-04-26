@@ -1,0 +1,57 @@
+{
+  "ORIGINALITY": 3,
+  "CLARITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper combines existing ideas\u2014output-distribution matching (cited Sutskever et al.), pair-based supervision like Siamese networks, and an EM-style pseudo-classing mechanism\u2014into a reciprocal two-MLP training scheme (Sections 2.1\u20132.2). The formulation (classless association of paired inputs) is a mildly novel problem framing, and the specific EM/power-weighting pseudo-class update and mutual-target training is a non-trivial but incremental engineering of prior concepts rather than a clearly new theoretical paradigm. The authors do distinguish their approach from ODM and Siamese methods (Introduction) but the contribution reads as a notable combination and adaptation rather than a highly original breakthrough. | B(3): The paper proposes a specific instantiation of an existing idea space: two parallel MLPs that use each other as targets and an EM-style pseudo-classing rule that matches network outputs to a target distribution (Section 2.1\u20132.2). The authors explicitly relate their approach to prior work (Siamese networks, Chopra et al. (2005), and Output Distribution Matching, Sutskever et al. (2015)) and the novelty appears to be in combining distribution-matching pseudo-labels, a weighting vector \u03b3 and mutual supervision rather than a fundamentally new learning paradigm. Overall this is a moderate, non-trivial extension of known techniques (co-training/dual-network and ODM/pseudo-labeling), so it is more incremental than highly original.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper combines existing ideas\u2014output-distribution matching (cited Sutskever et al.), pair-based supervision like Siamese networks, and an EM-style pseudo-classing mechanism\u2014into a reciprocal two-MLP training scheme (Sections 2.1\u20132.2). The formulation (classless association of paired inputs) is a mildly novel problem framing, and the specific EM/power-weighting pseudo-class update and mutual-target training is a non-trivial but incremental engineering of prior concepts rather than a clearly new theoretical paradigm. The authors do distinguish their approach from ODM and Siamese methods (Introduction) but the contribution reads as a notable combination and adaptation rather than a highly original breakthrough."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper proposes a specific instantiation of an existing idea space: two parallel MLPs that use each other as targets and an EM-style pseudo-classing rule that matches network outputs to a target distribution (Section 2.1\u20132.2). The authors explicitly relate their approach to prior work (Siamese networks, Chopra et al. (2005), and Output Distribution Matching, Sutskever et al. (2015)) and the novelty appears to be in combining distribution-matching pseudo-labels, a weighting vector \u03b3 and mutual supervision rather than a fundamentally new learning paradigm. Overall this is a moderate, non-trivial extension of known techniques (co-training/dual-network and ODM/pseudo-labeling), so it is more incremental than highly original."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper is generally well-organized (Intro \u2192 Method \u2192 Experiments \u2192 Conclusion) and states its main contributions clearly early on (bullet points in the Introduction). However, the notation has ambiguities (e.g., the power(\u00b7,\u03b3) operation and the vector cost cost=(\u1e91\u2212\u03c6)2 are not fully specified, and the pseudo-class update timing is underspecified in Section 2.1/2.2). Figures are described and appear informative (Figures 4\u20135), but a referenced Table 1 is missing and several paragraphs/lines are duplicated near the end; additionally the prose contains grammatical slips and awkward phrasing that hinder readability in places. | B(3): Overall the paper is reasonably well organized (Intro \u2192 Method \u2192 Experiments \u2192 Conclusion) and clearly lists its main contributions early (intro bullets). However, notation and presentation have inconsistencies that hinder clarity (e.g., mini\u2011batch symbol m vs M, unclear definition/use of power(zi,\u03b3) and pseudo\u2011class indices c(1)i vs c (2) i). Figures are informative but references to a missing Table 1 and some cramped/unclear figure formatting reduce effectiveness. The writing contains repeated passages, occasional grammatical/typo errors (e.g., \u201cstars\u201d for \u201cstarts\u201d, \u201cdistrubtion\u201d), and would benefit from careful copyediting.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper is generally well-organized (Intro \u2192 Method \u2192 Experiments \u2192 Conclusion) and states its main contributions clearly early on (bullet points in the Introduction). However, the notation has ambiguities (e.g., the power(\u00b7,\u03b3) operation and the vector cost cost=(\u1e91\u2212\u03c6)2 are not fully specified, and the pseudo-class update timing is underspecified in Section 2.1/2.2). Figures are described and appear informative (Figures 4\u20135), but a referenced Table 1 is missing and several paragraphs/lines are duplicated near the end; additionally the prose contains grammatical slips and awkward phrasing that hinder readability in places."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "Overall the paper is reasonably well organized (Intro \u2192 Method \u2192 Experiments \u2192 Conclusion) and clearly lists its main contributions early (intro bullets). However, notation and presentation have inconsistencies that hinder clarity (e.g., mini\u2011batch symbol m vs M, unclear definition/use of power(zi,\u03b3) and pseudo\u2011class indices c(1)i vs c (2) i). Figures are informative but references to a missing Table 1 and some cramped/unclear figure formatting reduce effectiveness. The writing contains repeated passages, occasional grammatical/typo errors (e.g., \u201cstars\u201d for \u201cstarts\u201d, \u201cdistrubtion\u201d), and would benefit from careful copyediting."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper proposes a plausible heuristic (matching batch-averaged powered outputs to a target \u03c6 and alternating pseudo-class assignment with parameter updates) and provides empirical results on four MNIST-derived tasks with comparisons to supervised MLP and clustering. However the mathematical/EM framing is informal and incomplete (the M-step/backprop loss and exact role of power(\u00b7,\u03b3) and \u03b3-gradient are not fully specified), and key assumptions are strong and acknowledged (known number of classes and uniform \u03c6). Experimental methodology omits important details (no stddevs or statistical tests, limited baseline choice and unclear mapping procedure for evaluating association/clustering), leaving some claims under-supported. | B(3): The paper proposes a plausible training heuristic (Section 2.1\u20132.2) and provides experimental evidence on multiple MNIST-derived datasets showing improvements over K-means/agglomerative clustering, but several technical gaps remain. The use of the term \u201cEM\u201d is not justified by a likelihood formulation or convergence argument (Equations 2\u20135 merely define heuristic E/M-like updates and a power transform), key derivatives and stability properties (e.g. gradient of \u03b3, hard argmax pseudo-labeling schedule) are not derived or analyzed, and important implementation/training details (initialization, regularization) are omitted. Experimental methodology is limited: only clustering baselines are used, very large minibatches (M=5250) and hyperparameter choices are unusual and unexplained, and results are reported as averages over 10 folds with no variance or statistical tests, so conclusions are only partially supported.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper proposes a plausible heuristic (matching batch-averaged powered outputs to a target \u03c6 and alternating pseudo-class assignment with parameter updates) and provides empirical results on four MNIST-derived tasks with comparisons to supervised MLP and clustering. However the mathematical/EM framing is informal and incomplete (the M-step/backprop loss and exact role of power(\u00b7,\u03b3) and \u03b3-gradient are not fully specified), and key assumptions are strong and acknowledged (known number of classes and uniform \u03c6). Experimental methodology omits important details (no stddevs or statistical tests, limited baseline choice and unclear mapping procedure for evaluating association/clustering), leaving some claims under-supported."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper proposes a plausible training heuristic (Section 2.1\u20132.2) and provides experimental evidence on multiple MNIST-derived datasets showing improvements over K-means/agglomerative clustering, but several technical gaps remain. The use of the term \u201cEM\u201d is not justified by a likelihood formulation or convergence argument (Equations 2\u20135 merely define heuristic E/M-like updates and a power transform), key derivatives and stability properties (e.g. gradient of \u03b3, hard argmax pseudo-labeling schedule) are not derived or analyzed, and important implementation/training details (initialization, regularization) are omitted. Experimental methodology is limited: only clustering baselines are used, very large minibatches (M=5250) and hyperparameter choices are unusual and unexplained, and results are reported as averages over 10 folds with no variance or statistical tests, so conclusions are only partially supported."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

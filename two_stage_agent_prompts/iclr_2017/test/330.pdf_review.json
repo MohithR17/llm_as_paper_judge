@@ -1,6 +1,62 @@
 {
-  "_details": {},
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is generally well organized with a logical flow (intro \u2192 method \u2192 experiments \u2192 conclusion) and the main contributions (Doc2VecC formulation, corruption-based regularization, efficiency claims) are stated early. Notation appears consistent and well-defined, and experiments/tables are informative (multiple datasets, baselines, and timing comparisons reported). Writing quality is good with adequate related-work coverage and hyperparameter reporting, though a few minor presentation issues remain (e.g., brief discussion of limitations on short-sentence tasks) that prevent an exceptional (5) rating."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s core claims are empirically supported: Doc2VecC is evaluated against appropriate baselines (Doc2Vec, Word2Vec variants, LSTM/skip-thought, BoW) on multiple datasets (IMDB, Wikipedia, SICK, etc.), with code and hyperparameters reported, and training/representation-time comparisons provided. The model formulation and efficiency claim (complexity depending on vocabulary, not corpus size) are consistent with the described Word2Vec-like architecture. Minor technical gaps remain: the assertion that the corruption mechanism acts as a data-dependent regularizer favoring rare words appears asserted rather than formally proven, and no mention of statistical significance testing is provided. Overall the evidence and methodology are sound but these omissions justify a small deduction."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper proposes a specific new variant\u2014learning word embeddings with a document-level corrupted (mask-out) bag-of-words context so that simple averaging yields document vectors\u2014which is a clear, focused contribution beyond vanilla Word2Vec+AVG and Paragraph Vectors. However, the overall approach is an incremental extension of existing CBoW/Word2Vec and Doc2Vec ideas (negative sampling training, averaging at test time) rather than a radical new paradigm. The corruption-as-data-dependent-regularizer and the complexity decoupling from corpus size are useful and distinguish the work from prior methods, but the novelty is moderate rather than highly original."
+    }
+  },
   "_summary": {
-    "error": "Connection error."
+    "main_claims": [
+      "Doc2VecC represents each document as an average of word embeddings learned with a corruption (mask-out) model so that averaged embeddings capture document semantics.",
+      "The model complexity of Doc2VecC is decoupled from the size of the training corpus (depends only on vocabulary size) and it is efficient to train and test, resembling Word2Vec architecture.",
+      "The corruption mechanism acts as a data-dependent regularization that favors rare/informative words and suppresses common non-discriminative words.",
+      "Doc2VecC matches or beats state-of-the-art baselines on sentiment analysis, document classification, and semantic relatedness tasks, while being faster to train and test."
+    ],
+    "methodology": "Doc2VecC extends a CBoW/Word2Vec-style model by including a global document context formed from an unbiased corrupted (mask-out with prob q) bag-of-words whose projection is averaged into the context; training uses negative sampling and the learned word embeddings are averaged at test time to produce document vectors.",
+    "datasets": [
+      "IMDB movie review dataset",
+      "Wikipedia subset (\u2248300,000 pages, 100 categories)",
+      "SemEval 2014 SICK dataset",
+      "English news dataset (ACL SMT workshop)",
+      "Book corpus / large book corpus (11,038 books)",
+      "Mikolov word analogy dataset"
+    ],
+    "baselines": [
+      "Bag-of-words (BoW)",
+      "Denoising Autoencoders (DEA / SDA)",
+      "Word2Vec + AVG",
+      "Word2Vec + IDF",
+      "Paragraph Vectors (Doc2Vec)",
+      "PV-DBOW",
+      "Skip-thought Vectors",
+      "RNNLM",
+      "LSTM-based methods",
+      "Tree-LSTM"
+    ],
+    "metrics": [
+      "Accuracy",
+      "Classification error (%) / error rate",
+      "Training / representation generation time",
+      "Word analogy task accuracy"
+    ],
+    "limitations": [
+      "Doc2VecC is reported to be slightly worse than LSTM-based methods and skip-thought vectors on the SICK semantic relatedness dataset (short sentences)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - document representation / distributed document embeddings",
+    "writing_quality": "good"
   }
 }

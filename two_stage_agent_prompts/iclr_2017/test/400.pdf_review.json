@@ -1,6 +1,57 @@
 {
-  "_details": {},
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a clearly new architectural idea\u2014maintaining separate ancestral (depth) and fraternal (width) recurrent states and combining them for node prediction\u2014together with an integrated topology prediction mechanism to avoid padding/stop tokens. This is presented and evaluated as distinct from prior seq2tree and SEQ2SEQ approaches (e.g., Dong & Lapata, Quirk et al.), and the experiments show the model can recover latent trees and match or exceed prior methods on IFTTT. The approach is a non-trivial extension of existing tree decoders and would likely inform experts, though it builds on well-studied encoder\u2013decoder paradigms rather than proposing an entirely new problem formulation."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and follows a clear intro\u2192method\u2192experiments\u2192conclusion flow, presenting the DRNN architecture and topology-prediction mechanism early and explicitly. Notation and definitions are communicated sufficiently to describe ancestral/fraternal recurrent modules and the prediction heads, and the empirical sections use multiple datasets (synthetic, IFTTT, WMT14) with appropriate metrics. Figures/tables and examples (e.g., recovery and program-mapping results) are presented clearly enough to support the claims, and the writing quality is overall good; minor presentation issues remain around some deferred implementation/training details that the authors list as future work."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims (DRNN with separate ancestral/fraternal recurrences and integrated topology prediction) are clearly stated and supported by experiments on a synthetic recovery task and on IFTTT / WMT14 subsets using appropriate baselines (PCFG, SEQ2SEQ, SEQ2TREE) and relevant metrics (precision/recall/F1, function/channel accuracy). The model formulation and training (backpropagation through structure with teacher forcing) are standard and no mathematical inconsistencies are indicated in the summary. Experimental methodology is broadly sound but misses statistical significance testing and important ablations (e.g., weighting topology vs. label losses) and leaves exposure-bias and scaling/batching issues unaddressed. These are minor gaps that the authors acknowledge and do not negate the core empirical support for the paper's claims."
+    }
+  },
   "_summary": {
-    "error": "Connection error."
+    "main_claims": [
+      "A novel neural network architecture (Doubly Recurrent Neural Network, DRNN) for tree-structured decoding that maintains separate depth (ancestral) and width (fraternal) recurrent states and combines them to obtain hidden states for every node.",
+      "An explicit mechanism for predicting tree topology (whether a node has children and/or a succeeding sibling) integrated into the decoder, avoiding the need for special padding/stop tokens.",
+      "Empirical results showing the method can recover latent tree structure from encoded representations and outperforms or matches prior methods on mapping natural language sentences to simple functional programs (IFTTT dataset)."
+    ],
+    "methodology": "Introduce a doubly-recurrent neural network decoder with separate ancestral (parent\u2192children) and fraternal (sibling\u2192sibling) recurrent modules whose outputs are combined into a predictive hidden state; use sigmoid projections on that state to predict topology (child/sibling presence) and softmax for node labels, trained end-to-end in encoder\u2013decoder setups via backpropagation through structure with teacher forcing.",
+    "datasets": [
+      "Synthetic (toy) tree dataset (5,000 examples, split 4000/500/500)",
+      "IFTTT dataset (Quirk et al., 2015)",
+      "Subset of WMT14 (\u224850K English\u2194French sentence pairs with dependency parses)"
+    ],
+    "baselines": [
+      "Probabilistic Context-Free Grammar (PCFG) parser (synthetic experiment)",
+      "SEQ2SEQ (Dong & Lapata, 2016 baseline / OpenNMT SEQ2SEQ)",
+      "SEQ2TREE (Dong & Lapata, 2016)",
+      "Quirk et al. (2015) extraction and phrase-based machine translation baselines"
+    ],
+    "metrics": [
+      "Precision, Recall, F1 for node and edge retrieval (synthetic tree recovery)",
+      "F1-score on recovered productions (IFTTT)",
+      "Channel accuracy and function accuracy (IFTTT)",
+      "Macro F1 / precision / recall for argument nodes (IFTTT)",
+      "Relative change in log-likelihood under paraphrase perturbations (machine translation experiments)"
+    ],
+    "limitations": [
+      "Requires scaling (batch/GPU batching) to be practical for large-scale machine translation; authors leave batching/efficient GPU implementation to future work.",
+      "Training uses teacher forcing and does not address exposure bias; mitigating exposure bias is left for future work.",
+      "The effect of weighting topology vs. label prediction losses is not investigated and is left as future work.",
+      "Assumes an ordering among sibling nodes (chronological or latent), which is an explicit modelling assumption.",
+      "IFTTT dataset is noisy; exact accuracy is problematic and evaluation relies on F1 over productions."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - tree-structured decoding / sequence-to-tree neural models",
+    "writing_quality": "good"
   }
 }

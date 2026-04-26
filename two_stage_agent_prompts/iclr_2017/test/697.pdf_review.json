@@ -1,6 +1,54 @@
 {
-  "_details": {},
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a clear new perspective by reformulating SGNS as a two-step low-rank matrix search and factorization and introduces RO-SGNS that directly optimizes the SGNS objective on the manifold of rank-d matrices using Riemannian optimization with the projector-splitting retraction \u2014 an approach not present in the summarized prior work. The technique is a non-trivial application of manifold optimization to word embedding learning and is empirically shown to outperform standard SGD-SGNS and SVD-SPPMI baselines. However, reliance on a heuristic SVD-based recovery step, dependence on initialization, and known non-uniqueness of factorization limit the contribution from being a major conceptual breakthrough, placing it as notable but not radical novelty."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized with a clear progression from the reformulation of SGNS as a two-step problem to the RO-SGNS algorithm (projector-splitting/QR retraction) and experiments, and the main contributions are stated early (two-step view and Riemannian optimization). The writing quality is good and notation appears consistent, and figures/tables and examples (e.g., comparisons to SGD-SGNS and SVD-SPPMI on enwik9 and multiple similarity benchmarks) are informative. Minor presentation issues remain: the discussion of the non-uniqueness of recovering W and C and the SVD-based heuristic could be explained in more detail, and the dependence on initialization and hyperparameters (K, \u03bb) and the slightly worse result on MEN deserve clearer emphasis for readers replicating the work."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s main technical claim (reformulating SGNS as first finding a low-rank X and then recovering W,C, and directly optimizing X on the rank-d manifold via projector-splitting Riemannian optimization) is clearly stated and supported by experiments showing improved SGNS objective and higher Spearman correlations versus SGD-SGNS and SVD-SPPMI on most evaluated datasets. Mathematical approach appears valid as summarized (optimization on the rank-d manifold with projector-splitting retraction and SVD-based factor recovery), but the recovery step is acknowledged as non-unique and is handled by a heuristic (W=U\u221a\u03a3, C=V\u221a\u03a3), which leaves some theoretical incompleteness. Experimental methodology uses appropriate baselines and reports hyperparameters, but robustness concerns remain (dependence on SVD-SPPMI initialization, differing optimal K and \u03bb by d, no mention of statistical significance), so conclusions are largely justified though with minor caveats about embedding-recovery uniqueness and result robustness."
+    }
+  },
   "_summary": {
-    "error": "Connection error."
+    "main_claims": [
+      "Reformulation of SGNS word embedding learning as a two-step procedure (search low-rank matrix X, then recover embeddings W and C).",
+      "A novel algorithm (RO-SGNS) that directly optimizes the SGNS objective over the manifold of rank-d matrices using Riemannian optimization with the projector-splitting (block-power/QR) retraction.",
+      "RO-SGNS outperforms baseline methods (SGD-SGNS and SVD-SPPMI) in terms of the SGNS objective and the semantic similarity linguistic metric (Spearman correlation) on evaluated datasets."
+    ],
+    "methodology": "Optimize the SGNS objective over the low-rank matrix X (X=WC^T) constrained to rank d via Riemannian optimization using the projector-splitting retraction (two QR decompositions per iteration); after convergence compute embeddings W and C by SVD of X and setting W=U sqrt(\u03a3), C=V sqrt(\u03a3).",
+    "datasets": [
+      "enwik9 (English Wikipedia corpus)",
+      "wordsim-353 (ws-full)",
+      "wordsim-sim (ws-sim)",
+      "wordsim-rel (ws-rel)",
+      "simlex-999",
+      "MEN"
+    ],
+    "baselines": [
+      "SGD-SGNS (original word2vec implementation)",
+      "SVD-SPPMI (Levy & Goldberg, 2014)"
+    ],
+    "metrics": [
+      "SGNS objective value",
+      "Spearman correlation between human similarity ratings and cosine similarities (linguistic metric)"
+    ],
+    "limitations": [
+      "Recovering W and C from X is non-unique; the paper uses a heuristic SVD-based Solution (W=U sqrt(\u03a3), C=V sqrt(\u03a3)) and notes Step 2 may be improved (future work).",
+      "RO-SGNS achieved slightly worse results on the MEN dataset compared to competitors (stated in experiments).",
+      "Optimal optimization hyperparameters (number of iterations K and step size \u03bb) depend on target dimensionality d (they report different K and \u03bb for d=100 and d=200).",
+      "Best reported results were obtained when initializing RO-SGNS with SVD-SPPMI embeddings (i.e., performance depends on initialization)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - word embeddings (Skip-Gram Negative Sampling, representation learning)",
+    "writing_quality": "good"
   }
 }

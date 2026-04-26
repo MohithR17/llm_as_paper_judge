@@ -144,7 +144,7 @@ class LiteratureSurveyOrchestrator:
         self,
         api_key:    str,
         base_url:   str  = "https://ai-gateway.andrew.cmu.edu",
-        model:      str  = "gpt-5-mini",
+        model:      str  = "gpt-5.4-nano",
         s2_api_key: Optional[str] = None,
         # stop conditions
         max_iterations:      int = MAX_ITERATIONS,
@@ -152,7 +152,7 @@ class LiteratureSurveyOrchestrator:
         max_llm_calls:       int = MAX_LLM_CALLS,
         # retrieval tuning
         results_per_query:   int = 10,
-        max_concurrent:      int = 5,
+        max_concurrent:      int = 20,
     ) -> None:
         self.max_iterations      = max_iterations
         self.new_paper_threshold = new_paper_threshold
@@ -341,12 +341,12 @@ def main() -> int:
     parser.add_argument("--api-key",    default=None,
                         help="API key (defaults to OPENAI_API_KEY env var / .env)")
     parser.add_argument("--base-url",   default="https://ai-gateway.andrew.cmu.edu")
-    parser.add_argument("--model",      default="gpt-5-mini")
+    parser.add_argument("--model",      default="gpt-5.4-nano")
     # Retrieval
     parser.add_argument("--s2-api-key", default=None,
                         help="Semantic Scholar API key (optional, raises rate limit)")
     parser.add_argument("--results-per-query", type=int, default=10)
-    parser.add_argument("--concurrency",       type=int, default=5)
+    parser.add_argument("--concurrency",       type=int, default=20)
     # Paper input
     parser.add_argument("--pdf",        required=True,
                         help="Path to the paper PDF file under review")

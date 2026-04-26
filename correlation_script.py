@@ -23,6 +23,7 @@ Extra for debate approach:
 import json
 import numpy as np
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from scipy.stats import pearsonr, spearmanr
 import re
 
@@ -89,6 +90,8 @@ def get_llm_scores(venue, llm_dir, dimension):
         paper_id = f.stem.replace(".pdf_review", "")
         with open(f) as fin:
             data = json.load(fin)
+        if not isinstance(data, dict):
+            continue
         score = extract_numeric_score(data.get(dimension))
         if score is not None:
             llm_scores[paper_id] = score
@@ -139,6 +142,8 @@ def get_ground_truth_decisions(venue, peerread_dir):
     if venue == "iclr_2017":
         for f in reviews_dir.glob("*.json"):
             data = json.load(open(f))
+            if not isinstance(data, dict):
+                continue
             acc = data.get("accepted")
             if acc is not None:
                 decisions[f.stem] = bool(acc)
@@ -149,6 +154,8 @@ def get_ground_truth_decisions(venue, peerread_dir):
             accepted_titles = set(accepted_file.read_text().splitlines())
             for f in reviews_dir.glob("*.json"):
                 data = json.load(open(f))
+                if not isinstance(data, dict):
+                    continue
                 decisions[f.stem] = data.get("title", "") in accepted_titles
 
     return decisions
@@ -195,6 +202,8 @@ def evaluate_augmentation_stats(venue, llm_dir):
 
     for f in reviews_dir.glob("*_review.json"):
         data = json.load(open(f))
+        if not isinstance(data, dict):
+            continue
         stats = data.get("_augmentation_stats")
         if stats is None:
             return None  # not a lit-augmented output
@@ -227,6 +236,8 @@ def evaluate_debate_stats(venue, debate_dir):
 
     for f in reviews_dir.glob("*_review.json"):
         data = json.load(open(f))
+        if not isinstance(data, dict):
+            continue
         stats = data.get("_debate_stats")
         if stats:
             total_dims  += stats.get("total_dimensions", 0)
@@ -272,9 +283,15 @@ def evaluate_approach(approach_name, llm_dir, peerread_dir, venues, show_debate=
         print(header)
         print("  " + "-" * (len(header) - 2))
 
+        with ThreadPoolExecutor(max_workers=len(dimensions) or 1) as ex:
+            futures = {ex.submit(correlate_dimension, venue, peerread_dir, llm_dir, d): d
+                       for d in dimensions}
+            dim_results = {dim: fut.result() for fut, dim in
+                           ((f, futures[f]) for f in as_completed(futures))}
+
         results = []
         for dim in dimensions:
-            res = correlate_dimension(venue, peerread_dir, llm_dir, dim)
+            res = dim_results[dim]
             if res is None:
                 print(f"  {dim:30s}  -- insufficient data")
             else:
@@ -517,7 +534,7 @@ def main():
         "Monolithic"   : "monolithic_prompts",
         "Single-Agent" : "single_agent_prompts",
         "Dim-Agents"   : "dimension_agent_prompts",
-        "Lit-Augmented": "lit_augmented_agent_prompts",
+        # "Lit-Augmented": "lit_augmented_agent_prompts",
         "Two-Stage"    : "two_stage_agent_prompts",
         "Debate"       : "debate_agent_prompts",
     }
@@ -526,15 +543,21 @@ def main():
 
     approach_results = {}
 
-    for label, out_dir in approach_dirs.items():
+    def _run_approach(label, out_dir):
         if not Path(out_dir).exists():
             print(f"\n[SKIP] {label}: output directory '{out_dir}' not found. "
                   f"Run the corresponding script first.")
-            continue
-        is_debate = (label == "Debate")
-        approach_results[label] = evaluate_approach(
-            label, out_dir, peerread_dir, venues, show_debate=is_debate
+            return label, None
+        return label, evaluate_approach(
+            label, out_dir, peerread_dir, venues, show_debate=(label == "Debate")
         )
+
+    with ThreadPoolExecutor(max_workers=len(approach_dirs)) as ex:
+        futures = [ex.submit(_run_approach, lbl, d) for lbl, d in approach_dirs.items()]
+        for fut in as_completed(futures):
+            label, result = fut.result()
+            if result is not None:
+                approach_results[label] = result
 
     if len(approach_results) >= 2:
         print_comparison_table(approach_results, venues)

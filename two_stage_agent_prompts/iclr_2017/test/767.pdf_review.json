@@ -1,6 +1,57 @@
 {
-  "_details": {},
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and empirically supported: an actor-critic controller using TD learning and deterministic policy gradient is applied to select a global learning rate and shows comparable convergence and improved test accuracy on MNIST and CIFAR-10 versus standard optimizers and vSGD variants. The mathematical approach (critic Q-value for discounted loss-decrements, TD updates, deterministic policy gradient) is standard and appears correctly applied. However, evaluation is limited to two datasets, no statistical tests are reported, and key design choices (compact state \u03c7 and using different minibatches for actor/critic) lack strong theoretical justification and broader empirical validation. These are minor but material limitations that do not overturn the main experimental claims."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper applies an actor-critic reinforcement learning formulation specifically to automate learning-rate selection for SGD, which is a clear methodological departure from standard heuristics and prior automatic methods (e.g., vSGD). The use of a critic to optimize long-term accumulated loss decrements and the pragmatic choice to feed different minibatches to actor and critic to reduce oscillation are non-trivial innovations that differentiate the approach. However, the contribution is somewhat constrained by focusing on a single global learning rate and SGD-only evaluations, making it a notable but not radical advance over existing work."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a logical flow from method to experiments, and the main contributions (an actor-critic RL algorithm for learning-rate control, the critic\u2019s long-term reward objective, and feeding different examples to actor and critic) are stated early and clearly. Notation and methodology appear consistent and well-defined, and experiments (MNIST, CIFAR-10) report sensible baselines (SGD, Adam, Adagrad, RMSprop, vSGD variants), metrics (training/test loss, accuracy) and hyperparameters. Figures/tables and examples seem to effectively support the empirical claims, and the writing quality is described as good; minor presentation limitations (e.g., focus on a single global learning rate and the need for a compact state \u03c7) are explicitly acknowledged."
+    }
+  },
   "_summary": {
-    "error": "Connection error."
+    "main_claims": [
+      "Proposes an actor-critic reinforcement learning algorithm to automatically learn and control the learning rate for SGD-based ML algorithms.",
+      "Uses a critic network to exploit long-term rewards (accumulated loss decrements) so the actor can choose learning rates that favor final model performance rather than short-term loss decrease.",
+      "Feeds different training examples to the actor and critic networks to improve generalization and avoid overfitting/oscillation.",
+      "Empirically validates the method on image classification tasks (MNIST and CIFAR-10), showing comparable training convergence and improved test accuracy versus standard optimizers and a prior automatic method."
+    ],
+    "methodology": "An actor-critic RL approach where a compact state \u03c7(\u03c9t,X) (here average minibatch loss) is input to an actor (two-layer LSTM) that outputs a continuous learning rate; a critic network approximates the Q-value (discounted sum of loss decrements) trained by TD error, and the actor is updated by deterministic policy gradient. Different minibatch examples are fed to actor and critic to improve generalization.",
+    "datasets": [
+      "MNIST",
+      "CIFAR-10"
+    ],
+    "baselines": [
+      "SGD",
+      "Adam",
+      "Adagrad",
+      "RMSprop",
+      "vSGD (variants vSGD-l, vSGD-b, vSGD-g)"
+    ],
+    "metrics": [
+      "training loss",
+      "test loss",
+      "test accuracy",
+      "error rate"
+    ],
+    "limitations": [
+      "Method was demonstrated only for controlling a single learning rate for all parameters (per-parameter learning rates left for future work).",
+      "Current work focuses on SGD; applying to other optimizer variants is left to future work.",
+      "Improved (offline) variant requires multiple repeated training runs and more time to train the learning-rate controller.",
+      "If the actor and critic are fed the same training example (xi = xj), training tends to oscillate and yields poor test performance.",
+      "Actor cannot take full high-dimensional model parameters as input (requires a compact state function \u03c7) due to computational complexity."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Machine learning - optimization (learning rate control) / reinforcement learning",
+    "writing_quality": "good"
   }
 }

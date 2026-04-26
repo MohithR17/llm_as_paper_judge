@@ -1,6 +1,52 @@
 {
-  "_details": {},
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized with a logical progression from method (amortized SVGD and SteinGAN) to experiments on MNIST, CIFAR-10, CelebA and LSUN and a conclusion that states limitations and future work. The main contributions are stated early and the writing quality is noted as good; related work and hyperparameters are adequately reported and code is available, which aids reproducibility. Notation and derivations for practical parameter updates (including the backprop-style update) are presented clearly, and figures/tables appear informative since quantitative results (inception scores, ResNet accuracy) and baselines (DCGAN, duplicate-samples) are reported. Minor clarity burdens arise in parts describing stabilization heuristics for training, but these do not materially impede understanding."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and supported by derived practical updates (including a backprop-style SVGD update) and empirical results on MNIST, CIFAR-10, CelebA and LSUN showing competitive inception scores and improved downstream classifier accuracy; code and hyperparameters are provided. The mathematical work produces usable parameter updates for black-box generators and unnormalized targets, but the summary does not report formal convergence proofs and the authors acknowledge reliance on incremental approximations and stabilization heuristics. Experimental methodology appears reasonable with DCGAN and duplicated-sample baselines, though the summary suggests potential gaps in baseline coverage (e.g., other amortized-inference or energy-model baselines). Overall the technical claims are well supported with only minor concerns about theoretical guarantees and breadth of empirical comparisons."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a genuinely new perspective by amortizing SVGD to train neural samplers without requiring tractable proposal densities (termed \u201cwild variational inference\u201d), which is a novel formulation of variational inference. It also derives practical backpropagation-style parameter updates that work for black-box differentiable generators and unnormalized target densities, and leverages this to create SteinGAN where a neural sampler and an energy model play an adversarial-like game to generate realistic images. While building on SVGD and energy-based/GAN ideas, these techniques represent a non-trivial extension and clear differentiation from prior work and would likely inform experts in generative modeling and inference."
+    }
+  },
   "_summary": {
-    "error": "Connection error."
+    "main_claims": [
+      "Proposes a method to train neural samplers by amortizing Stein variational gradient descent (SVGD), enabling variational inference without requiring tractable proposal densities q_eta(x) (termed \"wild variational inference\").",
+      "Introduces SteinGAN, an amortized MLE approach for deep energy models where a neural sampler and an energy model play an adversarial-like game to produce realistic images competitive with GANs.",
+      "Derives practical parameter updates (including a backpropagation-style update that uses Stein variational gradients) that work for black-box differentiable generators and target distributions specified by unnormalized densities.",
+      "Empirically demonstrates realistic image generation on MNIST, CIFAR-10, CelebA, and LSUN, reporting inception scores and showing higher classification accuracy (when training ResNet on generated images) compared to baselines such as DCGAN and a duplicated-samples baseline."
+    ],
+    "methodology": "Iteratively adjust a neural network generator f(\u03b7;\u03be) so its outputs move along the SVGD gradient direction (which combines \u2207_x log p and a kernel-based repulsive term), amortizing SVGD via least-squares or a single-step backpropagated update; apply this neural sampler inside MLE training of an energy-based model (SteinGAN).",
+    "datasets": [
+      "MNIST",
+      "CIFAR-10",
+      "CelebA",
+      "LSUN"
+    ],
+    "baselines": [
+      "DCGAN",
+      "subsample-500-images duplicated baseline"
+    ],
+    "metrics": [
+      "inception score",
+      "classification accuracy (ResNet trained on generated images)"
+    ],
+    "limitations": [
+      "Running full SVGD to convergence is slow, motivating an incremental approximation (stated).",
+      "Training requires stabilization heuristics (e.g., modified MLE update with discount factor \u03b3, adaptive learning rate changes and freezing of discriminator updates) to keep generator and discriminator aligned (stated).",
+      "Authors note future work needed on more applications and theoretical understanding (stated)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Machine Learning - Generative Models / Probabilistic Inference (amortized SVGD, energy-based models, GANs)",
+    "writing_quality": "good"
   }
 }

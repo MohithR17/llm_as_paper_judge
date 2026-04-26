@@ -1,6 +1,67 @@
 {
-  "_details": {},
+  "ORIGINALITY": 3,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper proposes a general \"compare-aggregate\" architecture and systematically evaluates six word-level comparison functions across multiple sequence-matching tasks, which is a useful empirical and design contribution (and is validated on MovieQA, InsuranceQA, WikiQA, SNLI). However, the model primarily composes well-known components (attention, element-wise comparisons, CNN aggregation, gating) rather than introducing a fundamentally new modeling paradigm. Thus the work is a moderate, incremental novelty\u2014notable for its systematic comparison and broad empirical validation but not a highly original methodological breakthrough."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a clear four-layer method section, experiments on four datasets, and a concise conclusion; the main contributions are stated early (compare-aggregate model, systematic comparison of six comparison functions, and empirical results). Notation and methodological description are coherent enough to reproduce experiments (hyperparameters and code provided), and tables/metrics across datasets (Accuracy, MAP, MRR) are presented effectively to support the claims. Writing quality is good and limitations (e.g., order-insensitive preprocessing and limited RNN use) are clearly acknowledged, so only minor presentation polish is needed."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are largely supported: the compare-aggregate architecture is evaluated on four diverse datasets (MovieQA, InsuranceQA, WikiQA, SNLI) with competitive/state-of-the-art results against a wide set of baselines, and code plus hyperparameters are provided for reproducibility. There are no complex mathematical proofs required and the architectural descriptions appear internally consistent. The experimental methodology is mostly sound (appropriate metrics, many baselines), but the paper does not report statistical significance tests and admits a preprocessing layer limitation (order-insensitive) and that RNN preprocessing was used only for SNLI due to cost\u2014minor issues that do not invalidate the core empirical conclusions."
+    }
+  },
   "_summary": {
-    "error": "Connection error."
+    "main_claims": [
+      "Propose a general compare-aggregate model for matching text sequences and show it is effective across multiple sequence-matching tasks.",
+      "Systematically evaluate six different word-level comparison functions and find element-wise operations (SUB, MULT, and their combination) perform best overall.",
+      "Demonstrate state-of-the-art or competitive results on four datasets (MovieQA, InsuranceQA, WikiQA, SNLI) using the proposed model.",
+      "Provide code online for reproducibility."
+    ],
+    "methodology": "A four-layer compare-aggregate architecture: (1) a preprocessing gate applied to input word embeddings, (2) a one-directional attention producing attention-weighted vectors, (3) a word-level comparison function (one of six: NN, NTN, EUCCOS, SUB, MULT, SUBMULT+NN) producing comparison vectors, and (4) aggregation via a one-layer CNN followed by classification; trained supervised with fixed GloVe embeddings and ADAMAX optimizer.",
+    "datasets": [
+      "MovieQA",
+      "InsuranceQA",
+      "WikiQA",
+      "SNLI"
+    ],
+    "baselines": [
+      "W-by-W Attention",
+      "match-LSTM",
+      "LSTMN",
+      "Decomp Attention",
+      "EBIM+TreeLSTM",
+      "IR model (Bendersky et al.)",
+      "CNN with GESD",
+      "Attentive LSTM",
+      "IARNN-Occam",
+      "IARNN-Gate",
+      "CNN-Cnt",
+      "ABCNN",
+      "CubeCNN",
+      "Cosine Word2Vec",
+      "Cosine TFIDF",
+      "SSCB TFIDF"
+    ],
+    "metrics": [
+      "Accuracy",
+      "Mean Average Precision (MAP)",
+      "Mean Reciprocal Rank (MRR)"
+    ],
+    "limitations": [
+      "Preprocessing layer is order-insensitive and does not capture contextual (order) information; authors note this and plan to explore it further.",
+      "LSTM/RNN preprocessing was only incorporated for the SNLI task due to computational expense for long sequences.",
+      "Model was evaluated on four datasets; authors mention future work to test multi-task learning (i.e., not yet evaluated in multi-task settings)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - sequence matching / text matching (QA and textual entailment)",
+    "writing_quality": "good"
   }
 }

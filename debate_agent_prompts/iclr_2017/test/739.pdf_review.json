@@ -1,0 +1,57 @@
+{
+  "ORIGINALITY": 3,
+  "CLARITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper presents a practical algorithm to produce polynomial feature expansions directly in CSR format by using combinatorial index mappings (triangular/tetrahedral numbers in Section 4) to place nonzero k-way products into the correct output columns and thus avoid densification (Introduction, Section 5). While this is a useful engineering contribution that improves complexity from O(D^k) to O(d^k D^k) by exploiting sparsity, the core idea\u2014mapping multi-indices to flat indices and only iterating nonzeros\u2014is a straightforward application of known combinatorial indexing and sparse-structure tricks. Overall the work is a moderate, incremental novelty rather than a fundamentally new theoretical advance and would be expected by practitioners familiar with sparse algorithms. | B(3): The paper presents a practical algorithm to compute k-degree polynomial feature expansions directly on CSR matrices without densification by constructing explicit bijective mappings from index tuples to expanded-column indices using triangular/tetrahedral numbers (Section 4) and applying this in the CSR inner loop (Section 5). The complexity claim O(d^k D^k) (Section 6) is a clear improvement over blind dense expansion and demonstrates useful exploitation of sparsity. However, the core ingredients\u2014combinatorial indexing of k-tuples and iterating only over nonzeros\u2014are straightforward applications of known techniques rather than fundamentally new theory, so the contribution reads as an incremental, engineering-focused advance rather than a highly novel methodological breakthrough.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents a practical algorithm to produce polynomial feature expansions directly in CSR format by using combinatorial index mappings (triangular/tetrahedral numbers in Section 4) to place nonzero k-way products into the correct output columns and thus avoid densification (Introduction, Section 5). While this is a useful engineering contribution that improves complexity from O(D^k) to O(d^k D^k) by exploiting sparsity, the core idea\u2014mapping multi-indices to flat indices and only iterating nonzeros\u2014is a straightforward application of known combinatorial indexing and sparse-structure tricks. Overall the work is a moderate, incremental novelty rather than a fundamentally new theoretical advance and would be expected by practitioners familiar with sparse algorithms."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper presents a practical algorithm to compute k-degree polynomial feature expansions directly on CSR matrices without densification by constructing explicit bijective mappings from index tuples to expanded-column indices using triangular/tetrahedral numbers (Section 4) and applying this in the CSR inner loop (Section 5). The complexity claim O(d^k D^k) (Section 6) is a clear improvement over blind dense expansion and demonstrates useful exploitation of sparsity. However, the core ingredients\u2014combinatorial indexing of k-tuples and iterating only over nonzeros\u2014are straightforward applications of known techniques rather than fundamentally new theory, so the contribution reads as an incremental, engineering-focused advance rather than a highly novel methodological breakthrough."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper is generally well-organized (Intro \u2192 Preliminaries \u2192 Method \u2192 Complexity \u2192 Conclusion) and states the main contribution (CSR polynomial expansion without densification) early in the introduction. However, notation and formula presentation are inconsistent and sometimes misformatted (e.g. T2(n)=12n(n+1), ambiguous use of superscript k, one- vs zero-based indexing/confusing offsets), which hampers readability. Figures/tables are referenced (runtime plot) but none are included in the provided text, and the writing contains typos and stray/duplicated fragments (\"efter\", repeated paragraphs, \"LaTeX with hyperref package\"), so several passages are hard to follow without editing. | B(3): Overall the paper is organized in a logical way (intro \u2192 preliminaries \u2192 motivation \u2192 method \u2192 complexity \u2192 experiments \u2192 conclusion) and the main contribution (a CSR-native polynomial-expansion algorithm) is stated early. However the presentation suffers from many clarity issues: inconsistent and sometimes incorrect notation (e.g., T2/T3 formulas and one- vs zero-based indexing are confusing), an incomplete/informal pseudocode line (line 24 shows ckn = ?), numerous typos and grammatical errors (\"efter\", \"proceds\"), broken equation/formatting artifacts, a missing empirical figure/table despite being referenced, and duplicated text at the end. These issues make several parts hard to follow and would benefit from careful proofreading, consistent notation, and inclusion of the referenced figures.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper is generally well-organized (Intro \u2192 Preliminaries \u2192 Method \u2192 Complexity \u2192 Conclusion) and states the main contribution (CSR polynomial expansion without densification) early in the introduction. However, notation and formula presentation are inconsistent and sometimes misformatted (e.g. T2(n)=12n(n+1), ambiguous use of superscript k, one- vs zero-based indexing/confusing offsets), which hampers readability. Figures/tables are referenced (runtime plot) but none are included in the provided text, and the writing contains typos and stray/duplicated fragments (\"efter\", repeated paragraphs, \"LaTeX with hyperref package\"), so several passages are hard to follow without editing."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "Overall the paper is organized in a logical way (intro \u2192 preliminaries \u2192 motivation \u2192 method \u2192 complexity \u2192 experiments \u2192 conclusion) and the main contribution (a CSR-native polynomial-expansion algorithm) is stated early. However the presentation suffers from many clarity issues: inconsistent and sometimes incorrect notation (e.g., T2/T3 formulas and one- vs zero-based indexing are confusing), an incomplete/informal pseudocode line (line 24 shows ckn = ?), numerous typos and grammatical errors (\"efter\", \"proceds\"), broken equation/formatting artifacts, a missing empirical figure/table despite being referenced, and duplicated text at the end. These issues make several parts hard to follow and would benefit from careful proofreading, consistent notation, and inclusion of the referenced figures."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The core combinatorial argument and index-mapping construction are essentially correct: mapping k-combinations-with-repetition of nonzero column indices to flat Ak columns via triangular/tetrahedral numbers and the use of (dD + k \u2212 1 choose k) is sound, and the O((dD)^k) (for fixed k) time claim follows from that combinatorics. However the paper contains inconsistent/typo\u2019d statements (e.g. conclusion and abstract claim O(dD) and an improvement factor d rather than O(d^k D^k)/factor d^k), and the empirical evaluation omits densification time for the baseline, lacks implementation/hardware details, and gives only informal uncertainty reporting (no statistical tests). These are minor-to-moderate issues that do not invalidate the main technical claim but weaken experimental support and presentation. | B(4): The paper gives a clear constructive mapping from k-tuples to flat indices (Section 4) and a correct combinatorial analysis of work-per-row ((dD + k -1 choose k) \u2248 O(d^k D^k)) in Section 6.1, which supports the main algorithmic claim. The mathematical formulas are standard and appear correct in substance (triangular/tetrahedral number construction), although some index offsets and notational typos are present and a formal bijectivity proof for the general k case is omitted. The empirical evaluation (Section 6.2) is weak: it uses a single small setup, omits the cost of densifying the input for the baseline, and reports no statistical testing, so the runtime claims are not thoroughly validated experimentally. Overall the technical contribution is sound and the asymptotic claims are justified, but the experimental methodology and some presentation details are deficient.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The core combinatorial argument and index-mapping construction are essentially correct: mapping k-combinations-with-repetition of nonzero column indices to flat Ak columns via triangular/tetrahedral numbers and the use of (dD + k \u2212 1 choose k) is sound, and the O((dD)^k) (for fixed k) time claim follows from that combinatorics. However the paper contains inconsistent/typo\u2019d statements (e.g. conclusion and abstract claim O(dD) and an improvement factor d rather than O(d^k D^k)/factor d^k), and the empirical evaluation omits densification time for the baseline, lacks implementation/hardware details, and gives only informal uncertainty reporting (no statistical tests). These are minor-to-moderate issues that do not invalidate the main technical claim but weaken experimental support and presentation."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper gives a clear constructive mapping from k-tuples to flat indices (Section 4) and a correct combinatorial analysis of work-per-row ((dD + k -1 choose k) \u2248 O(d^k D^k)) in Section 6.1, which supports the main algorithmic claim. The mathematical formulas are standard and appear correct in substance (triangular/tetrahedral number construction), although some index offsets and notational typos are present and a formal bijectivity proof for the general k case is omitted. The empirical evaluation (Section 6.2) is weak: it uses a single small setup, omits the cost of densifying the input for the baseline, and reports no statistical testing, so the runtime claims are not thoroughly validated experimentally. Overall the technical contribution is sound and the asymptotic claims are justified, but the experimental methodology and some presentation details are deficient."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

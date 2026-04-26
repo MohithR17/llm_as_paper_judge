@@ -1,0 +1,57 @@
+{
+  "CLARITY": 3,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper is organized in a standard logical order (introduction \u2192 problem setting \u2192 method \u2192 experiments \u2192 conclusions) and states its main contributions clearly in the Introduction (bullet list). Notation for W, C, X and the objective F(X) is introduced and used consistently in the technical sections. However, presentation is marred by many formatting artifacts and duplications (repeated paragraphs, ACM permission blocks, placeholder text like \u201cBlah\u2011blah\u201d/\u201csdfdsf\u201d, and duplicated sentences), missing/unclear figures and tables in the provided text, and several minor grammatical/typographical issues, which make some parts harder to follow despite the core ideas being understandable. | B(3): Overall the paper is logically organized (intro with clear contributions, problem setting, method, experiments, related work, conclusion) and the core notation (e.g. X=WC^T, F(X), f_{w,c}) is defined explicitly in Section 2.2. However the manuscript contains significant presentation issues: duplicated and garbled text blocks (conference template/legal text and repeated paragraphs), a corrupted/unclear Figure 1 and absent tables in the provided excerpt, and a number of typos/awkward phrasings (e.g. \"what complicates\", \"dimentionality\", \"succesfully\"). These formatting and editorial problems impede readability and would benefit from careful proofreading and removal of extraneous material.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper is organized in a standard logical order (introduction \u2192 problem setting \u2192 method \u2192 experiments \u2192 conclusions) and states its main contributions clearly in the Introduction (bullet list). Notation for W, C, X and the objective F(X) is introduced and used consistently in the technical sections. However, presentation is marred by many formatting artifacts and duplications (repeated paragraphs, ACM permission blocks, placeholder text like \u201cBlah\u2011blah\u201d/\u201csdfdsf\u201d, and duplicated sentences), missing/unclear figures and tables in the provided text, and several minor grammatical/typographical issues, which make some parts harder to follow despite the core ideas being understandable."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "Overall the paper is logically organized (intro with clear contributions, problem setting, method, experiments, related work, conclusion) and the core notation (e.g. X=WC^T, F(X), f_{w,c}) is defined explicitly in Section 2.2. However the manuscript contains significant presentation issues: duplicated and garbled text blocks (conference template/legal text and repeated paragraphs), a corrupted/unclear Figure 1 and absent tables in the provided excerpt, and a number of typos/awkward phrasings (e.g. \"what complicates\", \"dimentionality\", \"succesfully\"). These formatting and editorial problems impede readability and would benefit from careful proofreading and removal of extraneous material."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper applies an established optimization viewpoint (SGNS as low-rank matrix optimization building on Levy & Goldberg) but advances it by directly optimizing the original SGNS objective over the rank-d manifold using the projector-splitting Riemannian method (Sections 1\u20133, citing Lubich & Oseledets). The two-step formulation and use of projector-splitting to improve SGNS objective (vs. SVD-over-SPPMI surrogate) is a meaningful, non-trivial application and is clearly differentiated from prior work (Section 6.1), but the core algorithmic ingredients are adaptations of existing techniques rather than wholly new methods, so the novelty is moderate rather than high. | B(4): The paper presents a notable and well-differentiated idea: reframing SGNS as a constrained optimization over a rank-d matrix X (Proposition 1 / the two-step decomposition) and directly optimizing the original SGNS objective on the low-rank manifold using Riemannian optimization with the projector-splitting retraction (Sections 2\u20133). This clearly departs from prior practice (SGD on W,C) and from Levy & Goldberg\u2019s SVD-over-SPPMI surrogate (Section 6.1). While the underlying tools (Riemannian optimization, projector-splitting) are existing techniques, their non-trivial application to optimize SGNS directly and the explicit separation of Step 1/Step 2 represent a useful and novel contribution that would be of interest to experts, though not a fundamentally new mathematical invention.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper applies an established optimization viewpoint (SGNS as low-rank matrix optimization building on Levy & Goldberg) but advances it by directly optimizing the original SGNS objective over the rank-d manifold using the projector-splitting Riemannian method (Sections 1\u20133, citing Lubich & Oseledets). The two-step formulation and use of projector-splitting to improve SGNS objective (vs. SVD-over-SPPMI surrogate) is a meaningful, non-trivial application and is clearly differentiated from prior work (Section 6.1), but the core algorithmic ingredients are adaptations of existing techniques rather than wholly new methods, so the novelty is moderate rather than high."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable and well-differentiated idea: reframing SGNS as a constrained optimization over a rank-d matrix X (Proposition 1 / the two-step decomposition) and directly optimizing the original SGNS objective on the low-rank manifold using Riemannian optimization with the projector-splitting retraction (Sections 2\u20133). This clearly departs from prior practice (SGD on W,C) and from Levy & Goldberg\u2019s SVD-over-SPPMI surrogate (Section 6.1). While the underlying tools (Riemannian optimization, projector-splitting) are existing techniques, their non-trivial application to optimize SGNS directly and the explicit separation of Step 1/Step 2 represent a useful and novel contribution that would be of interest to experts, though not a fundamentally new mathematical invention."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper correctly and cleanly reformulates SGNS as optimization over X=WC^T with rank-d constraint (Proposition 1) and the gradient expression \u2202F/\u2202x = #(w,c)\u03c3(\u2212x) \u2212 (k#(w)#(c)/|D|)\u03c3(x) is algebraically correct (Section 2.2.1 and 3.2). The use of projector\u2011splitting retraction and the two\u2011QR implementation is appropriate and matches cited Riemannian literature (Section 3.1.2). Experimental methodology uses standard baselines (SGD word2vec and SVD\u2011SPPMI) and common evaluation sets (Section 4), and reported improvements in SGNS objective and Spearman correlations support the main claim. However, the experiments lack important implementation details (e.g. negative sample count k, SGD training schedule/epochs, full numeric results and statistical significance), and there is no discussion of convergence guarantees for the nonconvex Riemannian updates; these are minor gaps that do not invalidate but limit the strength of the empirical conclusions. | B(3): The paper's core technical claim\u2014that SGNS depends only on pairwise dot-products and can be cast as maximize F(X) subject to rank(X)=d (Proposition 1)\u2014is correct and the derivation (rewriting lw,c as a function of xw,c and X=WC^T) is sound. The proposed use of projector-splitting Riemannian retraction and the elementwise gradient formula for F(X) are correctly stated and the algorithm is plausible. However, the paper omits important details and guarantees: no convergence analysis for the non\u2011convex SGNS objective on the manifold is given, the choice/tuning of baselines and initialization (e.g. SVD\u2011SPPMI used to initialize RO\u2011SGNS) and other optimizer hyperparameters are under-specified, and experiments report single-run results on a small corpus without statistical significance or variance estimates. These methodological omissions limit confidence that the empirical claims generalize.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper correctly and cleanly reformulates SGNS as optimization over X=WC^T with rank-d constraint (Proposition 1) and the gradient expression \u2202F/\u2202x = #(w,c)\u03c3(\u2212x) \u2212 (k#(w)#(c)/|D|)\u03c3(x) is algebraically correct (Section 2.2.1 and 3.2). The use of projector\u2011splitting retraction and the two\u2011QR implementation is appropriate and matches cited Riemannian literature (Section 3.1.2). Experimental methodology uses standard baselines (SGD word2vec and SVD\u2011SPPMI) and common evaluation sets (Section 4), and reported improvements in SGNS objective and Spearman correlations support the main claim. However, the experiments lack important implementation details (e.g. negative sample count k, SGD training schedule/epochs, full numeric results and statistical significance), and there is no discussion of convergence guarantees for the nonconvex Riemannian updates; these are minor gaps that do not invalidate but limit the strength of the empirical conclusions."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper's core technical claim\u2014that SGNS depends only on pairwise dot-products and can be cast as maximize F(X) subject to rank(X)=d (Proposition 1)\u2014is correct and the derivation (rewriting lw,c as a function of xw,c and X=WC^T) is sound. The proposed use of projector-splitting Riemannian retraction and the elementwise gradient formula for F(X) are correctly stated and the algorithm is plausible. However, the paper omits important details and guarantees: no convergence analysis for the non\u2011convex SGNS objective on the manifold is given, the choice/tuning of baselines and initialization (e.g. SVD\u2011SPPMI used to initialize RO\u2011SGNS) and other optimizer hyperparameters are under-specified, and experiments report single-run results on a small corpus without statistical significance or variance estimates. These methodological omissions limit confidence that the empirical claims generalize."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

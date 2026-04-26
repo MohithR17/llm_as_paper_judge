@@ -1,0 +1,57 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized (Intro \u2192 related work \u2192 model \u2192 optimization \u2192 experiments \u2192 conclusion) and states its two main contributions (ternary weight decomposition and binary activation encoding) very early in the Introduction. Notation is generally consistent and defined (e.g. W, Mw, Cw, x, Mx, cx) and the algorithmic descriptions (Algorithms 1\u20132) and lookup-table encoding are clearly explained. Presentation suffers from formatting issues in the provided text (repeated/garbled paragraphs, LaTeX artifacts) and the referenced figures/tables are not present here, which reduces polish and makes some parts harder to follow. | B(3): The paper is generally well-organized (Intro \u2192 Method \u2192 Experiments \u2192 Conclusion) and states the two main contributions (ternary weight decomposition and binary activation encoding) early in the introduction. Notation is mostly consistent and defined (e.g. W, DI, DO, Mw, Cw, Mx, cx), and algorithms are given explicitly (Algorithm 1/2). However, the provided text contains duplicated/garbled paragraphs, missing figures/tables (references to Figures/Tables are present but not shown here) and some editing artifacts at the end, which impair readability and make parts hard to follow; these presentation issues warrant revision.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized (Intro \u2192 related work \u2192 model \u2192 optimization \u2192 experiments \u2192 conclusion) and states its two main contributions (ternary weight decomposition and binary activation encoding) very early in the Introduction. Notation is generally consistent and defined (e.g. W, Mw, Cw, x, Mx, cx) and the algorithmic descriptions (Algorithms 1\u20132) and lookup-table encoding are clearly explained. Presentation suffers from formatting issues in the provided text (repeated/garbled paragraphs, LaTeX artifacts) and the referenced figures/tables are not present here, which reduces polish and makes some parts harder to follow."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper is generally well-organized (Intro \u2192 Method \u2192 Experiments \u2192 Conclusion) and states the two main contributions (ternary weight decomposition and binary activation encoding) early in the introduction. Notation is mostly consistent and defined (e.g. W, DI, DO, Mw, Cw, Mx, cx), and algorithms are given explicitly (Algorithm 1/2). However, the provided text contains duplicated/garbled paragraphs, missing figures/tables (references to Figures/Tables are present but not shown here) and some editing artifacts at the end, which impair readability and make parts hard to follow; these presentation issues warrant revision."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper combines two existing strands\u2014low-rank matrix/tensor factorization (Jaderberg et al., Zhang et al.) and integer/binary/ternary decomposition (Hare et al., Ambai & Sato)\u2014into a unified scheme that factorizes weights into a ternary basis (\u22121,0,+1)\u00d7coefficients and encodes activations as weighted sums of binary vectors with a lookup-table for fast test-time encoding (Sec.2\u20134). It clearly differentiates from related work (e.g., XNOR-Net) by being a post-processing method that does not require retraining and by using ternary bases and precomputed cx,bx lookup encoding (L=4096) to enable logical-operation acceleration. This is a non-trivial and practically useful extension to prior techniques but is primarily a combination and engineering of known ideas rather than a fundamentally new theoretical contribution, so its novelty is moderate. | B(3): The paper combines two known strands\u2014low-rank matrix/tensor factorization (e.g. Jaderberg et al., Zhang et al.) and integer/binary decomposition (Hare et al., Ambai & Sato, XNOR-Net)\u2014into a unified, post\u2011processing framework that uses a ternary basis for weights and binary activation encoding with a lookup table (Algorithms 1\u20132, Secs. 3\u20134). It clearly differentiates itself from prior work (claims no retraining needed and ternary+lookup encoding for fast logical ops), but the core ideas are incremental: extending integer decomposition from shallow classifiers to deep networks and combining it with standard low\u2011rank approximations rather than introducing a fundamentally new formulation. Overall this is a moderate (incremental but non\u2011trivial) novelty.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper combines two existing strands\u2014low-rank matrix/tensor factorization (Jaderberg et al., Zhang et al.) and integer/binary/ternary decomposition (Hare et al., Ambai & Sato)\u2014into a unified scheme that factorizes weights into a ternary basis (\u22121,0,+1)\u00d7coefficients and encodes activations as weighted sums of binary vectors with a lookup-table for fast test-time encoding (Sec.2\u20134). It clearly differentiates from related work (e.g., XNOR-Net) by being a post-processing method that does not require retraining and by using ternary bases and precomputed cx,bx lookup encoding (L=4096) to enable logical-operation acceleration. This is a non-trivial and practically useful extension to prior techniques but is primarily a combination and engineering of known ideas rather than a fundamentally new theoretical contribution, so its novelty is moderate."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper combines two known strands\u2014low-rank matrix/tensor factorization (e.g. Jaderberg et al., Zhang et al.) and integer/binary decomposition (Hare et al., Ambai & Sato, XNOR-Net)\u2014into a unified, post\u2011processing framework that uses a ternary basis for weights and binary activation encoding with a lookup table (Algorithms 1\u20132, Secs. 3\u20134). It clearly differentiates itself from prior work (claims no retraining needed and ternary+lookup encoding for fast logical ops), but the core ideas are incremental: extending integer decomposition from shallow classifiers to deep networks and combining it with standard low\u2011rank approximations rather than introducing a fundamentally new formulation. Overall this is a moderate (incremental but non\u2011trivial) novelty."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The mathematical formulation and update steps (Algorithms 1\u20132, least-squares updates and exhaustive search for small kx) are correct and the decomposition idea is internally consistent (Eqs.1\u20133). Experiments on MNIST, VGG-16 and VGG-Face support the main claims (measured accuracy, compression and wall-clock speedups), but the experimental methodology omits comparisons to other compression/quantization baselines, statistical variability (multiple runs) and detailed timing breakdowns. The paper also relies on practical assumptions (fixed cx,bx learned from sampled activations; fast ternary\u00d7binary dot via logical ops) without formal guarantees; these are plausible but not fully justified. Overall the technical content is sound with some missing experimental controls and discussion of limitations. | B(4): The paper's core methods and derivations are mathematically consistent (Eqs.1\u20133, Algorithms 1\u20132) and the rank\u2011one alternating updates for ternary weight factors and the prototype/lookup approach for binary activations are plausible and implementable. Empirical evidence on MNIST, ImageNet (VGG\u201116) and VGG\u2011Face supports the main claims of sizable runtime acceleration and memory reduction without end\u2011to\u2011end retraining. Minor technical concerns remain: the key assumption of using precomputed, layer\u2011wide canonical cx and single scalar bx (Section 4) is heuristic and not rigorously validated, there are no reported variances or statistical tests, and the experiments lack direct quantitative comparisons to other recent compression/quantization baselines. These issues do not invalidate the approach but warrant further evaluation. ",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The mathematical formulation and update steps (Algorithms 1\u20132, least-squares updates and exhaustive search for small kx) are correct and the decomposition idea is internally consistent (Eqs.1\u20133). Experiments on MNIST, VGG-16 and VGG-Face support the main claims (measured accuracy, compression and wall-clock speedups), but the experimental methodology omits comparisons to other compression/quantization baselines, statistical variability (multiple runs) and detailed timing breakdowns. The paper also relies on practical assumptions (fixed cx,bx learned from sampled activations; fast ternary\u00d7binary dot via logical ops) without formal guarantees; these are plausible but not fully justified. Overall the technical content is sound with some missing experimental controls and discussion of limitations."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's core methods and derivations are mathematically consistent (Eqs.1\u20133, Algorithms 1\u20132) and the rank\u2011one alternating updates for ternary weight factors and the prototype/lookup approach for binary activations are plausible and implementable. Empirical evidence on MNIST, ImageNet (VGG\u201116) and VGG\u2011Face supports the main claims of sizable runtime acceleration and memory reduction without end\u2011to\u2011end retraining. Minor technical concerns remain: the key assumption of using precomputed, layer\u2011wide canonical cx and single scalar bx (Section 4) is heuristic and not rigorously validated, there are no reported variances or statistical tests, and the experiments lack direct quantitative comparisons to other recent compression/quantization baselines. These issues do not invalidate the approach but warrant further evaluation. "
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

@@ -1,6 +1,53 @@
 {
-  "_details": {},
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a new conceptual lens\u2014expectation-linearity\u2014to quantify the inference gap of dropout and proposes a concrete empirical Monte Carlo regularizer to control that gap, which is a genuinely new perspective beyond standard dropout techniques. It also provides non-trivial theoretical bounds linking layer/operator norms, dropout rate and variance to the inference gap, and empirically compares to baselines including standard dropout, MC dropout and Dropout Distillation. These elements together show clear differentiation from prior work and substantive technical contributions, though the overall idea is a focused extension of dropout rather than a radical departure."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and presents a clear logical flow from formulation of dropout as a latent-variable model to definition of expectation-linearity, theoretical bounds, and experiments on MNIST/CIFAR datasets. The main contributions are stated early and the notation appears to be introduced and used consistently (exact and approximate expectation-linearity, empirical risk \u0394\u0302). Figures/tables and reported metrics (test error mean\u00b1std and \u0394\u0302) appear informative for the claimed comparisons to standard dropout, MC dropout, and dropout distillation, and hyperparameters are reported. Writing quality is described as good and related work coverage adequate, so only minor presentation polish seems needed (e.g., clearer signposting around the trade-off between expectation-linearity and accuracy)."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The summary indicates the paper clearly states its main claims and provides both theoretical (layer- and network-level bounds, uniform deviation bounds) and empirical (MNIST, CIFAR-10/100 with appropriate baselines: standard dropout, MC dropout, Dropout Distillation) support. Mathematical derivations are claimed (bounds and uniform deviation results) and no obvious errors are reported in the summary, so they appear correct though completeness cannot be checked here. Experimental methodology is broadly sound with proper baselines and reported metrics (mean\u00b1std), but the summary does not mention statistical significance testing or code release. The authors also acknowledge limitations (trade-off between regularization and accuracy, open problems), so conclusions are appropriately qualified rather than overclaimed."
+    }
+  },
   "_summary": {
-    "error": "Connection error."
+    "main_claims": [
+      "Introduce the notion of expectation-linearity for dropout neural networks and quantify the inference gap between dropout training and the standard scaled-weight inference.",
+      "Propose an expectation-linearization regularizer (a sampled empirical measure of the inference gap) added to the dropout training objective to explicitly control the inference gap.",
+      "Provide theoretical bounds linking layer/network properties (operator norm, dropout rate, layer variance) to the inference gap and uniform deviation bounds motivating empirical regularization.",
+      "Demonstrate experimentally on MNIST, CIFAR-10 and CIFAR-100 that the proposed regularized dropout is simple to implement and can yield improved classification performance compared to standard dropout and is competitive with dropout distillation."
+    ],
+    "methodology": "Formulate dropout as a latent variable model, define exact and approximate expectation-linearity to measure the inference gap, derive layer- and network-level bounds, and add an empirical Monte Carlo approximation of the expectation-linearity measure as an L2 regularizer to the negative log-likelihood loss for training.",
+    "datasets": [
+      "MNIST",
+      "CIFAR-10",
+      "CIFAR-100"
+    ],
+    "baselines": [
+      "standard dropout",
+      "Monte Carlo (MC) dropout",
+      "Dropout Distillation (Bul\u00f2 et al., 2016)"
+    ],
+    "metrics": [
+      "test error (classification error rate, mean \u00b1 std)",
+      "empirical expectation-linearization risk (\u0394\u0302)"
+    ],
+    "limitations": [
+      "The paper notes a trade-off between improving expectation-linearity (reducing the inference gap) and preserving predictive accuracy\u2014increasing the regularization parameter \u03bb does not always improve accuracy.",
+      "MC dropout (used for approximate ensemble averaging) requires much more inference time (\u2248 m times) compared to standard dropout.",
+      "The existence of classes of conditional distributions that are provably hard to expectation-linearize remains an open problem.",
+      "Future work is required to formally relate the inference gap to generalization error."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Machine Learning - deep learning regularization (dropout)",
+    "writing_quality": "good"
   }
 }

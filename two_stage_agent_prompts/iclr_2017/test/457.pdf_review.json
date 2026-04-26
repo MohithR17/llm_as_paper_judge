@@ -1,6 +1,52 @@
 {
-  "_details": {},
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and supported by comprehensive ImageNet experiments across multiple architectures (AlexNet, VGG-16, GoogLeNet, ResNet-18/50) showing comparable or improved top-1/top-5 accuracy for 5-bit INQ models and reported convergence behavior (few epochs for 5-bit, more for 2-bit). There appear to be no formal mathematical proofs in the summary, so theoretical guarantees are absent but not claimed; the iterative quantize-and-retrain procedure is empirically validated. Experimental methodology is broadly sound (appropriate baselines, ImageNet, standard metrics), though the summary does not mention statistical significance testing or full ablations of hyperparameter sensitivity. Overall the results justify the conclusions, with only minor technical gaps (lack of formal analysis and reported statistical tests) that do not undermine the main empirical claims."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a clearly new procedural technique (Incremental Network Quantization) that iteratively partitions weights, fixes quantized groups to powers-of-two/zero, and re-trains remaining weights \u2014 a different approach than prior global/direct quantization, binary/ternary schemes, or vector quantization. The summary shows the method yields \u2018\u2018lossless\u2019\u2019 5-bit models across many architectures and combines effectively with pruning to exceed prior compression results (e.g., 53\u00d7 on AlexNet), which distinguishes it from Han et al. (deep compression) and other baselines. While the problem (CNN quantization/compression) is well-studied, the incremental quantize-and-retrain strategy and its empirical success represent a notable, non-trivial methodological contribution that would inform experts."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized and the main contributions are stated early; the methodology (incremental partitioning/quantization) is described clearly and experiments span multiple architectures with standard metrics and baselines. Notation appears consistent and hyperparameters/results are reported; figures/tables seem effective given the reported numerical gains and compression ratios, and related work coverage is thorough. Writing quality is noted as good, indicating only minor presentation issues rather than major clarity problems."
+    }
+  },
   "_summary": {
-    "error": "Connection error."
+    "main_claims": [
+      "INQ can convert pre-trained full-precision (32-bit) CNN models into low-precision models whose weights are constrained to be powers of two or zero using an incremental procedure.",
+      "For multiple architectures (AlexNet, VGG-16, GoogleNet, ResNet-18, ResNet-50) INQ with 5-bit (and lower) weights achieves improved or comparable top-1 and top-5 accuracy relative to their full-precision baselines (e.g., absolute top-1 gains 0.13%\u20132.28% for 5-bit).",
+      "INQ converges easily: re-training with less than 8 epochs typically yields lossless 5-bit models, and the method can produce 4-bit, 3-bit and 2-bit (ternary) models with small or acceptable accuracy drops (2-bit example: 2.25% top-1 drop).",
+      "Combining INQ with pruning/DNS yields much higher compression ratios (e.g., 53\u00d7 with 5-bit on AlexNet) and outperforms prior deep compression results (Han et al., 2016) under the reported settings."
+    ],
+    "methodology": "INQ iteratively partitions weights into two groups, quantizes one group to a variable-length encoding of powers-of-two (plus zero), and re-trains the remaining floating-point weights (with the quantized ones fixed); these steps repeat until all weights are quantized.",
+    "datasets": [
+      "ImageNet"
+    ],
+    "baselines": [
+      "full-precision CNN baselines (AlexNet, VGG-16, GoogleNet, ResNets)",
+      "deep compression (Han et al., 2016)",
+      "vector quantization (Gong et al., 2014)",
+      "binary-weight/ternary methods referenced (BWN, TWN)"
+    ],
+    "metrics": [
+      "top-1 error rate",
+      "top-5 error rate",
+      "model compression ratio"
+    ],
+    "limitations": [
+      "Direct/global quantization causes non-negligible accuracy loss for small bit-widths (motivating INQ).",
+      "Lower expected bit-widths require more iterative steps and more training epochs (e.g., 30 epochs reported for the 2-bit ternary ResNet-18 model).",
+      "Training low-precision models from scratch under the power-of-two constraint is challenging and may have convergence issues (directly solving constrained optimization is difficult)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "CNN quantization / model compression (Computer Vision)",
+    "writing_quality": "good"
   }
 }

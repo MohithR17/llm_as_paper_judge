@@ -1,6 +1,53 @@
 {
-  "_details": {},
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported by experimental evidence: CC-GAN/CC-GAN2 are evaluated against relevant baselines (supervised VGG-A', SSL-GAN, context-encoder) and achieve competitive results on STL-10 and a 3.8% mAP improvement on PASCAL VOC 2007. The methodology is sound with appropriate baselines, reported hyperparameters, and available code; mathematical derivations are not central to the empirical contribution. A minor concern is scalability to high-resolution images (which the authors acknowledge), but this limitation does not undermine the presented semi-supervised classification results. Overall the technical claims are well-supported with only minor limitations noted."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a notable new combination: training a GAN generator to in-paint missing patches conditioned on surrounding context and using the discriminator features for semi-supervised classification (CC-GAN), which differs from prior context-encoders and from SSL-GANs. The CC-GAN2 variant (mixing in-painted and fully generated negatives) and scaling to large discriminators (VGG-A') are non-trivial extensions beyond existing methods. While the core ideas build on well-studied in-painting and semi-supervised GAN literature (e.g., Pathak et al., SSL-GAN), the specific context-conditional adversarial formulation and its use for feature learning appear to be a clear, novel contribution."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and the main contributions are stated early and repeatedly (CC\u2011GAN/CC\u2011GAN2, semi\u2011supervised objective, discriminator features). Notation and methodology are presented clearly enough to understand the training procedure and loss combination, and experimental tables/metrics (STL\u201110, PASCAL VOC 2007, mAP/accuracy) are informative for comparisons. Writing quality is good and related work coverage is thorough; any shortcomings are minor presentation issues rather than fundamental clarity problems."
+    }
+  },
   "_summary": {
-    "error": "Connection error."
+    "main_claims": [
+      "Introduce context-conditional generative adversarial networks (CC-GANs) that train a generator to in-paint missing image patches conditioned on surrounding context and use the discriminator features for downstream tasks.",
+      "CC-GANs (and the combined CC-GAN2 variant) enable effective semi-supervised learning by combining the context-conditional adversarial loss with a supervised classification loss, improving classification performance over baselines.",
+      "The CC-GAN discriminator learns features useful for object classification and can be trained directly on large models such as VGG-A' using adversarial loss; CC-GAN2 provides a wider array of negative examples by including both in-painted and full generated images.",
+      "Empirically, CC-GAN/CC-GAN2 achieve competitive or superior results on benchmarks: comparable to state-of-the-art on STL-10 and outperforming prior feature-learning methods on PASCAL VOC 2007 (by 3.8% mAP vs. Wang & Gupta)."
+    ],
+    "methodology": "Train a generator to fill a randomly masked patch of an image conditioned on surrounding pixels (and optionally a low-resolution version of the image), then train a discriminator to distinguish real images from in-painted (and optionally fully generated) images; combine the discriminator adversarial objective with a supervised classification loss for semi-supervised learning.",
+    "datasets": [
+      "STL-10",
+      "PASCAL VOC 2007"
+    ],
+    "baselines": [
+      "Purely supervised VGG-A' baseline",
+      "SSL-GAN (semi-supervised GAN) using DCGAN generator",
+      "Context-encoder (Pathak et al., 2016)",
+      "Dosovitskiy et al. (2014)",
+      "Wang & Gupta (2015)"
+    ],
+    "metrics": [
+      "Classification accuracy (mean and standard deviation)",
+      "Mean Average Precision (mAP)"
+    ],
+    "limitations": [
+      "Difficult to generate large image patches that look realistic, making it problematic to scale to high-resolution images.",
+      "CC-GAN generator output tends to be corrupted outside the in-painted patch since gradients only flow to the missing patch.",
+      "Low-resolution conditioning is needed to help fill larger holes, indicating scaling to larger images may require additional mechanisms."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Computer Vision - Semi-supervised learning with Generative Adversarial Networks / Image in-painting",
+    "writing_quality": "good"
   }
 }

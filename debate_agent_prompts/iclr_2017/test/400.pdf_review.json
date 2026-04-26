@@ -1,0 +1,57 @@
+{
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions clearly early (see the three bullet points at the end of \u00a71). The notation is mostly consistent and definitions are provided around Eqs. (1)\u2013(7) and the training section. Figures/tables are used and referenced throughout to support claims, though the Appendix contains repeated text blocks and a few LaTeX/artifact remnants (e.g. duplicated paragraphs in Appendix D and stray \"LaTeX with hyperref package\"), and there are minor grammatical/formatting rough edges that reduce polish but do not obscure the technical exposition. | B(4): The paper is well organized (Introduction \u2192 Related Work \u2192 Method \u2192 Experiments \u2192 Discussion) and explicitly lists its main contributions early in the Introduction (bulleted list), which makes its goals easy to find. The notation is mostly consistent and equations (1)\u2013(7) clearly define the DRNN update and topology predictions, though a few minor definition/ordering clarifications would help (e.g. the sibling-order assumption is deferred to a footnote and some symbols like xp(i)/xs(j) are introduced compactly). Figures and tables are regularly referenced and used to report results, but several small presentation issues appear (duplicated/garbled lines in Appendix D, some formatting/typo artifacts such as citation fragments and spacing), and a few long sentences could be tightened for clarity.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions clearly early (see the three bullet points at the end of \u00a71). The notation is mostly consistent and definitions are provided around Eqs. (1)\u2013(7) and the training section. Figures/tables are used and referenced throughout to support claims, though the Appendix contains repeated text blocks and a few LaTeX/artifact remnants (e.g. duplicated paragraphs in Appendix D and stray \"LaTeX with hyperref package\"), and there are minor grammatical/formatting rough edges that reduce polish but do not obscure the technical exposition."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (Introduction \u2192 Related Work \u2192 Method \u2192 Experiments \u2192 Discussion) and explicitly lists its main contributions early in the Introduction (bulleted list), which makes its goals easy to find. The notation is mostly consistent and equations (1)\u2013(7) clearly define the DRNN update and topology predictions, though a few minor definition/ordering clarifications would help (e.g. the sibling-order assumption is deferred to a footnote and some symbols like xp(i)/xs(j) are introduced compactly). Figures and tables are regularly referenced and used to report results, but several small presentation issues appear (duplicated/garbled lines in Appendix D, some formatting/typo artifacts such as citation fragments and spacing), and a few long sentences could be tightened for clarity."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper clearly states its main claims (Sections 3\u20133.1) and provides plausible mathematical formulations (Eqs.1\u20137) and a coherent training procedure (BPTS, Sec.3.2 and Appendix B). Experiments use reasonable baselines (PCFG for synthetic; SEQ2SEQ/SEQ2TREE and prior work for IFTTT) and metrics (node/edge F1, production F1, channel/function accuracy), and results support the claims that DRNNs recover tree topology and improve on the IFTTT task. Minor technical concerns: training relies on teacher forcing for topology (exposure bias acknowledged but not mitigated), gradients from multiple children are averaged (nonstandard and not justified), and no statistical significance tests or ablation studies are reported, but these do not undermine the main technical results. | B(3): The paper presents a coherent architecture (DRNN) with clear equations for ancestral/fraternal updates and explicit topology prediction (Eqs.1\u20137, Sec.3 and 3.1) and trains it with backprop-through-structure (Sec.3.2, App. B.1), so the method is technically plausible. Empirical evidence (Sec.4) supports the claims in the synthetic and IFTTT tasks and comparisons to SEQ2TREE/SEQ2SEQ are appropriate, but several methodological gaps weaken the support: the synthetic baseline (PCFG) and experimental setup are described but fairness is unclear, there are no statistical significance tests or ablations (e.g. effect of explicit topology module vs special tokens), and the MT evaluation is qualitative on a small subset (Sec.4.3). Overall the core technical contribution appears correct, but the experimental validation is incomplete and omits analyses needed to fully substantiate the stronger claims.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims (Sections 3\u20133.1) and provides plausible mathematical formulations (Eqs.1\u20137) and a coherent training procedure (BPTS, Sec.3.2 and Appendix B). Experiments use reasonable baselines (PCFG for synthetic; SEQ2SEQ/SEQ2TREE and prior work for IFTTT) and metrics (node/edge F1, production F1, channel/function accuracy), and results support the claims that DRNNs recover tree topology and improve on the IFTTT task. Minor technical concerns: training relies on teacher forcing for topology (exposure bias acknowledged but not mitigated), gradients from multiple children are averaged (nonstandard and not justified), and no statistical significance tests or ablation studies are reported, but these do not undermine the main technical results."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper presents a coherent architecture (DRNN) with clear equations for ancestral/fraternal updates and explicit topology prediction (Eqs.1\u20137, Sec.3 and 3.1) and trains it with backprop-through-structure (Sec.3.2, App. B.1), so the method is technically plausible. Empirical evidence (Sec.4) supports the claims in the synthetic and IFTTT tasks and comparisons to SEQ2TREE/SEQ2SEQ are appropriate, but several methodological gaps weaken the support: the synthetic baseline (PCFG) and experimental setup are described but fairness is unclear, there are no statistical significance tests or ablations (e.g. effect of explicit topology module vs special tokens), and the MT evaluation is qualitative on a small subset (Sec.4.3). Overall the core technical contribution appears correct, but the experimental validation is incomplete and omits analyses needed to fully substantiate the stronger claims."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a clearly new architecture \u2014 a \"doubly-recurrent\" decoder that maintains separate ancestral and fraternal recurrences and combines them per node (Eqs.1\u20133) \u2014 together with an explicit topological prediction mechanism (Eqs.5\u20137) rather than relying on special stopping tokens. The authors explicitly differentiate from closely related work (e.g. Zhang et al. 2016 and Dong & Lapata 2016), emphasizing simultaneous depth/width recurrences, end-to-end training in one pass, and integrated topology prediction. These are non-trivial extensions over prior tree-LSTM/seq2tree approaches and would be informative to experts, though the contribution is an evolution of existing recurrent/tree ideas rather than a radical theoretical departure. | B(4): The paper proposes a clearly new decoder architecture (a \u2018\u2018doubly recurrent\u2019\u2019 cell with separate ancestral/ fraternal recurrences that are combined per node) for top-down tree generation (see Sec. 3 and Eqns. 1\u20133), which is not identical to prior token-driven or alternation-based approaches. It also explicitly models topology with dedicated stopping probabilities (pai, pfi; Sec. 3.1) rather than relying on padding/special tokens, and emphasizes end-to-end training unlike Zhang et al. (2016) and Dong & Lapata (2016). Overall this is a notable and non-trivial extension of existing sequence/tree decoders (distinct design choices and training formulation), though it builds on and relates closely to recent tree-decoder work rather than introducing a wholly unprecedented paradigm.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a clearly new architecture \u2014 a \"doubly-recurrent\" decoder that maintains separate ancestral and fraternal recurrences and combines them per node (Eqs.1\u20133) \u2014 together with an explicit topological prediction mechanism (Eqs.5\u20137) rather than relying on special stopping tokens. The authors explicitly differentiate from closely related work (e.g. Zhang et al. 2016 and Dong & Lapata 2016), emphasizing simultaneous depth/width recurrences, end-to-end training in one pass, and integrated topology prediction. These are non-trivial extensions over prior tree-LSTM/seq2tree approaches and would be informative to experts, though the contribution is an evolution of existing recurrent/tree ideas rather than a radical theoretical departure."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clearly new decoder architecture (a \u2018\u2018doubly recurrent\u2019\u2019 cell with separate ancestral/ fraternal recurrences that are combined per node) for top-down tree generation (see Sec. 3 and Eqns. 1\u20133), which is not identical to prior token-driven or alternation-based approaches. It also explicitly models topology with dedicated stopping probabilities (pai, pfi; Sec. 3.1) rather than relying on padding/special tokens, and emphasizes end-to-end training unlike Zhang et al. (2016) and Dong & Lapata (2016). Overall this is a notable and non-trivial extension of existing sequence/tree decoders (distinct design choices and training formulation), though it builds on and relates closely to recent tree-decoder work rather than introducing a wholly unprecedented paradigm."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

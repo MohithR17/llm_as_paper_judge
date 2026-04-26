@@ -1,6 +1,56 @@
 {
-  "_details": {},
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a concrete, technically specific method \u2014 an additive cell decomposition that incorporates products of forget gates to produce per-word importance scores \u2014 which is distinct from prior gradient-based and simple cell-difference approaches. This decomposition and its use to extract predictive phrases and build a rules-based classifier represent a non-trivial methodological extension rather than a mere application of existing techniques. Given the comparison to gradient methods and explicit discussion of how previous multiplicative scores fail to account for downstream forget gates, the contribution is notably novel and would likely inform experts in LSTM interpretability."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper states clear technical claims (additive cell decomposition that accounts for forget gates and per-word importance scores) and supports them with experiments on multiple datasets and comparisons to relevant baselines (LSTM baselines, CNNs, gradient-based methods). The mathematical approach (additive decomposition incorporating products of forget gates) is plausible and internally consistent as described, and the authors acknowledge known limitations (false positives from multiplicative scores, approximation gap for pattern-based classifier). Minor concerns remain about omitted methodological details (e.g., no mention of statistical significance testing or code availability in the summary) and the inability to fully verify derivations from the summary alone, but these do not undermine the main technical conclusions."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized with a logical flow and clearly states its main contributions early (per-word multiplicative factors and an additive cell decomposition that accounts for forget gates). Notation and method descriptions seem consistent and well-defined, explaining both the multiplicative decomposition and the additive cell decomposition used to compute importance scores. Figures, tables, and examples are reported as effective\u2014showing qualitative sensible patterns and reasonable quantitative results on Yelp, SST, and WikiMovies\u2014and related work and hyperparameters are adequately covered. Writing quality is good overall with clear language and few ambiguities, though a bit of additional presentation polish could make some sections even easier to follow."
+    }
+  },
   "_summary": {
-    "error": "Connection error."
+    "main_claims": [
+      "Introduces a novel method for visualizing the importance of specific input words to an LSTM's output by decomposing the output into per-word contribution factors.",
+      "Proposes an additive cell decomposition that accounts for forget gates to produce word-importance scores which outperform simpler cell-difference and gradient-based measures in their experiments.",
+      "Uses the importance scores to automatically extract predictive phrases from a trained LSTM and constructs a simple rules-based classifier from those phrases that approximates the original LSTM's performance.",
+      "Demonstrates the approach on document classification (Yelp polarity, SST) and a question-answering dataset (WikiMovies), showing qualitative sensible patterns and reasonable quantitative performance (including near-state-of-the-art results for their LSTM)."
+    ],
+    "methodology": "Decompose the LSTM output (softmax numerator) into multiplicative per-word factors and introduce an additive decomposition of the final cell state that incorporates products of forget gates to compute per-word importance scores; search for high-scoring consecutive-word phrases and use them to build a ranked, rules-based classifier that predicts classes/entities by string-matching extracted patterns.",
+    "datasets": [
+      "Yelp review polarity (Zhang et al. 2015)",
+      "Stanford Sentiment Treebank (SST)",
+      "WikiMovies"
+    ],
+    "baselines": [
+      "Large word2vec CNN (Zhang et al. 2015)",
+      "CNN-multichannel (Kim 2014)",
+      "Naive Bayes (Socher et al. 2013)",
+      "KV-MemNN (Miller et al. 2016)",
+      "LSTM baselines (authors')",
+      "Gradient-based importance scores / prior gradient methods (Alikaniotis et al., Denil et al., Bansal et al.)"
+    ],
+    "metrics": [
+      "accuracy",
+      "hits@1 (top-1 accuracy)"
+    ],
+    "limitations": [
+      "The simple multiplicative \u03b2 scores ignore downstream forget gates and yield many false positives.",
+      "There is an approximation gap between the rules-based pattern matcher and the full LSTM; patterns can be sensible in isolation but non-predictive in broader context.",
+      "Pattern-matching classifiers underperform stronger models; the method is intended for interpretability rather than pure performance.",
+      "LSTMs are noted as computationally intensive compared to discrete models (stated as motivation)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - LSTM interpretability / explainability (applied to sentiment classification and QA)",
+    "writing_quality": "good"
   }
 }
