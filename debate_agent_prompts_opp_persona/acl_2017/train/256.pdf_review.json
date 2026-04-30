@@ -1,0 +1,177 @@
+{
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "ORIGINALITY": 3,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "SUBSTANCE": 4,
+  "APPROPRIATENESS": 5,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is overall well organized and the main contributions (CVAE framework, kgCVAE extension, and training improvements like BOW loss and KL annealing) are stated early and carried through methods and experiments. Notation appears consistent and well-defined for the conditional VAE setup, and figures/tables/examples (including Switchboard results and VAE LM comparison) effectively illustrate claims; hyperparameters are reported and related work coverage is thorough. Minor presentation gaps remain: the paper could be clearer about reproducibility (code availability not mentioned) and would benefit from a concise formal statement of the training objective/ELBO and a clearer separation of ablation comparisons in the experiments to match the claimed contributions. | B(4): Overall the paper is well organized and follows a clear flow from problem motivation through method and experiments (intro -> method -> experiments -> conclusion). The main contributions (CVAE framework, kgCVAE with linguistic features, and training fixes like BOW loss + KL annealing) are stated early and repeated in experiments, and notation appears consistent with reported hyperparameters. Figures/tables and examples (e.g., Switchboard results, VAE LM comparison) are informative, and writing quality is generally good; minor presentation polish could make a few technical passages even easier to follow for applied readers.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is overall well organized and the main contributions (CVAE framework, kgCVAE extension, and training improvements like BOW loss and KL annealing) are stated early and carried through methods and experiments. Notation appears consistent and well-defined for the conditional VAE setup, and figures/tables/examples (including Switchboard results and VAE LM comparison) effectively illustrate claims; hyperparameters are reported and related work coverage is thorough. Minor presentation gaps remain: the paper could be clearer about reproducibility (code availability not mentioned) and would benefit from a concise formal statement of the training objective/ELBO and a clearer separation of ablation comparisons in the experiments to match the claimed contributions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and follows a clear flow from problem motivation through method and experiments (intro -> method -> experiments -> conclusion). The main contributions (CVAE framework, kgCVAE with linguistic features, and training fixes like BOW loss + KL annealing) are stated early and repeated in experiments, and notation appears consistent with reported hyperparameters. Figures/tables and examples (e.g., Switchboard results, VAE LM comparison) are informative, and writing quality is generally good; minor presentation polish could make a few technical passages even easier to follow for applied readers."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper includes reasonable baseline comparisons (encoder\u2013decoder, VAE LM) and uses consistent metrics, but falls short of a fully comprehensive empirical evaluation. Missing stronger contemporary baselines, retrieval-augmented or recent latent-dialog models, and key isolated ablations (e.g., kgCVAE vs CVAE, BOW loss, KL annealing) limit the ability to attribute gains to specific contributions. Given these moderate but important omissions, a middle score reflecting incomplete comparison is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper does compare to a basic encoder\u2013decoder baseline on the same Switchboard data and reports sensible metrics (BLEU, cosine distance, perplexity), and it includes a VAE LM comparison on PTB. However, from the summary it lacks strong contemporary baselines for dialog diversity and\u2014crucially\u2014does not report the isolated ablation studies I would expect (separate comparisons of kgCVAE vs CVAE vs BOW loss vs KL annealing) to attribute gains to each contribution. Related work coverage is described as thorough, but the empirical comparison suite is only moderate rather than comprehensive, so I judge the comparisons as incomplete though not entirely unfair."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against an appropriate encoder\u2013decoder baseline (similar to Serban et al., 2016a) on the same Switchboard data and also evaluates a VAE LM on PTB, using consistent metrics (BLEU, cosine BoW distance, perplexity/KL). It documents training tricks and acknowledges when latent models struggle, and the related work coverage is described as thorough. Minor omissions remain (e.g., no mention of comparisons to other recent latent dialog or retrieval-augmented baselines and code release), so I rate it as strong but not fully comprehensive."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper is a useful and well-executed application of CVAEs to dialog, with the knowledge-guided variant and empirical demonstration (e.g., correlation with dialog acts) providing practical value. However, the core ideas (conditional VAE, BOW loss, KL annealing) are largely incremental and consist of known remedies rather than a fundamentally new modeling paradigm, so the contribution to originality is modest.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper applies an existing framework (conditional VAE) to dialog generation and adds a knowledge-guided variant (kgCVAE) that conditions on explicit linguistic features and predicts them from z; these are reasonable but conceptually incremental. The training remedies (BOW loss, KL annealing) are practical and known fixes to the vanishing-latent problem rather than new theoretical contributions. While the combination and empirical demonstration on Switchboard are useful and the differentiation from standard encoder-decoder baselines is clear, the techniques do not constitute a fundamentally new modeling paradigm and would not surprise an expert in latent-variable generative models."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper offers a notable novelty by applying a conditional VAE specifically to capture discourse-level diversity in dialog and by introducing a knowledge-guided CVAE that explicitly incorporates linguistic/discourse features (y) to improve interpretability and conditioning. The use of training remedies (BOW loss + KL annealing) to mitigate the vanishing latent problem and the empirical demonstration on Switchboard that the latent space correlates with dialog acts are clear differentiators from standard encoder\u2013decoder baselines. These are non-trivial extensions rather than mere reapplications of existing CVAE ideas, and an expert would find the combination of kgCVAE and practical training fixes informative."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses an important practical problem and offers empirically useful methods (CVAE, kgCVAE with BOW loss and KL annealing) that improve diversity and interpretability. However, they also note the work is largely empirical with limited theoretical analysis and incomplete ablations, so it is unlikely to be transformative. Given the clear applied value and likely influence on future dialog work, but constrained novelty and theoretical guarantees, I assign a moderately high impact score of 4.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014capturing discourse-level diversity in neural dialog\u2014by proposing CVAE and a knowledge-guided kgCVAE and by introducing training losses (BOW + KL annealing) that empirically mitigate posterior collapse. However, from the summary the contribution is largely empirical: it lacks a formal probabilistic analysis of the objective, guarantees about latent identifiability, and thorough ablations isolating each component versus strong baselines (e.g., CVAE vs kgCVAE vs BOW vs annealing). Given useful empirical gains but limited theoretical justification and potentially weak comparative isolation, the likely impact is moderate rather than transformative."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles an important practical problem \u2014 generating discourse-level diverse responses in neural dialog systems \u2014 and proposes a usable solution (CVAE and kgCVAE) with concrete training fixes (BOW loss, KL annealing) that address the vanishing latent issue. Empirical validation on Switchboard showing increased response diversity and latent correlates with dialog acts gives the approach both applied utility and interpretability, which practitioners will care about. While not a paradigm shift, the combination of linguistic guidance and pragmatic training recipes is likely to influence future work and be built upon in dialog modeling and controllable generation."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper shows promising empirical gains for CVAE/kgCVAE and that training fixes (BOW loss, KL annealing) are sensible, but they also agree that the experimental and methodological reporting is incomplete (limited baselines, few ablations, and no reported statistical tests). Given the lack of formal analysis of the modified objective and insufficient isolation of components, the evidence for the paper\u2019s core methodological claims is plausible but not fully convincing, so a middling score of 3 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents plausible empirical evidence that a CVAE and its knowledge-guided variant (kgCVAE) increase response diversity and that the latent space correlates with dialog acts, and it reports sensible training fixes (BOW loss, KL annealing). However, from the provided summary I see no formal/probabilistic derivation explaining how the modified objective preserves latent usage (no explicit ELBO-style analysis) and insufficient emphasis on controlled ablations isolating kgCVAE vs CVAE vs BOW vs KL annealing. Baselines are relatively weak for dialog (only an encoder\u2013decoder) and there is little indication of held-out likelihood/perplexity or statistical testing for the dialog experiments, so the methodological evidence is incomplete despite promising results."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and supported by experiments on Switchboard (and a VAE LM probe on PTB): the CVAE/ kgCVAE produce more diverse outputs and the kgCVAE's latent space correlates with dialog acts and length. The modeling and training fixes (BOW loss, KL annealing) are standard and appropriate and the formulation appears mathematically sound for a conditional VAE. Experimental methodology is reasonable with relevant baselines (encoder\u2013decoder) and diversity metrics, but the summary does not mention statistical significance tests or extensive ablation over baselines (e.g., other diversity-promoting methods), which are minor gaps. Overall the evidence justifies the conclusions, with only modest concerns about breadth of comparisons and reporting of statistical robustness."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper presents solid empirical evidence that CVAE and kgCVAE improve discourse-level diversity, and that training fixes (BOW loss, KL annealing) and metrics are clearly reported. I rate it a 4 because, while the experimental work is application-oriented and convincing, there remain some missing controlled analyses and a lack of released code or larger-scale sensitivity studies\u2014shortcomings that are notable but not fatal to the paper\u2019s contribution.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents reasonable empirical evidence (Switchboard experiments, VAE LM on PTB) and proposes concrete training fixes (BOW loss, KL annealing) plus kgCVAE to incorporate linguistic features, and it reports hyperparameters and some LM metrics. However, from the summary there is no formal probabilistic/ELBO analysis justifying why the losses preserve latent usage, and it is unclear whether crucial ablations isolate the contributions of kgCVAE vs CVAE vs BOW vs KL annealing or compare to strong non-latent baselines with held-out likelihoods\u2014both are demanded by a theory-focused evaluation. Related work is covered and limitations (vanishing latent, data needs) are discussed, but reproduction would be easier with released code; overall the experiments are adequate but missing key controlled analyses, so I rate it a 3."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall this is a solid, application-oriented study: experiments on Switchboard (and PTB for LM comparison) support the claim that CVAEs and the kgCVAE increase response diversity, and the paper reports quantitative metrics (BLEU, cosine BOW distance, LM perplexity/KL). Appropriate mitigation and ablation-style analyses are present (KL annealing, BOW loss, discussion of word-drop), and related work and limitations (data requirements, vanishing latent variable) are explicitly discussed. Reproducibility is reasonably supported by reported hyperparameters, but the absence of a code release and some larger-scale sensitivity analyses (e.g., varying dataset size or more detailed decoder ablations) leaves a minor gap, so I rate it 4/5."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper is a strong fit for a top NLP/ML venue, with solid empirical contributions (kgCVAE, BOW loss, KL annealing), appropriate datasets and metrics, and useful links between latent structure and discourse features. While Reviewer A notes a minor theoretical concern about formal probabilistic justification, the empirical effectiveness and relevance to the community justify a top-tier acceptance, so I give a score of 5.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper sits squarely within the scope of top NLP/ML venues: it addresses neural dialog generation using a probabilistic latent-variable model (CVAE) and evaluates on standard corpora (Switchboard, PTB) with relevant metrics (BLEU, cosine diversity, perplexity/KL). The contributions (kgCVAE, BOW loss, KL annealing) are of clear interest to the community, but from my theory-focused perspective the work leans toward empirical/engineering remedies for posterior collapse without a formal probabilistic analysis of the objective or principled justification for why latent usage is preserved\u2014hence a minor scope concern. Overall it targets the right audience and uses expected methods/evaluations, so I rate it a good fit rather than perfect."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP/ML venue: it targets neural dialog modeling with a solid methodological contribution (CVAE + knowledge-guided kgCVAE) and practical training fixes (BOW loss, KL annealing) that directly address applied issues (vanishing latent variable) I care about. Evaluation uses standard datasets (Switchboard, PTB) and appropriate metrics for diversity and generation quality, and the work links latent structure to interpretable discourse features (dialog acts), making it both relevant and actionable for the community. Although code release is not mentioned, hyperparameters are reported and related work is well covered, so the paper speaks to the right audience and meets venue standards."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce a neural dialog model based on conditional variational autoencoders (CVAE) that captures discourse-level diversity via a latent variable, enabling generation of diverse responses with greedy decoding.",
+      "Propose a knowledge-guided CVAE (kgCVAE) that incorporates explicitly extracted linguistic/discourse features (y, e.g., dialog acts) to guide the latent variable and improve encoding and interpretability.",
+      "Develop training improvements for CVAE-based natural language generation, notably adding a bag-of-words (BOW) loss and using KL annealing to mitigate the vanishing latent variable problem.",
+      "Demonstrate empirically on Switchboard (and a VAE LM experiment on Penn Treebank) that the proposed models produce significantly more diverse responses than baseline encoder-decoder models and that the learned latent space correlates with dialog acts and response length."
+    ],
+    "methodology": "Use a conditional VAE framework where a latent Gaussian z is conditioned on dialog context c and used by an RNN decoder to generate responses x; introduce kgCVAE that conditions generation also on explicit linguistic features y and predicts y from z and c; train end-to-end with KL annealing and a BOW reconstruction loss.",
+    "datasets": [
+      "Switchboard (SW) Release 2 Corpus",
+      "Penn Treebank (for VAE LM comparison)"
+    ],
+    "baselines": [
+      "Encoder-decoder neural dialog model without latent variables (similar to Serban et al., 2016a)",
+      "Standard VAE (for LM comparison)"
+    ],
+    "metrics": [
+      "Smoothed sentence-level BLEU",
+      "Cosine distance of bag-of-words sentence embeddings",
+      "Language model reconstruction perplexity / KL cost (for VAE LM comparison)"
+    ],
+    "limitations": [
+      "Training CVAE is challenging and often requires large amounts of data (stated).",
+      "The vanishing latent variable problem: RNN decoders tend to ignore the latent variable without mitigation (stated).",
+      "Word-drop decoding can hurt performance if drop rate is too high, so it was not used (stated)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - neural dialog models / conditional variational autoencoders",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory-focused Skeptic",
+      "background": "Senior researcher in probabilistic generative models and latent-variable theory with multiple papers on the theoretical properties of VAEs and representation learning.",
+      "traits": [
+        "Penalizes papers that lack a formal/probabilistic analysis of the objective (e.g., no ELBO derivation, no explanation for why proposed losses preserve latent usage)",
+        "Penalizes empirical-only claims without ablation isolating each contribution (requires separate experiments for kgCVAE vs CVAE vs BOW vs KL annealing)",
+        "Penalizes weak baselines (requires state-of-the-art and strong non-latent baselines, and likelihood/perplexity reporting on held-out data)",
+        "Values clarity about latent variable identifiability and robustness (will deduct points if there is no analysis of posterior collapse beyond empirical annealing tricks)"
+      ],
+      "reviewing_style": "Strict, theory-first reviewer: rewards principled analysis and careful controlled experiments; downweights papers that provide engineering fixes without theoretical justification."
+    },
+    "reviewer_b": {
+      "name": "Applied Dialogue Enthusiast",
+      "background": "Experienced NLP practitioner and senior reviewer with a track record of applied work on neural dialog systems, evaluation of diversity, and integrating linguistic annotations into neural models.",
+      "traits": [
+        "Rewards papers demonstrating practical improvements for dialog diversity and fluency, especially when gains are shown on standard datasets (e.g., Switchboard) and with human or automatic diversity metrics",
+        "Rewards methods that incorporate linguistic/discourse knowledge (e.g., dialog acts) for interpretability and controllability",
+        "Likes empirical techniques that make latent-variable models usable in practice (values BOW loss, KL annealing, and demonstrable non-greedy decoding benefits)",
+        "Penalizes lack of scalable implementation details only mildly (will deduct if no training hyperparameters or code release plan is given)"
+      ],
+      "reviewing_style": "Application-oriented reviewer who favors empirical innovation and practical fixes that make latent-variable dialog models work better and be more interpretable in real settings."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

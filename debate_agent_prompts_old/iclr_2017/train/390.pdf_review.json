@@ -1,0 +1,91 @@
+{
+  "CLARITY": 5,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 5,
+      "justification": "[Consensus avg=5] A(5): Based on the provided summary, the paper is very clearly written and well organized (introduction, method, experiments, conclusion are all evident) and its main contributions are stated up front. Notation and methodology are presented with sufficient detail to specify controller/manager/memory/expert roles, datasets, baselines, and evaluation metrics, and hyperparameters are reported. The authors also clearly describe limitations (scope to one-shot tasks, instability issues, mixed multi-expert results), indicating careful, unambiguous presentation. Overall the writing quality is excellent and related work coverage is thorough, making the paper a pleasure to read. | B(5): The paper is very well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) \u2014 the architecture and training procedure (controller, manager, memory, experts; REINFORCE for manager; backprop through critic) and the spaceship experimental protocol are clearly described. The main contributions are stated early and the paper explicitly discusses limitations (one\u2011shot tasks, mixed multi\u2011expert results, entropy regularization issues). Notation appears consistent and well\u2011defined, figures/tables/examples are informative, hyperparameters are reported, and overall writing quality is described as excellent.",
+      "reviewer_a": {
+        "score": 5,
+        "justification": "Based on the provided summary, the paper is very clearly written and well organized (introduction, method, experiments, conclusion are all evident) and its main contributions are stated up front. Notation and methodology are presented with sufficient detail to specify controller/manager/memory/expert roles, datasets, baselines, and evaluation metrics, and hyperparameters are reported. The authors also clearly describe limitations (scope to one-shot tasks, instability issues, mixed multi-expert results), indicating careful, unambiguous presentation. Overall the writing quality is excellent and related work coverage is thorough, making the paper a pleasure to read."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper is very well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) \u2014 the architecture and training procedure (controller, manager, memory, experts; REINFORCE for manager; backprop through critic) and the spaceship experimental protocol are clearly described. The main contributions are stated early and the paper explicitly discusses limitations (one\u2011shot tasks, mixed multi\u2011expert results, entropy regularization issues). Notation appears consistent and well\u2011defined, figures/tables/examples are informative, hyperparameters are reported, and overall writing quality is described as excellent."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a notable new idea: a learned metacontroller that adaptively manages an imagination-based optimization loop by deciding both how many ponder steps to run and which predictive expert to query, jointly optimizing task performance and computational cost. Its instantiation combining a REINFORCE-trained manager with a backprop-through-critic controller/memory and a pool of learned experts (MLP, Interaction Network, or true simulator) represents a non-trivial extension beyond standard fixed-ponder or single-expert approaches. The demonstrated per-instance compute adaptation and use on challenging physics-based control tasks further differentiate it from prior work, though limitations to one-shot tasks and mixed gains in multi-expert variants suggest the contribution is notable but not a sweeping breakthrough. | B(4): The paper presents a notable novel combination: a learned metacontroller that jointly decides per-instance how many imagination (ponder) steps to take and which predictive expert to consult, explicitly trading off task loss and computational cost. The architecture and training split (manager via REINFORCE; controller/memory via backprop through a critic) and demonstration on physics-based control with Interaction Networks differentiate it from fixed-policy and single-expert approaches. Some limitations (mixed gains with multiple experts and training instability) suggest the contribution is a meaningful extension rather than a radical departure, so it is clearly novel but not wholly transformative.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a notable new idea: a learned metacontroller that adaptively manages an imagination-based optimization loop by deciding both how many ponder steps to run and which predictive expert to query, jointly optimizing task performance and computational cost. Its instantiation combining a REINFORCE-trained manager with a backprop-through-critic controller/memory and a pool of learned experts (MLP, Interaction Network, or true simulator) represents a non-trivial extension beyond standard fixed-ponder or single-expert approaches. The demonstrated per-instance compute adaptation and use on challenging physics-based control tasks further differentiate it from prior work, though limitations to one-shot tasks and mixed gains in multi-expert variants suggest the contribution is notable but not a sweeping breakthrough."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable novel combination: a learned metacontroller that jointly decides per-instance how many imagination (ponder) steps to take and which predictive expert to consult, explicitly trading off task loss and computational cost. The architecture and training split (manager via REINFORCE; controller/memory via backprop through a critic) and demonstration on physics-based control with Interaction Networks differentiate it from fixed-policy and single-expert approaches. Some limitations (mixed gains with multiple experts and training instability) suggest the contribution is a meaningful extension rather than a radical departure, so it is clearly novel but not wholly transformative."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The main claims are generally supported: the paper presents a concrete metacontroller architecture, trains manager via REINFORCE and controller via backprop through a critic, and demonstrates per-instance adaptive pondering and lower combined task+compute loss on the spaceship rendezvous benchmarks with appropriate baselines (reactive and fixed-ponder iterative agents). Mathematical components appear consistent with standard REINFORCE/critic training (no incorrect derivations reported), and the experimental methodology uses sizable datasets and sensible baselines. However, there are notable limitations reported in the summary \u2014 experiments are restricted to fully observed one-shot tasks, multi-expert variants only rarely outperformed the best iterative controller, and training required entropy regularization to counter stable biases \u2014 which constitute minor concerns about generality and some instability in optimization. Overall the technical claims are supported but tempered by these empirical and training limitations. | B(4): The paper\u2019s main claims are generally supported by experiments on the spaceship dataset showing per-instance adaptation of ponder steps and lower total loss (task loss plus compute cost) compared to fixed-policy baselines, and the architecture/training procedures (manager via REINFORCE; controller/memory via backprop through a critic) are technically plausible. Mathematical treatment is not highlighted but the applied methods are standard and correctly described; experimental methodology uses reasonable baselines (reactive, iterative) and large datasets. However, there are notable technical caveats reported by the authors themselves \u2014 multi-expert variants showed limited benefit (only ~9% outperforming the best iterative controller), the manager had training instability and required entropy regularization that can induce suboptimal behavior, and experiments are restricted to one-shot tasks \u2014 which temper some claims and suggest further validation is needed.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The main claims are generally supported: the paper presents a concrete metacontroller architecture, trains manager via REINFORCE and controller via backprop through a critic, and demonstrates per-instance adaptive pondering and lower combined task+compute loss on the spaceship rendezvous benchmarks with appropriate baselines (reactive and fixed-ponder iterative agents). Mathematical components appear consistent with standard REINFORCE/critic training (no incorrect derivations reported), and the experimental methodology uses sizable datasets and sensible baselines. However, there are notable limitations reported in the summary \u2014 experiments are restricted to fully observed one-shot tasks, multi-expert variants only rarely outperformed the best iterative controller, and training required entropy regularization to counter stable biases \u2014 which constitute minor concerns about generality and some instability in optimization. Overall the technical claims are supported but tempered by these empirical and training limitations."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are generally supported by experiments on the spaceship dataset showing per-instance adaptation of ponder steps and lower total loss (task loss plus compute cost) compared to fixed-policy baselines, and the architecture/training procedures (manager via REINFORCE; controller/memory via backprop through a critic) are technically plausible. Mathematical treatment is not highlighted but the applied methods are standard and correctly described; experimental methodology uses reasonable baselines (reactive, iterative) and large datasets. However, there are notable technical caveats reported by the authors themselves \u2014 multi-expert variants showed limited benefit (only ~9% outperforming the best iterative controller), the manager had training instability and required entropy regularization that can induce suboptimal behavior, and experiments are restricted to one-shot tasks \u2014 which temper some claims and suggest further validation is needed."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce a metacontroller that learns to manage an adaptive, imagination-based optimization loop by deciding both how many internal simulation (ponder) steps to run and which predictive model (expert) to consult on each step.",
+      "The metacontroller jointly optimizes task performance and computational cost, allowing per-instance adaptation of compute (more pondering for harder problems) and achieving lower overall cost (task loss plus computational cost) than fixed-policy approaches.",
+      "When instantiated with Interaction Networks (INs) as experts, the approach can solve challenging physics-based control tasks (spaceship rendezvous under complex non-linear gravity) and learn to factor expert reliability and computational cost when choosing experts.",
+      "Provide a general neural-network framework combining a model-free metacontroller (trained with REINFORCE) and controller/memory (trained with backprop through a critic) that supports multiple learned experts (MLP, IN, or true simulator) for efficient model-based RL."
+    ],
+    "methodology": "They implement a metacontroller architecture comprising a controller, manager, memory (LSTM), and a pool of experts (MLP, Interaction Network, or true simulator); the manager is trained with REINFORCE to decide whether to execute or to ponder with a chosen expert, while the controller and memory are trained with backpropagation through a learned critic. The system is evaluated on a family of one-shot spaceship rendezvous tasks with 1\u20135 planets, measuring task loss and computational cost.",
+    "datasets": [
+      "Spaceship dataset (five variants with 1 to 5 planets; each variant: 100,000 training scenes and 1,000 test scenes) - https://www.github.com/deepmind/spaceship_dataset"
+    ],
+    "baselines": [
+      "Reactive agent (a0)",
+      "Iterative agent (aI) with fixed number of ponder steps",
+      "Fixed-policy / fixed-number pondering approaches (traditional baselines)"
+    ],
+    "metrics": [
+      "Performance loss (LP; task loss between goal and resulting state)",
+      "Total loss (LT; task loss plus computational resource loss)",
+      "Mean-squared error (MSE) used for training experts/critic"
+    ],
+    "limitations": [
+      "Experiments are limited to fully observed, one-shot decision tasks (continuous contextual bandits) and do not demonstrate sequential/long-horizon control.",
+      "Metacontroller with multiple experts showed mixed improvement; manager had difficulty finding optimal per-step expert-selection balance and only 9% of multi-expert variants outperformed the best iterative controller.",
+      "Entropy regularization used to encourage non-deterministic manager policies can cause suboptimal extra pondering when computation costs are high.",
+      "The architecture relies on differentiable experts but does not utilize gradient information from experts (not passed to manager/controller), which is noted as a limitation and future extension.",
+      "Training the manager and controller jointly can be unstable early in training (controller highcost behavior can bias manager toward always executing), requiring entropy regularization."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Reinforcement learning - meta-control / model-based RL / adaptive computation",
+    "writing_quality": "excellent"
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

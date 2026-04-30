@@ -1,0 +1,174 @@
+{
+  "CLARITY": 4,
+  "SUBSTANCE": 3,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions (three chunk-based decoder variants and their motivations) are stated early and carried through method and experiments, which matches my expectation for clear exposition. Notation and methodological descriptions are presented consistently enough to follow the hierarchical GRU decomposition and the extensions (inter-chunk and word-to-chunk), and hyperparameters and related work are reported adequately. Figures/tables and examples are described as effective and the writing quality is good, though a reader with a theoretical bent (like me) would appreciate slightly more formal sketches or schematic diagrams isolating each component for clearer causal attribution. | B(4): The paper is well organized (introduction \u2192 method \u2192 experiments \u2192 conclusion) and states the three chunk-based decoder contributions clearly early on. The hierarchical methodology and three model variants are described with sufficient clarity to follow, and experiments report BLEU/RIBES with hyperparameters for reproducibility. Figures/tables and examples appear to support the results, and overall writing quality is good, though a few minor presentation polish items could further improve readability.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions (three chunk-based decoder variants and their motivations) are stated early and carried through method and experiments, which matches my expectation for clear exposition. Notation and methodological descriptions are presented consistently enough to follow the hierarchical GRU decomposition and the extensions (inter-chunk and word-to-chunk), and hyperparameters and related work are reported adequately. Figures/tables and examples are described as effective and the writing quality is good, though a reader with a theoretical bent (like me) would appreciate slightly more formal sketches or schematic diagrams isolating each component for clearer causal attribution."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (introduction \u2192 method \u2192 experiments \u2192 conclusion) and states the three chunk-based decoder contributions clearly early on. The hierarchical methodology and three model variants are described with sufficient clarity to follow, and experiments report BLEU/RIBES with hyperparameters for reproducibility. Figures/tables and examples appear to support the results, and overall writing quality is good, though a few minor presentation polish items could further improve readability."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper presents useful empirical comparisons and internal ablations (Models 1\u20133) on a realistic En\u2013Ja task and reports hyperparameters, but both note important weaknesses: limited dataset diversity, lack of multiple-seed/run variance, absence of code, and missing deeper analyses or stronger contemporary baselines. Given the solid but narrowly scoped experiments and reproducibility/analysis gaps, a mid-level score reflects the useful contribution tempered by these limitations.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides useful empirical comparisons (ASPEC/WAT\u201916) and evaluates three progressively augmented chunk-based variants (Models 1\u20133), which functions as a basic component ablation. However, it lacks formal theoretical motivation or guarantees for the proposed decomposition, omits deeper diagnostic analyses (e.g., error types, sentence-length or linguistic-conditioned gains), and does not compare to stronger, well-tuned single-model NMT baselines beyond older 2016 systems. Reproducibility is partly supported by reported hyperparameters but code is not mentioned, and while some limitations are noted, failure-case analyses are insufficient."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper provides solid experimental evidence on a realistic MT task (ASPEC/WAT \u201916 En\u2013Ja) and compares three progressively refined chunk-based architectures against multiple strong baselines, which supports the main claims. It includes model variants (Models 1\u20133) that act as internal ablations and reports hyperparameters, but it appears to lack run variance/multiple-seed experiments and broader dataset diversity (only En\u2013Ja, first 2M pairs), and code is not provided\u2014these limit reproducibility and assessment of robustness. Related work is described adequately and the authors discuss specific model limitations, so overall the empirical work is strong but missing a few practical validation details. "
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper is well aligned with a top NLP/ML venue\u2014addressing a relevant chunk-based decoder design for NMT, evaluated on standard benchmarks with appropriate metrics and baselines. While Reviewer A notes some missing theoretical motivation and deeper ablations, these are minor concerns about completeness rather than scope or fit; given the clear relevance and strong empirical framing, a top-venue appropriateness score of 5 is warranted.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper's topic\u2014designing hierarchical chunk-based decoders for NMT\u2014and the empirical evaluation on ASPEC/WAT\u201916 place it squarely within the scope and audience of a top NLP/ML conference. Methods (hierarchical GRUs, three model variants) and metrics (BLEU, RIBES) follow community standards. However, from the provided summary I note missing formal/theoretical motivation and no mention of comprehensive per-component ablations or diagnostic/linguistic analyses that a theoretically-minded reviewer would expect; baselines are also somewhat dated, which are minor concerns for acceptance at a top venue."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP/ML venue: it proposes a practical, linguistically motivated architectural decomposition (chunk-level and word-level decoders) and evaluates three progressively stronger models with empirical gains on a standard MT benchmark (ASPEC / WAT \u201916 English\u2013Japanese). The methodology, baselines (several strong seq/tree models), and evaluation metrics (BLEU, RIBES) match community standards, and hyperparameters are reported. Given the clear relevance to neural MT research and its potential deployment implications, the topic and audience alignment are strong."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the work builds on hierarchical/multi-scale decoder ideas and represents an incremental engineering contribution rather than a radical theoretical advance. However, the explicit chunk-level decomposition and the two feedback/connection extensions are non-trivial, clearly differentiated from baseline word- and tree-based decoders, and empirically validated, warranting a notable novelty score rather than a low one.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper proposes a hierarchical, chunk-based decoder that separates chunk-level (global) and word-level (local) generation and introduces two specific extensions (inter-chunk connections and word-to-chunk feedback). These architectural variants represent a concrete engineering contribution beyond vanilla seq2seq, but they are natural, incremental extensions of hierarchical RNN ideas rather than a radically new formulation. Given the prior work and the methods compared (various word/char and tree-based NMT models), the contribution is moderately novel but would not surprise an expert absent stronger theoretical motivation or fundamentally new modeling principles."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clearly articulated chunk-based decoder that explicitly separates chunk-level (global) and word-level (local) generation\u2014an architectural decomposition that is distinct from the compared word- and tree-based baselines and is practically motivated. The three incremental models (adding inter-chunk connections and word-to-chunk feedback) are non-trivial extensions that address concrete limitations of the base design and appear to yield measurable gains on a standard English\u2013Japanese benchmark. While hierarchical or multi-scale decoders exist in related literature, the specific chunk-level design and the proposed feedback mechanisms are novel enough to inform practitioners and would be of interest to MT researchers. Given the empirical validation and clear differentiation from prior tree/word decoders, the contribution merits a notable novelty score rather than being purely incremental."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses a meaningful practical problem and demonstrates empirical gains with a clear, progressive set of architectures; Reviewer A rightly notes limited theoretical motivation and missing ablations, while Reviewer B highlights likely adoption and follow-on value. Given solid empirical improvements on a competitive benchmark and potential to influence practitioner design despite scope and analysis shortcomings, a score of 4 reflects useful and likely impactful engineering contribution that would benefit from deeper diagnostics and broader evaluation.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper addresses a meaningful engineering problem\u2014modeling multi-scale (chunk vs word) generation in NMT\u2014and shows empirical gains on a competitive benchmark (ASPEC / WAT\u201916 English\u2013Japanese) with three progressively refined architectures. However, from a theoretical-purist perspective its impact is limited by the absence of formal motivation or guarantees for the proposed decomposition, insufficient component-level ablations isolating chunking vs inter-chunk vs word-to-chunk effects, and a lack of diagnostic analyses explaining when and why chunking helps; comparisons are also mainly to older baselines. As a result, the work is a useful, potentially practicable contribution that may inspire follow-up work, but it is unlikely to fundamentally change how researchers think about sequence modeling without stronger theoretical and analytical support."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper targets an important practical issue\u2014better handling of inter- and intra-chunk dependencies in NMT\u2014by proposing a simple, well-motivated hierarchical chunk-based decoder and three progressively stronger variants. The reported significant BLEU/RIBES improvements on the ASPEC/WAT\u201916 English\u2013Japanese task (best model beating the top single NMT from WAT\u201916) suggest these ideas can change how practitioners structure decoders and inspire follow-up work. The approach is likely to open fruitful research directions (inter-chunk connections, word\u2192chunk feedback) and be adopted or extended in other settings, though impact is somewhat tempered by experiments on a single language pair and no mention of released code."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against several contemporaneous baselines (word-based Seq2Seq by Li et al. 2016 and tree-to-seq variants by Eriguchi et al. 2016a/b) on the same ASPEC/WAT\u201916 English\u2013Japanese data using BLEU and RIBES, and reports outperforming the best single NMT model from WAT\u201916, which indicates largely fair conditions. It also presents three model variants that isolate the chunking, inter-chunk, and word-to-chunk mechanisms, so component-level effects are at least partially evaluated. However, I deduct one point because the comparisons omit some stronger/tuned single-model NMT baselines from more recent literature or widely used strong baselines, and the summary does not make explicit whether prior methods that perform comparably are fully acknowledged. | B(4): The paper compares against sensible, contemporaneous baselines (word-based seq2seq and two tree-to-seq variants from 2016) on the same ASPEC / WAT\u201916 English\u2013Japanese tasks using BLEU and RIBES, with hyperparameters reported \u2014 supporting fair conditions. It also provides clear architectural contrasts (Models 1\u20133) that help isolate where gains arise and cites related work adequately. However, the summary does not indicate explicit acknowledgement when prior methods perform comparably or detailed variance/ensemble controls, so the empirical comparison is strong but has minor omissions in reporting/robustness that prevent a top score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against several contemporaneous baselines (word-based Seq2Seq by Li et al. 2016 and tree-to-seq variants by Eriguchi et al. 2016a/b) on the same ASPEC/WAT\u201916 English\u2013Japanese data using BLEU and RIBES, and reports outperforming the best single NMT model from WAT\u201916, which indicates largely fair conditions. It also presents three model variants that isolate the chunking, inter-chunk, and word-to-chunk mechanisms, so component-level effects are at least partially evaluated. However, I deduct one point because the comparisons omit some stronger/tuned single-model NMT baselines from more recent literature or widely used strong baselines, and the summary does not make explicit whether prior methods that perform comparably are fully acknowledged."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against sensible, contemporaneous baselines (word-based seq2seq and two tree-to-seq variants from 2016) on the same ASPEC / WAT\u201916 English\u2013Japanese tasks using BLEU and RIBES, with hyperparameters reported \u2014 supporting fair conditions. It also provides clear architectural contrasts (Models 1\u20133) that help isolate where gains arise and cites related work adequately. However, the summary does not indicate explicit acknowledgement when prior methods perform comparably or detailed variance/ensemble controls, so the empirical comparison is strong but has minor omissions in reporting/robustness that prevent a top score."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper presents a clear architectural proposal with empirical gains on ASPEC/WAT\u201916 but lacks stronger methodological support (limited baselines, missing component-level ablations per Reviewer A) and reproducibility/statistical validation (no multiple runs, variance, significance, or released code per Reviewer B). Given these shared concerns about incomplete evidence and validation, the work is promising but not sufficiently validated to merit a higher soundness score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper states clear architectural claims and provides empirical gains on ASPEC / WAT\u201916, but from the summary there is no formal/theoretical analysis justifying the proposed decomposition and no reported proofs. Crucially, I see no mention of component-level ablations isolating chunking vs inter-chunk vs word-to-chunk effects, nor diagnostic/linguistic analyses showing when chunking helps, which I would expect given the architectural claims. The experimental comparisons use older model variants rather than clearly strong, well-tuned single-model baselines, so while results are promising the evidence is incomplete to fully support the causal claims."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper states clear engineering claims (hierarchical chunk-level and word-level decoders with three progressively improved models) and supports them with experiments on ASPEC/WAT \u201916 En\u2013Ja showing BLEU/RIBES gains and sensible ablations across Models 1\u20133. Mathematical content is lightweight (architecture descriptions) and appears consistent; however, the summary does not report multiple runs, variance estimates, statistical significance, or released code, which weakens reproducibility and confidence in the magnitude of reported gains. Overall the methodology and baselines are appropriate and the conclusions are largely justified, but the lack of statistical validation and public code are minor but material omissions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce chunk-based decoders for NMT that separate chunk-level (global) and word-level (local) generation.",
+      "Propose three models: Model 1 (standard chunk-based), Model 2 (adds inter-chunk connections), and Model 3 (adds word-to-chunk feedback) to improve handling of intra- and inter-chunk dependencies.",
+      "Demonstrate significant translation performance improvements on WAT \u201916 English-Japanese task; best model outperforms the best single NMT model reported in WAT \u201916."
+    ],
+    "methodology": "Use a hierarchical decoder with a chunk-level GRU producing chunk representations and a word-level GRU generating words within each chunk; extend this with inter-chunk connections (Model 2) and word-to-chunk feedback (Model 3) to propagate inter-chunk context and remove previous-output information.",
+    "datasets": [
+      "ASPEC English-Japanese (Asian Scientific Paper Excerpt Corpus) \u2014 used first 2 million sentence pairs from provided 3 million; WAT \u201916 English-Japanese task"
+    ],
+    "baselines": [
+      "Word-based Seq-to-Seq (Li et al., 2016)",
+      "Word-based Tree-to-Seq (Eriguchi et al., 2016b)",
+      "Character-based Tree-to-Seq (Eriguchi et al., 2016a)"
+    ],
+    "metrics": [
+      "BLEU",
+      "RIBES"
+    ],
+    "limitations": [
+      "Model 1: word-level decoder cannot access previous chunk information at the first word of each chunk (lack of inter-chunk context).",
+      "Chunk-level decoder may not remove information about previous outputs, potentially causing repeated chunks or omissions (motivated Model 3)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - machine translation",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theoretical Purist",
+      "background": "Senior researcher in statistical NLP and theoretical machine learning with extensive experience proving properties of sequence models.",
+      "traits": [
+        "Penalises papers that present empirical gains without formal analysis: will deduct points if no theoretical motivation, guarantees, or formal characterization of the proposed decomposition are provided.",
+        "Requires ablation studies isolating each proposed component: expects per-component ablations (e.g., chunking alone vs. inter-chunk vs. word-to-chunk) and will penalise if these are missing or incomplete.",
+        "Penalises lack of diagnostic/linguistic analysis: expects analyses showing when/why chunking helps (e.g., error types, sentence-length breakdowns) and deducts points if only overall BLEU is reported.",
+        "Prefers comparisons against strong, well-tuned baselines and will penalise papers that compare only to older or weak baselines (e.g., not comparing to a tuned strong single-model NMT)."
+      ],
+      "reviewing_style": "I focus on formal justification and causal evidence: I reward clear theoretical motivation and careful component-level isolation, and I deduct points for empirical-only claims without mechanistic explanation."
+    },
+    "reviewer_b": {
+      "name": "Practical Systems Enthusiast",
+      "background": "Senior applied researcher and engineering lead in machine translation with experience deploying production NMT systems and improving BLEU on standard benchmarks.",
+      "traits": [
+        "Rewards clear empirical improvements on established benchmarks: gives credit when a model shows significant gains on a standard, well-known MT task (score increases proportional to reported improvements).",
+        "Favors novel, well-motivated architectural decompositions that map to known linguistic phenomena (e.g., hierarchical/chunk-based decoders) and is inclined to rate such contributions positively if they are simple and effective.",
+        "Values thorough experimental validation and reproducibility: expects multiple runs/variance reporting, ablations for major design choices, and enough hyperparameter/training detail (or code) to reproduce results; will penalise if experiments lack such details.",
+        "Less concerned with formal proofs: will not deduct points for absence of theoretical analysis so long as empirical evidence and diagnostics convincingly show benefit."
+      ],
+      "reviewing_style": "I prioritize utility and reproducibility: I reward effective, well-validated architectural ideas that yield clear gains on standard tasks and provide practical insights for deployment."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 5,
+    "total_dimensions": 7,
+    "debate_rate": 0.714
+  }
+}

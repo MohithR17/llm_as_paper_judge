@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "CLARITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses zero-resource neural machine translation using a teacher\u2013student (distillation) framework, which is squarely within the scope of top NLP/ML venues (NMT, transfer/zero-shot learning). It targets the right audience (machine translation/multilingual NLP) and formulates the problem clearly (Assumptions 1\u20132, sentence- and word-level objectives) while using expected methods and evaluation (BLEU, BPE, Europarl/WMT datasets, comparisons to pivot/multilingual baselines such as Cheng et al., Firat et al., Johnson et al., and Zoph et al.). The positioning is appropriate: the paper situates itself relative to pivot-based and multilingual approaches and demonstrates empirical gains (e.g. +3 BLEU over pivot), matching community standards for relevance and fit."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a clear teacher\u2013student formulation for zero-resource NMT (Sec. 3.1) that uses a pivot\u2192target model as a teacher to train a source\u2192target student on source\u2013pivot data, including novel sentence- and word-level KL objectives (Eqns. 9\u201311 and Assumptions 1\u20132). This is distinguished from prior pivot two-step and multilingual approaches (discussed in Related Work) and from Kim & Rush (2016) by repurposing knowledge distillation specifically for zero-resource learning rather than model compression. The word-level teaching and the different approximation strategies (beam, sampling, etc.) constitute non-trivial technical extensions, so the contribution is notable though not a radical departure from existing distillation/pivot ideas."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important problem of zero-resource NMT by proposing a teacher\u2013student framework that directly trains a source\u2192target model using a pivot\u2192target teacher (Section 3.1), avoiding two-step pivot decoding. Empirically it yields meaningful practical gains (\"significantly improves over a baseline pivot-based model by +3.0 BLEU points\" and in one setting \"outperforms standard NMT\" and \"improves the baseline pivot method by 5.63 BLEU\", Sections 4.3/4.3.4/4.3.5), indicating results that practitioners would adopt. The method also suggests new directions (sentence- vs. word-level teaching, sampling vs. beam approximations) that are likely to be built upon in multilingual/low-resource transfer work."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is organized in a standard flow (assumptions \u2192 method \u2192 experiments \u2192 related work) and the main contribution (a teacher\u2013student framework for zero\u2011resource NMT) is stated early, with clear equations (e.g. Eqns. 9\u201311) and numbered assumptions. However the manuscript suffers from presentation problems that hinder readability: many duplicated and repeated paragraphs/sentences (multiple copies of the same NMT background text), scattered typos/poor capitalization (\u201cAllthrough\u201d, \u201cstardard\u201d), and some broken references to figures/tables (Figure 1 referenced but not shown here, inconsistent table citations). Notation is mostly defined and usable (teacher/student models, JWORD, KL), but spacing and LaTeX/OCR artifacts and inconsistent phrasing make several passages hard to parse."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to the appropriate recent baselines (pivot-based Cheng et al. 2016, multi-way/multilingual Firat et al. 2016, universal models Johnson/Ha 2016, transfer Zoph et al. 2016, and cites Kim & Rush 2016) and reports BLEU under the same evaluation metric and preprocessing, explicitly stating it uses the same data as Cheng et al. and multi-bleu. It also provides ablations and analyses (sentence vs word-level, beam/greedy/sampling approximations, KL diagnostics) that clarify differences to baselines. A minor issue is that some competing systems (Firat et al.) use much larger training sets (which the paper notes), so a few comparisons are not strictly apples-to-apples, but overall the comparisons are thorough and relevant."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper provides solid experimental evidence across multiple corpora (Europarl and WMT), verifies its core assumptions quantitatively via KL/divergence analyses (Section 4.2), and compares multiple training variants (sent-beam/sent-greedy/word-sampling) and baselines including pivot, multilingual, and standard NMT with BLEU results (Section 4.3, Tables 4/5/7). Minor gaps remain: although some variant/sensitivity analyses are present (approximation methods, low-resource source-pivot size, and use of initialization/freezing), the paper omits many reproduction details (model/hyperparameter/training recipes) and offers only limited discussion of failure cases and broader limitations beyond brief notes on beam cost and sampling tradeoffs."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper presents a coherent teacher\u2013student training objective and empirical evaluation showing BLEU gains, and it empirically checks the core assumptions (Section 4.2). However, there is a clear mathematical inconsistency in the formulation: JWORD is defined as a sum of KL divergences (Eq. 9\u201310) but Eq. (11) states \u03b8\u0302x\u2192y = argmax JWORD, whereas KL should be minimized (argmin) or JWORD should be negated \u2014 this sign/optimization-direction error undermines the formal objective. Experimentally, the methodology uses reasonable baselines (pivot, multilingual, transfer) but omits statistical significance tests and some comparisons (e.g., advantage vs. MLE may be confounded by differing effective corpus sizes), and the KL approximations (beam/greedy/sampling) are heuristic without theoretical guarantees. These issues warrant moderate concern though the overall approach is plausible and partially supported by experiments."
+    }
+  }
+}

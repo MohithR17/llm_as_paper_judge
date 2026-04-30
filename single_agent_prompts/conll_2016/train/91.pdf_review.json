@@ -1,0 +1,44 @@
+{
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 3,
+  "CLARITY": 3,
+  "SUBSTANCE": 3,
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 3,
+  "REPLICABILITY": 4,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main empirical claims are supported by experiments on a known baseline (an attention-based English\u2013German model from Luong et al., 2015a) with reported metrics (perplexity 6.1 and BLEU 20.5 on newstest2014) and explicit retraining settings (learning rate 0.5, 4 epochs, schedule described). The paper gives concrete pruning schemes (class-blind, -uniform, -distribution) and presents per-class breakdowns (Figure 3) and visualizations (Figure 8) to support conclusions about redundancy. However, no statistical significance tests or multiple random restarts are reported and some details (e.g., exact thresholds/\u03bb choices across all experiments) are omitted, which are minor issues that do not overturn the main experimental conclusions."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The work mainly adapts magnitude-based pruning (Han et al., 2015b) to LSTM-based NMT and studies three ways to distribute pruning across weight classes; the paper itself states 'we extend the magnitude-based pruning approach ... to recurrent neural networks'. While applying pruning to NMT/LSTMs and the class-based comparison are useful, the core method is an application/variation of existing techniques rather than a fundamentally new algorithm."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is organized into method, pruning schemes, retraining, and experiments with useful figures (e.g., Figure 3 and Figure 8) and an explicit LSTM equation (Equation (2)). However, the provided text contains repeated and garbled sentences and some formatting issues which impede flow; also some experimental details are deferred to the Luong et al. reference rather than fully restated, which makes parts harder to follow."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Experiments are substantive in that they analyze several pruning schemes, per-weight-class effects, and retraining recipes on a large WMT'14 English\u2013German model (4.5M sentence pairs), and visualize redundancy patterns in LSTM matrices. Nevertheless, the study is limited to a single language pair and single pretrained model, lacks broader ablations (e.g., multiple datasets, iterative pruning schedules beyond the single retraining formula), and does not report runtime/memory speedups from sparsity, leaving some important aspects unexplored."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Compressing large NMT models (200M+ parameters) is an important practical problem and demonstrating aggressive pruning (the paper claims recovery or improvement at 80% pruning) on a state-of-the-art English\u2013German system could influence practitioners and follow-on research. The contribution is likely to be widely used as a practical baseline for NMT compression, though it is not a transformative new paradigm."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The topic\u2014model compression for neural machine translation\u2014is squarely within the scope of top NLP/ML conferences. The paper uses community-standard data (WMT'14), evaluation metrics (perplexity, BLEU on newstest2014), and a relevant strong baseline (Luong et al., 2015a), making it an appropriate fit for such venues."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper compares three internal pruning schemes and situates itself relative to prior pruning and compression work (Han et al., 2015b; Lu et al., 2016; others are cited). However, it does not provide experimental comparisons to other modern compression techniques (e.g., low-rank approximations, hashing, knowledge distillation) on the same NMT baseline, so comparisons to competing approaches are limited."
+    },
+    "REPLICABILITY": {
+      "score": 4,
+      "justification": "Many implementation details are provided: the baseline model source is stated (Luong et al., 2015a) and the dataset (WMT'14) and test set (newstest2014) are specified, and retraining hyperparameters (learning rate schedule, epochs, batch size, gradient norm, dropout) are given. Some specifics are missing from the text alone (e.g., full list of hyperparameters of the original baseline are referred to another paper, and exact \u03bb values/threshold choices or whether multiple pruning/retrain iterations were used), so reproducing everything would require consulting the referenced code or paper."
+    }
+  }
+}

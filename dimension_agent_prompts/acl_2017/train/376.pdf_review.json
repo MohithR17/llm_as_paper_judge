@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 4,
+  "IMPACT": 3,
+  "CLARITY": 3,
+  "MEANINGFUL_COMPARISON": 3,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "SUBSTANCE": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "This paper is clearly within NLP/ML scope: it develops neural relation-extraction models (recursive/SP/EC RNNs, pre-trained word2vec) and evaluates them on a labeled corpus of entity-pairs from news titles (Sect. 3, 4.2) and proposes a precision-oriented loss and multi-document aggregation (Sec. 3.4, 5.1). The audience (relation/event extraction, information aggregation) and evaluation practices (train/dev/test, precision/recall, baselines including TABARI) match top-tier expectations. Minor concerns are that the work is application-heavy (title-only corpus, aggregation/visualization emphasis) and uses recursive nets rather than more current architectures, making it a very good but not perfectly novel fit for the most selective ML/NLP venues."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper tackles an important, applied problem\u2014extracting and aggregating interstate alliance/opposition relations from large news corpora\u2014using an event-centered recursive neural approach and a precision-oriented loss to support reliable multi-document aggregation (paper: event-based RNN + precision-biased cost; dataset: 3.3M titles, 5,172 annotated pairs). The end-to-end pipeline (sentence-level classification \u2192 daily aggregation \u2192 smoothed time-series; reported strong-peak accuracy 0.93) is practically valuable for political science and monitoring applications. However, the methods are incremental combinations of existing recursive models, loss-weighting, and aggregation/visualization rather than fundamentally new techniques, so the work is useful and likely to be adopted by practitioners but not transformative for the field."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall organization follows a standard flow (introduction \u2192 methods \u2192 experiments \u2192 aggregation/visualization), but presentation suffers from repeated and duplicated passages (e.g., numerous verbatim repeats in the Dataset and Recursive Neural Networks paragraphs) that interrupt readability. Notation is sometimes inconsistent or sloppy (WL/WR vs WLEFT/WRIGHT; 'wwith' and 'wEND' typos) and the precision-oriented cost function is presented in a way that makes the role and placement of \u03bbFP ambiguous. Figures/tables are frequently referenced (Figure 1, Table 1, Figure 4) but not shown in the provided text, and there are several grammatical/formatting issues (run-on sentences, title-sentence discussion) that together make some sections hard to follow."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper performs thorough internal comparisons and ablations across its own models (FT, SP, EC, +features, and with the precision-oriented cost) and reports results on a held-out test set (Sec. 4.2\u20134.3). It only includes one external baseline (the rule-based TABARI) and reports it performs poorly, but does not experimentally compare to other contemporary neural relation-extraction baselines it cites (e.g. CNNs, LSTMs or dependency-path LSTMs such as Xu et al., Zeng et al.), nor provides details on ensuring fair application/tuning of TABARI. The paper analyzes differences among its variants (explaining why SP/EC need extra features) but lacks broader empirical comparisons to the most relevant competing neural approaches. "
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines well-established components (recursive neural nets, shortest-path pruning, word2vec pretraining, count-based aggregation) into a system for extracting/aggregating geopolitical alliance relations, so the contribution is primarily incremental. The Event-Centered (EC) tree manipulation (replacing entities with *START*/ *END*/*PN* and focusing on event words) and the precision-oriented loss for later aggregation are modest, domain-tailored adaptations (Sections 3 and 3.4) rather than fundamentally new methods. The multi-document aggregation/smoothing and visualization are straightforward and build on prior event-aggregation work (Section 5). Overall the work is a notable applied combination with some specific tweaks but not a highly novel methodological advance."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states and experimentally supports its main claims (event-centered recursive models + precision-oriented aggregation) with a labeled dataset (5,172 instances, test 453) and aggregation evaluation (97 peaks; strong-peak accuracy 0.93), but several technical issues weaken full confidence. The modified loss (Section 3.4) is underspecified/technically problematic: \u03bb_FP is defined based on whether the prediction is a false positive, which makes the training objective depend on a discrete prediction and is non-differentiable/unusual compared to standard class-weighting (the implementation detail is omitted). Experimental methodology lacks statistical significance testing, limited evaluation sample for aggregation (97 peaks from 14 queries) and vague baseline reporting (TABARI referenced but results/table not shown here). Overall, the empirical results provide moderate support, but the loss formulation and limited/partially reported evaluations leave important correctness and reproducibility concerns."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper provides reasonable experimental coverage at both sentence-level (comparisons of FT, SP, EC models, with/without extra features and a precision-oriented cost function; trained word2vec, K=50, implemented in Theano; test set of 453 relations) and aggregation-level (14 queries, 97 evaluated peaks with strong-peak accuracy 0.93 and weak-peak 0.75). It also includes ablations across model variants and the cost function and discusses several limitations (title-syntax/parser errors, NEU class over-representation, inability to find \u03b1 for FT, and subjective evaluation constraints). However, experiments are limited in scale/breadth (small test set, limited baseline comparisons to other neural architectures and sparse sensitivity analysis of aggregation parameters like smoothing window or retrieval settings), and key reproduction details and data/code release (full preprocessing, hyperparameters, dataset splits, retrieval configuration) are incomplete."
+    }
+  }
+}

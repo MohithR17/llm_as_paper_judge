@@ -1,0 +1,179 @@
+{
+  "IMPACT": 3,
+  "ORIGINALITY": 4,
+  "APPROPRIATENESS": 3,
+  "SUBSTANCE": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "IMPACT": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper addresses an important practical problem and provides a simple, effective tagging-based end-to-end model with empirical gains on NYT, making it useful to practitioners. They also concur that the contribution is incremental, evaluated on a single distant-supervision dataset, and lacks broader theoretical analysis and reproducibility artifacts, which limit its transformative impact. Given these strengths and limitations, a mid-level score reflects likely practical value but limited field-changing potential.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper tackles an important task (joint entity and relation extraction) and proposes a practical tagging-based reduction plus an end-to-end BiLSTM/LSTM model that outperforms baselines on NYT. However, the contribution appears largely empirical and incremental without formal analysis of expressivity or guarantees, evaluation is restricted to a single distant-supervision dataset (NYT), and code/reproducibility are not provided \u2014 factors that substantially limit confidence and adoption. Given these weaknesses, the work\u2019s likely impact is limited rather than field-changing."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "This paper tackles an important practical problem\u2014end-to-end joint entity and relation extraction\u2014and proposes a simple, reproducible tagging formulation that reduces pipeline complexity. Empirically the LSTM-LSTM-Bias model shows clear gains on the NYT benchmark, which makes the approach attractive to practitioners seeking deployable, end-to-end systems. However, the method\u2019s restriction to single-triplet entities, reliance on one distant-supervision dataset, and lack of discussion of broader generalization limit its transformative potential. Overall, a useful, pragmatic contribution likely to be built upon but not yet field-changing."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the main novelty lies in the unified token-level tagging formulation rather than the model architecture, and that the encoder/decoder and loss choices are standard. Given the clear practical contribution of the tagging scheme and demonstrated empirical gains, but tempered by limited evaluation (single dataset) and lack of handling overlapping relations, a score of 4 reflects meaningful but not radical originality.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper proposes a specific new tagging scheme that maps joint entity\u2013relation extraction into a token-level tagging task, which is a moderately novel perspective compared to prior pipelined and joint methods. However, the modeling advances (BiLSTM encoder + LSTM decoder with a bias in the objective) are incremental applications of standard sequence models rather than fundamentally new techniques, and no formal analysis of the tagging scheme\u2019s properties or expressivity is provided. The empirical validation is limited to a single NYT distant-supervision dataset and the authors note unhandled overlapping relations, which reduces the practical novelty and generality of the contribution. Overall, the technical idea is interesting but not a substantial methodological departure from existing work."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clear, novel formulation: converting joint entity and relation extraction into a unified token-level tagging scheme (BIES + relation type + role), which meaningfully simplifies the pipeline and enables end-to-end learning. The encoder/decoder and biased objective are practical but standard choices (BiLSTM + LSTM + loss bias), so the main novelty rests with the tagging formulation rather than architectural innovation. The authors clearly distinguish this approach from prior pipelined and joint methods and demonstrate empirical gains, making it a notable and useful novelty for practitioners even if it is not a radical departure from existing techniques."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper addresses a core IE problem with a novel, practically motivated tagging formulation and an end-to-end model, so it is broadly within scope for a top NLP/ML venue. However, they also concur that evaluation is limited (single distant-supervision dataset), the method excludes overlapping/complex relations, and reproducibility artifacts (code) are absent; these shortcomings constrain its breadth and impact. Given these strengths and notable limitations, a borderline score of 3 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper addresses a core NLP information-extraction problem (joint entity and relation extraction) and proposes a novel tagging formulation and an end-to-end BiLSTM+LSTM model, so the topic and intended audience are within scope for a top NLP/ML venue. However, from a methodological-reviewer perspective the work lacks broader validation (results reported on only the NYT distant-supervision dataset), limited theoretical motivation or analysis of the new tagging scheme, and no mention of released code or detailed reproducibility artifacts; these issues make the contribution borderline for a top conference. The stated limitation (no overlapping relations) further restricts applicability to realistic benchmarks, so while relevant, the paper needs stronger empirical breadth and methodological justification to be a clear fit."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper sits squarely within top-tier NLP/ML venues: joint entity and relation extraction is a core IE problem and the work proposes a novel, practically motivated tagging formulation that enables end-to-end learning. The methodology (BiLSTM encoder + LSTM decoder, biased objective) and evaluation (Precision/Recall/F1 on the NYT distant supervision benchmark with comparisons to multiple established baselines) meet community expectations, and the reported empirical gains are relevant to practitioners. I mark it a 4 rather than a 5 because the evaluation is limited to a single distant-supervision dataset and it explicitly omits overlapping/complex relation cases and code release, which raise scope and reproducibility concerns for a top venue."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper proposes a reasonable end-to-end tagging approach but is empirically limited by evaluation on a single NYT dataset, lack of code/reproducibility, and exclusion of overlapping/multi-triplet cases. Reviewer B notes some sensitivity analysis (\u03b1) and hyperparameter reporting, while Reviewer A finds ablations and implementation detail insufficient. Given the mixed assessments of experimental thoroughness and the clear methodological contribution but limited empirical validation, a mid-level score of 3 is appropriate.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The experimental evaluation is shallow: results are reported on a single NYT dataset only, so claims of superiority lack multi-dataset validation expected for this task. There is no evidence of thorough ablations or sensitivity analyses for the core contributions (the novel tagging scheme and the biased objective / \u03b1), which is required to attribute gains to specific design choices. Related work is adequately covered and the paper does acknowledge the single-triplet limitation, but reproducibility is weak since code availability is not mentioned and implementation details appear insufficient for full replication. Overall the empirical support is limited and key analyses are missing."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a clear end-to-end tagging formulation and compares to a reasonable set of baselines on the NYT distant supervision benchmark, showing that their LSTM-LSTM-Bias model attains the best F1 \u2014 which supports the main claim. They report hyperparameters and explicitly evaluate a biased objective (\u03b1), indicating useful sensitivity/ablation analysis, and the related work coverage is adequate. However, experiments are limited to a single dataset (NYT) and the method excludes overlapping/ multi-triplet entities, which constrains empirical generality and practical impact; code availability is not mentioned, making exact reproduction harder."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper compares against a broad and appropriate set of baselines on standard metrics, so the experimental comparison is largely fair. However, they also concur that evaluation is limited to a single distant-supervision dataset and lacks comprehensive ablation/analysis when competitors perform comparably, so while the comparisons are good they are not fully comprehensive \u2014 hence a slightly positive but not perfect score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper compares against a reasonable set of prior methods (DS-logistic, LINE, FCM, DS-Joint, MultiR, CoType, LSTM-CRF, LSTM-LSTM) and reports standard metrics (P/R/F1) on the NYT benchmark, suggesting comparisons are largely fair in data and evaluation. However, evaluation is limited to a single distant-supervision dataset (NYT), which is a serious omission per my methodology\u2014multi-dataset validation is expected and I subtract a point for that. It is also unclear from the summary whether the authors fully acknowledge cases where prior methods are comparable or analyze differences in depth (e.g., systematic ablations of the tagging scheme and bias term), so the experimental comparison lacks the thoroughness I require."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against a broad set of relevant baselines (pipeline and joint methods including DS-logistic, MultiR, CoType, LSTM-CRF, LSTM-LSTM) on the same NYT dataset using standard P/R/F1 metrics, which is appropriate. Related work coverage is reported as adequate and the proposed tagging + biased-objective model is contrasted with neural baselines, but the summary does not indicate extensive ablation or discussion when competitors perform comparably, nor evaluation on multiple datasets, so comparisons are good but not fully comprehensive."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and clearly states its main contributions early\u2014proposing a novel tagging scheme and an end-to-end BiLSTM+LSTM model with a biased objective. Notation and the tagging formulation appear adequately defined for readers to understand the conversion to token-level tags, and hyperparameters and related work are reported. However, the summary indicates only \u2018adequate\u2019 writing quality and does not confirm the effectiveness of figures/tables or illustrative examples, so minor presentation improvements (more informative figures/examples and clearer exposition in some sections) would make the paper easier to follow. | B(4): Overall the paper is well organized and follows a clear intro\u2192method\u2192experiments\u2192conclusion flow, and the main contributions (novel tagging scheme and end-to-end BiLSTM\u2013LSTM with biased objective) are stated early. Notation appears consistent and the paper reports hyperparameters and limitations (single-triplet assumption) clearly. Figures/tables/examples are reported as effective and experimental comparisons (precision/recall/F1 on NYT with appropriate baselines) are presented, making results easy to interpret. Writing is generally adequate with minor presentation issues but nothing that obscures the method or results.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and clearly states its main contributions early\u2014proposing a novel tagging scheme and an end-to-end BiLSTM+LSTM model with a biased objective. Notation and the tagging formulation appear adequately defined for readers to understand the conversion to token-level tags, and hyperparameters and related work are reported. However, the summary indicates only \u2018adequate\u2019 writing quality and does not confirm the effectiveness of figures/tables or illustrative examples, so minor presentation improvements (more informative figures/examples and clearer exposition in some sections) would make the paper easier to follow."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and follows a clear intro\u2192method\u2192experiments\u2192conclusion flow, and the main contributions (novel tagging scheme and end-to-end BiLSTM\u2013LSTM with biased objective) are stated early. Notation appears consistent and the paper reports hyperparameters and limitations (single-triplet assumption) clearly. Figures/tables/examples are reported as effective and experimental comparisons (precision/recall/F1 on NYT with appropriate baselines) are presented, making results easy to interpret. Writing is generally adequate with minor presentation issues but nothing that obscures the method or results."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper presents a clear, internally consistent tagging approach and produces improved NYT results, but its empirical validation is limited to a single distantly-supervised dataset, lacks statistical tests and ablation/theoretical analysis, and imposes a restrictive assumption on entity participation. Given these recurring concerns about generality, reproducibility, and missing analyses, a moderate score reflects that the method appears sound in its scope but requires stronger validation to be fully convincing.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its main claim (a novel tagging scheme and an end-to-end BiLSTM+LSTM model with a biased objective) and provides empirical evidence on NYT showing improved F1, but the evaluation is limited to a single dataset and lacks reported statistical significance, which weakens support for generality. There are no formal derivations or theoretical analysis of the proposed tagging scheme or the biased loss (\u03b1), and no ablation/statistical tests of core components, leaving logical gaps about why the method works and how sensitive it is. Experimental methodology includes reasonable baselines, but the single-dataset evaluation and no code release hinder reproducibility and broader validation. Overall, the work is promising empirically but missing crucial analyses and multi-dataset validation required for stronger technical credibility."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper clearly states the main claim (a novel tagging scheme to reduce joint extraction to token-level tagging) and supports it with experiments showing the LSTM-LSTM-Bias model achieves the best F1 on the NYT benchmark. Mathematical content is light (no formal proofs required) and the model/learning objective appear internally consistent. However, the empirical evaluation is limited to a single distantly-supervised dataset, lacks reported statistical tests, and the method assumes each entity belongs to at most one triplet (overlaps left for future work), which weakens generality of the claims. Overall the technical approach is sound and results credible, but broader validation and analysis are needed to fully support general applicability."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a novel tagging scheme that converts joint entity and relation extraction into a token-level tagging problem.",
+      "Introduces an end-to-end model (BiLSTM encoder + LSTM decoder) with a biased objective that emphasizes relational labels to jointly extract entities and relations.",
+      "Shows that tagging-based end-to-end methods outperform most existing pipelined and joint learning baselines on a public NYT dataset, with their LSTM-LSTM-Bias model achieving the best F1."
+    ],
+    "methodology": "Convert joint extraction to a tagging task using tags that combine BIES position, relation type, and role (1/2); implement an end-to-end model with a BiLSTM encoding layer and an LSTM decoding layer trained with a bias objective (bias parameter \u03b1) to favor relational labels.",
+    "datasets": [
+      "NYT (distant supervision dataset from Ren et al., 2017)"
+    ],
+    "baselines": [
+      "DS-logistic",
+      "LINE",
+      "FCM",
+      "DS-Joint",
+      "MultiR",
+      "CoType",
+      "LSTM-CRF",
+      "LSTM-LSTM"
+    ],
+    "metrics": [
+      "Precision",
+      "Recall",
+      "F1"
+    ],
+    "limitations": [
+      "The paper only considers the situation where an entity belongs to a single triplet and leaves identification of overlapping relations for future work."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - joint entity and relation extraction (Information Extraction)",
+    "writing_quality": "adequate"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theoretical Methodologist",
+      "background": "Associate professor in machine learning and NLP with a research track record in structured prediction and formal guarantees for learning algorithms.",
+      "traits": [
+        "Penalises papers that propose empirical modeling changes without formal motivation or analysis (e.g., no complexity/consistency/expressivity discussion) \u2014 typically deducts 1\u20132 points on novelty/significance for purely empirical contributions.",
+        "Requires multi-dataset validation: downgrades experimental claims if results are reported on a single dataset only (subtracts 1 point for each missing additional benchmark).",
+        "Penalises lack of error analysis and systematic ablations for core components (e.g., the novel tagging scheme and bias parameter \u03b1) \u2014 expects controlled ablations and statistical significance testing.",
+        "Penalises papers that do not release code or sufficient implementation details for reproducibility (deducts 1 point from reproducibility)."
+      ],
+      "reviewing_style": "Focuses on formal justification, theoretical properties, and rigorous experimental validation; skeptical of incremental empirical tweaks without analysis."
+    },
+    "reviewer_b": {
+      "name": "Practical Systems Empiricist",
+      "background": "Senior researcher in applied NLP and information extraction, experienced in building end-to-end IE systems for large-scale real-world applications and benchmarks.",
+      "traits": [
+        "Rewards simple, well-engineered end-to-end solutions that yield clear empirical gains on public benchmarks (adds 1\u20132 points to significance/impact when SOTA improvements are shown).",
+        "Values novel formulation or tagging schemes that simplify pipeline complexity \u2014 gives credit when a method reduces task decomposition and facilitates end-to-end learning.",
+        "Favours ablations that show contribution of practical components (e.g., biasing objective \u03b1, encoder/decoder choices) and will accept single-dataset strong results if the evaluation and baselines are appropriate.",
+        "Places positive weight on model simplicity and deployability (prefers BiLSTM/LSTM architectures over highly complex pipelines) and on clear empirical improvements even without formal guarantees."
+      ],
+      "reviewing_style": "Pragmatic and impact-oriented: rewards methods that are simple, reproducible, and improve end-to-end performance on standard benchmarks."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

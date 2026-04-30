@@ -1,0 +1,101 @@
+{
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "ORIGINALITY": 2,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within top-tier NLP/ML scope: it presents a new semantic parsing system (TUPA) for UCCA, uses contemporary neural methods (BiLSTM feature extractor, dynamic oracle training), and evaluates against strong baselines (DAGParser, TurboParser, Stack LSTM) on standard corpora (Wiki, 20K Leagues) with appropriate labeled precision/recall/F metrics. The problem formulation, methods, and evaluation align with community expectations for parser papers, and the work is well positioned for the NLP/ML audience interested in semantic representations and parsing.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments compare TUPA against multiple strong baselines in both in-domain (Wiki) and out-of-domain (20K Leagues) settings and report labeled precision/recall/F for primary and remote edges, which substantially supports the main claims. The authors provide implementation details (DyNet), hyperparameters, and training regime (dynamic oracle), and related work coverage is thorough; however, ablation or sensitivity analyses are not clearly described in the summary (e.g., isolating the contribution of the BiLSTM feature extractor versus classifier variants), and code availability is not stated, which slightly weakens reproducibility. Limitations and some dataset preprocessing constraints are acknowledged, but more explicit failure-case analysis would strengthen the evaluation.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "Overall the paper is well organized and readable: contributions (TUPA and its neural variants) are stated early and the structure follows a logical intro\u2192method\u2192experiments\u2192conclusion flow. Notation appears consistent and hyperparameters are reported, and related work coverage is thorough. Examples of scope and limitations are clearly described (e.g., discarded inter-sentence/linkage/implicit nodes and conversion-induced upper bounds), and evaluation metrics and datasets are presented clearly. Minor presentation issues remain (some baseline conversion subtleties and out-of-domain setup could be expanded), preventing an exceptional rating.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important problem by presenting TUPA, the first dedicated parser for UCCA, which supports reentrancy, discontinuities, and non-terminal nodes\u2014capabilities that are crucial for realistic semantic representations. Empirically, the neural TUPA (with BiLSTM features) outperforms a variety of strong baselines both in-domain and out-of-domain, so the results are likely to change how researchers approach UCCA parsing and comparable graph-based semantic parsing tasks. By providing a general, grammarless transition system for complex DAG structures, the work opens significant new directions for semantic parsing and for adapting transition-based methods to richer formalisms. Limitations such as discarding inter-sentence, linkage, and implicit nodes constrain immediate applicability, but do not undermine the clear broader utility for the semantic-parsing community.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 2,
+      "justification": "The core idea\u2014a transition-based parser for UCCA supporting reentrancy and discontinuities\u2014is already present in the directly relevant prior work (\u201cA Transition-Based Directed Acyclic Graph Parser for UCCA\u201d); thus the claim of being the first parser is contradicted by the retrieved prior. The paper appears to mainly combine a transition set for UCCA with contemporary neural classifiers and a BiLSTM feature extractor, which is a useful engineering advance but not a fundamentally new formulation. While the work reports empirical gains and clearly positions itself relative to baselines, the technical novelty beyond existing transition-based DAG parsing approaches for UCCA is limited.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims (first UCCA parser, transition set handling reentrancy/discontinuities/non-terminals, and superior performance with neural models) are supported by experiments on the Wiki and 20K Leagues corpora against a reasonable set of baselines using labeled precision/recall/F-score metrics. Mathematical components are minimal and appear complete for a transition-based system; dynamic oracle training and BiLSTM features are appropriate. Minor concerns remain: conversion of gold graphs to bilexical forms for some baselines introduces an acknowledged upper bound that may affect comparability, and no mention of statistical significance testing is provided. These issues do not appear to undermine the main conclusions, so I rate it slightly below flawless.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper compares to a wide set of strong syntactic and graph-based baselines (DAGParser, TurboParser, UPARSE, MaltParser, Stack LSTM) on the same UCCA Wiki/20K datasets using comparable labeled precision/recall/F measures and explicitly discusses conversion limits that affect baseline upper bounds. However, it claims to be the \"first parser for UCCA\" despite an existing transition-based UCCA parser (2017) addressing DAGs and discontinuities, so an important direct prior is effectively missing or not fairly compared. The conversion-to-bilexical procedure for baselines also introduces an acknowledged upper-bound that complicates direct fairness, and the paper does not clearly state whether any prior methods sometimes perform comparably, reducing clarity in analysis of differences.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "We present TUPA, the first parser for UCCA.",
+      "TUPA is a general, grammarless transition-based parser that supports multiple parents (reentrancy), discontinuous units, and non-terminal nodes.",
+      "Coupling TUPA with a neural network classifier and BiLSTM feature extractor yields accurate UCCA graph prediction, outperforming a variety of strong baselines in in-domain and out-of-domain settings."
+    ],
+    "methodology": "A transition-based parser (TUPA) with a novel transition set, trained with neural classifiers (feedforward and MLP variants) and a BiLSTM feature extractor; uses dynamic oracle training and DyNet implementation.",
+    "datasets": [
+      "UCCA Wikipedia corpus (Wiki)",
+      "UCCA Twenty Thousand Leagues Under the Sea English-French parallel corpus (20K Leagues)"
+    ],
+    "baselines": [
+      "DAGParser",
+      "TurboParser",
+      "UPARSE",
+      "MaltParser",
+      "Stack LSTM parser (Dyer et al.)"
+    ],
+    "metrics": [
+      "Labeled precision",
+      "Labeled recall",
+      "Labeled F-score (computed over matching edges by terminal yields)",
+      "Primary-edge and remote-edge F-scores (variants reported)"
+    ],
+    "limitations": [
+      "Training and evaluation are performed on individual sentences; inter-sentence edges (0.18% of edges) are discarded.",
+      "Linkage nodes/edges and implicit nodes are discarded from training and evaluation.",
+      "Conversion to bilexical graphs/trees (for baseline comparisons) removes non-terminal nodes, introducing an upper bound on achievable scores due to this removal.",
+      "Out-of-domain experiments apply the same parsers trained on Wiki without parameter re-tuning."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Semantic parsing - UCCA parsing",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 1,
+    "paper_novelty_mean": 0.2562,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

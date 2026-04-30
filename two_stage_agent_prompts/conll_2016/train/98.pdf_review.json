@@ -1,0 +1,76 @@
+{
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 4,
+  "REPLICABILITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This work is squarely within the scope of a top NLP/ML conference: cross-lingual delexicalized transfer and minimally supervised dependency parsing are core NLP topics. It uses community-standard datasets (Universal Dependencies v1.2 across 32 treebanks), established baselines (MST, Malt, prior reported results), and standard evaluation metrics (attachment scores), with code and hyperparameters reported. The audience and positioning are appropriate for the venue, and the experimental setup and comparisons meet expectations for relevance and reproducibility (noting only minor dataset/training-size caveats reported)."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and established baselines (MST and Malt delexicalized transfer parsers, and prior reported results by McDonald et al. 2011 and Rosa 2015) and evaluates all systems on the same Universal Dependencies v1.2 data with the same metrics (average attachment score). It explicitly acknowledges when the delexicalized transfer parser outperforms the minimally supervised method on average while the minimally supervised parser does better on many non-Indo-European languages, and analyzes the impact of UD harmonization versus prior results. Comparisons appear fair and well-cited, though the summary suggests minor omissions of any newer approaches beyond the listed baselines."
+    },
+    "REPLICABILITY": {
+      "score": 4,
+      "justification": "The paper reports hyperparameters and model configurations and provides code, and it uses publicly available Universal Dependencies v1.2 treebanks (32 languages) with a clearly described leave-one-out multi-source transfer setup (first 10,000 tokens per language). Evaluation procedures (average attachment/accuracy scores) and baselines are stated. However, the preprocessing pipeline details (e.g., tokenization/POS mapping, any additional normalization) are not fully described in the summary, so minor reproduction details may need clarification."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper clearly states and empirically supports its main claims using experiments on 32 UD v1.2 treebanks, compares appropriate baselines (MST and Malt delexicalized transfer, prior reported results), and provides code and hyperparameters. The minimally supervised method is evaluated against learned priors and shows consistent advantages on many non-Indo-European languages, and the claim that UD harmonization improves transfer accuracy is backed by comparisons to earlier reported numbers. Minor methodological issues remain (training data for transfer parsers was artificially capped at 10,000 tokens and the summary does not report statistical significance testing), but these do not substantially undermine the conclusions."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are reasonably comprehensive: multi-source delexicalized transfer and a minimally supervised UDP variant are compared across 32 UD v1.2 treebanks with leave-one-out setups and multiple parser baselines (MST, Malt), and the paper reports hyperparameters and releases code. Related work coverage is described as thorough and limitations are acknowledged (e.g., Japan-KTC excluded, training truncated to first 10k tokens, and the minimally supervised model\u2019s slightly lower average). However, the summary does not clearly indicate thorough ablation or sensitivity analyses of the external priors or training-size choices, so there are minor gaps in analysis depth."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important problem\u2014cross-lingual and low-resource dependency parsing\u2014by evaluating delexicalized multi-source transfer against a minimally supervised parser across 32 languages from Universal Dependencies v1.2. Its finding that harmonized UD data improves transfer accuracy relative to prior reports (McDonald et al. 2011; Rosa 2015), plus the result that the minimally supervised parser (using handcrafted universal POS priors) outperforms transfer on many non-Indo-European/low-resource languages, is likely to change how researchers prioritize UD harmonization and use of priors. By demonstrating complementary strengths of transfer and minimally supervised approaches and releasing code, the work opens practical research directions (hybrids, better priors) and is likely to be built upon by others, while not being fully transformative across all NLP tasks."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a clear experimental pipeline (introduction of methods, use of Universal Dependencies v1.2 across 32 treebanks, experiments comparing multi-source delexicalized transfer and a minimally supervised parser, and a conclusion). Its main contributions (the minimally supervised parser using handcrafted POS-rule priors pextstop/pextattach and the cross-lingual comparison) are stated early and carried through the experiments. Notation and reporting appear consistent and complete (hyperparameters reported, code available), and figures/tables/results comparisons (e.g., averages vs. McDonald et al. 2011 and Rosa 2015) are informative. Writing is adequate overall but has minor presentation issues worth polishing (e.g., brief mention of the Japan-KTC exclusion and the 10,000-token training cap could be better integrated)."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper\u2019s main new element is a minimally supervised parser that injects handcrafted universal POS-based priors (pextstop and pextattach) into an existing unsupervised parser and evaluates this vs. multi-source delexicalized transfer across 32 UD v1.2 treebanks. This is a clear, well-differentiated extension of prior work (Mare\u010dek & Straka 2013; MST/Malt delexicalized transfer) and provides informative empirical findings, but it largely combines known techniques rather than introducing a fundamentally new method or paradigm, so the novelty is moderate."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Compared delexicalized multi-source transfer parsers and a minimally supervised (unsupervised + external priors) dependency parser across 32 languages from Universal Dependencies v1.2.",
+      "Introduced/minimally supervised parser that incorporates handcrafted universal grammatical rules for POS tags as external prior probabilities (pextstop and pextattach).",
+      "Found that the MST delexicalized transfer parser is better on average, while the minimally supervised parser performs better on many non-Indo-European (low-resourced/exotic) languages.",
+      "Showed that using Universal Dependencies (harmonized annotation) improves transfer-parser accuracy compared to prior reported results (e.g., higher averages than McDonald et al. 2011 and Rosa 2015)."
+    ],
+    "methodology": "Used Universal Dependencies v1.2 (32 treebanks) and applied multi-source delexicalized transfer with leave-one-out (concatenating other treebanks, using first 10,000 tokens per language) with Malt and MST parsers; ran an unsupervised dependency parser (UDP, Mare\u010dek and Straka 2013) with blocked Gibbs sampling augmented by manually assigned (and also learned from treebanks) external prior probabilities for stop and attach events.",
+    "datasets": [
+      "Universal Dependencies treebank collection v1.2 (32 dependency treebanks)"
+    ],
+    "baselines": [
+      "Delexicalized transfer parsers: MST parser (McDonald et al.)",
+      "Malt parser (Nivre, 2009)",
+      "Previously reported results by McDonald et al. (2011)",
+      "Previously reported results by Rosa (2015)"
+    ],
+    "metrics": [
+      "averaged accuracy",
+      "average attachment score (attachment scores)"
+    ],
+    "limitations": [
+      "The minimally supervised parser's average attachment score is slightly lower than the delexicalized transfer parser on average.",
+      "Experiments exclude the Japan-KTC treebank because full data were not available.",
+      "Training data for transfer parsers were reduced to first 10,000 tokens per language to decrease size and training time (limitation of dataset size used)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - dependency parsing (cross-lingual delexicalized transfer and unsupervised/minimally supervised parsing)",
+    "writing_quality": "adequate"
+  }
+}

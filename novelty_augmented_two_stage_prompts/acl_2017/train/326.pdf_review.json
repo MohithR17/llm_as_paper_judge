@@ -1,0 +1,100 @@
+{
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "IMPACT": 3,
+  "APPROPRIATENESS": 4,
+  "_details": {
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against reasonable neural baselines (Bi-LSTM and stacked Bi-LSTM) on standard SIGHAN datasets using F-score, so comparisons are generally fair and conducted under the same conditions. The authors acknowledge limits (adversarial gains not large; shared features can hurt large datasets) and report hyperparameters and datasets, indicating transparent evaluation. However, several relevant recent neural segmentation works (e.g., 2016\u20132017 neural segmentation papers cited in the retrieval list) and other strong baselines are not directly compared, representing a minor omission from a comprehensive baseline set.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized (intro -> method -> experiments -> conclusion) and clearly states its main contributions early (three architectures + adversarial objective). Notation and methodological description are consistent enough to convey the shared/private Bi-LSTM + CRF design and the adversarial entropy objective, and hyperparameters and related work are reported. Minor presentation issues remain: the effect of adversarial training is described as not significant and some dataset-specific failure cases are noted, suggesting places where figures/tables or clearer explanation of results would improve clarity.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and supported by multi-dataset experiments across eight SIGHAN corpora showing improvements, and the methodology (shared/private Bi-LSTM + CRF, adversarial entropy objective) is plausible and properly evaluated against relevant baselines (Bi-LSTM, stacked Bi-LSTM). There are no mathematical derivations to critique and the adversarial training objective is standard; however the paper itself notes the adversarial gains are not significant and reports potential biasing/noisy effects on large datasets (MSRA, AS), indicating some empirical limitations. Overall the experimental methodology appears sound but the modest adversarial benefit and possible dataset-size bias are minor issues that do not overturn the main conclusions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper combines well-established neural CWS approaches (Bi-LSTM+CRF; see prior LSTM-based CWS work) with a multi-criteria shared/private architecture and an adversarial criterion discriminator to enforce criterion-invariant features, which is not present in the listed prior works. Designing three shared-private architectures (parallel/stacked/skip) and applying an entropy-maximizing adversarial loss to multi-corpus CWS is a non-trivial and clearly differentiated extension beyond prior LSTM/segmentation models. While the core components (Bi-LSTM, CRF, multi-task sharing, adversarial learning) are known, their particular integration for heterogeneous CWS corpora and the entropy-based discriminator objective represents notable novelty rather than a purely incremental change.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are fairly comprehensive: evaluation on eight SIGHAN corpora with multiple shared-private architectures and comparisons to Bi-LSTM baselines support the main claim of multi-criteria benefit, and cross-script transfer (simplified\u2192traditional) is demonstrated. Ablation-style analyses are present (three shared-private designs; with/without adversarial training), though the paper notes the adversarial gain is not significant and could analyze that more deeply. Related work appears adequately covered relative to core LSTM-based CWS studies (e.g. LSTM-CRF and other neural CWS models), and several failure modes are acknowledged (bias toward large datasets, noisy shared features). Reproducibility is reasonably supported by reported hyperparameters, but lack of mentioned released code and limited analysis of adversarial training sensitivity leave some gaps.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper tackles the important practical problem of heterogeneous-criteria Chinese word segmentation by proposing a multi-criteria multi-task neural framework (three shared-private Bi-LSTM architectures with a CRF and an adversarial criterion discriminator) and shows consistent improvements across eight SIGHAN corpora, including cross-script transfer from simplified to traditional data. This approach provides a useful recipe for exploiting heterogeneous annotations and for learning criterion-invariant features, which practitioners and researchers in sequence labeling are likely to build on. However, the adversarial component yields only modest gains and shared learning can hurt large datasets, so the contribution is useful and influential within the subfield but not transformative for the broader field.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "The paper addresses a core NLP sequence-labeling task (Chinese word segmentation) using multi-task and adversarial representation learning, which is squarely within the scope of top NLP/ML venues. It employs methods (Bi-LSTM+CRF, multi-task shared/private layers, adversarial discriminator), standard datasets (eight SIGHAN corpora), and F-score evaluation expected at these venues. While the approach and evaluation are appropriate for the intended audience, the contribution appears somewhat incremental (shared-private architectures + adversarial objective) rather than a clear breakthrough, so it is a good but not perfect fit.",
+      "survey_injected": false,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes adversarial multi-criteria learning framework for Chinese word segmentation to exploit shared information among heterogeneous segmentation criteria.",
+      "Designs three shared-private neural architectures (Model-I parallel, Model-II stacked, Model-III skip-layer) built on Bi-LSTM feature layers with a CRF inference layer.",
+      "Introduces an adversarial training objective (entropy maximization for shared features) with a criterion discriminator to encourage criterion-invariant shared representations.",
+      "Demonstrates improved segmentation performance across eight CWS corpora from SIGHAN2005 and SIGHAN2008, and shows shared features learned from simplified Chinese can help traditional Chinese datasets."
+    ],
+    "methodology": "A multi-task neural CWS model that shares an embedding layer and a shared Bi-LSTM feature layer alongside private (criterion-specific) Bi-LSTM layers; outputs are fed to a CRF tagger. An adversarial criterion discriminator is trained to predict corpus/criterion while the shared parameters are trained to maximize the entropy of that prediction, encouraging criterion-invariant shared features; training uses AdaGrad with minibatches.",
+    "datasets": [
+      "MSRA",
+      "AS",
+      "PKU",
+      "CTB",
+      "CKIP",
+      "CITYU",
+      "NCC",
+      "SXU (eight datasets from SIGHAN2005 and SIGHAN2008)"
+    ],
+    "baselines": [
+      "Bi-LSTM",
+      "stacked Bi-LSTM"
+    ],
+    "metrics": [
+      "F-measure (F-score)"
+    ],
+    "limitations": [
+      "The performance boost from adversarial training is noted as not significant.",
+      "Shared parameters can bias toward large datasets and introduce noisy features, hurting performance on large datasets like MSRA and AS (stated cases)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - Chinese word segmentation (sequence labeling)",
+    "writing_quality": "adequate"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 10,
+    "paper_novelty_mean": 0.8423,
+    "augmented_dims": [
+      "MEANINGFUL_COMPARISON",
+      "ORIGINALITY",
+      "SUBSTANCE"
+    ],
+    "total_dims": 7
+  }
+}

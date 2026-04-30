@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "IMPACT": 4,
+  "CLARITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses a core NLP problem (keyphrase generation) using mainstream ML methods (seq2seq encoder-decoder with attention and a copy mechanism \u2014 Sections 3.2\u20133.4, CopyRNN) and situates itself in relevant literature (Bahdanau et al., Gu et al.). It trains at scale (527,830 articles) and contributes a large test split (KP20k), uses standard baselines (Tf-Idf, TextRank, KEA, Maui) and evaluation metrics (precision/recall/F1), and thus matches the scope, audience, methodological and evaluation expectations of top NLP/ML venues."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper applies established seq2seq techniques (bidirectional GRU encoder, attention from Bahdanau et al.) and an existing copy mechanism (citing Gu et al., 2016) to the keyphrase task (Sections 3 and 3.4) and constructs a large KP20k test/training split (Section 4.2/4.1). Its contribution is mainly an application and combination of known components that enables generation of absent keyphrases (claimed in Discussion), which is useful but not a fundamentally new model; the authors themselves note closely related prior work (Liu et al. (2011)). Thus the work is an incremental, moderate-novelty contribution rather than a highly original methodological advance."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the widely-used task of automatic keyphrase generation (important for indexing, summarization and retrieval) and reframes it as a generative encoder\u2013decoder problem with a copy mechanism. It trains on a very large corpus (527,830 articles) and introduces a KP20k test set, and reports that CopyRNN outperforms strong baselines by ~20% on present-keyphrase extraction while also producing absent (novel) keyphrases\u2014demonstrating a shift from extraction-only methods. These contributions (a new large dataset, a practical generative model that handles out-of-vocabulary copying, and cross-domain applicability) are likely to strongly influence further research and practical systems in keyphrase generation and related NLP tasks."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper follows a conventional structure (method, experiments, discussion) but the flow is disrupted by extensive duplicated text blocks and formatting artifacts (many repeated paragraphs in Related Work/Discussion and stray fragments like \u201cLaTeX with hyperref package\u201d), which makes parts hard to follow. Main contributions are implied (a generative encoder\u2013decoder with a copy mechanism) but not stated clearly and early as a concise contribution list. Notation and math are mostly present but inconsistent in places (e.g., Equation (3) reuses g for both the recurrent update and the output probability) and some equation/text formatting is sloppy. Figures/tables are cited (Table 2, Figure 1(a)) but are not shown here, and the writing contains grammatical errors and repetitions that reduce clarity."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s main technical claims (CopyRNN, an attention+copy GRU encoder\u2013decoder, outperforms extraction baselines and can generate absent keyphrases) are stated and supported by multi-dataset experiments (Sections 4\u20135 and reference to Table 2) and standard evaluation metrics (Section 4.5). The modelling equations (encoder/decoder, attention) are standard and correct (Section 3.2\u20133.3). Methodological concerns are minor: the provided excerpt lacks concrete numeric results and statistical significance tests, and the proposed model is trained on a very large 527k corpus while some supervised baselines appear to use much smaller training splits (Section 4.1\u20134.4), which could bias comparisons. Overall the experiments as described are reasonable and support the conclusions, but reporting/detail (statistics, exact numbers, fairness of baseline training) is insufficient in the excerpt."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper runs extensive empirical comparisons across multiple test sets (Inspec, Krapivin, NUS, SemEval, KP20k and DUC-2001), trains on a very large corpus (527,830 articles) and compares to several supervised and unsupervised baselines using standard metrics, which supports the core claims. However, ablation/sensitivity analyses are limited (the only clear contrast is RNN vs CopyRNN) and there is no systematic study of hyperparameters, training-set size, attention/copy variants or beam/search settings. Related work coverage is broad and citations are numerous, and the paper does acknowledge some failure modes (e.g., RNN generating overly general phrases, OOV issues, ExpandRank time complexity), but discussion of limitations is brief. Reproducibility is incomplete: dataset splits and optimizer/learning rate are given, but many critical implementation details (model sizes, batch/epoch settings, beam width, preprocessing, training schedule) are missing."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to a broad set of standard baselines (Tf-Idf, TextRank, SingleRank, ExpandRank, KEA, Maui) on multiple public datasets (Inspec, Krapivin, NUS, SemEval, KP20k) using the same precision/recall/F1 metrics and Porter stemming (Sections 4.2, 4.4, 4.5, 5.1). It also cites and discusses related neural/seq2seq and copy-mechanism work (Cho et al., Bahdanau et al., Gu et al.) and acknowledges when prior supervised methods (e.g., Maui) perform best on some datasets and when RNN underperforms (Sections 5.1, 6). However, comparisons are not fully controlled: the proposed model is trained on a very large corpus (527,830 articles) while baselines are trained on much smaller splits or default settings, which may affect fairness of comparisons (Section 4.1, 4.4)."
+    }
+  }
+}

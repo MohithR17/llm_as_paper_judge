@@ -1,0 +1,178 @@
+{
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well-organized and the main contributions are stated early (cross-lingual tagging/linking for 282 languages, silver-standard mining, morphology features), giving a clear upfront roadmap. Notation and presentation appear consistent enough to follow the BiLSTM-CRF + linking pipeline, and figures/tables/examples are reported as effective though not extensively described in the summary. Writing quality is adequate with reasonable coverage of related work; however, presentation would benefit from more explicit reporting of hyperparameters/ablation details and clearer descriptions of evaluation setups to aid reproducibility and causal attribution of gains. | B(4): The paper appears well-organized with a clear progression from mining silver annotations through model training to evaluation, and the main contributions (282-language tagging/linking, morphology features, self-training) are stated early. Notation and methodology are described consistently and related work coverage is thorough, and figures/tables/examples seem informative for the multilingual scope. Writing quality is adequate overall, but presentation could be improved by reporting hyperparameters and clarifying some limitations (e.g., incompleteness of Wikipedia anchors and affix assumptions) more explicitly in experimental sections.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well-organized and the main contributions are stated early (cross-lingual tagging/linking for 282 languages, silver-standard mining, morphology features), giving a clear upfront roadmap. Notation and presentation appear consistent enough to follow the BiLSTM-CRF + linking pipeline, and figures/tables/examples are reported as effective though not extensively described in the summary. Writing quality is adequate with reasonable coverage of related work; however, presentation would benefit from more explicit reporting of hyperparameters/ablation details and clearer descriptions of evaluation setups to aid reproducibility and causal attribution of gains."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper appears well-organized with a clear progression from mining silver annotations through model training to evaluation, and the main contributions (282-language tagging/linking, morphology features, self-training) are stated early. Notation and methodology are described consistently and related work coverage is thorough, and figures/tables/examples seem informative for the multilingual scope. Writing quality is adequate overall, but presentation could be improved by reporting hyperparameters and clarifying some limitations (e.g., incompleteness of Wikipedia anchors and affix assumptions) more explicitly in experimental sections."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The experimental scope is broad (282 Wikipedia languages, non-Wikipedia LORELEI data, and 9 languages with gold LORELEI annotations) and comparisons include prior language-independent methods and supervised baselines, so claims are largely supported. The paper provides at least one clear component analysis (morphology/affix features with large per-language gains) and discusses limitations of silver-standard data, but lacks reported statistical significance testing and full controlled ablations isolating all major components (self-training, translation mining, collective inference). Related work coverage is thorough and code is available, but missing hyperparameter details and some reproducibility specifics reduce completeness. | B(4): The paper presents broad, large-scale experiments (282 Wikipedia languages) and compares to strong baselines and supervised models, with concrete gains for morphologically rich low-resource languages (e.g., +11.1% Turkish, +7.1% Uzbek), which supports its main claims. Ablation-style evidence is provided for morphology features and there is evaluation on both Wikipedia and non-Wikipedia LORELEI data, but it\u2019s unclear whether full sensitivity analyses (e.g., for self-training, topic selection, and translation-pair mining) were performed. Related work coverage is reported as thorough and limitations/failure modes (incomplete silver annotations, affix assumptions, unlinkable mentions) are explicitly discussed. Reproducibility is partially addressed by a code release, but missing hyperparameter reporting reduces full reproducibility, so overall the empirical work is strong with minor gaps.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The experimental scope is broad (282 Wikipedia languages, non-Wikipedia LORELEI data, and 9 languages with gold LORELEI annotations) and comparisons include prior language-independent methods and supervised baselines, so claims are largely supported. The paper provides at least one clear component analysis (morphology/affix features with large per-language gains) and discusses limitations of silver-standard data, but lacks reported statistical significance testing and full controlled ablations isolating all major components (self-training, translation mining, collective inference). Related work coverage is thorough and code is available, but missing hyperparameter details and some reproducibility specifics reduce completeness."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents broad, large-scale experiments (282 Wikipedia languages) and compares to strong baselines and supervised models, with concrete gains for morphologically rich low-resource languages (e.g., +11.1% Turkish, +7.1% Uzbek), which supports its main claims. Ablation-style evidence is provided for morphology features and there is evaluation on both Wikipedia and non-Wikipedia LORELEI data, but it\u2019s unclear whether full sensitivity analyses (e.g., for self-training, topic selection, and translation-pair mining) were performed. Related work coverage is reported as thorough and limitations/failure modes (incomplete silver annotations, affix assumptions, unlinkable mentions) are explicitly discussed. Reproducibility is partially addressed by a code release, but missing hyperparameter reporting reduces full reproducibility, so overall the empirical work is strong with minor gaps."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper repurposes established algorithms rather than introducing fundamentally new algorithms, but they also concur that the affix/morphology features and the engineering-scale application across 282 languages represent a meaningful and practical extension. Given the clear empirical gains on morphologically rich, low-resource languages and the substantial increase in language coverage, the work is moderately novel and practically valuable, warranting a score slightly above average.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper combines several established components (Wikipedia-based silver labeling, BiLSTM-CRF tagging, self-training, and unsupervised collective inference) into a large-scale 282-language pipeline, which is useful but not a radical methodological departure. The notable contributions are the language-specific morphology/affix features derived from anchor links and the engineering-scale application across hundreds of Wikipedias; these are non-trivial extensions but largely incremental over prior language-independent NER/EL work (e.g., Zhang et al., Tsai et al.). Given the mix of repurposed techniques and some novel heuristics, the contribution is moderate in originality rather than highly novel."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper is not inventing brand-new core algorithms but provides a notable and practically valuable extension: scaling a silver-standard name tagging + linking pipeline to 282 Wikipedia languages and combining anchor-derived morphological affix features with self-trained BiLSTM-CRF taggers and unsupervised collective linking to an English KB. The affix/morphology signals shown to yield large gains for morphologically rich languages (e.g., +11.1% Turkish, +7.1% Uzbek) and the large-language coverage distinguish it clearly from prior, smaller-scale studies. Overall the techniques are sensible extensions of existing methods rather than fundamentally new paradigms, but the scale, empirical focus on low-resource languages, and clear differentiation from prior work make the contribution a notable and practical novelty for the field."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree this is an important, practical contribution with substantial engineering and resource value (large-scale silver annotations, morphology features, and public code) that yields notable gains for morphologically rich, low-resource languages. Remaining limitations\u2014dependence on silver-standard Wikipedia annotations, gaps vs. gold-supervised models, and incomplete component-level ablations\u2014temper claims of being transformative but do not substantially reduce its likely adoption and impact in applied cross-lingual NER/EL work, so a strong (4) impact score is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "This paper tackles a high-value problem at massive scale (282 languages, linking to English KB) and provides concrete empirical gains (notably large morphology affix improvements for Turkish and Uzbek) and public code, which make it practically useful. However, reliance on silver-standard Wikipedia annotations and admitted gaps (models still 5.8\u201317.6% behind gold-supervised models), plus unclear extent of controlled component-level ablations for the many pipeline parts, limit its persuasive power to reshape current thinking. The work opens promising directions (cross-lingual mining, morphology-aware features, unsupervised linking) and will be built upon, but given the methodological caveats its impact is moderate rather than transformative."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles a highly important, practical problem\u2014scalable cross-lingual name tagging and linking across 282 Wikipedia languages\u2014with concrete engineering and resource contributions (silver annotations, affix-based morphology features, mined translation pairs) that materially improve performance for morphologically rich, low-resource languages (e.g., +11.1% Turkish, +7.1% Uzbek). The approach and public code/data make it likely to be adopted and extended by practitioners building multilingual pipelines, though remaining gaps versus gold supervision (5.8%\u201317.6% lower F-scores) and some annotation incompleteness limit immediate replacement of supervised systems. Overall this is a strong, broadly useful contribution that will reshape practical cross-lingual NER/EL work and enable new research on scaling and improving silver-standard resources."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper makes clear, testable claims and provides large-scale, convincing empirical gains across many languages, but that missing experimental details (hyperparameters, statistical significance) and the lack of component-level ablations limit causal attribution and reproducibility. Given the strong empirical results, plausible methodology, and code release noted by one reviewer, these shortcomings are important but do not overturn the main contributions; hence a score of 4 reflects solid work with some methodological gaps to address.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper makes clear, testable claims and evaluates on a large multilingual corpus including gold-standard LORELEI data for 9 languages, compares to reasonable baselines, and reports substantial morphology-driven gains (e.g. +11.1% Turkish). However, from the summary there is no evidence of required component-level controlled ablations (to isolate contributions of self-training, topic selection, translation mining, etc.), no report of statistical significance testing, and hyperparameters are omitted\u2014weakening causal attribution and reproducibility. Given these methodological gaps, the empirical support is suggestive but insufficiently rigorous to fully substantiate all claims."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents clear, testable claims and supports them with large-scale experiments across 282 Wikipedia languages and additional non-Wikipedia corpora, showing sizable morphology-driven gains for low-resource languages (e.g., +11.1% Turkish). The methodology (silver-standard mining, BiLSTM-CRF with self-training, translation pairs, unsupervised collective linking) is plausible and compared to reasonable baselines, and code release aids reproducibility. However, important experimental details (hyperparameters, statistical significance) are missing and the approach relies on strong assumptions about Wikipedia markups and concatenative morphology that limit generality. These are minor but relevant issues that do not overturn the main empirical conclusions, so I rate it 4/5."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper is squarely aimed at a top-tier NLP audience\u2014addressing large-scale, practical cross-lingual NER/EL with strong multilingual evaluation and deployment-minded methods. Reviewer A\u2019s concerns (missing hyperparameters, significance testing, and finer-grained ablations) are valid but relate to methodological completeness rather than venue fit; they do not undermine the paper\u2019s relevance or appropriateness for the conference, so a top score is warranted.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper addresses a core cross-lingual NER/EL problem that is squarely within top-tier NLP venues and is aimed at the right audience (282-language Wikipedia mining, LORELEI evaluation). The formulation and pipeline (silver-data mining, BiLSTM-CRF tagger, morphology features, unsupervised linking) match community expectations and the authors evaluate on held-out human-annotated LORELEI data for 9 languages (satisfying my requirement for multi-language gold evaluation). I have methodological concerns however: hyperparameters are not reported, statistical significance testing is not mentioned, and from the summary it is unclear whether controlled component-level ablations isolate each contribution beyond the morphology gains \u2014 these omissions justify downgrading from a perfect fit though overall the work is well positioned for the venue."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP venue: it presents a practical, scalable cross-lingual NER+EL framework covering 282 Wikipedia languages (strongly rewarding scale/coverage), demonstrates meaningful gains for morphologically rich low-resource languages (e.g., +11.1% Turkish, +7.1% Uzbek), and evaluates on both Wikipedia and out-of-domain LORELEI news/forum data with comparisons to supervised baselines. The methods, silver-standard mining plus self-training and unsupervised collective inference, are appropriate for the venue\u2019s expectations for reproducibility and deployment-ready resources (code is available), and the limitations of Wikipedia-derived annotations are acknowledged and quantified, positioning the work well for the conference audience focused on multilingual, low-resource NLP."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper compares against relevant state-of-the-art and supervised baselines across a large multilingual set using comparable metrics, making the empirical comparisons broadly strong and practically useful. I assign a 4 because important methodological details (hyperparameters, significance testing) and more systematic component-level ablations are missing or unclear, preventing the comparisons from being fully rigorous even though they are comprehensive and relevant.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares to relevant state-of-the-art language-independent baselines (Zhang et al., 2016a; Tsai et al., 2016) and to supervised gold-standard models, uses the same F-score metric, and evaluates on a substantial multilingual set including 9 languages with human-annotated LORELEI ground truth. However, important methodological details that affect fairness are missing or unclear in the summary: hyperparameters are not reported, significance testing for claimed gains versus supervised or prior methods is not mentioned, and while morphology ablation numbers are given for some languages, it is unclear whether comprehensive, controlled component-level ablations isolate each contribution (self-training, topic selection, translation mining, collective inference). Given these minor but meaningful omissions, the comparisons are strong but not fully rigorous.}"
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper compares against state-of-the-art language-independent baselines (Zhang et al., 2016a; Tsai et al., 2016) and supervised gold-standard models, uses the same F-score metric, and evaluates on both Wikipedia (282 languages) and out-of-domain LORELEI data\u2014supporting fair, practical comparisons across many languages. It explicitly acknowledges when supervised models outperform the silver-trained system and analyzes gains from morphology features (e.g., +11.1% Turkish), and the related work coverage is described as thorough. From a multilingual engineering perspective the comparisons are comprehensive, relevant to low-resource settings, and empirically grounded, with minor methodological details (e.g., hyperparameters) not affecting the overall fairness of baselines."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A cross-lingual name tagging and linking framework is developed for 282 Wikipedia languages to identify name mentions, assign (coarse/fine) types, and link to an English KB.",
+      "Silver-standard name annotations are generated from Wikipedia markups and KB mining, refined with self-training and topic selection, and language-specific morphology features are derived from anchor links.",
+      "A Bi-directional LSTM-CRF name tagger trained on the mined annotations, plus mined word translation pairs and an unsupervised collective inference entity linker to DBpedia, yields promising results on Wikipedia and non-Wikipedia data, comparable to supervised models for many languages.",
+      "Morphology features derived from Wikipedia anchor affixes substantially improve performance for morphologically rich languages (e.g., +11.1% F-score for Turkish, +7.1% for Uzbek)."
+    ],
+    "methodology": "Mine silver-standard annotations from Wikipedia markups and KB properties, derive affix/morphology and gazetteer features, train a BiLSTM-CRF name tagger with self-training over clustered unlabeled sentences, mine word translation pairs, translate mentions to English, and perform unsupervised collective inference to link to an English KB (DBpedia).",
+    "datasets": [
+      "Wikipedia (282 languages)",
+      "DARPA LORELEI Leidos corpus (Non-Wikipedia news/forum data)",
+      "DARPA LORELEI annotated ground truths (for 9 languages)",
+      "AMR corpus (English)"
+    ],
+    "baselines": [
+      "State-of-the-art language-independent methods (Zhang et al., 2016a; Tsai et al., 2016)",
+      "Supervised models trained from manually annotated gold-standard documents"
+    ],
+    "metrics": [
+      "F-score"
+    ],
+    "limitations": [
+      "Silver-standard annotations derived from Wikipedia are incomplete (e.g., only first anchor mentions labeled), limiting performance versus gold-standard supervised models.",
+      "Morphology-derived affix approach only works when stem forms and affixes are directly concatenated.",
+      "If no surface form matches in the KB-derived surface-form dictionary, a mention is determined unlinkable.",
+      "Models trained on silver data still achieve 5.8%\u201317.6% lower F-scores than models trained on large manually annotated gold-standard documents."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - cross-lingual named entity recognition and entity linking",
+    "writing_quality": "adequate"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theoretical Purist",
+      "background": "Senior computational linguist with a PhD in theoretical NLP and 15+ years reviewing for ACL/EMNLP; focuses on rigorous evaluation and formal guarantees.",
+      "traits": [
+        "penalizes papers that rely primarily on silver-standard or heuristically mined training data without substantial held-out human-annotated evaluation (will deduct points if <3 languages have gold evaluation)",
+        "requires clear ablation studies that isolate each component's contribution (will deduct points if no component-level controlled ablations are presented)",
+        "skeptical of claims of 'comparable to supervised models' unless statistical significance tests and matched baselines are provided (will penalize absent significance testing)",
+        "favors theoretical justification or analysis of error modes (will downgrade papers lacking error analysis explaining failure cases across languages)"
+      ],
+      "reviewing_style": "I prioritize methodological rigor, clear causal attribution of gains, and human-evaluated benchmarks; I score down papers whose empirical breadth masks under-tested core claims."
+    },
+    "reviewer_b": {
+      "name": "Practical Multilingual Engineer",
+      "background": "Applied NLP researcher and engineering lead with extensive experience building cross-lingual systems and releasing multilingual resources for industry and open-source projects.",
+      "traits": [
+        "rewards scale and coverage: gives credit for practical systems that cover many languages (will boost score if resource spans >50 languages, more for >200)",
+        "values contributions that improve low-resource or morphologically rich languages and will upweight solid empirical gains on those languages (will add credit for large F-score improvements on specific languages like Turkish/Uzbek)",
+        "favors reproducibility and utility: expects clear description of mining/processing and public release of data/code (will downgrade if release planned but vague)",
+        "accepts silver-standard training data if paired with robust unsupervised/self-training and demonstrated cross-corpus generalization (will not penalize use of mined labels if non-Wikipedia evaluation is shown)"
+      ],
+      "reviewing_style": "I prioritize practical impact, scalability, and empirical evidence of usefulness across many languages; I reward work that delivers deployable multilingual resources and measurable gains for low-resource settings."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 5,
+    "total_dimensions": 7,
+    "debate_rate": 0.714
+  }
+}

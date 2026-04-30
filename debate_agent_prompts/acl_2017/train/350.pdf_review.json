@@ -1,0 +1,182 @@
+{
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "APPROPRIATENESS": 4,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The experiments are generally solid: they validate automatic labeling with manual precision checks, compare to relevant baselines (Chen 2015, Nguyen 2016, Mintz 2009), and demonstrate that MIL improves DMCNN performance. However, important reproducibility details are missing (hyperparameters not reported) and the summary suggests limited ablation/sensitivity analyses beyond demonstrating MIL benefits. The paper does acknowledge key limitations (distant supervision noise and held-out evaluation false negatives) and cites related work adequately, so overall it is strong but with minor gaps in experimental detail and ablation depth. | B(4): The paper runs multiple relevant evaluations (manual precision for triggers/arguments, held-out and PR-curve comparisons to strong baselines including DMCNN and distant supervision), which provide solid support for the main claims. It includes an analysis showing benefit from multi-instance learning, but more systematic ablations and sensitivity analyses (e.g., hyperparameter reporting is missing) would strengthen causal claims. Related work is reported as adequate and known limitations (distant supervision noise, held-out false negatives) are acknowledged. Reproducibility is partially supported by released code, but absent hyperparameter details and some experimental settings reduce full reproducibility.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The experiments are generally solid: they validate automatic labeling with manual precision checks, compare to relevant baselines (Chen 2015, Nguyen 2016, Mintz 2009), and demonstrate that MIL improves DMCNN performance. However, important reproducibility details are missing (hyperparameters not reported) and the summary suggests limited ablation/sensitivity analyses beyond demonstrating MIL benefits. The paper does acknowledge key limitations (distant supervision noise and held-out evaluation false negatives) and cites related work adequately, so overall it is strong but with minor gaps in experimental detail and ablation depth."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper runs multiple relevant evaluations (manual precision for triggers/arguments, held-out and PR-curve comparisons to strong baselines including DMCNN and distant supervision), which provide solid support for the main claims. It includes an analysis showing benefit from multi-instance learning, but more systematic ablations and sensitivity analyses (e.g., hyperparameter reporting is missing) would strengthen causal claims. Related work is reported as adequate and known limitations (distant supervision noise, held-out false negatives) are acknowledged. Reproducibility is partially supported by released code, but absent hyperparameter details and some experimental settings reduce full reproducibility."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper\u2019s main claims are plausible and partially supported: the authors present an automatic labeling pipeline combining Freebase and FrameNet and report high manual precision (88.9% triggers, 85.4% arguments) and improvements when training DMCNNs with MIL. However, from the summary I see gaps in experimental rigor and reproducibility \u2014 no hyperparameters reported, no mention of multiple runs or statistical significance testing, and held-out evaluation is acknowledged to suffer from false negatives. I would expect controlled ablations (e.g., effect of KR/TR thresholds, MIL vs. standard training across seeds), clearer treatment of noise, and fuller reporting to fully validate the technical claims. | B(4): The core claims\u2014that combining Freebase CVTs with FrameNet to automatically label Wikipedia for event extraction and that DMCNNs-MIL can learn from this noisy data\u2014are clearly stated and supported by empirical evidence (manual precision checks, P-R curves, comparisons to Chen et al. 2015 and supervised baselines). There are no mathematical derivations to check, and the experimental setup uses reasonable baselines, though details such as hyperparameters and statistical significance tests are missing. The paper acknowledges key limitations (noise from distant supervision and held-out evaluation false negatives), but reliance on Freebase coverage and potential labeling biases are not fully quantified, leaving some concern about generality beyond Wikipedia. Overall the technical work is sound with only minor issues that do not overturn the main conclusions.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper\u2019s main claims are plausible and partially supported: the authors present an automatic labeling pipeline combining Freebase and FrameNet and report high manual precision (88.9% triggers, 85.4% arguments) and improvements when training DMCNNs with MIL. However, from the summary I see gaps in experimental rigor and reproducibility \u2014 no hyperparameters reported, no mention of multiple runs or statistical significance testing, and held-out evaluation is acknowledged to suffer from false negatives. I would expect controlled ablations (e.g., effect of KR/TR thresholds, MIL vs. standard training across seeds), clearer treatment of noise, and fuller reporting to fully validate the technical claims."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The core claims\u2014that combining Freebase CVTs with FrameNet to automatically label Wikipedia for event extraction and that DMCNNs-MIL can learn from this noisy data\u2014are clearly stated and supported by empirical evidence (manual precision checks, P-R curves, comparisons to Chen et al. 2015 and supervised baselines). There are no mathematical derivations to check, and the experimental setup uses reasonable baselines, though details such as hyperparameters and statistical significance tests are missing. The paper acknowledges key limitations (noise from distant supervision and held-out evaluation false negatives), but reliance on Freebase coverage and potential labeling biases are not fully quantified, leaving some concern about generality beyond Wikipedia. Overall the technical work is sound with only minor issues that do not overturn the main conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper contributes a notable, practical novelty by combining Freebase CVTs with FrameNet cues to automatically label large-scale event data and by proposing concrete heuristics (Key Rate and Trigger Rate) to detect key arguments and triggers. These labeling methods and the resulting distantly supervised dataset are clearly differentiated from prior Distant Supervision and supervised EE work, and they enable scaling that would inform experts. The downstream model (DMCNNs with MIL) is not novel itself, so the contribution is primarily in the labeling strategy and metrics rather than in modeling, making this a notable but not radical advance. | B(4): The paper presents a notable and reasonably novel integration of world knowledge (Freebase CVTs) with linguistic knowledge (FrameNet) to automatically label event extraction data\u2014operationalized via the Key Rate (KR) and Trigger Rate (TR) heuristics\u2014which goes beyond standard distant supervision that maps KB facts to relations. While the modeling (DMCNNs with multi-instance learning) leverages existing architectures, using KR/TR to select key arguments and lexicalized FrameNet triggers for large-scale automatic event labeling is a distinct methodological contribution that clearly differentiates it from prior RE/DS work. An expert would find the KB+FrameNet labeling perspective informative, though the ML side is more an effective application of known techniques than a radical technical advance.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper contributes a notable, practical novelty by combining Freebase CVTs with FrameNet cues to automatically label large-scale event data and by proposing concrete heuristics (Key Rate and Trigger Rate) to detect key arguments and triggers. These labeling methods and the resulting distantly supervised dataset are clearly differentiated from prior Distant Supervision and supervised EE work, and they enable scaling that would inform experts. The downstream model (DMCNNs with MIL) is not novel itself, so the contribution is primarily in the labeling strategy and metrics rather than in modeling, making this a notable but not radical advance."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable and reasonably novel integration of world knowledge (Freebase CVTs) with linguistic knowledge (FrameNet) to automatically label event extraction data\u2014operationalized via the Key Rate (KR) and Trigger Rate (TR) heuristics\u2014which goes beyond standard distant supervision that maps KB facts to relations. While the modeling (DMCNNs with multi-instance learning) leverages existing architectures, using KR/TR to select key arguments and lexicalized FrameNet triggers for large-scale automatic event labeling is a distinct methodological contribution that clearly differentiates it from prior RE/DS work. An expert would find the KB+FrameNet labeling perspective informative, though the ML side is more an effective application of known techniques than a radical technical advance."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): This paper addresses a core NLP/ML topic (distantly supervised event extraction) and targets the right audience for a top venue by combining world and linguistic knowledge and training neural models (DMCNNs-MIL) on large automatically labeled Wikipedia data. Methods and evaluations are broadly appropriate (comparisons to DMCNN, Nguyen et al., Mintz; held-out and manual precision analyses), but I note practical reproducibility gaps (hyperparameters not reported) and evaluation caveats (held-out false negatives due to Freebase incompleteness) that justify a slight reservation. Overall the work is a good fit for a top conference given its dataset-scale contribution and model application, but would benefit from clearer experimental detail and stronger statistical reporting. | B(5): This paper squarely targets core NLP/ML research themes\u2014distant supervision, event extraction, and KB integration\u2014using principled resources (Freebase CVTs, FrameNet) and modern modeling (DMCNNs with MIL), making it highly relevant to top conferences. The methodology, large-scale automatically labeled Wikipedia corpus, human precision analysis, and comparisons to established baselines (Mintz et al., Chen et al.) align with the audience and evaluation standards expected at a premier venue. While held-out evaluation limitations are acknowledged, the contribution of automatic labeling methods and dataset/code release has clear impact for the community.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper addresses a core NLP/ML topic (distantly supervised event extraction) and targets the right audience for a top venue by combining world and linguistic knowledge and training neural models (DMCNNs-MIL) on large automatically labeled Wikipedia data. Methods and evaluations are broadly appropriate (comparisons to DMCNN, Nguyen et al., Mintz; held-out and manual precision analyses), but I note practical reproducibility gaps (hyperparameters not reported) and evaluation caveats (held-out false negatives due to Freebase incompleteness) that justify a slight reservation. Overall the work is a good fit for a top conference given its dataset-scale contribution and model application, but would benefit from clearer experimental detail and stronger statistical reporting."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper squarely targets core NLP/ML research themes\u2014distant supervision, event extraction, and KB integration\u2014using principled resources (Freebase CVTs, FrameNet) and modern modeling (DMCNNs with MIL), making it highly relevant to top conferences. The methodology, large-scale automatically labeled Wikipedia corpus, human precision analysis, and comparisons to established baselines (Mintz et al., Chen et al.) align with the audience and evaluation standards expected at a premier venue. While held-out evaluation limitations are acknowledged, the contribution of automatic labeling methods and dataset/code release has clear impact for the community."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper tackles an important practical bottleneck\u2014scaling event extraction via automatic labeling\u2014by combining Freebase CVTs and FrameNet signals and introducing Key Rate/Trigger Rate heuristics; this pragmatic approach plus releasing code makes it likely to affect how practitioners build training sets. The empirical demonstration that large-scale auto-labeled Wikipedia data achieve high manual precision (\u224885\u201389%) and that DMCNNs with MIL reduce distant-supervision noise strengthens its applicability. Limitations (intrinsic noise, held-out evaluation false negatives) temper claims but do not undercut the contribution; the method and metrics are likely to be reused and to open follow-up work on improving label quality and evaluation. | B(4): This paper addresses an important bottleneck\u2014scaling event extraction training data\u2014by combining Freebase CVTs with FrameNet to automatically label Wikipedia, which is practically useful for KBP and EE work. The introduced KR/TR metrics and the high manual precision (\u224886\u201389%) show the approach produces high-quality distant supervision signals and the provided code/dataset make it likely others will adopt and extend it. While not paradigm-shifting, the method and empirical validation (DMCNNs-MIL improvements, held-out and manual evaluation) open concrete follow-on work on KB\u2013linguistic resource integration and noise-robust learning.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper tackles an important practical bottleneck\u2014scaling event extraction via automatic labeling\u2014by combining Freebase CVTs and FrameNet signals and introducing Key Rate/Trigger Rate heuristics; this pragmatic approach plus releasing code makes it likely to affect how practitioners build training sets. The empirical demonstration that large-scale auto-labeled Wikipedia data achieve high manual precision (\u224885\u201389%) and that DMCNNs with MIL reduce distant-supervision noise strengthens its applicability. Limitations (intrinsic noise, held-out evaluation false negatives) temper claims but do not undercut the contribution; the method and metrics are likely to be reused and to open follow-up work on improving label quality and evaluation."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses an important bottleneck\u2014scaling event extraction training data\u2014by combining Freebase CVTs with FrameNet to automatically label Wikipedia, which is practically useful for KBP and EE work. The introduced KR/TR metrics and the high manual precision (\u224886\u201389%) show the approach produces high-quality distant supervision signals and the provided code/dataset make it likely others will adopt and extend it. While not paradigm-shifting, the method and empirical validation (DMCNNs-MIL improvements, held-out and manual evaluation) open concrete follow-on work on KB\u2013linguistic resource integration and noise-robust learning."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and follows a logical flow from motivation through method to experiments and conclusion, and its main contributions (automatic labeling using Freebase+FrameNet and DMCNNs-MIL) are clearly stated early. Notation appears consistent and definitions adequate, and figures/tables/examples are informative enough to support the evaluations described (held-out, P-R curves, manual precision). Writing quality is good with few grammatical issues, though a few practical reporting omissions (e.g., hyperparameter details not reported) slightly reduce presentation completeness. | B(4): The paper is overall well-organized and the main contributions (automatic labeling via Freebase+FrameNet, KR/TR metrics, and DMCNNs-MIL training) are stated early and carried through the methods and experiments. Notation appears consistent and examples/evaluations (manual precision, P-R curves, held-out and ACE comparisons) are informative; figures and tables seem effective. Minor presentation shortcomings include omission of hyperparameter details and some reliance on held-out evaluation caveats (Freebase incompleteness) that could be more explicitly discussed. Writing quality is good with only small clarity issues rather than major rewriting needed.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and follows a logical flow from motivation through method to experiments and conclusion, and its main contributions (automatic labeling using Freebase+FrameNet and DMCNNs-MIL) are clearly stated early. Notation appears consistent and definitions adequate, and figures/tables/examples are informative enough to support the evaluations described (held-out, P-R curves, manual precision). Writing quality is good with few grammatical issues, though a few practical reporting omissions (e.g., hyperparameter details not reported) slightly reduce presentation completeness."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is overall well-organized and the main contributions (automatic labeling via Freebase+FrameNet, KR/TR metrics, and DMCNNs-MIL training) are stated early and carried through the methods and experiments. Notation appears consistent and examples/evaluations (manual precision, P-R curves, held-out and ACE comparisons) are informative; figures and tables seem effective. Minor presentation shortcomings include omission of hyperparameter details and some reliance on held-out evaluation caveats (Freebase incompleteness) that could be more explicitly discussed. Writing quality is good with only small clarity issues rather than major rewriting needed."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares to appropriate and relevant baselines including DMCNN (Chen et al., 2015), a recent supervised EE system (Nguyen et al., 2016), and the canonical distant supervision method (Mintz et al., 2009), and evaluates using standard metrics plus held-out and manual precision\u2014so comparisons are broadly suitable. However, the summary indicates some missing experimental detail (e.g., hyperparameters) and does not state exhaustive ablation to isolate each contribution, and it\u2019s unclear whether all comparisons were run under identical conditions; the paper does acknowledge limitations and some comparable prior results but would benefit from clearer controlled analyses and additional recent baselines. | B(4): The paper compares against appropriate and relevant baselines (Chen et al. 2015 DMCNN, Nguyen et al. 2016 supervised EE, and Mintz et al. 2009 distant supervision) and evaluates with standard metrics (P/R/F and held-out/manual precision). Comparisons appear largely fair, though some experimental details (e.g., hyperparameters) are not reported and held-out evaluation is affected by Freebase incompleteness, which the authors acknowledge. The manuscript analyzes differences (KR/TR selection, MIL benefits) and discusses limitations, and the related-work coverage is described as adequate, so the evaluation is strong overall with only minor omissions.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares to appropriate and relevant baselines including DMCNN (Chen et al., 2015), a recent supervised EE system (Nguyen et al., 2016), and the canonical distant supervision method (Mintz et al., 2009), and evaluates using standard metrics plus held-out and manual precision\u2014so comparisons are broadly suitable. However, the summary indicates some missing experimental detail (e.g., hyperparameters) and does not state exhaustive ablation to isolate each contribution, and it\u2019s unclear whether all comparisons were run under identical conditions; the paper does acknowledge limitations and some comparable prior results but would benefit from clearer controlled analyses and additional recent baselines."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against appropriate and relevant baselines (Chen et al. 2015 DMCNN, Nguyen et al. 2016 supervised EE, and Mintz et al. 2009 distant supervision) and evaluates with standard metrics (P/R/F and held-out/manual precision). Comparisons appear largely fair, though some experimental details (e.g., hyperparameters) are not reported and held-out evaluation is affected by Freebase incompleteness, which the authors acknowledge. The manuscript analyzes differences (KR/TR selection, MIL benefits) and discusses limitations, and the related-work coverage is described as adequate, so the evaluation is strong overall with only minor omissions."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes an automatic training-data labeling method for event extraction by combining world knowledge (Freebase) and linguistic knowledge (FrameNet) applied to Wikipedia text.",
+      "Introduces Key Rate (KR) for detecting key arguments from Freebase CVTs and Trigger Rate (TR) for detecting trigger verbs from automatically labeled sentences.",
+      "Uses the automatically labeled large-scale data to train Dynamic Multi-pooling CNNs with Multi-Instance Learning (DMCNNs-MIL) for two-stage event extraction (event classification and argument classification).",
+      "Shows that the automatically generated labeled data have high manual precision (88.9% for triggers, 85.4% for arguments) and that DMCNNs-MIL benefits from multi-instance learning to mitigate distant supervision noise."
+    ],
+    "methodology": "Map Freebase CVTs to event types and use FrameNet lexical units to detect triggers; compute Key Rate (KR) to select key arguments and Trigger Rate (TR) to select trigger verbs, label Wikipedia sentences that contain key arguments, and train two-stage DMCNNs with multi-instance learning on the automatically labeled data.",
+    "datasets": [
+      "Freebase (CVTs)",
+      "FrameNet",
+      "Wikipedia (January 2016 dump)",
+      "ACE corpus"
+    ],
+    "baselines": [
+      "Chen's DMCNN (Chen et al., 2015)",
+      "Nguyen et al. (2016) supervised EE system",
+      "Mintz et al. (2009) distant supervision approach (RE)"
+    ],
+    "metrics": [
+      "Precision",
+      "Recall",
+      "F1",
+      "Precision-Recall (P-R) curves",
+      "Held-out evaluation",
+      "Manual (human) precision of top-n extracted instances"
+    ],
+    "limitations": [
+      "Automatically labeled data contain noise intrinsic to distant supervision.",
+      "Held-out evaluation suffers from false negatives due to the incompleteness of Freebase."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - event extraction (distant supervision, knowledge-base population)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Experimental ML Methodologist",
+      "background": "Senior ML engineer with a PhD in NLP and 8+ years building and evaluating deep learning systems for information extraction and relation/event extraction in industry and academia.",
+      "traits": [
+        "focuses on experimental design: insists on clear baselines, ablation studies, and controlled comparisons to isolate contributions",
+        "values reproducibility: looks for sufficient implementation details, hyperparameters, dataset statistics, and code/data release plans",
+        "examines statistical rigor: checks for significance testing, sufficient runs/seeds, and careful handling of dataset noise",
+        "attends to modeling choices and training details: notices architecture variants, loss functions (e.g., MIL specifics), and preprocessing steps that affect results"
+      ],
+      "reviewing_style": "Evaluates the paper through the lens of empirical validity and reproducibility, recommending concrete experiments or clarifications needed to support the claims."
+    },
+    "reviewer_b": {
+      "name": "Event Extraction / Knowledge Integration Expert",
+      "background": "Senior academic researcher in NLP with a long-standing focus on event extraction, knowledge-base population, and semantic resources (FrameNet, Freebase/KBs), active in both empirical and linguistic aspects of the field.",
+      "traits": [
+        "assesses novelty and positioning: compares methods to prior distant supervision, KB-to-text labeling, and FrameNet-guided approaches",
+        "values practical impact and scope: notices applicability to downstream KBP tasks, generality across domains, and dataset utility for the community",
+        "examines linguistic and KB integration: evaluates whether the use of FrameNet and Freebase is linguistically principled and whether metrics like KR/TR are meaningful",
+        "looks for limitations and failure modes: pays attention to coverage, biases introduced by KB mapping, and real-world constraints (e.g., domain shift beyond Wikipedia)"
+      ],
+      "reviewing_style": "Places the contribution in the broader research landscape, highlighting novelty, potential impact, and important limitations or extensions for future work."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  }
+}

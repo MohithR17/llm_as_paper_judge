@@ -1,0 +1,72 @@
+{
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "Overall the paper is well-organized and the main contributions (the fully non-monotonic Covington transition system and its approximate dynamic oracle) are stated early and followed by a clear methodology and experiments. The writing quality is noted as good and related work coverage is thorough, suggesting consistent notation and definitional clarity. Minor presentation issues remain: some analyses were restricted due to computational cost (e.g., only the first 100,000 transitions analyzed), and practical details that aid reproducibility (hyperparameters, code availability) are not reported. The effectiveness of figures/tables is not mentioned, which may indicate limited or unremarkable visual presentation."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Experiments are reasonably comprehensive: evaluation across CoNLL-X and CoNLL-XI datasets and comparisons to static, dynamic-monotonic, and monotonic Covington baselines (and prior non-monotonic systems) support the main claims. The paper analyzes limitations and negative results (approximate oracle, costly cycle computations, restricted analyses) and shows empirical improvements for most languages. However, important reproducibility details are missing (code not mentioned, hyperparameters not reported), and some analyses were curtailed due to computational costs, so sensitivity/ablation coverage is incomplete. Related work coverage is reported as thorough, which strengthens the evaluation."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem\u2014non-projective dependency parsing\u2014by introducing a fully non-monotonic variant of the Covington transition system that can repair prior attachments and (to the authors\u2019 knowledge) represents the first non-monotonic parser capable of producing non-projective analyses. The accompanying approximate dynamic oracle and empirical improvements over the monotonic Covington baseline on CoNLL-X and CoNLL-XI datasets (outperforming in a majority of languages) make results likely to influence how researchers approach transition-system design and oracle construction. Significant limitations\u2014namely the need for an approximate loss (due to non-arc-decomposability) and computational costs for some analyses\u2014may limit immediate widespread adoption, so the contribution is strong but not wholly transformative."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a clearly new method: a fully non-monotonic variant of the non-projective Covington transition system that always permits arc transitions and repairs previous attachments, which\u2014per the authors\u2014is the first non-monotonic parser capable of producing non-projective dependency analyses. This extends prior non-monotonic work (e.g., Honnibal et al.) that was restricted to projective or arc-eager settings and requires non-trivial technical innovations (an approximate dynamic oracle and loss approximations) because the system is non-arc-decomposable. Given the explicit differentiation from prior work and the technical challenges addressed, the contribution is notably novel though not a radical paradigm shift. "
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses a core NLP/ML topic (transition-based non-projective dependency parsing) and proposes a fully non-monotonic variant of the Covington parser with an approximate dynamic oracle, which is squarely within the scope of top NLP/ML venues. It evaluates on standard benchmarks (CoNLL-X and CoNLL-XI), compares to appropriate baselines (monotonic Covington, static and dynamic oracles, prior non-monotonic systems), and uses expected metrics (accuracy, oracle loss approximations), with thorough related work coverage. While the approximate oracle and computational limitations (e.g., needing cycle enumeration) and the lack of mentioned code/hyperparameter reporting are noted, these affect implementation details rather than venue fit, so the paper is a strong match for a top conference audience."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's primary claims are clearly stated and supported: a fully non-monotonic variant of the non-projective Covington system is defined and evaluated against reasonable baselines (static, monotonic dynamic, and prior non-monotonic arc-eager systems) on CoNLL-X/XI, with reported gains in a majority of languages. Mathematically the authors acknowledge and handle the key difficulty (the system is not arc-decomposable) by providing an approximate dynamic oracle based on efficiently-computable loss bounds, but the summary indicates no formal proof of optimality for these approximations. Experimental methodology is broadly sound in choice of baselines and datasets, though the absence of reported hyperparameters, statistical significance testing, and some restricted analyses (e.g. cycle computations limited / first 100k transitions) are minor weaknesses that do not overturn the main conclusions."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and relevant baselines (monotonic non-projective Covington, static and dynamic monotonic oracles, and prior restricted non-monotonic arc-eager systems) using the same CoNLL-X / CoNLL-XI datasets and standard accuracy/loss metrics. It reports that the non-monotonic dynamic oracle outperforms the monotonic version on a majority of languages and provides clear analysis of how the proposed non-monotonic system differs algorithmically. Minor omissions limit full confidence in fairness/completeness (e.g., the oracle is approximate, some analyses were restricted for computational reasons, and code/hyperparameter details are not mentioned), so comparisons are good but not fully comprehensive."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A novel fully non-monotonic transition system for the non-projective Covington parser that allows repairing previous attachments by always permitting arc transitions and removing offending previous arcs to enforce single-head and acyclicity constraints.",
+      "The presented system is, to the authors' knowledge, the first non-monotonic parser that can produce non-projective dependency analyses.",
+      "A dynamic oracle for the non-monotonic Covington parser is developed, which is approximate and based on efficiently-computable approximations of the loss due to the complexity of exact loss computation in the non-monotonic, non-projective scenario.",
+      "Experimental results on CoNLL-X and CoNLL-XI datasets show the non-monotonic dynamic oracle outperforms the monotonic version in a majority of the tested languages; the authors implement and compare static, dynamic monotonic, and non-monotonic oracles."
+    ],
+    "methodology": "Define a fully non-monotonic variant of the non-projective Covington transition system where Right-Arc and Left-Arc always allowed and previous conflicting arcs are removed to enforce constraints, and train it with an approximate dynamic oracle (using efficiently-computable loss approximations); experiments used a perceptron classifier.",
+    "datasets": [
+      "CoNLL-X shared task datasets",
+      "CoNLL-XI shared task datasets"
+    ],
+    "baselines": [
+      "Monotonic non-projective Covington parser (G\u00f3mez-Rodr\u00edguez and Fern\u00e1ndez-Gonz\u00e1lez, 2015)",
+      "Static oracle",
+      "Dynamic monotonic oracle",
+      "Prior restricted non-monotonic arc-eager systems (Honnibal et al., 2013; Honnibal and Johnson, 2015)"
+    ],
+    "metrics": [
+      "accuracy",
+      "loss (oracle loss approximations)"
+    ],
+    "limitations": [
+      "The dynamic oracle is approximate because exact loss computation in the non-monotonic non-projective setting is computationally complex.",
+      "Computation of certain non-monotonic terms requires finding all elementary cycles, which is time-consuming, so some analyses were restricted (e.g., only the first 100,000 transitions per dataset were analyzed).",
+      "The non-projective Covington parser is not arc-decomposable, complicating exact loss calculation."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - transition-based non-projective dependency parsing",
+    "writing_quality": "good"
+  }
+}

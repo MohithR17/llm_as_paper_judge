@@ -1,0 +1,74 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This is squarely within the scope of a top NLP/ML conference: cross-lingual named entity recognition and entity linking across 282 languages addresses a large-scale, high-impact multilingual NLP problem. The paper uses standard, expected methods and evaluations for the venue (BiLSTM-CRF tagging, self-training, entity linking to DBpedia, F-score evaluation) and compares against relevant baselines and prior state-of-the-art (Zhang et al., 2016a; Tsai et al., 2016) as well as supervised gold-standard models. The dataset scale (Wikipedia + non-Wikipedia transfer to news/forums), publicly available code, and clear positioning within cross-lingual NER/EL make it well targeted to the conference audience."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles a high-impact problem by providing a scalable cross-lingual name tagging and linking framework covering 282 Wikipedia languages and releasing code, which materially lowers the barrier for processing many low-resource languages. Its pipeline for producing silver-standard annotations (cross-lingual transfer, self-training, morphology-derived affix features) yields substantial F-score gains (e.g., self-training +6% on Wikipedia, +12% non-Wikipedia; affix gains up to +11.1%) and achieves non-Wikipedia performance comparable to supervised models, indicating practical utility. While results remain 5.8%\u201317.6% below large manually annotated supervised systems and some annotation/morphology limitations exist, the work is likely to be widely used and to open significant follow-on research for multilingual NER/EL."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines well-known ingredients (Wikipedia-based distant supervision via cross-lingual links, BiLSTM-CRF tagging, projection/translation and KB-based linking) into a large-scale pipeline across 282 languages, which is impressive engineering but not a fundamentally new idea. Individual components such as cluster-based self-training, morphology features mined from anchor markups, and mined translation pairs are useful extensions that yield measurable gains, but they are non-radical refinements of existing methods. The work is a meaningful, moderate-novelty systems contribution rather than a breakthrough methodological advance, and experts would find the scale and integration informative but not surprising. "
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are empirically supported: the paper reports cross-lingual tagging/linking results across 282 Wikipedia languages, compares to Zhang et al. (2016a), Tsai et al. (2016) and supervised baselines, and provides quantified gains for self-training and morphology features (+6%/+12%, +11.1%/+7.1%). There are no mathematical derivations to check, and the experimental setup uses relevant baselines and diverse datasets (Wikipedia, LORELEI news/forums, DBpedia/YAGO/Freebase), but some methodological details are missing (hyperparameters not reported, no mention of statistical significance tests) and the silver-standard data are acknowledged as incomplete. These are minor issues that do not appear to invalidate the main empirical conclusions."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against relevant recent baselines (Zhang et al., 2016a; Tsai et al., 2016) and strong supervised models trained on large manually annotated datasets, using the same evaluation metric (F-score) on the reported test sets. It acknowledges when supervised gold-standard models outperform the proposed approach (5.8%\u201317.6% lower F-score) and reports component-level analyses (self-training and morphology feature gains) that clarify differences from prior methods. Related work coverage is described as thorough, and the comparisons appear comprehensive and fair across the evaluated languages and domains."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized (clear pipeline description from data generation through tagging, self-training, and linking) and its main contributions are stated early and concretely (cross-lingual framework for 282 languages, silver-standard annotation pipeline, morphology features, self-training gains). Presentation is generally adequate with thorough related-work coverage, but some experimental details are missing (hyperparameters not reported) which detracts slightly from reproducibility and clarity. Overall writing quality is described as adequate, so only minor presentation issues remain."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Experiments are broad and include 282 Wikipedia languages plus non-Wikipedia news/forum data, with comparisons to prior language-independent methods (Zhang et al., Tsai et al.) and supervised baselines, supporting the main claims. Ablation-style analyses are reported for key components (self-training and morphology-derived affix features) with quantified F-score gains, and related work coverage is described as thorough. Limitations and failure modes are discussed (incomplete silver annotations, affix-method scope, and the remaining gap to gold-supervised models). Reproducibility is partially supported by released code but important details (hyperparameters) are not reported, constituting a minor but material gap."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A cross-lingual name tagging and linking framework for 282 Wikipedia languages that can identify name mentions, assign coarse- or fine-grained types, and link linkable mentions to an English KB (DBpedia).",
+      "A pipeline that generates \"silver-standard\" annotations by transferring English annotations via cross-lingual links and KB properties, refines them through self-training and topic selection, derives language-specific morphology features from Wikipedia anchor markups, and mines word translation pairs for linking.",
+      "The approach yields promising name tagging and linking results across 282 languages on Wikipedia data and obtains non-Wikipedia (news/forum) performance comparable to supervised models trained on thousands of manually annotated names, while advancing some state-of-the-art language-independent methods (Zhang et al., 2016a; Tsai et al., 2016) on most evaluated languages.",
+      "Self-training and morphology-derived affix features provide substantial F-score gains (self-training: +6% on Wikipedia, +12% on non-Wikipedia; morphology features: +11.1% for Turkish, +7.1% for Uzbek)."
+    ],
+    "methodology": "Generate silver-standard name annotations from Wikipedia markups and cross-lingual links, train a BiLSTM-CRF name tagger with features including stems, affixes, gazetteers and embeddings, apply cluster-based iterative self-training to expand training data, mine word translation pairs to translate mentions into English, and link translated mentions to an English KB (DBpedia) via unsupervised collective inference using knowledge networks and salience/similarity/coherence scores.",
+    "datasets": [
+      "Wikipedia (282 languages)",
+      "Non-Wikipedia data: news and discussion forum posts from DARPA LORELEI / Leidos corpus",
+      "English AMR corpus (Banarescu et al., 2013)",
+      "DBpedia",
+      "YAGO",
+      "Freebase"
+    ],
+    "baselines": [
+      "Zhang et al. (2016a)",
+      "Tsai et al. (2016)",
+      "Models trained from manually annotated gold-standard documents (supervised baselines)"
+    ],
+    "metrics": [
+      "F-score"
+    ],
+    "limitations": [
+      "Silver-standard annotations are incomplete (e.g., only first anchor mention in a Wikipedia article is labeled).",
+      "Morphology analysis via affix lists only works when stem forms and affixes are directly concatenated.",
+      "Performance is 5.8%\u201317.6% lower F-score than models trained from large manually annotated gold-standard data."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - Cross-lingual named entity recognition and entity linking",
+    "writing_quality": "adequate"
+  }
+}

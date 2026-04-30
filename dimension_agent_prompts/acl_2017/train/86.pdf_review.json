@@ -1,0 +1,39 @@
+{
+  "ORIGINALITY": 4,
+  "CLARITY": 3,
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a grammar-constrained neural decoder that generates ASTs via explicit APPLYRULE and GENTOKEN actions, combined with parent-feeding and a pointer-based copy mechanism to produce code \u2014 a clear, organized application of grammar structure to general-purpose PL generation (\u00a73\u2013\u00a74). While several components (seq2tree/parent info, pointer-copy, grammar constraints) are drawn from prior semantic-parsing and code-generation work (e.g., Dong & Lapata 2016; Ling et al. 2016; Xiao et al. 2016), the paper\u2019s unified treatment that jointly models production-rule application and open-vocabulary terminal generation and scales to full Python ASTs is a notable, non-trivial extension rather than a mere rehash. The authors explicitly differentiate from closest prior work (Related Work) and demonstrate applicability to general-purpose code, which would be informative to experts."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall the paper follows a logical organization (problem \u2192 grammar model \u2192 encoder/decoder \u2192 training \u2192 experiments), and the main contribution (a grammar-guided neural model for code generation) is stated early. Notation and equations are mostly consistent and understandable (e.g. Eq. (1)\u2013(4) and the action factorization), and the AST/action example (Fig. 1) is informative. However, presentation is degraded by many duplicated/garbled paragraphs and repeated reference fragments in the Related Work and other sections, missing/unclear table references (Tab. 1 is cited but not shown in the excerpt), and a number of formatting/grammatical glitches that interrupt the flow and make parts harder to follow."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper sits squarely in top-tier NLP/ML scope: it tackles mapping natural language to program ASTs using neural encoder\u2013decoder models with attention, pointer networks and grammar-constrained decoding (Sections 3\u20134). It targets the right audience by building on and comparing to prior neural semantic parsing and code-generation work (Ling et al., 2016; Dong and Lapata, 2016) and cites semantic parsing and code analysis literature (Section 6). The problem formulation (probabilistic grammar over AST actions) and the experimental setup (DJANGO, HEARTHSTONE datasets, BLEU/accuracy metrics, beam search and standard baselines) follow venue expectations for methods and evaluation."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper targets the important problem of mapping natural language to general-purpose programming languages by explicitly generating ASTs via a probabilistic grammar (APPLYRULE / GENTOKEN actions) and syntax-driven decoder (parent feeding, unary closures, copy/pointer mechanism). It reports state-of-the-art gains (\u22483% absolute improvement vs. prior LPN/SEQ2TREE baselines on real datasets like HS and DJANGO), demonstrating that grammar-constrained neural generation materially improves results and will influence model design. The approach is PL-agnostic and connects to semantic parsing and program synthesis, opening significant follow-up work and likely adoption for syntax-aware neural code generation."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and recent baselines (explicitly LPN / Ling et al. 2016, SEQ2TREE / Dong & Lapata 2016, an NMT baseline, and other reported baselines) on standard datasets (HS, DJANGO, IFTTT) and uses the same metrics/protocols (token-level BLEU-4 and accuracy following Ling et al. and Beltagy & Quirk) as stated in \u00a75 and \u00a76. It reports improvements (\"3% absolute improvements... against Ling et al. (2016)\") and includes previously reported numbers, and cites and discusses most relevant competing approaches (Allamanis, Jia & Liang, Xiao et al., etc.). Comparisons appear fair, though the paper provides limited detailed analysis of cases where prior methods perform comparably and the ablation/qualitative analysis of differences is somewhat brief, so the comparison is strong but not exhaustively analyzed."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates on multiple benchmarks (HS, DJANGO, IFTTT), compares to strong baselines (LPN, SEQ2TREE, NMT) and reports implementation/configuration details (embeddings, RNN sizes, beam size, unary-closure thresholds) indicating a solid experimental effort (\u00a75.2, Dataset and Configuration). It includes at least one ablation (with/without unary closures) and hyperparameter validation (dropout), but the excerpt shows limited systematic ablations/sensitivity analyses of core components (e.g., parent-feeding, copy mechanism) and no explicit error analysis or discussion of failure cases. Related work coverage is thorough and well-cited, and some reproduction details (tokenization, astor, supplementary pseudocode) are given, though full training/optimization details and complete ablation results appear delegated to supplementary material, leaving minor reproducibility gaps."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper presents a coherent and technically plausible model: the grammar-based action factorization p(y|x)=\u220fp(at|x,a<t) (Eq.2) and the decoder formulations for APPLYRULE and GENTOKEN (\u00a73, \u00a74, Eq.4 and the copy-pointer equation) are correct and standard. Training and inference (maximizing oracle action likelihood, beam search, \u00a74.3) are appropriate, and the experiments compare against reasonable baselines (LPN, SEQ2TREE, NMT) with reported gains (\u22483% abs.; \u00a75). Minor issues are that no statistical significance tests or full experimental details (data splits, some preprocessing choices) are shown in the excerpt and some hyperparameter/threshold choices (unary-closure k) could affect comparability; these do not, however, invalidate the main technical claims."
+    }
+  }
+}

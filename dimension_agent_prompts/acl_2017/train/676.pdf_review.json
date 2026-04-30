@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "CLARITY": 2,
+  "MEANINGFUL_COMPARISON": 3,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "SUBSTANCE": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses a core efficiency problem in neural machine translation (reducing the softmax output layer from O(HV) to O(H log V) via binary code prediction) which is squarely within top-tier NLP/ML venues. It targets the right audience by comparing to known methods (hierarchical/differentiated softmax, subword methods) and proposes practically relevant techniques (error\u2011correcting convolutional codes, hybrid softmax/binary) that appeal to both ML and NLP researchers. The problem formulation (complexity of output layers for large vocabularies) and experimental evaluation (ASPEC/BTEC datasets, BLEU reporting, speed/memory tradeoffs) match the standards expected at these conferences. The paper is well positioned within the community through appropriate prior-work discussion and baseline comparisons."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles a clear, important bottleneck in NMT\u2014the O(HV) cost of the output softmax\u2014by proposing binary code prediction that reduces parameter/time complexity to O(HB) (noted as O(H log V) for minimal mappings) and gives an example reduction to 1/4096 of the original size. It also introduces practical robustness methods (convolutional error-correcting codes with Viterbi decoding) and a hybrid softmax/binary scheme, and reports empirical gains: memory reductions of 1/10\u20131/1000 and CPU decoding speedups of 5\u201320\u00d7 while approaching softmax BLEU. Given these concrete efficiency improvements, GPU-friendly parallel prediction of bits, and compatibility with existing ideas (hierarchical/differentiated softmax), the work is likely to be widely used and to steer further research on compact, robust output layers\u2014a strong-impact contribution though not fully transformative given prior related methods."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has a clear high-level goal (binary-code output to reduce softmax cost and two robustness techniques are described), but the provided text shows frequent repetition, duplicated fragments, and broken sentences that disrupt logical flow (e.g., many repeated citation clauses and duplicated paragraphs in Section 4 and elsewhere). Notation is partly defined (Equations 1\u20134) but the presentation is inconsistent and occasionally garbled, and figures/tables are referenced (Figure 1) but not shown or integrated smoothly. Overall the writing contains numerous grammatical/formatting problems and layout errors that make important sections hard to follow and require substantial editing."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper cites and discusses the major alternative approaches (standard softmax, hierarchical softmax (Morin & Bengio 2005), differentiated softmax (Chen et al. 2016), sampling methods, subword/character approaches, and prior work on error-correcting codes) and analyzes complexity differences (see \u00a72.2 and \u00a73.3). Experiments use standard MT datasets (ASPEC, BTEC) and BLEU (\u00a74), but the provided text does not show empirical baselines beyond the standard softmax (or explicit experimental comparisons to hierarchical/differentiated softmax or sampling-based methods), so important recent baselines appear missing from the experimental comparison even though they are discussed analytically. Overall the paper discusses related work well but lacks comprehensive empirical comparisons to all relevant competing methods."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper applies a binary-code prediction formulation to the NMT output layer (mapping words to bit arrays and predicting bits, Sec.3) and augments it with convolutional error-correcting codes + Viterbi decoding and a hybrid softmax/binary scheme (Secs.3.4\u20134 and Sec.4), which is a novel combination in the NMT context. It clearly contrasts this approach with hierarchical softmax, differentiated softmax, sampling, and subword methods (Sec.2\u20133) and highlights the unique constraints (parallel bit prediction for GPU efficiency). However, the core ideas (binary decomposition of multiclass problems and error-correcting codes) are known from prior work (Morin & Bengio 2005; Dietterich & Bakiri 1995 and related ECC literature), so the contribution is an incremental but useful extension rather than a fundamentally new paradigm."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The core mathematical claim that replacing a V-way softmax with B binary predictions yields O(HB) output complexity (Section 3.3; Eq. 4) is correct, and the numeric example (V=65536 -> B=16 -> 1/4096 reduction) is consistent. The paper correctly relates this to hierarchical softmax and appropriately acknowledges robustness issues from independent-bit constraints and remedies (Sections 3.3\u20133.5). However, derivations/proofs are limited to high-level complexity statements and no formal guarantees for error-correction recovery are shown; experimental methodology mentions ASPEC/BTEC baselines and BLEU monitoring (Section 4) but the provided text lacks detailed quantitative results, statistical analysis, and ablations to fully support performance/speed/memory claims. Overall, the approach is technically plausible but some claims are under-supported by the excerpts provided."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper presents empirical evaluation on two English\u2013Japanese tasks (ASPEC and BTEC) using an attention LSTM and reports BLEU, memory reductions (1/10\u20131/1000) and CPU speedups (x5\u2013x20), and it explores several code allocation methods (random, Huffman, Brown, word2vec) and introduces error-correcting and hybrid softmax/binary fixes (Sections 3.4/3.5). However, the text shows limited systematic ablation or sensitivity analyses on key choices (e.g., bit-length B, hybrid cutoff K, convolutional-code parameters) and only a brief discussion of robustness problems for the simplest mapping. Reproducibility is partial: datasets, tokenizers and some model choices (1-layer LSTM, 30% dropout, Adam) are given, but many low-level details (exact mapping Algorithm 1, convolutional code/Viterbi parameters, full training hyperparameters) are missing."
+    }
+  }
+}

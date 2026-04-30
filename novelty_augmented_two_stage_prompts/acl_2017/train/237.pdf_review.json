@@ -1,0 +1,90 @@
+{
+  "SUBSTANCE": 3,
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "APPROPRIATENESS": 4,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "_details": {
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper provides a clear novel method and compares it to PMI-IR on IMDB (and also evaluates on the Stanford Sentiment Treebank), supporting the main claim that the Word2Vec+PCA approach can outperform PMI-IR and is more robust to sparsity. However, key experimental details are missing (evaluation metrics not specified, hyperparameters and code not reported), there are no ablation or sensitivity analyses of choices such as the number K, PCA dimensionality, or seed selection, and failure-mode discussion is limited to PMI-IR\u2019s sparsity issues. Related work coverage is reported as thorough, but the lack of reproducibility details and deeper analyses prevents a higher score.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper applies distributional word embeddings combined with PCA to extract a sentiment dimension and compute orientation for all vocabulary items\u2014an approach that is a clear departure from Turney\u2019s PMI-IR phrase-centered method and addresses PMI-IR\u2019s data-sparsity limits. While the constituent techniques (word embeddings, cosine distances, PCA) are well-known, their specific combination to derive a global sentiment axis and produce word-level SO scores is a non-trivial and practically useful extension that is distinguishable from prior work cited. Given the provided context (limited direct prior art besides evaluations of unsupervised orientation methods), the contribution is notably novel though not a fundamentally new theoretical paradigm.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper targets an important problem\u2014unsupervised measurement of sentiment orientation\u2014and proposes a practical distributional/Word2Vec + PCA method that reportedly outperforms the classic PMI-IR approach while using much smaller datasets and avoiding PMI\u2019s sparsity limitations. By producing sentiment scores for all vocabulary words (not just phrases) and supporting semi-supervised use, it offers a broadly usable tool that could change how researchers build lexicons and perform unsupervised sentiment analysis. While not necessarily transformative, the method\u2019s robustness to data size and general applicability make it likely to be adopted and to open follow-up work applying embeddings for polarity induction in other domains.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper clearly states its main claim (Word2Vec+PCA yields a sentiment dimension and outperforms PMI-IR on much smaller data) and provides an experimental setup on IMDB and SST, so claims are plausible. However, key experimental details are missing in the summary (evaluation metrics, statistical tests, hyperparameters, code), and the PMI-IR baseline was applied to a reduced subset of reviews, raising concerns about fairness and robustness of the comparison. The mathematical approach (cosine distances, PCA) is conceptually sound, but the labeling step (using a single seed \u201cexcellent\u201d to choose polarity) and lack of reported controls/statistics are unsupported assumptions. Overall the work is promising but has methodological and reporting gaps that prevent full technical validation.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "The paper addresses sentiment analysis using distributional semantics/word embeddings, which is squarely within top NLP/ML conference scope and targets the right audience. The problem formulation (unsupervised/semi\u2011supervised measurement of word sentiment orientation) is appropriate and it uses standard datasets (IMDB, SST) and a clear baseline (Turney 2002). Minor concerns about evaluation practices\u2014e.g., comparison to only an older PMI\u2011IR baseline and missing details such as reported hyperparameters and metrics\u2014suggest it may need stronger empirical grounding to be a perfect fit, but overall it is well positioned for a top venue.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a clear progression from method (Word2Vec + PCA) to experiments on IMDB and Stanford Sentiment Treebank, and its main contributions are stated early (novel vector-space approach, unsupervised and semi-supervised capability). Notation and definitions appear consistent enough to follow the PCA-based sentiment axis and SO(w) formulation, though hyperparameter reporting is missing which slightly reduces reproducibility. Figures/tables/examples are not detailed in the summary, so I cannot judge them as exceptional; overall the writing quality is described as good with low ambiguity, leading to a well-written paper with minor presentation shortcomings.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper compares its method to the classic PMI-IR (Turney, 2002) and explains PMI-IR\u2019s data-sparsity and pattern-coverage limitations (noting PMI-IR could only be applied to 7,646/9,613 reviews). However, it omits more recent and directly relevant unsupervised and embedding-based sentiment-orientation baselines (e.g., later unsupervised SO evaluations and other embedding/PCA approaches) and evaluation details/metrics are not specified, which limits fairness and reproducibility. The manuscript does analyze key differences (word-level vs phrase-level, robustness to corpus size) and discusses PMI-IR\u2019s weaknesses, but it lacks comparisons to several important competing methods cited in the literature.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces a novel vector-space (distributional semantic / Word2Vec-based) approach to measure sentiment orientation of words.",
+      "The proposed unsupervised method (Word2Vec-based + PCA) outperforms the previous unsupervised PMI-IR approach (Turney, 2002) while using much smaller datasets and being more robust to data sparsity.",
+      "The method computes sentiment orientation values for all words in the vocabulary (unlike Turney\u2019s phrase-oriented approach) and supports both unsupervised and semi-supervised conditions."
+    ],
+    "methodology": "Build a high-dimensional vector space from the IMDB corpus (using word-embedding methods), select adjectives/adverbs as point words, compute a K\u00d7K cosine-distance matrix, apply PCA to reduce to two dimensions and take the principal component as the sentiment dimension; split words at zero on that axis into positive/negative sets, average to form two reference vectors (labeled using the seed \u201cexcellent\u201d), and define SO(w)=CosDst(Vec_pos,w)-CosDst(Vec_neg,w); classify reviews by the mean SO of words.",
+    "datasets": [
+      "IMDB movie dataset (Maas et al., 2011)",
+      "Stanford Sentiment Treebank (Socher et al., 2013)"
+    ],
+    "baselines": [
+      "PMI-IR (Turney, 2002)"
+    ],
+    "metrics": [],
+    "limitations": [
+      "PMI-IR requires a very large corpus to estimate PMI reliably (data sparsity is a major constraint).",
+      "PMI-IR is only applicable to reviews that contain at least one of the defined patterns, reducing the usable test set (in their experiment PMI-IR was applied to 7,646 of 9,613 reviews)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - sentiment analysis / distributional semantics (word embeddings)",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 1,
+    "paper_novelty_mean": 0.8,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "APPROPRIATENESS": 5,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper appears to introduce a genuinely new methodological idea for this task: applying dilated convolutions to sequence labeling (claimed as first for NER) and iteratively reusing a dilated-convolution block to expand receptive field without increasing parameters. The work clearly differentiates itself from prior sequence-labeling models by comparing to Bi-LSTM, Bi-LSTM-CRF and standard CNN baselines and proposing novel architectural and training choices (parameter-sharing, intermediate losses). The problem formulation (NER/sequence labeling) is well-studied, so the novelty lies in the technique rather than the task, making this a notable but not paradigm-shifting contribution."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main technical claims about ID-CNNs (large receptive field via dilated convolutions, iterative block application with shared parameters) are clearly described and supported by experiments on CoNLL-2003 and OntoNotes 5.0 against appropriate baselines (Bi-LSTM, Bi-LSTM-CRF, non-dilated CNNs, ablations). There are no indicated mathematical errors or derivations to inspect, and the methodology appears sound (standard datasets, segment-level F1, reported hyperparameters and sensible baselines), though the summary does not mention statistical significance testing or code release. Overall the results and stated limitations (greedy vs Viterbi gaps, dataset-specific behavior) justify the conclusions, with only minor issues around reproducibility/statistics."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates ID-CNNs on two standard datasets (CoNLL-2003, OntoNotes 5.0) and compares to strong baselines (Bi-LSTM, Bi-LSTM-CRF, multiple CNN variants and prior greedy models), supporting the main claims about speed and accuracy. Ablation variants (noshare, 1-loss) and comparisons to non-dilated CNNs are reported, hyperparameters are provided, and related work and limitations (e.g., greedy ID-CNN lagging behind CRF on OntoNotes, document-context effects) are discussed. Minor gaps remain for full reproducibility (code availability not mentioned) and deeper analysis of the performance gap on OntoNotes, so I rate it as solid with minor shortcomings."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper addresses a core NLP/ML problem (sequence labeling/NER) and introduces an architecture-level contribution (iterated dilated convolutions) that is directly relevant to the community. It uses standard datasets (CoNLL-2003, OntoNotes 5.0), evaluation (segment-level micro F1), and strong baselines (Bi-LSTM, Bi-LSTM-CRF, prior CNN and greedy models), and reports hyperparameters and related work thoroughly. The topic, audience, problem formulation, methods, and positioning are all well aligned with expectations for a top-tier NLP/ML venue."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized with a clear introduction, method, experiments, and conclusion, and the main contributions (application of dilated convolutions to sequence labeling and the ID-CNN architecture with block B and iterative application) are stated early. Notation and methodology are described concretely (stacked dilated convolutions, ReLU, shared blocks, loss strategy) and hyperparameters and datasets are reported, aiding reproducibility. Related work coverage and writing quality are noted as good, and the experimental setup and baselines are comprehensive. There may be minor presentation issues (e.g., no explicit comment about figures/tables in the summary), but overall clarity and presentation are strong."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical problem\u2014fast, accurate sequence labeling\u2014by introducing Iterated Dilated Convolutional Networks that aggregate large contextual receptive fields while preserving token-level resolution. Empirical comparisons on CoNLL-2003 and OntoNotes against Bi-LSTM, Bi-LSTM-CRF and various CNN baselines show the approach provides strong speed/accuracy tradeoffs, and the iterative, parameter-sharing block design is a clear methodological contribution that others can adopt. While CRF-based structured decoding still outperforms the greedy ID-CNN on more complex OntoNotes entities (a noted limitation), the work is likely to influence choices for efficient NER systems and to spur follow-up research using dilated convolutions for sequence tasks."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against appropriate and recent baselines (Bi-LSTM, Bi-LSTM-CRF, multiple CNN variants, and prior greedy systems such as Ratinov & Roth 2009, Durrett & Klein 2014, Chiu & Nichols 2016) on standard datasets (CoNLL-2003 and OntoNotes) using segment-level micro-averaged F1. Comparisons appear fair (same data and metric) and the authors explicitly acknowledge when prior methods (e.g., Bi-LSTM-CRF with Viterbi decoding) outperform their greedy ID-CNN, particularly on OntoNotes, and analyze causes (decoding gap, longer/ diverse entities, document-context effects). Related work coverage is described as thorough and differences (parameter sharing, receptive field, speed vs. structured decoding tradeoffs) are discussed, supporting comprehensive and fair comparisons."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "First application of dilated convolutions to sequence labeling (NER).",
+      "ID-CNNs (Iterated Dilated Convolutional Networks) provide fast and accurate sequence labeling by aggregating large contextual receptive fields while preserving token-level resolution.",
+      "Iteratively applying a block of dilated convolutions increases contextual scope without adding parameters, improving feature extraction for structured prediction."
+    ],
+    "methodology": "The model stacks dilated convolutions with exponentially increasing dilation widths into a block B (with ReLU activations), then iteratively applies that block Lb times (sharing parameters) and uses a final affine transform to produce per-token class scores; training uses losses at blocks and dropout on inputs and block outputs.",
+    "datasets": [
+      "CoNLL-2003",
+      "OntoNotes 5.0"
+    ],
+    "baselines": [
+      "Bi-LSTM (local decoding)",
+      "Bi-LSTM-CRF",
+      "4-layer CNN (non-dilated)",
+      "5-layer CNN (non-dilated, larger receptive field)",
+      "noshare (ID-CNN variant without sharing between blocks)",
+      "1-loss (ID-CNN variant with loss only at last block)",
+      "Greedy models from Ratinov and Roth (2009)",
+      "Durrett and Klein (2014)",
+      "Chiu and Nichols (2016)"
+    ],
+    "metrics": [
+      "segment-level micro-averaged F1 score"
+    ],
+    "limitations": [
+      "The greedy ID-CNN model is out-performed by Bi-LSTM-CRF (Viterbi/structured decoding), especially on OntoNotes where entities are longer and more diverse.",
+      "The gap between greedy prediction and Viterbi-decoding models is wider on OntoNotes than on CoNLL-2003.",
+      "Adding document context decreased Bi-LSTM-CRF performance on OntoNotes (i.e., more context can add noise to high-scoring models).",
+      "Deeper or more complicated CNN/LSTM models are slower (require more computation) and tend to over-fit on this relatively small dataset."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - sequence labeling (named entity recognition)",
+    "writing_quality": "good"
+  }
+}

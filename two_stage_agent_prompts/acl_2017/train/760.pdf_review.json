@@ -1,0 +1,71 @@
+{
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 3,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This work addresses an important, well-scoped problem for top NLP/ML venues\u2014efficient, selective reading with an LSTM-Jump model\u2014and targets the right audience (NLP/ML researchers interested in efficient recurrent models). The formulation and methods (augmenting LSTMs with a learned jumping policy trained via REINFORCE) and the evaluations (multiple standard NLP datasets: AG News, Rotten Tomatoes, IMDB, CBT; accuracy and speedup metrics; comparison to vanilla LSTM) match community expectations. Limitations (need for policy gradient training, overhead with small models, difficulty scaling discrete actions) are acknowledged and discussed, so the paper is correctly positioned within the venue\u2019s research community."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper evaluates LSTM-Jump against a standard vanilla LSTM on multiple datasets (AG News, Rotten Tomatoes, IMDB, CBT) using accuracy and speedup metrics, so comparisons are consistent and fair in experimental setup. However, experimental baselines are limited (only a vanilla LSTM) even though the paper discusses related adaptive-computation and RL neural Turing machine approaches and acknowledges tradeoffs; it does not empirically compare to other recent selective-reading or adaptive-computation methods. The differences between the proposed method and baselines are explained and limitations are acknowledged, and related work is covered thoroughly, but key competing approaches are missing from the empirical comparisons."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a concrete, new mechanism (LSTM-Jump) that augments LSTMs with a learned discrete skipping policy to read non-sequentially and uses policy-gradient (REINFORCE) to train the jumps, which is a novel architectural idea beyond vanilla recurrent models. The formulation and experimental focus on skipping to gain speed (up to 6x) and reduce effective recurrent length is a clear, non-trivial extension rather than a trivial combination of existing components. The authors explicitly contrast their approach with adaptive-computation methods and discuss limitations of the RL training, indicating clear differentiation from prior work that would be informative to experts."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized with a clear flow from problem motivation to method (LSTM-Jump) to experiments and conclusion, and the main contributions (learning to skip tokens via a jumping softmax trained with REINFORCE) are stated early. The methodology and notation are explained concretely (R, K, N jumping scheme, policy-gradient training), and limitations are explicitly discussed. Figures/tables appear informative given reported accuracy and speedup results across multiple datasets (AG News, Rotten Tomatoes, IMDB, CBT) and hyperparameters are reported. Overall writing is good with only minor presentation polish needed, so clarity is strong but not exceptional."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "This paper tackles the important problem of making recurrent models more efficient by learning to skip irrelevant text, demonstrating up to 6x speedups while matching or improving accuracy on diverse tasks (number prediction, sentiment, news classification, CBT QA). Its simple augmentation to LSTMs and empirical gains are likely to change how researchers approach selective reading and inspire follow-up work on adaptive skipping. However, reliance on REINFORCE, overheads for small models, and reported difficulty scaling to large discrete jump ranges limit immediate broad adoption and prevent a transformative score."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates LSTM-Jump across synthetic and real tasks (number prediction, sentiment, news classification, CBT QA) and reports up to 6x speedups while matching or improving accuracy, which provides reasonably broad empirical support for the main claims. However, comparisons appear limited mainly to a vanilla LSTM baseline (no other competitive selective-reading or adaptive-computation baselines), and it is not clear that detailed ablation or sensitivity analyses of key design choices (e.g., R, K, N, reward shaping) were performed despite hyperparameters being reported. The authors do acknowledge important limitations (REINFORCE training, overhead at small model sizes, difficulty scaling to large discrete jump spaces), and hyperparameter details aid reproducibility, but code availability is not mentioned."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims (LSTM-Jump learns to skip via a REINFORCE-trained jump policy and achieves up to 6x speedups while retaining accuracy on AG News, Rotten Tomatoes, IMDB and CBT) are clearly stated and supported by experimental results reported in the summary. The paper uses a standard RL formulation (policy gradient/REINFORCE) for the discrete jumps and no incorrect mathematical derivations are reported in the summary, though full verification of derivations is not possible from the summary alone. The experimental methodology is generally sound (standard datasets, hyperparameters reported, comparison to a vanilla LSTM), but is weakened by limited baselines (no other adaptive-computation or attention-based baselines mentioned) and no mention of statistical significance testing. The authors acknowledge key limitations (training with REINFORCE, overhead for small models, difficulty with large discrete action spaces), so the conclusions are largely justified by the presented results, with only minor concerns about the breadth of comparisons and statistical rigor."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes LSTM-Jump, a modified LSTM that learns to skip (jump over) portions of input text and thus read non-sequentially to avoid irrelevant content.",
+      "Uses a reinforcement learning formulation (policy gradient / REINFORCE) to train discrete jumping decisions due to non-differentiability.",
+      "On benchmarks (number prediction, sentiment analysis, news classification, automatic Q&A) LSTM-Jump can be up to 6x faster than a standard sequential LSTM while maintaining equal or better accuracy.",
+      "Skipping tokens can shorten the effective recurrent length (and thus help with vanishing/exploding gradients) and the model is relatively easy to train compared to some RL neural Turing machine variants."
+    ],
+    "methodology": "An LSTM is augmented with a learned jumping softmax: after reading R tokens it outputs a distribution over jump sizes 0..K, samples a jump \u03ba to skip ahead to the next token, repeats up to N jumps (or until stopping), and trains the discrete jump policy with the REINFORCE policy gradient algorithm.",
+    "datasets": [
+      "AG News (AG\u2019s news corpus, Zhang et al. subset)",
+      "Rotten Tomatoes",
+      "IMDB",
+      "Children's Book Test (CBT)"
+    ],
+    "baselines": [
+      "vanilla LSTM (Long Short-Term Memory)"
+    ],
+    "metrics": [
+      "accuracy",
+      "efficiency / speedup (reported up to 6x)"
+    ],
+    "limitations": [
+      "Requires policy gradient (REINFORCE) training, noted as a disadvantage compared to some adaptive-computation methods.",
+      "When embedding and hidden sizes are small, overhead from computing and sampling the jump softmax can dominate, reducing speedup.",
+      "Sampling from discrete jumping distributions can be difficult for large numbers of discrete locations (cites difficulty learning policies over >25 discrete locations)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - efficient recurrent models / selective reading for text classification and QA",
+    "writing_quality": "good"
+  }
+}

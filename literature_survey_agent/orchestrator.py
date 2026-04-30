@@ -43,7 +43,7 @@ from pdf_loader       import load_pdf, load_pdf_metadata
 
 
 # ── Stop-condition defaults (all overridable via CLI / constructor) ────────────
-MAX_ITERATIONS       = 2
+MAX_ITERATIONS       = 1
 NEW_PAPER_THRESHOLD  = 5     # stop if fewer than this many new papers in an iteration
 MAX_LLM_CALLS        = 40    # budget cap: total LLM scoring batches across all iterations
 
@@ -152,7 +152,11 @@ class LiteratureSurveyOrchestrator:
         max_llm_calls:       int = MAX_LLM_CALLS,
         # retrieval tuning
         results_per_query:   int = 10,
-        max_concurrent:      int = 20,
+        max_concurrent:        int = 20,   # overall query parallelism
+        s2_max_concurrent:     int = 1,    # S2: serialize; 1 req / s2_request_delay
+        s2_request_delay:      float = 5.0,# seconds between S2 requests
+        arxiv_max_concurrent:  int = 8,    # arXiv: fire all queries in one batch
+        arxiv_request_delay:   float = 0.3,# seconds between arXiv requests
     ) -> None:
         self.max_iterations      = max_iterations
         self.new_paper_threshold = new_paper_threshold
@@ -163,7 +167,11 @@ class LiteratureSurveyOrchestrator:
         self.gen        = QueryGenerator( api_key=api_key, base_url=base_url, model=model)
         self.retriever  = RetrievalLayer( s2_api_key=s2_api_key,
                                           results_per_query=results_per_query,
-                                          max_concurrent=max_concurrent)
+                                          max_concurrent=max_concurrent,
+                                          s2_max_concurrent=s2_max_concurrent,
+                                          s2_request_delay=s2_request_delay,
+                                          arxiv_max_concurrent=arxiv_max_concurrent,
+                                          arxiv_request_delay=arxiv_request_delay)
         self.filter     = RelevanceFilter(api_key=api_key, base_url=base_url, model=model)
 
     # ── Public ────────────────────────────────────────────────────────────────

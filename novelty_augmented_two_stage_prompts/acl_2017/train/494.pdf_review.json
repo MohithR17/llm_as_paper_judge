@@ -1,0 +1,106 @@
+{
+  "SUBSTANCE": 4,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "APPROPRIATENESS": 5,
+  "_details": {
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are broad \u2014 intrinsic evaluations on SimLex-999 / Morph-SimLex-999 and a multilingual downstream task (DST on WOZ 2.0) with multiple distributional baselines \u2014 and the paper discusses limitations (limited rule sets, weaker English gains, and imperfect transfer to downstream tasks). Related work appears thoroughly covered and the approach directly builds on Attract-Repel style specialisation (e.g., prior semantic-specialisation work [1]). Minor gaps remain: the summary does not clearly report thorough ablation or sensitivity analyses for the rule sets or hyperparameters, and code availability is not mentioned, which slightly weakens reproducibility despite reported hyperparameters. Overall the evidence is solid with these manageable omissions.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is generally well-organized with a clear intro\u2192method\u2192experiments\u2192conclusion flow and states its main contributions early (morph-fitting, ATTRACT/REPEL constraints, downstream gains). Notation appears consistent and well-defined, and figures/tables/examples (SimLex-999, Morph-SimLex-999, WOZ 2.0 results) are effective and informative. Writing quality is good with few grammatical issues or jargon overload. Minor presentation issues remain (e.g., limited discussion of rule set coverage and lack of code mention could be more explicitly presented), but overall clarity is high.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014improving word vectors for morphologically rich languages\u2014using a simple, portable post-processing method that can be applied with lightweight, language-specific rules. Empirically it yields clear intrinsic gains (SimLex-999, Morph-SimLex-999) and achieves state-of-the-art Dialogue State Tracking results for German and Italian, indicating practical downstream value. The approach\u2019s simplicity and ability to be created by non-experts make it likely to be adopted and extended, though limitations (weaker English gains, non-exhaustive rule sets, and imperfect transfer from intrinsic to downstream improvements) temper claims of transformative impact.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper builds on an existing semantic-specialisation framework (Attract-Repel, 2017) by using simple language-specific morphological rules to automatically generate ATTRACT and REPEL constraints and fine-tune vectors. This is a clear and practical extension that differentiates itself by focusing on morphology-driven constraint generation and demonstrating portability across languages, but it is fundamentally an incremental application of prior specialization techniques rather than a wholly new method. The work would likely be informative to practitioners seeking simple language-specific ways to improve low-frequency forms, but it does not introduce a fundamentally novel algorithmic perspective beyond prior Attract-Repel specialization.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and substantiated with intrinsic (SimLex-999, Morph-SimLex-999) and downstream (multilingual WOZ 2.0 DST) experiments showing improvements, including new state-of-the-art for German and Italian, and hyperparameters are reported. The method is simple and the use of ATTRACT/REPEL constraints with distributional regularisation is conceptually sound; no mathematical derivations beyond this framework are required and none appear incorrect. The experimental methodology appears largely appropriate with relevant baselines (various SGNS, GloVe, Count-SVD, etc.), but the summary does not report statistical significance testing or exhaustive rule coverage, leaving a minor gap about robustness/generalisation. Overall the results support the conclusions, though limited rule sets and variable transfer to downstream tasks (noted by the authors) are caveats.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against a broad set of strong and recent baselines (multiple SGNS variants, GloVe, Count-SVD, SymPat-Emb, Context2Vec, MultiCCA, BiSkip) on standard benchmarks (SimLex-999, SimVerb-3500, Morph-SimLex-999) and a downstream DST task (WOZ 2.0) using appropriate metrics (Spearman\u2019s rho, joint goal accuracy). Comparisons appear fair (same datasets/metrics) and the authors explicitly acknowledge when intrinsic improvements do not fully transfer to downstream gains. They build on and incorporate the closely related ATTRACT-REPEL specialization work and discuss related approaches thoroughly, so the evaluation is comprehensive and well-contextualized.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses word representation specialization using language-specific morphological rules, a clear NLP/ML topic that matches top-tier conference scope (word vectors, semantic specialisation). The methods (post-processing via ATTRACT-REPEL), evaluations on standard intrinsic benchmarks (SimLex-999, Morph-SimLex-999, SimVerb-3500) and a multilingual downstream task (Dialogue State Tracking on WOZ 2.0, with reported SOTA for German and Italian) follow community expectations. The problem formulation, baselines (SGNS, GloVe, Count-SVD, etc.), and metrics (Spearman's rho, joint goal accuracy) are appropriate for the venue, and the work is positioned within relevant literature on semantic specialisation and morphology.",
+      "survey_injected": false,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces morph-fitting: a post-processing method that fine-tunes pre-trained word vectors using simple language-specific morphological rules to generate ATTRACT (similarity) and REPEL (antonymy) constraints.",
+      "Morph-fitting improves representations of low-frequency word forms and boosts the overall semantic quality of word vector collections in intrinsic evaluations (e.g., SimLex-999 and Morph-SimLex-999).",
+      "Morph-fitted vectors yield substantial gains in a downstream task (Dialogue State Tracking on multilingual WOZ 2.0), setting new state-of-the-art scores for German and Italian.",
+      "The approach is simple and portable: morphological rules can be created by non-experts and the framework naturally incorporates antonymy constraints at no extra cost."
+    ],
+    "methodology": "A post-processing semantic specialisation that uses simple language-specific inflectional and derivational rules to generate ATTRACT and REPEL constraints, which are injected into pre-trained vectors via the ATTRACT-REPEL model to pull inflectional forms together and push derivational antonyms apart while regularising towards the original distributional vectors.",
+    "datasets": [
+      "SimLex-999",
+      "Morph-SimLex-999",
+      "SimVerb-3500 (mentioned)",
+      "WOZ 2.0 (multilingual)",
+      "DSTC (referenced)"
+    ],
+    "baselines": [
+      "Distributional (original) vectors (e.g., SGNS, GloVe)",
+      "Morph-fixed vectors",
+      "SGNS (various variants: SG-BOW2-PW, SG-DEPS-PW, SG-DEPS-8B, SG-BOW2-8B)",
+      "GloVe-6B",
+      "Count-SVD",
+      "SymPat-Emb",
+      "Context2Vec",
+      "MultiCCA",
+      "BiSkip"
+    ],
+    "metrics": [
+      "Spearman's rho (for word similarity benchmarks)",
+      "Joint goal accuracy (for Dialogue State Tracking)"
+    ],
+    "limitations": [
+      "Intrinsic gains (e.g., on SimLex) do not necessarily transfer to comparable improvements in downstream tasks.",
+      "English, as a morphologically simpler language, benefits less from morph-fitting.",
+      "Morph-fitting uses a non-exhaustive set of simple rules (i.e., the rule sets are limited and not comprehensive)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - word representation / semantic specialisation",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 1,
+    "paper_novelty_mean": 0.7231,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

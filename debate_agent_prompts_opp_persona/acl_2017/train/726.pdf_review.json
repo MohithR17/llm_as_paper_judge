@@ -1,0 +1,179 @@
+{
+  "APPROPRIATENESS": 4,
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper is highly relevant to the NLP/ML community, uses standard benchmarks and a realistic deployed evaluation, and offers practical contributions around interactive feedback and deployment heuristics. I score it a 4 because, while the empirical, deployment-oriented work fits conference scope and will interest researchers and practitioners, the lack of formal analysis, systematic compositional splits, and unclear reproducibility (code/checkpoints) are notable methodological gaps that prevent a top score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The topic\u2014neural semantic parsing to SQL with a live feedback loop\u2014is squarely within NLP/ML conference scope and the paper uses standard datasets (GEO880, ATIS) and execution-based evaluation, including a deployed user study. However, from a theory-purist perspective the work is primarily empirical: it lacks formal analysis or guarantees about compositional/generalization behaviour, does not report systematic compositional or cross-domain splits, and gives no evidence of stronger symbolic/grammar baselines beyond a few prior systems; reproducibility is also questionable since code/checkpoints are not mentioned. Given strong relevance but methodological gaps important to this community, I rate it borderline (3/5)."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP/ML venue: it tackles neural semantic parsing to SQL with modern seq2seq+attention models and evaluates with execution-based accuracy on standard benchmarks (GEO880, ATIS) plus a live deployed academic DB experiment. The interactive feedback loop, selective crowdsourcing, schema-derived template augmentation, and practical entity-handling heuristics demonstrate deployment-oriented contributions that will interest both research and systems audiences. Evaluation includes realistic measures (annotation effort, user feedback error rates) and comparisons to strong baselines, so the methods and standards match community expectations. Overall the topic, audience, and empirical framing are well aligned with top conference scope."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early and follow through into a clear method -> experiments -> conclusion structure (claims about seq2seq-to-SQL, feedback loop, and data augmentation are explicit). Notation is reported as consistent and hyperparameters are provided; figures/tables and examples appear informative and the related work coverage is thorough. Writing quality is good, though some experimental nuances (e.g., why templates help GEO880 but not ATIS, and the handling of noisy binary feedback) could be explained more clearly for readers seeking deeper understanding. From a presentation standpoint it is strong but has a few minor clarity gaps that prevent an exceptional rating. | B(4): The paper is generally well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and the main contributions are stated early, making the deployment-oriented workflow easy to follow. Notation and hyperparameter reporting are present and consistent, and figures/tables/examples (including live-experiment statistics like noisy feedback rates) appear informative for practitioners. A few sections (e.g., the diminishing returns of templates across datasets and exact annotation-cost accounting) could be clearer or expanded for replication, but overall writing quality is good and readable for a systems-focused audience.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early and follow through into a clear method -> experiments -> conclusion structure (claims about seq2seq-to-SQL, feedback loop, and data augmentation are explicit). Notation is reported as consistent and hyperparameters are provided; figures/tables and examples appear informative and the related work coverage is thorough. Writing quality is good, though some experimental nuances (e.g., why templates help GEO880 but not ATIS, and the handling of noisy binary feedback) could be explained more clearly for readers seeking deeper understanding. From a presentation standpoint it is strong but has a few minor clarity gaps that prevent an exceptional rating."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is generally well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and the main contributions are stated early, making the deployment-oriented workflow easy to follow. Notation and hyperparameter reporting are present and consistent, and figures/tables/examples (including live-experiment statistics like noisy feedback rates) appear informative for practitioners. A few sections (e.g., the diminishing returns of templates across datasets and exact annotation-cost accounting) could be clearer or expanded for replication, but overall writing quality is good and readable for a systems-focused audience."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper offers a solid, practical evaluation on standard benchmarks and a real deployed setting, with useful sensitivity checks and reporting of feedback noise and hyperparameters. They differ mainly on the breadth of analyses: while Reviewer A wants stronger compositional/generalization splits and more formal baselines, Reviewer B finds the empirical evidence convincing but notes additional ablations and a public code release would improve reproducibility. Given the paper's strong empirical contributions but some gaps in targeted analyses and replication artifacts, a score of 4 reflects its quality while acknowledging these limitations.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides useful empirical evidence (GEO880, ATIS, live deployment) and some sensitivity checks (templates, entity anonymization, reporting feedback noise), but it lacks the kind of systematic compositional-generalization splits or formal analysis I require to support broad claims about generalization. Comparisons include several neural and older symbolic baselines, yet there is no strong grammar-based baseline or targeted compositional evaluation, and reproducibility is weakened because code and exact data/split releases are not mentioned despite hyperparameters being reported. Failure modes and limitations are acknowledged (feedback noise, dataset-specific SQL issues), but the experimental suite is incomplete for the theoretical claims made."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper presents a solid, practically-oriented evaluation: experiments cover standard benchmarks (GEO880, ATIS) and a live deployed academic database with real user feedback, which credibly supports the claim that interactive feedback plus selective crowdsourcing improves a neural SQL parser. The authors include sensitivity evidence for templates (helpful for cold-start on GEO880 but not ATIS), report noisy feedback rates and dataset-specific failure modes, and provide hyperparameters\u2014points in favor of reproducibility. Missing items that prevent a top score are limited ablations around key components (e.g., more detailed analysis of anonymization/TF-IDF entity matching and paraphrase augmentation across domains) and lack of explicit code release noted in the summary, which would ease full replication."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper mainly assembles known components (seq2seq, execution-based eval, template augmentation) rather than proposing a novel learning paradigm, but they also agree the end-to-end deployment, feedback loop, and practical cold-start recipes are useful, well-executed engineering contributions. Given the clear value for practitioners and the meaningful difference from prior lab-scale work despite limited theoretical novelty, a slightly above-average originality score is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper assembles several known components\u2014sequence-to-sequence neural generation (Dong & Lapata 2016), execution-based evaluation (Jia & Liang 2016), and schema-derived template augmentation\u2014into an applied system for SQL generation and adds a practical feedback-and-selective-crowdsourcing loop. While the live deployment and user-feedback driven improvement are useful engineering contributions, they do not constitute a fundamentally new learning paradigm or theoretical advance beyond prior neural semantic parsing work. The empirical combination and pragmatic techniques (entity anonymization with TF-IDF, PPDB paraphrasing for cold-start) are sensible but incremental; an expert would find the integration informative for applications but not surprising theoretically."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper combines known building blocks (seq2seq with attention, schema-derived templates, paraphrasing, and entity anonymization) but applies them in a pragmatic, end-to-end deployment setting that meaningfully differs from prior work by directly generating SQL and closing the loop with inexpensive binary user feedback plus selective crowdsourcing. The interactive feedback-driven learning and the practical recipes for cold-starting with templates and TF-IDF entity matching are useful, deployment-oriented contributions that would inform practitioners even if they are not radical algorithmic innovations. Given prior neural semantic parsing work (e.g., Dong & Lapata) and NLIDB literature, the contribution is a notable, well-differentiated engineering advance rather than a purely theoretical breakthrough."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses an important, practical problem and delivers a pragmatic, deployable pipeline with useful engineering contributions and a live deployment evaluation. Reviewer A rightly notes limited theoretical novelty and lack of strong compositional/generalization analysis, while Reviewer B emphasizes the paper's clear practical impact and usefulness to practitioners. Given the solid empirical gains, real-world experiment, and likely influence on engineering practice\u2014despite not being transformative theoretically\u2014I assign a score of 4.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014deploying neural NL\u2192SQL parsers with a feedback-driven improvement loop\u2014and demonstrates useful empirical gains on GEO880, ATIS and a live deployment, which makes it practically relevant. However, from a theory-first perspective it lacks formal analysis of compositional generalization or error bounds, and does not present systematic compositional or cross-domain evaluation splits that would persuade me its methods generalize beyond the reported settings. The use of schema-derived templates, paraphrases, and a user-feedback+crowdsourcing loop are promising engineering contributions likely to be reused, but without released code or stronger symbolic baselines and theoretical guarantees the work is impactful but not transformative."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses a high-impact, practical problem\u2014deploying NL-to-SQL interfaces\u2014by demonstrating a pragmatic, deployable pipeline (seq2seq SQL generation + entity anonymization) and an inexpensive interactive learning loop using binary user feedback plus selective crowdsourcing. The live user experiment and concrete engineering techniques (schema-derived templates, TF-IDF entity matching, and measured feedback noise rates) make the results directly actionable for practitioners and likely to influence how teams bootstrap and improve NLIDBs in production. It is not purely theoretical but opens useful research and engineering directions around weak supervision and low-cost annotation, so I judge it a strong-impact contribution rather than fully transformative."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper\u2019s empirical claims are largely supported by experiments and an informative live user study showing benefits of templates and interactive feedback. However, methodological limitations (limited compositional evaluation, some missing stronger baselines, and incomplete reproducibility details) temper the strength of the claims. Given the solid experimental evidence and practical deployment results balanced against these important but not fatal gaps, a score of 4 is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper\u2019s empirical claims are partially supported: experiments on GEO880, ATIS and a live user study show that seq2seq models with feedback and template pretraining can improve SQL generation and reduce annotation effort, and the authors report concrete error rates from the live deployment. However, there is no theoretical analysis or formal guarantees about compositional generalization, no systematic compositional or cross-domain splits reported, and reproducibility artifacts (code/checkpoints, exact data splits) are not mentioned. Methodologically, the comparison set includes some symbolic baselines (GUSP, Zettlemoyer & Collins) but otherwise leans toward neural seq2seq variants and lacks stronger grammar-based baselines; statistical testing and more rigorous ablations of noisy feedback effects are also absent. These gaps raise concerns about the generality and reproducibility of the claims, so I rate the paper as having substantive empirical evidence but important technical omissions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and largely supported by experiments: seq2seq models trained to emit anonymized SQL improve with schema-derived templates and an interactive feedback loop, and live deployment evidence (user experiment with execution-accuracy and feedback-error rates) substantiates the interactive learning claim. There are no formal mathematical proofs to check, and the experimental methodology appears sound \u2014 appropriate baselines (GUSP, Dong & Lapata, Jia & Liang, Zettlemoyer & Collins), execution-based accuracy, and reporting of hyperparameters are present. Practical caveats remain (notably noisy binary feedback\u201422.3% non-executing queries and ~6% feedback mislabels\u2014and templates failing to help ATIS), which introduce realistic limitations and minor unsupported cost-accounting assumptions about annotation effort, but these do not undermine the main conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper compares against a strong set of relevant baselines on standard benchmarks and uses execution-based accuracy, with sensible analysis of method differences and deployment results. However, Reviewer A\u2019s concerns about incomplete transparency (e.g., code/experimental parity) and the potential omission of some symbolic/compositional baselines are valid reasons to withhold a perfect score, so I deduct one point while recognizing the comparisons are otherwise comprehensive and fair.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against several appropriate and influential baselines (GUSP, Zettlemoyer & Collins, Dong & Lapata, Jia & Liang), and evaluates on standard datasets (GEO880, ATIS) using execution accuracy, suggesting largely fair comparisons. However, the writeup (per the summary) does not mention releasing code or exact experimental conditions that would fully establish parity of evaluation, and it is not clear that a broader set of strong symbolic/grammar-based baselines or more recent neural baselines were included\u2014important for my emphasis on symbolic comparisons and compositional generalization. The authors do analyze differences (data augmentation, feedback loop) and note limitations of templates and noisy feedback, but the comparison section appears to lack complete transparency and some relevant baselines, so I deduct one point."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper compares to a strong set of relevant baselines spanning classical and recent neural semantic parsers (Zettlemoyer & Collins; Poon; Dong & Lapata; Jia & Liang) on standard benchmarks (GEO880, ATIS) using execution-based accuracy, and also reports live deployment results. The authors report hyperparameters, discuss limitations (noisy user feedback), and provide thorough related-work coverage, and they analyze method differences (schema templates, anonymization, feedback loop) and annotation effort\u2014so comparisons look comprehensive and practically fair from a deployment-oriented perspective."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Neural sequence-to-sequence models can be trained to map natural language directly to SQL, enabling deployment of NL interfaces to databases without intermediate meaning representations.",
+      "A feedback-based interactive learning loop that collects binary user feedback and selectively crowdsources annotations can rapidly improve a deployed semantic parser for new domains.",
+      "Data augmentation using schema-derived templates and PPDB paraphrases helps cold-start performance, and entity anonymization with TF-IDF entity matching enables handling of database entities in utterances."
+    ],
+    "methodology": "Train a neural encoder-decoder sequence-to-sequence model with global attention to directly generate anonymized SQL from utterances, initialize on synthetic examples from schema templates and paraphrases, then iteratively deploy the model, collect binary user feedback, add correct predictions to training data and crowd-annotate incorrect ones to retrain.",
+    "datasets": [
+      "GEO880",
+      "ATIS",
+      "Online academic database (live user experiment)"
+    ],
+    "baselines": [
+      "GUSP (Poon, 2013)",
+      "Dong and Lapata (2016)",
+      "Jia and Liang (2016)",
+      "Zettlemoyer and Collins (2007)"
+    ],
+    "metrics": [
+      "Execution-based accuracy (compare query results to gold)",
+      "Percentage of examples requiring annotation (annotation effort)",
+      "User feedback error rates"
+    ],
+    "limitations": [
+      "User feedback is noisy: in live experiment 22.3% of generated queries did not execute; 6.1% of correct queries were marked wrong and 6.3% of incorrect queries were marked correct.",
+      "Templates improved initial performance for GEO880 but did not improve ATIS and their advantage diminishes as more labeled data is acquired.",
+      "Some SQL generation failures due to incomplete data for aggregation queries and other dataset-specific issues (requiring crowd annotation)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Semantic parsing / Natural language interfaces to databases (NLIDB) \u2014 neural parsing to SQL",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior ML/NLP researcher with a PhD in statistical learning and extensive publications on formal semantics and compositional generalization.",
+      "traits": [
+        "Penalizes papers that present only empirical results without theoretical analysis or formal guarantees of generalization (will deduct points if no compositionality or error-bound discussion).",
+        "Requires systematic evaluation of compositional/generalization abilities (will score down if no cross-domain or compositional splits are reported).",
+        "Penalizes absence of strong symbolic or grammar-based baselines (will deduct points if comparison is limited to variants of neural seq2seq models).",
+        "Demands reproducibility artifacts: code, model checkpoints, and exact data splits must be released (will lower score if not provided)."
+      ],
+      "reviewing_style": "Critical, skeptical reviewer who privileges theoretical understanding, formal evaluation protocols, and strong baselines over purely empirical system-building."
+    },
+    "reviewer_b": {
+      "name": "Pragmatic Systems Engineer",
+      "background": "Applied NLP researcher and engineering lead with experience deploying natural language interfaces to databases and building production feedback loops for language systems.",
+      "traits": [
+        "Rewards practical contributions that enable real-world deployment such as user-feedback loops, lightweight annotation strategies, and entity-handling heuristics (will score up if paper demonstrates deployment viability).",
+        "Values empirical demonstrations of rapid improvement from weak supervision/interactive learning (will score up when online or user-interaction gains are shown, even without formal guarantees).",
+        "Prefers realistic, cost-aware evaluations: accepts binary feedback and selective crowdsourcing as credible; will deduct points only if user study is unrealistic in scale or missing cost/accounting details.",
+        "Less punitive about lack of formal theory; expects clear engineering details, ablation studies, and evidence that methods scale to new schemas (will score down if these practical evaluations are absent)."
+      ],
+      "reviewing_style": "Pragmatic, deployment-oriented reviewer who favors scalable, low-cost engineering solutions and credible user-facing evaluations over formal analyses."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

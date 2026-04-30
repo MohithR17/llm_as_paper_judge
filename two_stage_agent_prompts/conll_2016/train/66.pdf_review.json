@@ -1,0 +1,81 @@
+{
+  "APPROPRIATENESS": 5,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "REPLICABILITY": 4,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This work is an excellent fit for a top NLP/ML venue: it tackles the core NLP problem of joint syntactic and semantic dependency parsing with modern neural methods (stack LSTMs) and a linear-time greedy parser. It evaluates on standard benchmarks (CoNLL 2008/2009, PTB, PropBank) and reports improvements over prior joint models, uses community-standard metrics, provides code and hyperparameters, and is clearly aimed at the NLP/ML research audience. These elements align well with the scope and expectations of top conferences."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (incremental greedy joint parser, stack LSTM state encoding, linear-time greedy inference). Notation and method description are clear enough to report specific datasets, baselines, metrics, and hyperparameters, and the writing quality is noted as good; figures/tables/examples appear effective for conveying results. Minor presentation issues remain (some related approaches were not compared and a few hyperparameters were set intuitively rather than exhaustively tuned), so I rate it a 4 for solid clarity with small areas for improvement."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate, recent baselines (notably Henderson et al., 2013 and prior joint syntactic\u2013semantic models) and reports results on the standard CoNLL 2008/2009 datasets using F1 and related metrics, suggesting fair experimental conditions. It explicitly notes when comparisons are infeasible (e.g., Lewis et al., 2015) and acknowledges some related joint approaches were not included, so a few relevant baselines are omitted. The authors also report limitations of their transition scheme (1.5% of sentences not encodable) and provide hyperparameters and code, helping transparency. Overall, comparisons are good but have minor omissions and some unavoidable cross-paper incompatibilities."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims (a stack-LSTM\u2013based parser with greedy linear-time inference that outperforms prior joint models on CoNLL 2008/2009) are clearly stated and supported by reported experimental results. The model description (four stack LSTMs, ReLU classifier, cross-entropy training with SGD/dropout) is technically coherent and no mathematical errors are apparent from the summary. Minor technical caveats are acknowledged by the authors (1.5% of sentences cannot be encoded, default-sense fallback for unseen predicates, some models not directly comparable, and limited hyperparameter tuning), and the absence of reported statistical significance testing is a modest methodological omission. These issues do not, however, substantially undermine the main technical conclusions."
+    },
+    "REPLICABILITY": {
+      "score": 4,
+      "justification": "The paper reports model and training details (stack LSTMs, classifier architecture, cross-entropy loss, SGD with dropout) and explicitly states hyperparameters were reported; code is available. The datasets used are standard, publicly available corpora (CoNLL 2008/2009, PTB, PropBank, NomBank, Gigaword) and evaluation metrics (F1, predicate-sense accuracy) are standard and reported. However the summary does not indicate that the data preprocessing pipeline is clearly described, and the authors note a small transition-sequence limitation and that some hyperparameters were set intuitively rather than exhaustively tuned\u2014minor gaps that prevent a full, turn-key reproduction solely from the paper."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses the important problem of joint syntactic and semantic dependency parsing and introduces a practical neural solution\u2014stack LSTMs that encode full parser state\u2014enabling linear-time greedy inference without expert-crafted full-parse features. It empirically surpasses prior joint models on the CoNLL 2008 and 2009 English shared tasks and provides code, making the approach likely to be adopted and extended by researchers and practitioners. Noted limitations (1.5% of sentences not encodable by the transition scheme, some missing experimental comparisons, and a default fallback for unseen predicate senses) temper but do not eliminate its strong potential impact."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a notable novelty by applying stack LSTMs to learn a finite-length vector encoding of the entire parser state (four stack LSTMs for syntactic stack S, semantic stack M, buffer B, and action history A) and by delivering a greedy, linear-time joint syntactic-semantic parser that eschews expert-crafted full-parse features. It clearly differentiates from prior joint models and follows Henderson et al.'s transition algorithm while changing the state representation and inference approach, and it empirically outperforms earlier joint models on CoNLL 2008/2009. Because it adapts an existing transition framework but provides a non-trivial, learned encoding and feature-free greedy inference, the contribution is a notable extension rather than a wholly new paradigm."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Experiments cover the relevant benchmarks (CoNLL-2008/2009) and additional corpora, report concrete metrics (e.g., predicate identification F1 91.43%), and include baselines such as Henderson et al. (2013); code and hyperparameters are provided, supporting reproducibility. The paper explicitly discusses several limitations (1.5% of sentences not encodable, default-sense fallback) and notes differences that preclude direct comparison to some models. However, it does not report ablation studies or sensitivity analyses and some related approaches were not evaluated, leaving minor gaps in empirical analysis. Overall the experimental suite is solid but missing targeted analyses of model components and tuning effects."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "An incremental, greedy transition-based parser for joint syntactic and semantic dependency parsing is presented.",
+      "The model learns a finite-length vector representation of the entire parser state using stack LSTMs (one per syntactic stack, semantic stack, buffer, and action history).",
+      "The greedy inference algorithm runs in linear time (including feature extraction) and does not rely on expert-crafted full-parse features.",
+      "The model surpasses the performance of previous joint models on the CoNLL 2008 and 2009 English shared tasks."
+    ],
+    "methodology": "A transition-based, synchronized algorithm encodes parser state with four stack LSTMs (syntactic stack S, semantic stack M, buffer B, and action history A); at each timestep a classifier (ReLU over concatenated stack summaries) scores allowed transitions and greedily selects the highest-scoring action, trained with cross-entropy loss via backprop and SGD with dropout.",
+    "datasets": [
+      "CoNLL 2008",
+      "CoNLL 2009",
+      "Penn Treebank",
+      "PropBank",
+      "NomBank",
+      "Gigaword corpora (English AFP section, German, Spanish, Chinese)"
+    ],
+    "baselines": [
+      "Henderson et al. (2013) (transition algorithm followed)",
+      "previous joint syntactic-semantic models (referred to generically as prior joint models)"
+    ],
+    "metrics": [
+      "F1 (reported for predicate identification: 91.43%)",
+      "accuracy/percentage (predicate default-sense correctness: 91.22%)"
+    ],
+    "limitations": [
+      "For 1.5% of English sentences in the CoNLL 2009 English dataset, the transition sequence incorrectly encodes the gold-standard joint parse (see Henderson et al., 2013).",
+      "Some related joint approaches were not considered in the experiments (explicitly noted).",
+      "Direct comparison to certain other models (e.g., Lewis et al., 2015) is infeasible due to differing training requirements and evaluation metrics.",
+      "Predicate sense disambiguation falls back to a default \"01\" sense for unseen predicates, which is correct 91.22% of the time by type in CoNLL 2009 training data.",
+      "Some hyperparameters were set intuitively rather than exhaustively tuned (authors note that careful tuning may yield improvements)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - joint syntactic and semantic dependency parsing (dependency SRL)",
+    "writing_quality": "good"
+  }
+}

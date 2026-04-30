@@ -1,0 +1,179 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early, describing the DCNMT architecture and its two-RNN word encoder. Notation appears consistent and hyperparameters are reported, and figures/tables comparing BLEU across baselines seem informative. Writing quality is good overall, though a few minor presentation gaps remain (e.g., absence of code/reproducibility details and some brief ambiguity around the handling of rare characters) that prevent an exceptional rating. | B(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (DCNMT architecture and efficiency claims). Notation and model description are consistently presented with hyperparameters reported, and the writing quality is generally good and unambiguous. Figures/tables and examples appear informative for the hierarchical architecture and experimental comparisons, though a couple of sections (e.g., detailed decoder dynamics) could be tightened for even clearer exposition.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early, describing the DCNMT architecture and its two-RNN word encoder. Notation appears consistent and hyperparameters are reported, and figures/tables comparing BLEU across baselines seem informative. Writing quality is good overall, though a few minor presentation gaps remain (e.g., absence of code/reproducibility details and some brief ambiguity around the handling of rare characters) that prevent an exceptional rating."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (DCNMT architecture and efficiency claims). Notation and model description are consistently presented with hyperparameters reported, and the writing quality is generally good and unambiguous. Figures/tables and examples appear informative for the hierarchical architecture and experimental comparisons, though a couple of sections (e.g., detailed decoder dynamics) could be tightened for even clearer exposition."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper repackages well-studied character-level NMT ideas (e.g., C2W, char2char) but proposes a specific architectural twist: a two-RNN word encoder that explicitly aims to learn morphology and a multi-RNN hierarchical decoder. This is a non-trivial engineering extension that differentiates itself from prior baselines (bpe, C2W, char models) and yields empirical gains, but it does not introduce a fundamentally new problem formulation or theoretical framework. From my theory-focused perspective the novelty is moderate: interesting architectural choices but lacking formal motivation or analyses of why the two-RNN composition uniquely captures morphology beyond existing compositional character encoders. | B(3): The paper proposes a specific architectural recipe (a two-RNN word encoder that explicitly models morphology within a hierarchical char\u2192word\u2192sentence encoder and a multi-RNN hierarchical decoder) which is a non-trivial engineering contribution over prior character and compositional C2W/char2char models. However, the problem (character-level NMT and learning subword structure) is well-studied and several related models (C2W, char2char, CNMT) are already close; the novelty is therefore moderate rather than groundbreaking. The authors do clearly differentiate their approach and provide empirical claims (faster BLEU gains after one epoch, comparable final BLEU), so the work reads as an incremental but useful advance for practitioners.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper repackages well-studied character-level NMT ideas (e.g., C2W, char2char) but proposes a specific architectural twist: a two-RNN word encoder that explicitly aims to learn morphology and a multi-RNN hierarchical decoder. This is a non-trivial engineering extension that differentiates itself from prior baselines (bpe, C2W, char models) and yields empirical gains, but it does not introduce a fundamentally new problem formulation or theoretical framework. From my theory-focused perspective the novelty is moderate: interesting architectural choices but lacking formal motivation or analyses of why the two-RNN composition uniquely captures morphology beyond existing compositional character encoders."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper proposes a specific architectural recipe (a two-RNN word encoder that explicitly models morphology within a hierarchical char\u2192word\u2192sentence encoder and a multi-RNN hierarchical decoder) which is a non-trivial engineering contribution over prior character and compositional C2W/char2char models. However, the problem (character-level NMT and learning subword structure) is well-studied and several related models (C2W, char2char, CNMT) are already close; the novelty is therefore moderate rather than groundbreaking. The authors do clearly differentiate their approach and provide empirical claims (faster BLEU gains after one epoch, comparable final BLEU), so the work reads as an incremental but useful advance for practitioners."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against a broad set of strong and recent baselines (BPE, C2W, CNMT, bpe2char, char2char and the Luong & Manning character models) on the same WMT En-Cs and En-Fr corpora using BLEU, and it acknowledges when prior methods achieve comparable final BLEU. However, from the summary there is no indication of targeted diagnostic analyses or ablation studies that would clarify which components of the proposed two\u2011RNN word encoder and the multi\u2011RNN decoder drive the gains, nor are probes showing alignment to morphemes\u2014omissions that weaken the interpretability of the comparative claims. Given comprehensive baseline coverage but missing component-level and morphology diagnostic comparisons, I rate the comparison quality as good with minor but important omissions. | B(4): The paper evaluates DCNMT against a broad set of pertinent baselines (BPE, C2W, CNMT, bpe2char, char2char and earlier pure-character models) on standard WMT En-Cs/En-Fr splits using BLEU, with hyperparameters and training conditions reported\u2014so comparisons are largely fair. The authors acknowledge when prior methods remain competitive and state explicit limitations (no monolingual data, rare-character <unk> mapping). While differences between architectures and training behavior (e.g., faster BLEU gains after one epoch) are discussed, the summary suggests only modest depth in analysis and no mention of released code, so I mark this as strong but not fully comprehensive.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against a broad set of strong and recent baselines (BPE, C2W, CNMT, bpe2char, char2char and the Luong & Manning character models) on the same WMT En-Cs and En-Fr corpora using BLEU, and it acknowledges when prior methods achieve comparable final BLEU. However, from the summary there is no indication of targeted diagnostic analyses or ablation studies that would clarify which components of the proposed two\u2011RNN word encoder and the multi\u2011RNN decoder drive the gains, nor are probes showing alignment to morphemes\u2014omissions that weaken the interpretability of the comparative claims. Given comprehensive baseline coverage but missing component-level and morphology diagnostic comparisons, I rate the comparison quality as good with minor but important omissions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper evaluates DCNMT against a broad set of pertinent baselines (BPE, C2W, CNMT, bpe2char, char2char and earlier pure-character models) on standard WMT En-Cs/En-Fr splits using BLEU, with hyperparameters and training conditions reported\u2014so comparisons are largely fair. The authors acknowledge when prior methods remain competitive and state explicit limitations (no monolingual data, rare-character <unk> mapping). While differences between architectures and training behavior (e.g., faster BLEU gains after one epoch) are discussed, the summary suggests only modest depth in analysis and no mention of released code, so I mark this as strong but not fully comprehensive."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper tackles an important practical problem and demonstrates convincing empirical benefits on large WMT tasks, making it likely to influence practitioners and spawn follow-up work. Reviewer A\u2019s concerns about missing formal analyses, diagnostic probes, and ablations temper claims of a deep theoretical advance, but the clear empirical gains and a deployable architectural recipe justify a positive impact score. Overall, the work is likely to be adopted and extended even if it is not yet fully diagnostic or transformative.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014robust character-level NMT that claims to learn morphology and mitigate large-vocabulary issues\u2014and reports competitive BLEU on large WMT En-Cs/En-Fr datasets, which gives it applied relevance. However, from a theoretical/diagnostic standpoint the contribution is undercut: there are no formal analyses of complexity or convergence, no probe-based or morpheme-alignment diagnostics to substantiate the \u2018\u2018learned morphology\u2019\u2019 claim, and key ablations (individual RNN components, embedding dimensionality, simpler baselines) appear missing. These omissions limit the work's potential to fundamentally change how researchers think about character-level morphological modeling, though the engineering results may still foster incremental follow-up work."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses an important practical problem\u2014removing brittle subword preprocessing and large vocabularies by operating at character level while explicitly modeling morphology\u2014and demonstrates convincing empirical benefits (better BLEU than a BPE baseline after one epoch and final BLEU comparable to state-of-the-art) on large WMT En-Cs and En-Fr corpora. The hierarchical two-RNN word encoder and multi-RNN decoder offer a plausible, deployable architectural recipe that could change practitioner choices by reducing vocabulary engineering and speeding early training convergence. While not guaranteed to be transformative, the approach is likely to be widely adopted and spawn follow-up work on efficient character-level architectures and morphology-aware representations."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agreed the empirical results are promising and the experimental comparisons are sensible, but they flagged consistent methodological gaps (no ablations or probes to validate the morphology claim, no statistical significance testing, and some implementation choices that weaken the pure character-level claim). Given these substantive missing analyses and lack of theoretical or complexity justification, I give a cautious mid-level score reflecting solid empirical work but insufficient technical justification for stronger confidence.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper's empirical claims (faster early training and comparable final BLEU on WMT En-Cs/En-Fr) are supported by experiments against sensible baselines, but the work lacks formal/theoretical justification for the two-RNN composition and provides no computational complexity or memory analysis. Key diagnostic analyses are missing: no ablations isolating each RNN's contribution, no probes or alignment to known morphemes to substantiate the claim of \"learning morphology automatically,\" and no reported statistical significance for BLEU differences. These gaps create moderate concerns about whether the architectural claims are technically justified despite promising empirical results."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper states clear claims (a deep character-level NMT that learns morphology, trains efficiently, and matches SOTA BLEU) and supports them with experiments on large WMT En-Cs/En-Fr corpora and comparisons to multiple strong baselines including bpe and char models. The methodology and hyperparameters are reported and the hierarchical encoder/decoder design is plausible; however there are some technical gaps: rare characters are mapped to an <unk> token (which weakens the pure character-level claim) and no statistical significance testing or publicly available code is reported. Overall the empirical evidence is convincing but these minor methodological omissions prevent a top score."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper is highly relevant to the venue\u2014addressing character-level NMT and morphology with strong empirical evaluation on WMT datasets and competitive baselines. Reviewer A\u2019s concern about the lack of formal/diagnostic analyses is a valid minor critique but does not undermine the paper\u2019s clear empirical contribution and fit for a top NLP/ML audience, so I award the highest appropriateness score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper addresses a core NLP/ML topic\u2014character-level NMT and morphology learning\u2014using large WMT En-Cs/En-Fr corpora and standard BLEU evaluation, so it fits the venue audience and methodological expectations. However, from my theoretical-prior perspective it lacks formal or diagnostic analyses (e.g., proofs or probes demonstrating learned morphological structure and complexity/memory/time characterizations), which raises minor scope concerns about the depth of scientific contribution expected at top venues. Overall, the work is well-aligned but would be stronger with explicit theoretical or diagnostic evaluations of the claimed morphology learning."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top-tier NLP/ML venue: it tackles an important problem (character-level NMT and morphology) with a novel hierarchical architecture and extensive empirical evaluation on large WMT En-Cs and En-Fr corpora. The authors compare to strong baselines (BPE, C2W, char2char), report hyperparameters, and use standard BLEU evaluation on newstest splits, demonstrating practical training advantages (better BLEU after one epoch) that appeal to applied ML/NLP audiences. Given the empirical focus, realistic datasets, and clear relevance to the translation and representation learning communities, it should be highly relevant to the conference audience."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the empirical evaluation on large WMT corpora with multiple baselines and hyperparameter reporting is solid, but the paper lacks key analyses (ablations, sensitivity studies, complexity/memory analysis) and does not release code or provide low-level implementation details. Given these consistent omissions \u2014 which weaken the claims about \u2018\u2018learning morphology\u2019\u2019 and impede full reproducibility \u2014 the paper\u2019s substance is limited despite strong empirical results, so a score of 3 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experimental setup (large WMT En\u2013Cs and En\u2013Fr corpora, multiple baselines, BLEU reporting) is adequate to show competitive performance and early-training speed, but the paper lacks the formal/empirical analyses I expect: no computational complexity or memory analysis of the multi-RNN architecture, no diagnostic probes or alignment to known morphemes to substantiate the claim of \u2018\u2018learning morphology,\u2019\u2019 and no ablations isolating each RNN component or sensitivity to embedding dimensionality. Related work coverage is reported as adequate and some limitations (no monolingual data, rare chars \u2192 <unk>) are stated, but failure modes and negative results are not explored. Reproducibility is partially supported by hyperparameter reporting, yet absence of code and missing low-level implementation details weaken full reproducibility."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper evaluates on large, standard WMT En\u2013Cs and En\u2013Fr corpora, compares against a broad set of baselines (BPE, C2W, char models), reports BLEU including fast-convergence claim (better after one epoch), and provides hyperparameters \u2014 supporting the main empirical claims. However, the summary does not indicate explicit ablation or sensitivity analyses isolating the two-RNN word encoder or decoder depth, nor is code availability mentioned, and some preprocessing choices (mapping rare characters to <unk>) are concerning for reproducibility. Related work coverage and discussion of some limitations are present, so overall the experimental work is solid but missing a few important analyses and release details."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a deep character-level neural machine translation (DCNMT) architecture that explicitly learns morphology via a word encoder composed of two RNNs.",
+      "The model avoids large vocabulary issues by operating at character level and learns subword/morpheme structure automatically, improving representations compared to ordinary RNN/CNN word encoders.",
+      "DCNMT is more efficient to train (better BLEU than bpe-based baseline after one epoch) and achieves final BLEU scores comparable to state-of-the-art systems."
+    ],
+    "methodology": "A hierarchical encoder-decoder model with a two-RNN word encoder (one RNN producing character-level hidden states and a BiRNN producing weights/energies) to compose 600-d word representations, a BiRNN sentence encoder, and a two-level hierarchical decoder generating characters using six RNNs in total; trained end-to-end with ADAM and beam search.",
+    "datasets": [
+      "WMT En-Cs parallel corpus (15.8M sentence pairs)",
+      "WMT En-Fr parallel corpus (12.1M sentence pairs)",
+      "newstest2013 (development set)",
+      "newstest2015 (test set)"
+    ],
+    "baselines": [
+      "bpe2bpe (BPE)",
+      "C2W (compositional character-to-word)",
+      "CNMT",
+      "bpe2char",
+      "char2char",
+      "pure character models (as in Luong and Manning)"
+    ],
+    "metrics": [
+      "BLEU"
+    ],
+    "limitations": [
+      "They do not use any monolingual corpora in training (explicitly stated).",
+      "Characters outside the chosen top-120 most frequent are mapped to a special <unk> token (explicitly stated)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - neural machine translation (character-level models, morphology learning)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior researcher in machine learning and theoretical NLP with a focus on formal properties of representation learning and model complexity.",
+      "traits": [
+        "Penalises papers that do not provide formal or empirical analysis of computational complexity (time/memory) for proposed architectures",
+        "Demands theoretical motivation or proofs (e.g., expressivity, identifiability, or convergence guarantees) for claims about learning morphological structure",
+        "Reduces score if key ablation studies are missing (specifically: contribution of each RNN component, sensitivity to embedding dimensionality, and comparison to simpler baselines)",
+        "Penalises papers that make strong claims about 'learning morphology automatically' without diagnostic analyses (e.g., probe tasks, alignment to known morphemes)"
+      ],
+      "reviewing_style": "Focuses on formal justification and minimal empirical evidence required to support structural claims; deductive and conservative when theory/analyses are absent."
+    },
+    "reviewer_b": {
+      "name": "Empirical Systems Engineer",
+      "background": "Applied NLP researcher and ML engineer experienced in building and deploying neural machine translation systems with emphasis on architecture design, training efficiency, and multilingual evaluation.",
+      "traits": [
+        "Awards papers that demonstrate clear empirical gains in realistic settings, especially faster convergence (e.g., better BLEU after one epoch) or reduced vocabulary engineering",
+        "Rewards novel architectural recipes that simplify or remove brittle preprocessing (e.g., operating at character level instead of BPE) when supported by thorough experiments across languages/datasets",
+        "Values extensive experimental comparisons and reproducibility: rewards when training details, baselines, and hyperparameters are clearly reported",
+        "Gives higher scores when the model shows practical advantages (training speed, memory reduction, or ease of integration) even if formal analysis is limited"
+      ],
+      "reviewing_style": "Pragmatic, favors clear empirical advances and engineering practicality; tolerates limited theory if experiments convincingly show benefits for real-world use."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 4,
+    "total_dimensions": 7,
+    "debate_rate": 0.571
+  }
+}

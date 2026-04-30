@@ -1,0 +1,39 @@
+{
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "CLARITY": 3,
+  "SUBSTANCE": 3,
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper states clear technical claims (ID-CNNs are fast and reach competitive F1) and supports them with experiments on CoNLL-2003 and OntoNotes 5.0 including reported F1s and variance (e.g. Table 7). Mathematical definitions of dilated convolutions and the network recurrence are provided and appear consistent with standard formulations (Equations 3\u20138). The experimental methodology uses established splits, grid-searched hyperparameters and strong baselines (Bi-LSTM, Bi-LSTM-CRF); however, statistical testing is limited to reporting \u00b1 values and some methodological choices (e.g. omitting deeper CNN/LSTM comparisons) are justified but leave minor open questions. Overall there are no evident technical errors that would invalidate the main conclusions, only minor gaps in exhaustive analysis."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper adapts dilated convolutions (from image segmentation) to sequence labeling and introduces the iterated dilated convolution block (B) with parameter sharing and multi-loss training, which is a non-trivial application and architectural design choice. The authors explicitly position the approach as the first use of dilated convolutions for sequence labeling and compare against existing sequence models, differentiating their contributions from prior CNN/LSTM and CRF work. While building on known components (dilated convs, ReLUs, dropout), the particular combination and the iterated block training represent a notable, not merely trivial, extension."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Key ideas and the architecture are presented with equations and a high-level description of block stacking and iteration (Sections 3.1 and 4.1), and main contributions are stated in the introduction. However, the provided text contains considerable repetition and some formatting/ordering issues (many duplicated paragraphs), which makes parts hard to follow and obscures flow; notation is mostly defined but presentation could be tighter. Figures and tables are referenced (e.g. Table 7) and appear informative in context, but the extraction here reduces readability."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments evaluate on two standard datasets (CoNLL-2003, OntoNotes) and include sensible baselines (Bi-LSTM, Bi-LSTM-CRF, non-dilated CNNs) and several ablations (noshare, 1-loss, document-level models). The paper reports both accuracy and speed claims (e.g. 8x and 14x speedups) and discusses regularization effects (dropout variants). Still, some reproduction details are deferred to an appendix (not present here), deeper ablations (e.g. sensitivity to block depth/dilation schedules across tasks) and more exhaustive runtime/statistical analyses are limited in the provided text."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The work addresses an important practical problem\u2014fast, accurate token-level sequence labeling at scale\u2014and demonstrates a method that improves throughput while maintaining competitive accuracy (document- and sentence-level results). The combination of parallelizable convolutions with strong empirical results is likely to influence practitioners who need high-throughput NLP and to inspire follow-up work applying dilated convolutions in sequence tasks. It is not purely transformational but represents a strong, practically significant contribution."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The topic\u2014sequence labeling models for NER and alternatives to Bi-LSTMs\u2014is squarely within the scope of top NLP/ML conferences. The paper uses standard datasets, metrics (segment-level micro F1), and strong community baselines, and addresses both modeling and systems-level concerns (accuracy vs. speed), making it well-suited for such venues. Positioning with respect to relevant prior work is appropriate for the intended audience."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to a range of relevant baselines including Bi-LSTM, Bi-LSTM-CRF, and multiple CNN variants, reports performance on standard data splits, and discusses when prior methods outperform theirs (e.g. Bi-LSTM-CRF on OntoNotes). The authors also include ablations (noshare, 1-loss) and justify omitted comparisons (deeper CNNs/stacked LSTMs) with practical arguments about speed and overfitting. While broadly fair and informative, a few extra baselines or more detailed runtime/statistical parity checks would further strengthen the comparative analysis."
+    }
+  }
+}

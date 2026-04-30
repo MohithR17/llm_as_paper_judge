@@ -1,0 +1,96 @@
+{
+  "IMPACT": 3,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 5,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 2,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses an important applied problem\u2014historical text normalization\u2014and demonstrates measurable gains (about an absolute 2% word-level improvement) across a large set of 44 Anselm texts, which is likely to influence practitioners working on Early New High German resources. The finding that multi-task learning with a grapheme-to-phoneme auxiliary task improves performance and can induce attention-like behavior is a concrete methodological insight that others can adopt, especially in low-resource settings. However, the impact is somewhat constrained by the word-in-isolation setup and small per-text training sizes, limiting immediate broad applicability beyond similar normalization tasks. Overall, the contribution is useful and likely to be built upon but not transformative for NLP as a whole.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized (introduction, methods, experiments, conclusion) and states its main contributions early (MTL with grapheme-to-phoneme improves normalization, encoder-decoder with attention/beam search outperforms baselines). Notation and experimental details (hyperparameters, datasets, baselines, metrics) are reported, suggesting consistency, though the summary does not explicitly confirm all notation choices. Writing quality is described as good and related work coverage thorough, but the lack of explicit comment about the clarity of figures/tables suggests minor presentation issues remain (hence not a perfect score).",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses a clearly NLP-focused problem (historical text normalization) and applies mainstream neural sequence-to-sequence models with attention, beam search, and multi-task learning\u2014methods and evaluations (word accuracy, comparisons to relevant baselines like Norma and prior neural taggers) that are standard for top NLP venues. It evaluates across a substantial, realistic set of 44 Anselm texts and shows a tangible SOTA improvement (~2% absolute), positioning the work well for the computational-linguistics community. The problem formulation, datasets (Anselm, CELEX), and analyses (attention behavior, MTL effects) are appropriate and targeted to an audience at a top-tier NLP/ML conference.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against appropriate and recent baselines (Norma, averaged perceptron, and the deep bi-LSTM tagger of Bollmann & S\u00f8gaard 2016) on the same Anselm corpus using word accuracy, which makes the comparisons fair. It reports clear improvements (\u22482% absolute) and provides analyses (44 texts, attention/MTL behavior) and discusses limitations (token-in-isolation issues), and the related work coverage is described as thorough, indicating relevant competing approaches are cited and differences are analyzed.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper conducts a broad empirical evaluation across 44 Anselm texts, compares to appropriate baselines (Norma, perceptron, bi-LSTM), evaluates architectural variants (attention, beam search, lexical filtering) and proposes multi-task learning with a G2P auxiliary \u2014 which serves as useful ablations supporting the central claim. It reports hyperparameters and analyses (including attention behavior and Fleiss\u2019 kappa), and explicitly discusses key limitations (lack of token context, small per-text training sizes). Minor gaps are that code is not mentioned and it is unclear whether all sensitivity analyses (e.g., varying auxiliary-task weight, more extensive hyperparameter sweeps) were performed, so while thorough overall, a few reproducibility and sensitivity details are missing.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 2,
+      "justification": "The paper applies well-known encoder\u2013decoder attention models, beam search, and standard training (cross-entropy, length filters) to historical normalization and uses a grapheme-to-phoneme auxiliary task in a multi-task setup \u2014 techniques that are routine in sequence-to-sequence literature. A retrieval result indicates an essentially identical prior work on learning attention via a learning-to-pronounce auxiliary for the same task, so the contribution appears to mostly combine established methods rather than introduce a genuinely new approach. The few claimed \"novel\" items in the summary are implementation/training details (greedy vs beam decoding, length caps) rather than conceptual novelties that would surprise an expert.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main empirical claims are clearly stated and appear supported by experiments across 44 Anselm texts showing a consistent ~2% absolute improvement and detailed methodology (char-level encoder\u2013decoder with attention/beam search, MTL using CELEX). Baselines are appropriate (Norma, averaged perceptron, prior bi-LSTM tagger) and hyperparameters are reported, but the summary does not mention statistical significance testing of improvements and training-data scarcity could affect generality. No mathematical derivations are needed beyond standard NN training; overall the experimental design is sound though minor reporting gaps (statistical tests, code availability) prevent a perfect score.",
+      "survey_injected": false,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Using multi-task learning with a grapheme-to-phoneme auxiliary task improves historical text normalization performance.",
+      "Encoder-decoder neural architectures (with attention and beam search) outperform prior baselines (Norma, averaged perceptron, and sequence-labeling approaches) on Early New High German normalization.",
+      "Multi-task learning can induce behavior similar to attention mechanisms (MTL helps focus attention during decoding).",
+      "Evaluations and analyses are presented across 44 texts from the Anselm corpus, pushing prior state-of-the-art by about an absolute 2% in word-level performance."
+    ],
+    "methodology": "Train character-level encoder-decoder LSTM models (sequence-to-sequence) for historical\u2192modern word normalization, with variants using attention, beam search, lexical filtering, and multi-task learning where the auxiliary task is grapheme-to-phoneme prediction using CELEX; models trained with cross-entropy loss and Adam.",
+    "datasets": [
+      "Anselm corpus (Early New High German, 44 texts)",
+      "CELEX (German phonetic transcriptions, 365,530 wordforms)"
+    ],
+    "baselines": [
+      "Averaged perceptron (character n-gram prediction with Levenshtein alignment)",
+      "Deep bi-LSTM sequential tagger (Bollmann & S\u00f8gaard, 2016)",
+      "Norma tool (rule-based and Levenshtein-based algorithms)"
+    ],
+    "metrics": [
+      "word accuracy",
+      "Fleiss' kappa (reported for model agreement)"
+    ],
+    "limitations": [
+      "Models consider word forms in isolation (no token context), which is problematic for ambiguous cases (e.g., 'jn' \u2192 'in' or 'ihn').",
+      "Training data sizes are small (texts range ~4,200\u201313,200 tokens), limiting hyperparameter tuning and requiring MTL to mitigate data shortage."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - historical text normalization / character-level neural sequence-to-sequence models",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 1,
+    "paper_novelty_mean": 0.7433,
+    "augmented_dims": [
+      "MEANINGFUL_COMPARISON",
+      "SUBSTANCE",
+      "ORIGINALITY"
+    ],
+    "total_dims": 7
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important problem\u2014creating realistic, KB-grounded corpora for NLG micro-planning and KB verbalisation\u2014by proposing a semi-automatic framework and releasing DBPNLG derived from DBpedia. Demonstrating that DBPNLG is more semantically and linguistically diverse and more challenging for seq2seq models than the widely used RNNLG suggests researchers will need to rethink evaluation and model design. The approach (property bigram models, ILP content selection, crowdsourced verbalisation) is portable to other KBs and supports multiple micro-planning subtasks, opening new research directions. While the current release covers only six categories, the framework and findings are likely to be adopted and built upon by the community.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early, with thorough related work coverage. Notation appears consistent and the methodology (property bigram models, ILP content selection, crowdsourcing pipeline) is described clearly, with effective figures/tables/examples supporting results. Writing quality is reported as good and largely free of ambiguity, though a few technical sections (e.g., details of the ILP/content-selection instantiation and crowdsourcing clarifications) could be denser than ideal, so minor presentation improvements would help.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable and concrete advance: a semi-automatic pipeline that instantiates micro-planning corpora directly from a large RDF KB (DBpedia) and produces DBPNLG, which the authors empirically show is more semantically and linguistically diverse (and more challenging for standard seq2seq models) than the crowdsourced RNNLG. While closely related efforts such as the WebNLG challenge also produce RDF-to-text corpora, this work differentiates itself by (i) the KB-driven content selection with property-bigram models + ILP subtree selection, (ii) the majority-vote validation that enforces direct data\u2013text alignment, and (iii) the empirical finding that neural models perform substantially worse on the resulting data. These elements constitute a clear, non-trivial extension beyond prior datasets/approaches, so the contribution is more than incremental but not a radical paradigm shift.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents substantial experimental evidence: a new DBPNLG corpus instantiated from DBpedia, comparisons to the crowdsourced RNNLG dataset across multiple linguistic and semantic metrics (CTTR, LS, perplexity, BLEU), and neural seq2seq baselines showing DBPNLG is more challenging. Related work appears thoroughly covered (including prior data-to-text corpora) and the authors discuss concrete limitations (only 6 completed DBpedia categories so far; crowdsourcing required manual clarification of DBpedia property labels). However, the work lacks reported ablation or sensitivity analyses of key components (e.g. the impact of the three property-bigram models or ILP content-selection choices), and reproducibility is only partially supported (hyperparameters are reported but code availability is not mentioned). These are notable but not fatal gaps given the overall experimental depth and relation to existing efforts such as WebNLG.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main empirical claims are supported by experiments and corpus analyses: they construct DBPNLG from DBpedia, report diversity/complexity metrics (CTTR, LS, perplexity, input shapes) and show a standard seq2seq model performs worse on DBPNLG than on RNNLG. There are no apparent mathematical errors in the described components (e.g. ILP content selection), and hyperparameters and multiple quantitative metrics are reported. However, the experimental methodology is somewhat limited by use of a single neural baseline (attention seq2seq) and I see no mention of statistical significance testing or additional model comparisons, and the claim that the framework supports a wider range of micro-planning subtasks is plausible but not exhaustively empirically validated. Overall the work is technically sound with minor methodological gaps that do not overturn the main conclusions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses data-to-text micro-planning, a core NLG topic squarely within top NLP/ML venues, proposing a semi-automatic framework and releasing DBPNLG derived from DBpedia. The methodology (graph extraction, ILP content selection, crowdsourced verbalization) and evaluations (diverse linguistic and semantic metrics, S2S baselines) use standards expected by the community, and the paper compares appropriately to prior datasets (e.g., RNNLG) and discusses limitations. The work targets the right audience (NLG/ML researchers interested in KB verbalization and micro-planning) and is positioned with thorough related work coverage, making it a strong fit for a top conference.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares its new DBPNLG corpus against a relevant existing crowdsourced dataset (RNNLG) and evaluates a standard sequence-to-sequence with attention baseline, and it reports a range of sensible metrics (lexical/structural and BLEU/perplexity). It also provides a thorough related-work discussion listing other datasets (e.g. Lebret et al., Chen & Mooney, Liang et al.) and acknowledges limitations of prior crowdsourced ontologies. However, it does not evaluate against or directly use other strong contemporaneous RDF->text benchmarks (e.g. WebNLG) or more varied generation models, so some important baselines/benchmarks are omitted. Overall the comparisons are fair and analyzed, but not fully comprehensive.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a semi-automatic framework to create data-to-text corpora for NLG micro-planning from existing RDF knowledge bases.",
+      "Instantiates the framework on DBpedia to produce a new dataset (DBPNLG) and shows it is more semantically and linguistically diverse than the crowdsourced RNNLG dataset despite being smaller.",
+      "Demonstrates that standard sequence-to-sequence neural models (with attention) perform worse on DBPNLG than on RNNLG, indicating DBPNLG is a more challenging benchmark for learning micro-planning.",
+      "Argues that the framework enables creation of corpora suitable for training KB verbalisers and supports a wider range of micro-planning subtasks (lexicalisation, aggregation, sentence segmentation, referring expression generation)."
+    ],
+    "methodology": "Extract category-specific entity graphs from a KB (DBpedia), learn three property bigram models (sibling, chain, interpolated) from these graphs, select variable-size subtrees via an ILP content-selection module, then crowdsource verbalizations for single triples and merged multi-triple inputs with automated and manual quality control and majority-vote validation.",
+    "datasets": [
+      "DBPNLG (created from DBpedia)",
+      "RNNLG (Wen et al., 2016)",
+      "Other cited datasets: Lebret et al. (2016) dataset (discarded), Chen and Mooney (2008) soccer dataset, Liang et al. (2009) weather dataset, Ratnaparkhi (2000) air travel dataset, KBGen (Banik et al., 2013), AMR corpus (Banarescu et al., 2012)"
+    ],
+    "baselines": [
+      "Sequence-to-sequence model with attention (Vinyals et al., 2015) used as comparative model"
+    ],
+    "metrics": [
+      "number of attributes",
+      "number of input patterns",
+      "input shapes (tree depth)",
+      "tokens per text",
+      "sentences per text",
+      "texts per input (paraphrase count)",
+      "corrected type-token ratio (CTTR)",
+      "lexical sophistication (LS)",
+      "perplexity",
+      "BLEU"
+    ],
+    "limitations": [
+      "DBPNLG reported in the paper covers only 6 DBpedia categories (authors state they collected content for 14 further categories but not yet completed).",
+      "Crowdsourcing requires manual clarification of unclear DBpedia property labels before elicitation.",
+      "Wen et al. (2016)\u2019s crowdsourced dataset uses artificial/hand-written ontologies and so cannot be used to train KB verbalisers (stated limitation of that prior work)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLG - data-to-text (micro-planning)",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 2,
+    "paper_novelty_mean": 0.4714,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

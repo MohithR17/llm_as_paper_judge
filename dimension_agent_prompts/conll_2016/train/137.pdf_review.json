@@ -1,0 +1,44 @@
+{
+  "APPROPRIATENESS": 5,
+  "CLARITY": 2,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "REPLICABILITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within top-tier NLP/ML scope: it tackles compositionality detection in distributional semantics and compares explicit count-based APT models with neural embeddings (word2vec) using the ukWaC corpus and the Reddy et al. 90-compound dataset. The audience is appropriate (NLP researchers interested in compositional semantics and representation learning), and the problem formulation (detecting non-compositional phrases via composition vs. observed phrasal vectors) matches venue expectations. Methods and evaluation follow community standards (PMI/shifted-PMI experiments, dependency-typed contexts, baseline comparisons to Reddy et al., correlation with human judgements), and the paper is well positioned with relevant prior work cited (Weeds et al., Levy & Goldberg, Mitchell & Lapata)."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The manuscript contains a clear experimental thread (corpus preprocessing, APT construction, composition and evaluation) but is marred by extensive repetition, duplicated paragraphs and formatting artifacts that break the logical flow and make it hard to follow (e.g. many identical blocks repeating background and methods text). Main contributions are sketched in the conclusion but are not stated early and succinctly; key items (e.g. composition operators \u2294INT/\u2294UNI and the PMI equation) are introduced with inconsistent or cluttered notation and limited formal definition. References to Table 1 and other results are unhelpful in the excerpt because figures/tables are absent or not integrated, and several sentences contain grammatical/formatting issues that reduce clarity. Overall the paper needs careful editing for redundancy, consistent notation, and tighter presentation of contributions and figures."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem\u2014detecting non-compositional compound nouns\u2014and reports clear improvements over prior work (e.g. \u201ccbow model with 100 dimensions and a subsampling threshold of t = 10 gives a performance of 0.74 which is significantly higher than the previous state-of-the-art reported in Reddy et al. (2011)\u201d). It demonstrates that combining neural embeddings with an integrated APT compositional approach that \u201cmaintains syntactic structure within the contextual features\u201d yields better compositionality detection and suggests practical follow-ons (e.g. smoothing observed phrasal representations for non-compositional phrases). These results are likely to change how researchers evaluate and build compositional distributional models and open useful new directions for integrating syntax-aware sparse representations and compositionality-driven smoothing, making the impact strong within the subfield."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper runs experiments on a large, parsed ukWaC corpus with careful preprocessing of the 90-item Reddy et al. dataset and explores multiple modeling choices (PMI variants, shifted-PMI, two APT composition ops \u2294INT/\u2294UNI, weighting h, and word2vec cbow settings \u2014 e.g. 100 dims, subsampling t=10 yielding 0.74) and compares to the Reddy baseline, indicating reasonable parameter sensitivity. Related work is well-covered (many relevant citations) and several failure/limitation points are acknowledged (parser errors in multi-noun compounds, negative shifted-PMI results, ignoring modifier-side dependency paths, and suggestions for smoothing/non-compositional handling). However, the manuscript omits full reported results for some experiments (shifted PMI), gives limited ablation detail (e.g. values/ranges for h, alignment procedure, exact APT construction and evaluation metrics/tables are not shown here), and lacks some reproduction-level specifics, so the evaluation is solid but has minor gaps."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "Partially reproducible: the paper names the corpora (ukWaC) and dataset (Reddy et al.\u2019s 90 compounds) and states preprocessing steps (tokenisation with TreeTagger, dependency parsing with Malt, recombining target NPs, choosing most frequent dependency relation), and reports some model choices (use of APTs, \u2294INT/\u2294UNI composition, and cbow word2vec with 100 dimensions and subsampling t=10). However many crucial details are missing: full APT construction and alignment procedures, exact PMI/shifting parameters, feature selection/smoothing choices, the composition weighting parameter h values, and numerous word2vec hyperparameters (window size, negative samples, epochs, learning rate, min_count). Evaluation metric is only described generically as correlation with human judgements (no metric or calculation procedure specified). No code is provided."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against the Reddy et al. (2011) baseline on the same ukWaC data and uses the same Reddy dataset of 90 compounds (multiple explicit mentions: \u201cFor consistency with the experiments of Reddy et al. (2011) \u2026\u201d and \u201cThe REDDY baseline is the reported state-of-the-art result (Reddy et al., 2011)\u201d). It also evaluates simple neural embedding baselines (word2vec/cbow) and reports improvements (\u201ccbow model with 100 dimensions \u2026 gives a performance of 0.74 which is significantly higher than the previous state-of-the-art reported in Reddy et al. (2011)\u201d), discusses ablations (shifted PMI negative effect) and variation of composition operators (\u2294INT, \u2294UNI, weighting h). The paper cites and discusses many relevant prior approaches (e.g. Dinu et al., Weeds et al., Levy & Goldberg, Mitchell & Lapata, Socher et al.), but it does not appear to run or report direct empirical comparisons to some stronger/modern compositional models (e.g. lexical-function or tensor models) on this task, so comparisons are good and fair but not fully comprehensive."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper addresses a well-studied problem (compositionality detection using the Reddy et al. (2011) dataset) and builds on extensive prior work (e.g. Pad\u00f3 & Lapata, Baroni & Zamparelli, Mikolov et al.). Its main contribution is an empirically integrated use of syntactically-typed, high-dimensional APT representations alongside low-dimensional embeddings and simple composition ops (\u2294INT/\u2294UNI with weighting h) to improve detection, which is a non-trivial engineering/empirical combination but not a fundamentally new paradigm. The authors clearly position their work relative to prior methods (they compare to the REDDY baseline, cite Weeds et al. (2014) and Levy & Goldberg (2014)), so the novelty is moderate\u2014notable integration and empirical gains but largely incremental over established techniques."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper makes plausible, well-motivated claims (e.g. combining count-based APTs with embeddings and that an APT-integrated, syntax-aware composition improves compositionality detection) and reports improvements over the Reddy et al. baseline (cbow 100 dims, t=10 giving 0.74). However, important methodological details are missing or under-specified in the provided text: the corpus preprocessing (recombining the 90 target phrases into single tokens before building embeddings) risks evaluation leakage and needs clearer justification/controls; the PMI formula and shifted-PMI discussion are plausible but terse; and claims of statistical significance are asserted without reporting test details, effect sizes or evaluation metrics. Given these gaps (limited experimental detail, unclear statistical testing and potential contamination of representations) the results are promising but not fully verifiable from the provided excerpts."
+    }
+  }
+}

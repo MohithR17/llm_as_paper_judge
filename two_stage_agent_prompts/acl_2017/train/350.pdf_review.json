@@ -1,0 +1,73 @@
+{
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and appear supported by experimental evidence (high precision for trigger 88.9% and arguments 85.4%, and competitive model performance against Chen et al. 2015 and Nguyen et al. 2016). There are no mathematical proofs to check and the DMCNNs-MIL formulation is plausible for noisy distantly supervised data. However, important experimental details are missing (hyperparameters not reported, no mention of statistical significance testing) and the authors themselves note limitations due to noise and incomplete Freebase, which weakens some evaluation conclusions. Overall the technical approach and results are sound but some methodological reporting gaps prevent a flawless assessment."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized with a clear logical flow from motivation to method (mapping Freebase/FrameNet/Wikipedia) to experiments using DMCNNs-MIL, and the main contributions (automatic labeling, Key Rate/Trigger Rate, two-stage formulation) are stated early and clearly. Notation and proposed metrics (KR, TR, DMCNNs-MIL) are presented coherently, and evaluation (precision, recall, P-R curves) suggests informative figures/tables. Writing quality is overall adequate and related work is covered, but presentation has minor issues\u2014the omission of reported hyperparameters and some reliance on distant supervision noise are gaps that reduce reproducibility and clarity. Overall the paper is well-written with only modest presentation shortcomings."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines world knowledge (Freebase), linguistic knowledge (FrameNet), and Wikipedia to automatically label event data and introduces Key Rate and Trigger Rate as new heuristics for selecting key arguments and triggers, which is a reasonably novel resource- and metric-driven approach. However, the overall problem formulation (two-stage event and argument classification) and the modeling (DMCNNs with Multi-Instance Learning) largely reuse existing paradigms, so the technical contribution is an incremental but useful extension rather than a fundamentally new method. Consequently, the contribution offers moderate novelty that would be of interest but not surprising to experts."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This is squarely within top NLP/ML venue scope: automatic event extraction using distant supervision and knowledge resources (Freebase, FrameNet, Wikipedia) is a core NLP task with broad ML relevance. The paper targets the right audience by proposing new practical measures (Key Rate and Trigger Rate), mapping KB/FrameNet to event labels, and training DMCNNs with multi-instance learning \u2014 methods and setup expected at such venues. Evaluation against established baselines (DMCNN, Nguyen et al.) with precision/recall analyses and the release of code/data further position it appropriately for a top conference."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are fairly comprehensive: the paper evaluates the automatically labeled dataset (trigger precision 88.9%, argument precision 85.4%), trains and compares models (including DMCNN baselines) with P-R analyses, and shows models are competitive with and complementary to human-labeled data; code and dataset snapshots are provided. However, no ablation or sensitivity analyses for the proposed Key Rate/Trigger Rate components are reported, and hyperparameters are not provided, limiting some reproducibility despite code availability. Related work is described as adequate and key limitations (distant supervision noise, incomplete Freebase leading to false negatives) are discussed, so the gaps are minor rather than fundamental."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important problem of scalable, automatic labeling for event extraction by combining Freebase, FrameNet, and Wikipedia and introducing concrete metrics (Key Rate and Trigger Rate) plus a two-stage DMCNNs-MIL pipeline. The automatically labeled dataset shows high precision (trigger 88.9%, argument 85.4%) and models trained on it are competitive with human-labeled data and complementary when combined, suggesting practical value for researchers. While not without limitations (distant supervision noise and incomplete Freebase), the approach is likely to change dataset construction practices, enable larger-scale experiments, and be widely adopted or extended by the community."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to appropriate recent baselines (Chen et al., 2015 DMCNN and Nguyen et al., 2016) and evaluates on standard data (ACE) using precision/recall and P-R curves, and reports that its models are competitive with human-labeled data and improve when combined. However, the summary does not make it clear whether all comparisons used identical training conditions (e.g., same training data/conditions and hyperparameter reporting is missing), so fairness of some comparisons is ambiguous. Related work coverage is described as adequate and the paper introduces clear differences (KR/TR, two-stage DMCNNs-MIL), supporting a generally solid but not fully exhaustive comparison."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Propose an automatic data labeling method for event extraction that leverages Freebase (world knowledge), FrameNet (linguistic knowledge), and Wikipedia (unstructured text).",
+      "Introduce Key Rate (KR) for key-argument detection (combining Role Saliency and Event Relevance) and Trigger Rate (TR) for trigger detection (combining Trigger Candidate Frequency and Trigger Event Type Frequency).",
+      "Formulate event extraction as a two-stage multi-class problem (event classification and argument classification) and employ Dynamic Multi-pooling CNNs with Multi-Instance Learning (DMCNNs-MIL) to handle noise in distantly supervised training data.",
+      "Demonstrate that the automatically labeled dataset has high precision (trigger labeling 88.9%, argument labeling 85.4%) and that models trained on it achieve strong performance, being competitive with human-labeled data and improving performance when combined with human-labeled data."
+    ],
+    "methodology": "Map Freebase CVTs to event types and FrameNet LUs to triggers; compute Key Rate to select top-K key arguments per event type and label Wikipedia sentences containing those arguments; compute Trigger Rate to select trigger verbs; train two-stage DMCNNs with Multi-Instance Learning for event classification and argument (role) classification.",
+    "datasets": [
+      "Freebase (CVTs, snapshot referenced 23 April 2015)",
+      "FrameNet",
+      "Wikipedia (dump released January 2016)",
+      "ACE corpus"
+    ],
+    "baselines": [
+      "Chen's DMCNN (Chen et al., 2015)",
+      "Nguyen et al. (2016) system"
+    ],
+    "metrics": [
+      "Precision",
+      "Recall",
+      "Precision-Recall (P-R) curves",
+      "F1 (mentioned for related work)"
+    ],
+    "limitations": [
+      "Automatically labeled data contain noise intrinsic to distant supervision.",
+      "Incomplete Freebase leads to false negatives in held-out evaluation."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - event extraction",
+    "writing_quality": "adequate"
+  }
+}

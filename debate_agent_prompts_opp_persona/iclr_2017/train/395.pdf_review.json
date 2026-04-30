@@ -1,0 +1,110 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early (Edward as a Turing-complete PPL and inference-as-first-class), with a clear method/experiments/conclusion structure and readable writing. Notation and examples appear consistent and figures/tables (e.g., experiments on binarized MNIST and Covertype, comparisons to Stan and PyMC3) are informative. However, from the summary the paper leans implementation-centric: claims such as Turing-completeness and compositionality are asserted without evidence of formal definitions or operational semantics, and the treatment of inference is described via implementation (TensorFlow graphs) rather than a formal semantic account \u2014 this reduces clarity for readers seeking rigorous language-level guarantees. | B(4): The paper is well organized and follows a clear flow from motivation to method to experiments and conclusion; its main contributions (Edward as a Turing-complete PPL, composable inference, TensorFlow integration for GPU-accelerated, scalable inference) are stated early and repeatedly. Notation and methodology are presented consistently\u2014random variables as graph-associated objects and inference as composable ed.Inference programs\u2014making the core design easy to follow. Figures, tables, and examples (binarized MNIST, Covertype comparisons to Stan and PyMC3, held-out log likelihood and runtime metrics) effectively support claims, and the writing quality is generally good, with only minor opportunities to tighten exposition around complex control-flow limitations and dynamic-graph discussion.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early (Edward as a Turing-complete PPL and inference-as-first-class), with a clear method/experiments/conclusion structure and readable writing. Notation and examples appear consistent and figures/tables (e.g., experiments on binarized MNIST and Covertype, comparisons to Stan and PyMC3) are informative. However, from the summary the paper leans implementation-centric: claims such as Turing-completeness and compositionality are asserted without evidence of formal definitions or operational semantics, and the treatment of inference is described via implementation (TensorFlow graphs) rather than a formal semantic account \u2014 this reduces clarity for readers seeking rigorous language-level guarantees."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized and follows a clear flow from motivation to method to experiments and conclusion; its main contributions (Edward as a Turing-complete PPL, composable inference, TensorFlow integration for GPU-accelerated, scalable inference) are stated early and repeatedly. Notation and methodology are presented consistently\u2014random variables as graph-associated objects and inference as composable ed.Inference programs\u2014making the core design easy to follow. Figures, tables, and examples (binarized MNIST, Covertype comparisons to Stan and PyMC3, held-out log likelihood and runtime metrics) effectively support claims, and the writing quality is generally good, with only minor opportunities to tighten exposition around complex control-flow limitations and dynamic-graph discussion."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper delivers a useful and practically meaningful integration\u2014treating inference as a first-class, composable entity and embedding random variables into TensorFlow\u2014resulting in non-trivial engineering advances for scalable, heterogeneous inference. However, it falls short of a fundamental theoretical breakthrough (no formal semantics or proofs), which limits its originality from a theoretical standpoint. Given the clear practical novelty and impact for practitioners, a slightly above-median originality score is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper packages several useful ideas\u2014treating inference as a first-class, composable entity and embedding random variables into a computational graph (TensorFlow) to enable diverse inference methods and GPU-accelerated training\u2014but these are primarily engineering integrations of existing concepts rather than fundamentally new formal ideas. The claim of Turing-completeness and language-level properties is asserted without formal semantics or proofs, which, from my theoretical perspective, reduces the novelty credit. Overall the work is a notable systems contribution that organizes prior techniques coherently, yielding moderate novelty rather than a highly original theoretical advance."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Edward offers a notable and practical new perspective by treating inference as a first-class, composable entity and by embedding random variables directly into TensorFlow computational graphs, enabling heterogeneous inference (VI, MCMC, GANs) and GPU-accelerated, subsampled scalability. These design choices materially differentiate it from existing PPLs like Stan and PyMC3 and provide non-trivial engineering advances for large-scale probabilistic modeling. While it builds on well-studied problems and known methods, the composability of inference and tight integration with deep-learning frameworks would be informative and somewhat surprising to practitioners seeking scalable, flexible PPL tooling."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper makes a strong engineering contribution with solid empirical evidence and a working implementation, but they also agree it lacks formal definitions, proofs, and theoretical guarantees for its language-level claims (Turing-completeness, compositionality) and convergence of inference abstractions. Given the pragmatic systems focus is appropriate but the missing formal semantics and theoretical guarantees are a substantive gap for the SOUNDNESS_CORRECTNESS dimension, a middling score reflects the workable implementation and experiments tempered by insufficient formal justification.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides convincing engineering evidence (TensorFlow integration, GPU-accelerated inference, comparisons on MNIST/Covertype with Stan and PyMC3) that Edward is an efficient, flexible platform for composing variational, MCMC and GAN-style procedures. However, key language-level claims (notably Turing-completeness and compositionality of inference) are asserted without formal definitions or proofs, and the framework lacks stated asymptotic or convergence guarantees for its inference abstractions. Experimental methodology is reasonable but limited to a few datasets and performance metrics, so some generalization claims about scalability and zero-overhead compared to handwritten TensorFlow remain empirically rather than theoretically justified. Overall the results support the engineering contribution but technical claims about semantics and guarantees are insufficiently substantiated."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's central technical claims\u2014that Edward represents random variables and inference as composable graph objects, supports a broad set of inference methods, and gains efficiency via TensorFlow GPU acceleration and data subsampling\u2014are supported by a working open-source implementation, experiments on MNIST and Covertype, and comparisons to PyStan/PyMC3. Mathematical framing is pragmatic rather than proof-centric, which is appropriate for a systems contribution; empirical methodology uses reasonable baselines and reported hyperparameters, though more extensive statistical analysis would strengthen some runtime/likelihood claims. The authors acknowledge limitations (complex control flow, dynamic graph generalization), which are honest gaps but do not undermine the main experimental evidence. Overall the paper is technically solid with only minor concerns about generality and depth of empirical validation."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Edward is a Turing-complete probabilistic programming language that provides compositional representations for both probabilistic models (random variables) and inference.",
+      "By treating inference as a first-class, composable entity, Edward supports a wide variety of inference methods (point estimation, variational inference, MCMC, GANs) and composing inference procedures.",
+      "Integration with computational graph frameworks (TensorFlow) yields high efficiency: Edward enables GPU-accelerated inference, scales to large data via subsampling, and incurs no runtime overhead compared to handwritten TensorFlow."
+    ],
+    "methodology": "Edward represents random variables as objects associated with tensors on a computational graph and represents inference as composable optimization programs (ed.Inference subclasses) that build and run TensorFlow graphs; this enables implementing variational methods, Monte Carlo samplers, GAN-based training, and data subsampling within the same framework.",
+    "datasets": [
+      "binarized MNIST",
+      "Covertype"
+    ],
+    "baselines": [
+      "Stan (PyStan)",
+      "PyMC3"
+    ],
+    "metrics": [
+      "held-out log likelihood (lower bound)",
+      "runtime (seconds)"
+    ],
+    "limitations": [
+      "Open challenge to better facilitate programs with complex control flow and recursion.",
+      "Unclear how to expand Edward\u2019s design to dynamic computational graph frameworks without sacrificing performance."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Probabilistic programming / Deep probabilistic models",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Formalist Theorist",
+      "background": "Associate professor in machine learning and programming languages with research on formal semantics of probabilistic languages and theoretical guarantees for inference algorithms.",
+      "traits": [
+        "Penalizes papers that claim language-level properties (e.g., Turing-completeness, compositionality) without formal definitions and proofs by at least 2 points on novelty/technical soundness",
+        "Requires asymptotic complexity or convergence guarantees for proposed inference frameworks; deducts points if only empirical speedups are reported",
+        "Demands clear formal semantics/operational semantics for probabilistic constructs; downgrades clarity/technical soundness if semantics are informal or only implementation-centric",
+        "Prefers rigorous, reproducible empirical evaluations with statistical significance and strong baseline comparisons; subtracts points if experiments are system-only demos without thorough comparisons"
+      ],
+      "reviewing_style": "Focuses on formal rigor and theoretical guarantees first; treats engineering demos as insufficient unless backed by formal analysis or strong, controlled empirical validation."
+    },
+    "reviewer_b": {
+      "name": "Systems Pragmatist",
+      "background": "Senior research scientist with extensive experience building and deploying large-scale probabilistic models and deep learning systems; expertise in practical inference, engineering, and applied benchmarks.",
+      "traits": [
+        "Rewards papers that provide a usable, well-integrated software system (open-source release, APIs, and demos) with at least +2 points on impact/practicality",
+        "Values empirical scalability and engineering innovations (GPU acceleration, data subsampling) and upvotes papers demonstrating real-world-sized experiments and wall-clock speedups",
+        "Favors flexible, composable frameworks for combining modeling and inference methods; grants higher novelty/utility scores when a system supports heterogeneous inference (VI, MCMC, GANs) in one API",
+        "Accepts practical, implementation-centric evaluations as sufficient evidence of contribution provided code and usage examples are available; is less strict about formal proofs"
+      ],
+      "reviewing_style": "Prioritizes practical impact, usability, and demonstrated scalability; treats well-engineered systems and broadly useful frameworks as major contributions even with limited formal analysis."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 2,
+    "total_dimensions": 3,
+    "debate_rate": 0.667
+  }
+}

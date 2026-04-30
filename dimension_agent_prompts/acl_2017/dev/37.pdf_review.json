@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "CLARITY": 3,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses multi-turn response selection for retrieval-based chatbots, a core NLP/ML problem well within top conference scope (see formalization in Section 3.1 and the proposed Sequential Matching Network architecture in Sections 3.3\u20133.5). It uses standard deep-learning methods (embeddings, GRU, CNN, attention), evaluates on established benchmarks (Ubuntu and a released Douban corpus) with community metrics (Rn@k, MAP, MRR), and compares against relevant baselines (Lowe et al., MV-LSTM, Multi-View, VHRED), so the audience, problem formulation, methods, and evaluation are appropriate and well positioned for a top-tier venue."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important problem of multi-turn response selection for retrieval-based chatbots and proposes a clear \u201cmatching-first\u201d architecture (SMN) that matches each utterance with a response via multi-level similarity matrices (M1, M2) and CNNs, then accumulates matching vectors with a GRU. Empirical results on large public datasets (Ubuntu and the released Douban set) show significant improvements over strong baselines and ablations (Table 3/4 and visualization analyses), demonstrating the practical usefulness of the idea. The approach reframes multi-turn modeling (preserve per-utterance matching before aggregation), which is likely to change design choices in this area and enable follow-up work (extensions of multi-channel matching, better aggregation, application to other multi-sentence matching tasks). While impactful for the dialogue/retrieval community, it is an evolution of existing components rather than a wholly new paradigm, so its influence is strong but not fully transformative."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall the paper is reasonably organized (methods, retrieval, experiments are in logical order) and the SMN approach is described with concrete equations and empirical results (e.g., Sections 3.3, 3.5, Table 4 and Figure 2). However the text contains numerous formatting and repetition artifacts (duplicated paragraphs in the Introduction, garbled phrases like \u201cth en th e\u201d, and broken LaTeX remnants) that hurt readability. Notation and equations are mostly defined (M1, M2, GRU, CNN operations) but some equations are poorly formatted or contain typos (the GRU lines in Equation (2), the convolution notation in Eq. (4)), making parts hard to follow. Figures/tables and the example visualization are informative and helpful, but overall the presentation would benefit from careful copyediting and consistent equation/notation formatting."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a distinct \u201cmatching first\u201d architecture (SMN) that for each utterance builds a word-word matrix M1 and a sequence-sequence matrix M2, applies a CNN to produce per-utterance matching vectors, and then accumulates those vectors chronologically with an RNN (Sections 3.3\u20133.5). This composition differs clearly from prior multi-turn approaches that concatenate context (Lowe et al., 2015) or use hierarchical RNNs that compress context without per-utterance supervised matching (Zhou et al., 2016), and the ablation (Table 4) shows the 2D matching component is crucial. While the model reuses standard components (embeddings, GRU, CNN, attention), their non-trivial combination and the explicit per-utterance 2D matching strategy constitute a notable and well-differentiated novelty rather than a purely incremental change."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are solid and fairly comprehensive: evaluation on two large corpora (Ubuntu and Douban), multiple metrics (Rn@k, MAP, MRR, P@1), many competitive baselines (basic models, multi-view, advanced single-turn matching) and a human comparison vs a generation model. Appropriate ablations and analyses are provided (ReplaceM/ReplaceA/Only M1/Only M2, context-length breakdown, visualization of similarity matrices and GRU gates) and the paper discusses variants SMNlast/static/dynamic. However, limitations and failure cases are only lightly discussed (e.g., brief note on low Rn@k due to multiple correct responses and small gain from attention), and some reproducibility details are missing (exact hyperparameters, CNN/GRU sizes, pooling/convolution specs and retrieval/indexing setup), preventing full replication without additional information."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against a wide set of appropriate and recent baselines (TF-IDF, RNN/CNN/LSTM/BiLSTM from Lowe et al. 2015 and Kadlec et al. 2015; Multi-View (Zhou et al. 2016); DL2R (Yan et al. 2016); advanced single-turn matchers MV-LSTM, Match-LSTM, Attentive-LSTM; and a generation baseline VHRED) as listed in Section 5.3. Evaluations use standard public datasets (Ubuntu, Douban) and standard metrics (Rn@k, MAP, MRR) following prior work (Section 5.1), and significance testing and ablations (Table 4, Section 5.6) support fair comparisons. The paper also acknowledges when alternatives perform similarly (e.g., SMNdynamic vs SMNstatic/last, discussion of low Rn@k on Douban and the VHRED human comparison) and analyzes differences via ablation, visualization, and context-length experiments. Overall the comparisons are comprehensive, fair, and well-analyzed."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claim \u2014 that Sequential Matching Network (SMN) improves multi-turn response selection \u2014 is supported by large-scale experiments on Ubuntu and Douban corpora with a comprehensive set of baselines and ablation studies (Section 5, Table 4, visualization and context-length analysis). The mathematical definitions (M1 in Eq.1, M2 in Eq.3, CNN/GRU processing, and the training objective Eq.8) are standard and appear correct conceptually, though the GRU equations and some convolution notation contain minor notational/formatting typos (Section 3.3, Eq.2\u20134). Experimental methodology is generally sound (proper baselines, large datasets, reported t-tests), but the paper omits some implementation/hyperparameter details and uses a heuristic retrieval step (Section 4) which could affect end-to-end behavior; these are minor and do not undermine the main conclusions."
+    }
+  }
+}

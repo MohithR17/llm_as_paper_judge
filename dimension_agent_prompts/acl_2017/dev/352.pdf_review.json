@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "CLARITY": 2,
+  "SUBSTANCE": 3,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The work addresses adversarial multi-task learning for text classification (Sec. 4) \u2014 extending adversarial loss to multi-class and enforcing a shared/private LSTM decomposition \u2014 which is squarely within NLP/ML research. It uses standard methods and evaluation practices expected at top venues (LSTM encoders, GloVe embeddings, gradient-reversal layer, comparisons to MT-CNN/MT-DNN, and experiments on 16 sentiment datasets with train/dev/test splits; Sec. 5). The problem formulation, baselines, and empirical setup match community standards, and the paper is positioned with appropriate related work citations (e.g., Ganin & Lempitsky, Bousmalis et al.)."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines a shared-private multi-task LSTM architecture with an adversarial task discriminator (ASPMTL) to force the shared space to be task-invariant (sections 3.1 and 4; Eq.12\u201313). It explicitly extends adversarial training from binary to multi-class task discrimination and integrates this with gradient reversal and semi-supervised MTL (\"we extend it to multi-class...\", use of gradient reversal (Ganin and Lempitsky, 2015)). These are non-trivial engineering extensions, but they largely integrate existing ideas (shared/private MTL, adversarial/domain-adaptation methods, LSTMs), so the novelty is moderate and incremental rather than fundamentally new."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has a recognizable structure (model \u2192 adversarial extension \u2192 experiments \u2192 related work) but the flow is disrupted by heavy repetition and formatting problems (many duplicated paragraphs in Related Work and elsewhere). Notation is sometimes defined but also inconsistent or garbled (e.g. the LSTM equations are poorly typeset and Eq. 9 uses hm t\u22121 instead of hkt\u22121), and figures/tables are referenced (Fig.2/3, Table 1/2) but not provided. The writing contains numerous typos and grammatical issues (\"muti-task\", \"adverarial\", \"ect.\") which reduce clarity and require substantial editing."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper evaluates the proposed adversarial shared\u2013private model on a fairly large suite of 16 datasets and reports comparisons against single-task LSTM variants and other multi-task baselines (FS\u2011MTL, SP\u2011MTL, ASPMTL), with summary statistics (e.g. 5.2% average improvement). It also performs a basic ablation by comparing fully-shared, shared\u2011private, and adversarial variants and describes hyperparameter ranges and final settings. However, key experimental details and results are omitted from the provided text (no full tables or per-task numbers shown here), there is no empirical validation of the semi\u2011supervised claim or sensitivity analyses beyond a small grid search, limitations or failure cases are not discussed, and several reproduction details are missing (hidden sizes, optimizer/epochs, seed/implementation specifics). These gaps make the evaluation adequate but incomplete for strong empirical support."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper targets an important practical problem\u2014preventing contamination between shared and task-specific feature spaces in neural multi-task learning\u2014by introducing an adversarial shared-private model (ASPMTL) (Section 4). It demonstrates empirical impact via extensive evaluation on 16 text-classification datasets and reports a notable 5.2% average improvement over SP-MTL (Section 5.4), suggesting the approach materially improves multi-task performance. By extending adversarial loss to the multi-class setting, enabling semi-supervised use of unlabeled corpora (Section 4.3), and claiming that learned shared representations can be transferred to new tasks, the work is likely to be widely adopted and to open follow-on research directions across NLP and other multi-task domains."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper reports multi-task vs single-task results on 16 datasets (Table 2) and compares variants FS-MTL, SP-MTL and their adversarial ASP-MTL, using the same data splits and tuned hyperparameters, which supports fair internal comparisons. However, while prior multi-task baselines (e.g. MT-CNN, MT-DNN, Collobert & Weston, Liu et al.) are cited in Related Work, it is unclear from the text whether those relevant and recent competing methods are included in the experimental comparisons or presented in Table 2; no explicit comparison numbers or discussion of when prior methods match or beat the proposed model are given. The paper analyzes why adversarial training helps (contamination of shared space) and reports average improvement, but lacks clear evaluation against the most relevant external baselines and explicit acknowledgement when prior work performs comparably."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper's main claim \u2014 that an adversarial shared\u2011private MTL architecture yields improved text\u2011classification performance \u2014 is plausibly supported by experiments on 16 datasets and a sensible adversarial discriminator formulation. However there are technical incompletenesses and clarity issues: the adversarial loss (Eq.13) and its min/max notation is presented unclearly, the LDiff term in the final loss (Eq.15) is not defined in the provided text, and Eq.(9) appears to contain a typographical error (h m t\u22121 vs h k t\u22121). Experimental methodology also omits statistical testing or multiple random runs/seeds, so reported improvements may lack robustness checks. These issues raise moderate concerns but do not obviously invalidate the central contribution."
+    }
+  }
+}

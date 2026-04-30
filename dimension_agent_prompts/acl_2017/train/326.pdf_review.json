@@ -1,0 +1,39 @@
+{
+  "CLARITY": 3,
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper has an overall logical structure (background \u2192 model variants \u2192 adversarial training \u2192 experiments), and key components (embedding, Bi-LSTM+CRF, three shared/private models, objective) are presented. However presentation issues hinder clarity: many duplicated/repeated sentences (especially in Related Works), LaTeX artifacts and stray references (e.g. missing Fig.1/2, Eq.(15)/(16) referenced but not shown), inconsistent subsection numbering (2.1 then 2.3), and several minor grammatical/typographical errors. Notation is mostly defined for the CRF and model equations, but occasional gaps and broken table/figure references reduce readability. With editing to remove repetitions, fix references, and clean formatting the paper would be much clearer."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles a practically important problem\u2014learning across heterogeneous Chinese word segmentation criteria\u2014by framing each criterion as a related task and proposing shared/private neural architectures with adversarial training (Sections 3\u20134). Experiments on eight SIGHAN datasets show consistent gains (e.g., Model-I boosts average F by ~0.75% and traditional Chinese benefits from simplified-data sharing by ~0.41%), indicating the approach meaningfully improves real-world CWS performance (Section 6). The methodology (shared-private + adversarial invariance) is broadly applicable to other sequence-labeling and annotation-heterogeneity problems, so researchers and practitioners are likely to adopt and extend it, though it is an important step rather than a paradigm shift."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines existing ideas\u2014Bi-LSTM+CRF for CWS, shared/private multi-task architectures (Sec.3), and adversarial domain adaptation (Sec.4.1)\u2014and applies them to multi-criteria Chinese word segmentation. The authors note closely related prior work (Chen et al. 2016 for neural multi-view models and Ganin et al. 2016 for adversarial training) and differentiate mainly by proposing three specific shared-private architectures and using an entropy-based adversarial objective rather than negative cross-entropy. These are reasonable, non-trivial engineering variants tailored to CWS but do not introduce a fundamentally new paradigm, so the contribution is an incremental but useful extension rather than a highly novel idea."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses Chinese word segmentation with a clearly NLP-centric method (shared/private Bi-LSTM+CRF architectures and an adversarial criterion discriminator in Sec.3\u20134) and evaluates on standard SIGHAN corpora (eight datasets, Sec.6) with F-measure results \u2014 matching expectations for a top NLP venue. The multi-criteria/multi-task framing and comparisons to well-known baselines (Bi-LSTM/stacked Bi-LSTM, related work discussion) make it well aimed at the ACL/EMNLP audience, using appropriate problem formulation, methods, and evaluation standards. Overall it is well positioned within the NLP research community and fits the scope of a top-tier NLP/ML conference."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares its multi-criteria and adversarial models against clear neural baselines (Bi-LSTM and stacked Bi-LSTM) across the same eight SIGHAN datasets using F-measure and the same pre-trained embeddings/bi-gram features (see Sec. 6.1, 6.3 and the reported Bi-LSTM baseline 94.14%). It discusses prior non-neural multi-corpus approaches (Jiang et al., Sun & Wan, Qiu, Li, Chao) and related neural work (Chen et al., 2016) and explains architectural differences (Related Works). However, it does not present direct numerical comparisons to other recent published SOTA neural or statistical results on each dataset (e.g., Chen et al. 2016 or other cited neural CWS papers), so empirical coverage of all relevant baselines is incomplete."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are fairly comprehensive: the authors evaluate on eight standard SIGHAN corpora (Sec. 6.1 / Table 2), compare Bi-LSTM and stacked baselines to three shared-private architectures and report results with and without adversarial training (Sec. 6.3, Table 4 summary), and include a Traditional vs. Simplified experiment. Ablation-style analyses are present (Model-I/II/III and adversarial vs. non-adversarial), and the paper discusses failure cases/limitations (e.g. MSRA performance drop and modest adversarial gains). However, reproducibility is only partial\u2014while Algorithm 1, optimizer, pretrained embeddings and training schedule (2400 epochs pretraining) are given, many hyperparameters (embedding/LSTM sizes, batch size, learning rate, \u03bb value, random seeds) and full SOTA baselines are not specified, limiting exact replication and broader comparative claims."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claim\u2014that shared/private Bi-LSTM architectures with an adversarially-trained shared layer improve multi-criteria Chinese word segmentation\u2014is clearly stated and supported by multi-corpus experiments over eight SIGHAN datasets (Section 6.1 and 6.3) showing consistent average F-score gains. The mathematical formulations (CRF scoring in Eqs.7\u201310, shared/private layer definitions, and the adversarial objectives in Eqs.20\u201322) are standard and internally consistent. However, methodological details are incompletely reported (training schedule/hyperparameters, exact baselines, no statistical significance tests) and the choice of maximizing entropy instead of negative cross-entropy is not analyzed empirically (the adversarial gain is reported as small), leaving some support for the specific adversarial design limited. Overall the technical approach and reported results are sound but some experimental and analytic details are missing. "
+    }
+  }
+}

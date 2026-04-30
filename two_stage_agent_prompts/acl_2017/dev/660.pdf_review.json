@@ -1,0 +1,75 @@
+{
+  "MEANINGFUL_COMPARISON": 4,
+  "APPROPRIATENESS": 4,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper evaluates its methods against an unconstrained character model and human-written poetry using shared datasets (sonnets, Wikipedia) and multiple metrics (syllabic mistake counts, per-word reconstruction, human judgments), which supports fair comparisons. It acknowledges limitations of prior pronunciation modeling and transliteration errors and reports relevant baseline performance (e.g., low prior per-token accuracy). However, it appears to omit comparisons to other contemporary automated poetry-generation or specialized constraint-imposition baselines, so while comparisons are good they are not fully comprehensive."
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "This paper addresses automatic poetry generation\u2014a clear NLP task\u2014and uses mainstream neural language models (LSTMs) plus WFSM constraints and phonetic encodings, which aligns with methods expected at top NLP/ML venues. It evaluates with both intrinsic metrics (syllabic mistake counts, n-gram similarity) and large-scale human judgments (54% judged human), and uses relevant datasets (sonnets, Wikipedia), so the audience and evaluation standards are appropriate. The work is well positioned in the computational linguistics/creative NLG community, though its niche focus on poetic form and phonetic transliteration could limit appeal to the broader ML community, hence a slight scope concern."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "This paper tackles the meaningful problem of generating metrically and phonetically constrained poetry, proposing two concrete methods (phonetic-level LSTM and a WFSM-constrained character model) that are directly relevant to the task. Empirical results show the phonetic model learning rhyme, rhythm and alliteration and the constrained model producing 70% zero-syllabic (iambic) mistakes per line, with machine poems judged human 54% of the time and one machine poem rated best \u2014 evidence likely to shift how researchers approach form-aware generation. The work plausibly opens new directions by combining phonetic representations and formal constraints with neural LMs, though practical uptake may be moderated by transliteration and pronunciation-dictionary limitations noted in the paper."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes two clearly articulated methodological novelties: (1) training a neural language model on a phonetic encoding to capture rhyme, rhythm and alliteration, and (2) combining a generative character-level neural model with a discriminative weighted finite-state machine to enforce rhythmic form. These are non-trivial extensions beyond standard character/LSTM generation and explicit constraint techniques, and the work demonstrates concrete gains (e.g., 70% of lines with zero syllabic mistakes; 54% of machine poems judged human). Given that automatic poetry generation is a known task, the ideas are notable and well-differentiated from prior work rather than purely incremental."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents a broad set of experiments (intrinsic metrics such as syllabic/Iambic mistake counts, per-word reconstruction, n-gram similarity, coverage, readability) and a large-scale extrinsic human evaluation supporting the main claims about the phonetic and form-constrained models. However, ablation studies or sensitivity analyses are not mentioned in the summary, leaving gaps in understanding which components drive gains. Related work is described as adequate and several limitations (transliteration/pronunciation errors, low per-word accuracy on Wikipedia) are explicitly discussed. Reproducibility is partly supported (hyperparameters reported, modeling pipeline described) but lack of code and potential gaps in pronunciation resource details may hinder exact replication."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized and follows a clear flow from method (phonetic LSTM and form-constrained character model) through experiments and conclusion, with datasets, baselines, and evaluation metrics explicitly reported. The main contributions are stated early and clearly (two novel methodologies for rhythmic poetry generation). Notation and methodological descriptions seem consistent and use standard formalisms (LSTM, HMM, WFSM), and hyperparameters and related work coverage are reported. Figures/tables/examples are implied by the detailed experimental reporting and the writing quality is described as good, though some presentation issues remain (e.g., limitations from transliteration mistakes are prominent and could benefit from clearer illustrative examples)."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper's main empirical claims are supported by experiments (e.g. the constrained model yielding 70% lines with zero iambic syllabic errors and an extrinsic test where machine poems were judged human 54% of the time), and the methodology (LSTM on phonetic encodings; character model + WFSM constraints; HMM+n-gram transliteration) is plausibly described. However, the summary indicates important caveats \u2014 substantial transliteration/pronunciation errors, low per-word reconstruction on Wikipedia, and prior low per-token pronunciation accuracy \u2014 that weaken confidence in the phonetic-model claims. The summary also does not mention statistical testing or detail how poetic devices like rhyme and alliteration were quantitatively measured, leaving some unsupported assumptions and gaps in experimental rigor. Overall the work appears promising but has some methodological and evaluation weaknesses that warrant concern."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Propose two novel methodologies for automatic generation of rhythmic poetry: (1) a neural language model trained on a phonetic encoding that captures form and content, and (2) a generative neural language model constrained by a discriminative weighted finite state machine to impose form.",
+      "The phonetic-level model can effectively learn common poetic devices such as rhyme, rhythm and alliteration.",
+      "The constrained character-level model (form-constrained) produced the most formulaic poetry in intrinsic evaluation, with 70% of sampled lines having zero syllabic (Iambic) mistakes.",
+      "A large-scale extrinsic evaluation showed participants judged machine-generated poems as human-written 54% of the time, and a machine-generated poem was rated best among evaluated poems."
+    ],
+    "methodology": "Train an LSTM neural language model on a phonetic representation (using CMU pronunciation dictionary and letter-to-sound rules) to learn form and content, and alternatively use a character-level generative neural model for content combined with a discriminative weighted finite-state machine to enforce rhythmic constraints; transliteration between orthography and phonemes is done with an HMM and n-gram language model.",
+    "datasets": [
+      "Sonnets",
+      "Wikipedia"
+    ],
+    "baselines": [
+      "Unconstrained character model",
+      "Human-generated poetry (for extrinsic comparison)"
+    ],
+    "metrics": [
+      "Syllabic misclassification count versus loose Iambic Pentameter (per-line mistake counts)",
+      "Per-word reconstruction accuracy",
+      "Per-line tri-gram similarity (Kondrak, 2005)",
+      "Coverage (in-vocabulary percentage)",
+      "Human judgement (% judged human)",
+      "Readability: Dale-Chall readability formula"
+    ],
+    "limitations": [
+      "A significant number of errors in the phonetic-level model are likely caused by transliteration mistakes (phonetic encoding and orthographic decoding).",
+      "Relatively low per-word reconstruction accuracy on Wikipedia due to high frequency of out-of-vocabulary words.",
+      "Pronunciation dictionaries suffer from limitations for constructing a syllabic-stress classifier.",
+      "Prior pronunciation modeling reported low per-token accuracy (e.g., as low as 67% for British English in Black et al. (1998))."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - automatic poetry generation / neural language models",
+    "writing_quality": "good"
+  }
+}

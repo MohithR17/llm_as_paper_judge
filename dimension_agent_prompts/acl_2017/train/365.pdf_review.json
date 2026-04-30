@@ -1,0 +1,39 @@
+{
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "CLARITY": 3,
+  "MEANINGFUL_COMPARISON": 5,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical problem (historical spelling normalization) where training data is scarce and demonstrates consistent empirical gains \u2014 the best architecture outperforms prior state-of-the-art by ~2\u20133% absolute and beats strong baselines such as Norma and a bi-LSTM tagger (Sec. 4, summary). Its use of grapheme-to-phoneme multi-task learning to mitigate data scarcity and the empirical/analytical finding that MTL can induce attention-like behavior (Sections 3.5 and 5) provide actionable techniques and insights that other low-resource sequence-to-sequence tasks can adopt. While evaluated on a specific Early New High German corpus (44 texts), the approach and the analysis of MTL vs. attention have broader applicability and are likely to influence follow-up work, making the impact strong though not fully transformative."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper applies established sequence-to-sequence, attention, and multi-task learning techniques to historical spelling normalization, which is a well-studied problem (Related Work). Its main novelty is using grapheme-to-phoneme (CELEX) as an auxiliary task to mitigate low-resource training (Sec. 2; Sec. 3.5) and the empirical/analytical claim that MTL can induce attention-like behavior (Sec. 5). These are useful and non-trivial applications/analyses but largely combine existing methods rather than introduce fundamentally new algorithms or problem formulations."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper has an overall logical structure (datasets -> model -> training/decoding -> evaluation -> analysis -> related work -> conclusion), and the main contribution (MTL with grapheme-to-phoneme auxiliary task improving normalization) is stated, but presentation is marred by repeated and duplicated paragraphs, missing/unclear references to figures and tables (e.g. Table 1, Figure 4 cited but not shown), and several formatting/notation issues (loss formula and some numeric values are truncated or inconsistently reported). These clarity problems and sporadic grammatical/formatting errors make some sections hard to follow despite generally understandable content."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against appropriate and recent baselines (Norma, an averaged perceptron alignment model, and the state-of-the-art sequence-labeling approach of Bollmann & S\u00f8gaard 2016; see the \"Baselines\" paragraph). Comparisons appear fair: experiments use the same Anselm texts with consistent train/dev/test splits across 43 manuscripts and hyper-parameters tuned on a held-out manuscript B (Sec. 4 and 3.6). The authors explicitly acknowledge relative performance (\"All our architectures perform better than Norma... and all the MTL architectures outperform Bollmann and S\u00f8gaard (2016)\") and provide detailed analyses of differences (Sec. 5: weight comparisons, error overlap, saliency, t-SNE) while citing and discussing the relevant competing approaches (edit-distance, SMT, prior neural work)."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper's main claims (MTL with grapheme\u2192phoneme auxiliary task improves normalization and resembles attention) are supported by experiments across 43 texts and quantitative figures (e.g. average error reductions, Pearson r=0.346 for weight differences, \u03ba=0.834) but the reporting omits key methodological details and statistical tests. Hyperparameters were tuned on a single manuscript (Sec. 3.6) while the per-text dev set is stated as \"not currently used\" (Sec. 4), raising concerns about tuning bias and generality; there are no significance tests or multiple random runs reported. The mathematical parts are trivial and correct, but some interpretive claims (MTL \"learns to focus attention\") are only moderately supported by correlation evidence and lack stronger ablation/learning-curve analyses. Overall the experiments and baselines are broadly appropriate, but missing controls and statistics justify a cautious score."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This is squarely within top-tier NLP scope: it addresses historical spelling normalization using modern sequence-to-sequence models with attention and multi-task learning (Sec. 3, 3.5), evaluated on 44 texts from the Anselm corpus (Sec. 2) and using CELEX for grapheme-to-phoneme auxiliary data. Methods, baselines and evaluation follow community standards (comparisons to Norma and bi-LSTM tagger, word-level accuracy, beam search/lexical filtering), and the paper provides empirical improvements (~2\u20133% absolute) and focused analysis of MTL vs attention, making it well positioned for a top NLP venue."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Experiments are broad and well-structured: evaluation on 43 texts from the Anselm corpus with competitive baselines (perceptron, bi-LSTM tagger, Norma), multiple decoding variants (greedy, beam, lexicon filter), and a clear MTL auxiliary task using CELEX (Sec. 2\u20134). The paper includes focused ablations (attention vs MTL vs both) and in-depth analyses (weight-difference correlation r=0.346, error-resolution counts, \u03ba=0.834, t-SNE and saliency analyses) that support the main claims. Shortcomings are modest but important: there is no sensitivity analysis over hyperparameters or training set size, hyperparameter tuning was done on a single manuscript (B), and some implementation details needed for exact reproduction (e.g., exact number of LSTM layers, random seeds and full baseline hyperparameters) are omitted despite reporting many training settings (embedding/LSTM size=128, dropout=0.3, Adam lr=0.003, Keras v1.0.8)."
+    }
+  }
+}

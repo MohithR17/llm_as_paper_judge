@@ -1,0 +1,72 @@
+{
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses a core NLP problem (morphological paradigm completion) using contemporary neural methods (encoder\u2013decoder gated RNN with attention) and cross-lingual transfer, which is squarely within the scope of top NLP/ML venues. It reports experiments across many language pairs (including Portuguese\u2013Spanish, Arabic\u2013Spanish and 21 language pairs), considers zero-/one-shot settings, uses standard evaluation (accuracy) and relevant baselines (no-transfer, ciphered control), and discusses limitations and related work thoroughly. The topic, methods, and evaluations target the conference audience and standards, making it a strong fit for a top-tier venue."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are fairly comprehensive: results include Portuguese\u2013Spanish and Arabic\u2013Spanish setups plus broader evaluation on 21 language pairs from four families, and baselines such as no-transfer and a ciphered high-resource condition are tested. Related work is reported as thorough and hyperparameters are provided, aiding reproducibility, though code availability is not mentioned. Limitations and failure modes (limited transfer across unrelated languages, Arabic acting as a regularizer, restriction to k\u2208{1,2}, m=k, and regularization difficulties) are explicitly discussed, but there is limited evidence of deeper ablations or sensitivity analyses of model components and of broader k/m settings, so some analysis gaps remain."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical problem\u2014paradigm completion for low-resource languages\u2014by demonstrating a neural one-/zero-shot cross-lingual transfer method that yields up to 58% higher accuracy than no-transfer and is evaluated on 21 language pairs across multiple families. Showing that parameter-tied encoder\u2013decoder multi-task learning enables one-shot and zero-shot learning is likely to change how researchers approach low-resource morphology and inspire follow-up work. The finding that transfer quality depends strongly on language relatedness and that unrelated languages (e.g., Arabic) act mainly as regularizers clarifies practical limits, so while impactful and broadly relevant to cross-lingual NLP, the approach is constrained by relatedness and the limited k/m setting."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable novel application: framing cross-lingual morphological paradigm completion as multi-task learning by tying parameters of a gated RNN encoder\u2013decoder with attention and using language tags to enable zero-/one-shot transfer\u2014this is a clear methodological contribution beyond standard single-language seq2seq. The experiments (including a ciphered-high-resource baseline and evaluations over 21 language pairs, showing up to 58% accuracy gains and strong effects of language relatedness) demonstrate that the approach is meaningfully distinct and empirically validated. The authors explicitly separate their claims from prior work and discuss limitations (e.g., related-language dependence, k\u2208{1,2}), which supports that this is a differentiated, non-trivial extension rather than a mere rehash. Therefore the contribution is notably novel though not a radical paradigm shift, so a score of 4 is appropriate."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper evaluates against reasonable internal baselines (no-transfer, a ciphered high-resource condition, and an Arabic baseline) and reports accuracy across 21 language pairs, which supports fair experimental comparisons. It also explicitly discusses limitations (e.g., Arabic mainly acting as a regularizer and transfer being stronger for related languages) and the related-work coverage is described as thorough. However, the summary does not indicate comparisons to other recent state-of-the-art cross-lingual or paradigm-completion systems, so there appear to be minor omissions in external baseline coverage."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported by experiments across 21 language pairs (including Portuguese\u2013Spanish and Arabic\u2013Spanish) showing up to 58% accuracy gain, and the method is a standard, well-specified encoder\u2013decoder multi-task formulation with sensible baselines (no-transfer and ciphered high-resource). Mathematical presentation is routine for the model class and no complex proofs were required. A minor concern is that the summary does not report statistical significance testing and notes regularization difficulties in low-resource settings, which are not fatal but worth addressing. Overall the conclusions are reasonable given the presented experimental setup and reported limitations."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized with a logical flow and clearly states its main contributions early (novel cross-lingual transfer method and one-shot/zero-shot claims). Notation and methodology are presented consistently (use of \u03b8, p_\u03b8, and an encoder\u2013decoder gated RNN with attention) and datasets/baselines are described concretely (Portuguese\u2013Spanish, Arabic\u2013Spanish, 21 language pairs; no-transfer and ciphered baselines). Writing quality is reported as good and related work coverage is thorough, though the summary does not specify the presence or quality of figures/tables, so minor presentation details may be unspecified."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A novel cross-lingual transfer method for paradigm completion using a neural encoder-decoder is presented.",
+      "Using labeled data from a high-resource language improves performance on low-resource languages, yielding up to 58% higher accuracy than without transfer.",
+      "The approach enables zero-shot and one-shot learning for morphological paradigm completion.",
+      "The degree of language relatedness strongly influences the ability to transfer morphological knowledge."
+    ],
+    "methodology": "They model cross-lingual transfer as multi-task learning by tying parameters \u03b8 for high- and low-resource languages and parameterize each conditional distribution p\u03b8 as an encoder-decoder gated RNN with attention (bidirectional encoder, unidirectional decoder); inputs include a language tag, morphological tag, and character sequence.",
+    "datasets": [
+      "Portuguese-Spanish data (Experiment 1)",
+      "Arabic-Spanish data (Experiment 1)",
+      "experiments on 21 language pairs from four different language families (as stated)"
+    ],
+    "baselines": [
+      "Arabic (used as a baseline)",
+      "no-transfer (training only on the target language)",
+      "ciphered high-resource language condition (random cipher applied to high-resource data)"
+    ],
+    "metrics": [
+      "accuracy"
+    ],
+    "limitations": [
+      "Transfer is conjectured/observed to be viable mainly among related languages (limited transfer across unrelated languages).",
+      "Arabic (an unrelated language) does not support true morphological transfer and mainly acts as a regularizer.",
+      "The work addresses the case k \u2208 {1,2} and m = k (i.e., a limited number of input/output languages) and does not address k>2 or m>2.",
+      "Regularization was a notable difficulty in the low-resource experimental setting."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - morphological paradigm completion / cross-lingual transfer",
+    "writing_quality": "good"
+  }
+}

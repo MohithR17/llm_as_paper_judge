@@ -1,0 +1,39 @@
+{
+  "ORIGINALITY": 3,
+  "CLARITY": 2,
+  "SUBSTANCE": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines existing lines of work (character-to-word composition like Ling et al. 2015 C2W, CNN/RNN character encoders such as Kim/Lee, and character-level/hierarchical decoders) into a specific architecture that (a) uses two RNNs to learn morpheme-like subword units (Sec. 3.1) and (b) a two-level hierarchical decoder for character generation (Sec. 3.3). These components and the claim to learn morpheme boundaries are a non-trivial engineering/architectural extension, but they are incremental relative to closely related prior work (Ling et al., Lee et al., Luong & Manning, Chung et al.) already applying compositional character encoders and character-level NMT. Thus the contribution is moderately novel but not a fundamentally new idea."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has a recognizable structure (intro, method, experiments) but the text is marred by extensive repetition, duplications and LaTeX/artifact remnants that break the logical flow (many paragraphs are repeated verbatim). Main contributions are mentioned but not crisply or early due to cluttered writing; equations and notation are presented but inconsistently formatted (e.g., wt defined both with exp(aff(ht)) and later saying tanh is used instead of normalization), which reduces clarity. Figures and Table 1 are referenced and seem relevant, but the table is poorly formatted/garbled in the excerpt and figure descriptions rely on missing visuals; overall the writing contains grammatical issues and ambiguity that require substantial editing."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper presents multiple experiments on WMT En-Fr and En-Cs with BLEU comparisons and training-efficiency metrics (Table 1) and provides targeted analyses of learned morphology (Figures 3\u20134) and a comparison between an ordinary RNN word encoder and their encoder. However, systematic ablation/sensitivity studies of key design choices (e.g., hierarchical decoder, HGRU, choice of tanh vs. softmax weighting, character-vocab size) are largely absent, and failure modes or limitations are not explicitly discussed. Related work is reasonably well covered and training details (datasets, hyperparameters, optimizer, model sizes) are provided (Section 4.2 and architecture descriptions), but some implementation specifics needed for full reproduction are missing (exact decoder/beam settings, initialization, full training schedule), so the evaluation is adequate but incomplete."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper presents empirical evidence (BLEU table, training-time comparisons and qualitative PCA/energy plots) that the proposed DCNMT can learn morphology and reach competitive BLEU, but the experimental methodology and reporting lack important detail and controls (e.g. many comparison results are taken from prior work with potentially different setups, no statistical significance tests, and some table entries and training conditions are unclear). There are internal technical inconsistencies in the model description (wt is defined as exp(aff(ht)) yet the text then says they use tanh instead of normalizing \u2211t exp(\u00b7), leaving the intended weighting/normalization unclear), and claims about learned segmentation/morphemes are only supported qualitatively, not quantitatively. Overall the core idea appears plausible and partially supported by experiments, but missing/unclear definitions and limited experimental rigor leave open technical concerns."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes. The paper addresses neural machine translation\u2014character-level modeling and morphology learning\u2014which is squarely within top NLP/ML conference topics. It evaluates on standard WMT corpora (En\u2013Fr, En\u2013Cs), reports BLEU and compares to relevant baselines (BPE, C2W, char2char, CNN encoders) and provides architectural and training details (hierarchical decoder, six RNNs, ADAM, beam search). The problem formulation, methodology and evaluation follow community norms and the paper is positioned with respect to recent NMT work (Bahdanau et al., Sutskever et al., Ling et al., Lee et al.), making it a strong fit for a top venue."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important practical problem of large-vocabulary/OOV handling in NMT by proposing a deep character-level architecture that \"avoids the large vocabulary issue radically\" and explicitly learns morphology via a two-RNN word encoder (six RNNs total and a hierarchical decoder). Empirically it reports being more training-efficient (\"higher BLEU score than the bpe-based model after training for one epoch on En-Fr and En-Cs\") while achieving final BLEU comparable to state-of-the-art, and provides analyses showing the model \"is able to learn morphology.\" These properties make the work likely to influence how researchers approach open-vocabulary NMT and to open follow-up work on learned subword/morphology modeling and character-level generation."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to a broad set of relevant recent baselines (BPE/subword models, C2W/Ling et al., CNN word encoders (Kim/Lee), Chung et al., Luong & Manning, Firat et al.) and reports BLEU and training-efficiency numbers in Table 1 on standard WMT splits (newstest2013/2015). However, several baseline results are taken from prior papers (not always run under identical training/preprocessing), and the paper mixes one-epoch vs final results when highlighting advantages, so some comparisons are not perfectly controlled. The authors do acknowledge when prior methods are comparable or slower (e.g. Luong & Manning\u2019s long training) and provide analyses of differences in representation and efficiency, but deeper controlled ablation/analysis of BLEU differences is limited."
+    }
+  }
+}

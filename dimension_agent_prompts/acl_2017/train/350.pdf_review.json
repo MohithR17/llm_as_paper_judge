@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "CLARITY": 2,
+  "IMPACT": 4,
+  "SUBSTANCE": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This is squarely within top-tier NLP/ML scope: it addresses automatic event extraction (information extraction) using distant supervision from Freebase/FrameNet and Wikipedia, a core NLP/IE problem. The formulation (key-argument and trigger detection, two-stage extraction) and methods (DMCNNs with multi-instance learning, word embeddings) match standards for the venue, and evaluations include held-out, ACE comparisons, and manual annotation. Related work and baselines (Chen et al. 2015; Nguyen et al. 2016; Mintz et al. 2009) are cited, so the paper is positioned correctly for the NLP research community."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable and coherent novel application of distant supervision to event extraction by treating Freebase CVTs as event schemas and combining world knowledge (Freebase) with linguistic knowledge (FrameNet) to automatically label large-scale training data \u2014 an approach not broadly explored (Reschke et al. 2014 handled only plane crashes). Specific new components include the Key Rate (KR = Role Saliency * Event Relevance) for key-argument selection and Trigger Rate (TR = TCF * TETF) for trigger detection, plus mapping events to frames (via embeddings) and training DMCNNs with multi-instance learning to handle noisy DS labels. These are non-trivial, well-differentiated extensions over prior distant-supervision for relation extraction and limited prior EE work, though the core ideas build on known DS and MIL techniques (i.e., moderate rather than groundbreaking novelty)."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has an overall plausible organization (Background -> method -> experiments) but its flow is frequently disrupted by repeated paragraphs and duplicated lines which make it hard to follow (many repeated sentences in the Related/intro area). Main contributions are only implicit near the end rather than clearly stated up front. Notation and equations are inconsistently presented (e.g., RSij/Count(Ai, ETj), later j versus j* in the argmax, typos like 'Arguemnti'), and figures/tables are referenced but not clearly integrated (Figure/Table references without clear placement). Writing contains numerous grammatical errors and misspellings (\"Standford\", \"MannalAnotate\", \"23th April\"), reducing clarity and requiring substantial copyediting."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important bottleneck of scarce annotated data for event extraction by automatically labeling large-scale training data using Freebase CVTs (as event instances) and FrameNet LUs (as triggers), which directly addresses a practical limitation in the field. Its proposed scoring methods (Key Rate for arguments and Trigger Rate for verbs) and the use of DMCNNs with MIL produce substantial, high-quality data (72,611 labeled instances) with strong manual precision (88.9% triggers, 85.4% arguments), suggesting the approach is practical and effective. This is likely to change how researchers construct training corpora for event extraction, opening follow-on work on distant supervision for richer event schemas and improving KB population pipelines. The impact is broad across NLP subareas that need scalable event annotations, though it does not by itself redefine fundamental modeling paradigms."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper provides multiple evaluations (manual labeling precision on 500 samples with trigger 88.9% and argument 85.4%, held-out P\u2013R curves, and a human top-n evaluation) and shows an ablation-like comparison that multi-instance learning helps (Figures 7\u20138). Related work is reasonably comprehensive, discussing supervised, unsupervised and distant supervision approaches. However, important analysis/detail is missing or not shown in the excerpt: key hyperparameters (e.g. chosen K for key arguments), full quantitative results/tables for comparisons, more systematic ablations/sensitivity analyses, and a deeper discussion of limitations beyond noting Freebase incompleteness and label noise, so reproducibility and analysis are only partial."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper presents a plausible pipeline (key-argument KR = RS*ER, trigger TR = TCF*TETF, DMCNNs with MIL) and some empirical evidence (manual precision 88.9/85.4; held-out and human evaluations mentioned). However, the MIL objective and bag-label mapping are under-specified (Eq. 9\u201310 do not clearly define p(yi|mji,\u03b8) or the mapping between yi and role r), and mathematical treatment is heuristic rather than formally justified. Experimental methodology is incomplete in the provided text: quantitative results and comparisons to baselines are referenced but not shown, no statistical significance testing is reported, and recall is largely missing due to reliance on incomplete Freebase. These gaps raise concerns about whether all claims are fully supported by the evidence presented."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to appropriate and recent baselines (e.g., Chen et al., 2015 DMCNN; Nguyen et al., 2016 SOTA) and positions itself relative to distant supervision work (Mintz et al., 2009; Hoffmann et al., 2011; Surdeanu et al., 2012) and unsupervised approaches (Chambers & Jurafsky, 2011). It explicitly states using the same ACE test/dev splits as prior EE work (\u201cFollowing (Nguyen et al., 2016; Chen et al., 2015; Li et al., 2013) \u2026\u201d) and uses held-out and manual evaluations like Mintz et al., but the manuscript does not fully clarify whether all baselines were retrained under identical data/labeling conditions and provides limited in-depth analysis of performance differences beyond noting that MIL helps and that \u201cDMCNNs-MIL achieves the best performance.\u201d Overall, comparisons are good and relevant but fairness/details and deeper comparative analysis are somewhat under-specified."
+    }
+  }
+}

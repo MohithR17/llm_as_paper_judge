@@ -1,0 +1,181 @@
+{
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 4,
+  "APPROPRIATENESS": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses an important problem and demonstrates empirical gains with a novel, interpretable RST-aware architecture, but its dependence on an external discourse parser and sensitivity to limited RST training data constrain practical adoption. Given the clear empirical improvements and potential to influence follow-up work\u2014tempered by realistic limitations that stop it from being fully transformative\u2014I assign a slightly above\u2011average impact score of 4.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important problem\u2014incorporating RST-style discourse into text categorization\u2014and demonstrates gains across several datasets with a novel unnormalized attention RST-RNN. However, its impact is constrained by heavy reliance on an external discourse parser (DPLP trained on only 347 WSJ articles) and sensitivity to discourse-treebank size (performance falls when RST data is reduced), which limits practical adoption without more robust parser analysis or end-to-end adaptation. The work could influence follow-up research on discourse-aware architectures, but its reliance on off\u2011the\u2011shelf parsing and the lack of reported parser-error ablations reduce confidence that it will substantially change practice without further methodological safeguards."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This work tackles the important problem of integrating discourse structure into text categorization and provides a practical, interpretable recursive neural architecture (relation-specific composition + unnormalized attention over EDUs) that yields empirical gains across multiple corpora (movie reviews, legislative bills, MFC, large Zhang et al. dataset) against strong baselines (Hierarchical Attention Networks and several discourse-aware baselines). From my perspective, the model operationalizes RST in a way that can change how practitioners weight discourse units and encourages follow-up work combining neural methods with discourse priors; the clear ablation on RST training size and acknowledgement of parser dependence make its applicability realistic rather than overstated. The reliance on external discourse parsers and sensitivity to limited RST annotations limit immediate widespread adoption, so I view the contribution as strong and influential but not fully transformative."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized with a clear flow from motivation through method to experiments and conclusion, and its main contributions (RST-based recursive network and unnormalized attention) are stated early. Notation appears consistent and sufficiently defined, and writing quality is good with thorough related work and hyperparameter reporting; figures/tables/examples (e.g., dataset summaries and baseline comparisons) are informative. Minor presentation issues remain (e.g., the dependence on an external discourse parser is noted but could use clearer exposition or a parser-error analysis appendix), so I rate clarity as strong but not flawless. | B(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the main contributions early: leveraging RST discourse trees and an unnormalized attention mechanism in a recursive network. Notation and hyperparameters are reported and consistent, and figures/tables/examples appear effective for demonstrating the model and results across multiple datasets. From an applied-structures perspective the writing is clear and grammatically sound, though a few sections (e.g., dependency on parser training data and limited discourse-data ablations) could be expanded for absolute clarity, so I rate it as very good with minor presentation issues.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized with a clear flow from motivation through method to experiments and conclusion, and its main contributions (RST-based recursive network and unnormalized attention) are stated early. Notation appears consistent and sufficiently defined, and writing quality is good with thorough related work and hyperparameter reporting; figures/tables/examples (e.g., dataset summaries and baseline comparisons) are informative. Minor presentation issues remain (e.g., the dependence on an external discourse parser is noted but could use clearer exposition or a parser-error analysis appendix), so I rate clarity as strong but not flawless."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the main contributions early: leveraging RST discourse trees and an unnormalized attention mechanism in a recursive network. Notation and hyperparameters are reported and consistent, and figures/tables/examples appear effective for demonstrating the model and results across multiple datasets. From an applied-structures perspective the writing is clear and grammatically sound, though a few sections (e.g., dependency on parser training data and limited discourse-data ablations) could be expanded for absolute clarity, so I rate it as very good with minor presentation issues."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper is an incremental but useful combination of existing components: operationalizing RST dependency trees in a recursive neural model with relation-specific composition and an unnormalized sibling attention is a practical contribution beyond prior hierarchical/attention work. However, reliance on an external discourse parser, limited theoretical novelty, and missing parser-error/ablation analysis constrain the originality. Given these strengths and limitations, a moderate originality score of 3 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper combines existing ideas\u2014recursive composition over discourse trees and attention\u2014with RST discourse parses to improve classification; this is an incremental but reasonable extension rather than a breakthrough. The unnormalized sibling attention and use of relation-specific composition matrices are modest methodological novelties, but the approach relies on an external discourse parser (DPLP) and lacks a strong theoretical account or rigorous parser-error ablation that would elevate originality. Given prior work on discourse-weighting schemes and hierarchical attention baselines cited in the paper, the contribution is a non-trivial engineering advance with moderate novelty rather than a fundamentally new perspective."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper contributes a notable, practical novelty by operationalizing RST discourse dependency trees within a recursive neural architecture and introducing an unnormalized sibling attention mechanism motivated by RST to automate prior hand-designed weighting schemes. While using an existing discourse parser (DPLP) and standard BiLSTM EDU encoders reduces pure methodological novelty, the combination of relation-specific composition matrices and the unnormalized attention over EDUs is a non-trivial extension beyond prior hierarchical/attention models (e.g., HAN) and discourse-weighting work. This approach would likely inform experts interested in integrating structural linguistic priors with modern neural models, even though it builds on several established components."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper compares to a comprehensive and relevant set of baselines across multiple datasets with fair metrics and transparent reporting. I dock one point because Reviewer A rightly notes missing targeted ablations (impact of the off\u2011the\u2011shelf DPLP parser and simple alternative attention schemes) that would strengthen claims about the method\u2019s specific contributions and sensitivity to parser errors, while Reviewer B\u2019s points about thorough empirical comparisons justify a near\u2011top score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper compares to several strong and relevant baselines (Hierarchical Attention Networks; prior discourse-weighting schemes such as Bhatia et al.; Yogatama & Smith; dataset coverage is broad), and uses consistent metrics (accuracy, average accuracy). However, from the summary there is no ablation quantifying the impact of the off\u2011the\u2011shelf DPLP parser (a key external component trained on only 347 WSJ docs), nor a direct baseline that implements a normalized sibling attention or other simple alternative attention schemes\u2014both of which my reviewer persona demands. The authors note sensitivity to discourse training size but do not provide the parser\u2011error or alternative\u2011attention analyses I would require for a higher score."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper evaluates against a comprehensive set of relevant baselines (HAN; several discourse-weighting and discourse-aware prior works such as Bhatia et al., Yessenalina et al., Card et al.) across multiple datasets (large Zhang et al. corpus, MFC, congressional debates, Pang & Lee, legislative bills) using consistent accuracy metrics. Comparisons appear fair (same data and metrics reported), the authors explicitly acknowledge when their approach underperforms (RST treebank size ablation showing Yang et al. can beat them) and they analyze differences by comparing to prior hand-designed weighting schemes and reporting hyperparameters/limitations. From an applied-structures perspective this reads as a thorough, well-justified empirical comparison to the most relevant competing approaches."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the empirical evaluation is solid\u2014multiple datasets, strong baselines, and useful sensitivity analyses\u2014supporting the paper\u2019s main claims. I rate it a 4 because, while the experiments and ablations are substantive and generally convincing, important analyses are missing (no dedicated parser-error ablation/statistical significance testing and unclear code availability), which prevents a fully exhaustive validation of the method.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "Experiments cover multiple datasets and include several strong baselines (Yang et al., Bhatia et al., prior discourse models), and there is at least one useful sensitivity test (reducing RST treebank size). However, the paper relies on an off\u2011the\u2011shelf discourse parser (DPLP) without a dedicated parser\u2011error ablation or analysis quantifying how parser mistakes affect classification \u2014 a major concern given my emphasis on end\u2011to\u2011end evaluation. Statistical significance testing and more systematic ablations (e.g., comparing normalized vs. unnormalized attention variants with theory-driven analysis) are not reported in the summary, and code availability is unclear, limiting reproducibility. Overall the empirical work is solid but misses key analyses I expect for claims about discourse structure and the unnormalized attention mechanism."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper provides a solid, empirically grounded evaluation: multiple datasets (large Zhang et al. set plus several domain-specific corpora) and comparisons to strong baselines (HAN, prior discourse-weighting methods, and task-specific models) support the central claims. I particularly value the sensitivity analysis showing dependence on RST treebank size and the ablation-style insight that discourse parses (DPLP) and learned unnormalized attention matter; hyperparameters are reported, aiding reproducibility. Minor gaps remain \u2014 code/model release is not mentioned and the method\u2019s reliance on a parser trained on only 347 WSJ articles could use further empirical analysis \u2014 so while thorough, the work stops short of being fully exhaustive."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper is squarely within the venue\u2019s scope\u2014addressing discourse-aware representation learning for text categorization with appropriate baselines and datasets. I rate it a 4 because, while the applied contribution and empirical evaluation are strong and relevant, outstanding concerns about reliance on an external parser without robustness analysis and insufficient justification for the unnormalized attention mechanism reduce its theoretical completeness for a top-tier theoretical emphasis. Addressing those points would elevate the fit to a clear 5.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper is broadly within scope for a top NLP venue: it studies discourse-aware representation learning for text categorization and evaluates on multiple relevant datasets with comparisons to strong baselines (HAN, prior discourse-weighting schemes, etc.). However, from my theory-first perspective there are important gaps that reduce its fit: the method relies on an off-the-shelf DPLP parser (trained on only 347 WSJ articles) without end-to-end adaptation or a parser-error ablation quantifying its impact, and the unnormalized attention choice is asserted as principled but lacks formal justification or analysis. With those weaknesses addressed (parser-robustness experiments and clearer theoretical motivation), this would be an excellent fit."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper addresses a core NLP research question\u2014integrating RST discourse structure into neural text categorization\u2014using a novel recursive network over discourse dependency trees and an attention mechanism, which is squarely within top-tier NLP/ML scope. The methodology, comparisons to strong baselines (HAN, prior discourse-weighting work), use of multiple real-world datasets (including large-scale Zhang et al. data, MFC, debates, legislative corpora), and standard evaluation metrics match the expectations of the venue. From my applied-structures perspective the paper targets the right audience (those interested in linguistically informed neural models) and is positioned well within the community despite dependence on an external parser and no explicit code release noted in the summary."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the empirical results are promising and evaluated across multiple datasets, and both flag the major methodological caveat of relying on an off\u2011the\u2011shelf DPLP parser and the absence of statistical significance testing. Reviewer A\u2019s concerns about missing parser-error ablations and theoretical justification for the unnormalized attention are valid but appear to be methodological gaps rather than fatal flaws. Given that the experiments and ablation-like sensitivity analyses largely support the claims, a slightly positive score of 4 reflects overall soundness while acknowledging the noted limitations that should be addressed in revision.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper makes clear, testable claims and provides experiments on multiple datasets showing gains and a noted dependence on discourse-treebank size, which supports the main empirical point. However, critical methodological issues remain: the model relies on an off\u2011the\u2011shelf DPLP parser trained on only 347 WSJ articles without end\u2011to\u2011end adaptation or a parser-error ablation quantifying its impact (a hard requirement for discourse\u2011aware claims under my reviewer priors). The unnormalized attention is motivated conceptually by RST but lacks theoretical justification or analysis explaining why it should outperform normalized alternatives, and the paper does not report statistical significance tests or robustness checks despite multiple datasets. These gaps raise concerns about whether the reported improvements truly derive from discourse modeling rather than parser artifacts or design choices."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s central claims are generally well supported: a discourse-tree recursive network with an unnormalized attention mechanism is evaluated against strong baselines across multiple datasets and an ablation-like analysis showing sensitivity to RST training size is reported. Mathematical components appear straightforward (composition matrices and attention) and no glaring derivation errors are indicated in the summary. My main technical concerns are reliance on an off-the-shelf DPLP parser trained on 347 WSJ articles (raising domain/generalization assumptions that are acknowledged but not fully controlled) and no mention of statistical significance testing for improvements. Overall the evidence justifies the conclusions, with minor methodological caveats that do not overturn the main results."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Discourse structure as defined by Rhetorical Structure Theory and provided by an existing discourse parser benefits text categorization.",
+      "A recursive neural network built on a discourse dependency tree with a learned attention mechanism can focus on salient EDUs for categorization.",
+      "The proposed attention mechanism is unnormalized across siblings (motivated by RST) and automates weighting schemes previously hand-designed."
+    ],
+    "methodology": "Build a recursive neural network over discourse dependency trees: EDUs are embedded via a bidirectional LSTM, composed up the tree with relation-specific composition matrices and an unnormalized attention weight function, and the root representation is used for classification.",
+    "datasets": [
+      "Preprocessed dataset from Zhang et al. (2015) (650,000 train, 50,000 test)",
+      "Media Frames Corpus (MFC; Card et al., 2015) \u2014 ~4,200 immigration articles",
+      "Congressional floor debates corpus (Thomas et al., 2006; split by Yessenalina et al., 2010)",
+      "Pang and Lee (2004) movie review corpus (2000 reviews)",
+      "Legislative bills corpus (Yano et al., 2012) \u2014 51,762 bills"
+    ],
+    "baselines": [
+      "Hierarchical Attention Networks (Yang et al., 2016)",
+      "Bhatia et al. (2015) (discourse-weighting schemes)",
+      "Hogenboom et al. (2015)",
+      "Yogatama and Smith (2014)",
+      "Card et al. (2016)",
+      "Yessenalina et al. (2010)"
+    ],
+    "metrics": [
+      "Accuracy",
+      "Average accuracy across 10-fold cross validation"
+    ],
+    "limitations": [
+      "Performance depends on the availability/size of labeled discourse data \u2014 if the RST discourse treebank is reduced to 25% of its size, the method underperforms the discourse-ignorant model of Yang et al. (2016).",
+      "Method requires automatically-derived discourse parses (they use DPLP), so dependent on parser quality and its training data (DPLP trained on 347 WSJ articles)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - discourse-aware text categorization (including sentiment analysis)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory-first Skeptic",
+      "background": "Senior NLP researcher with a PhD in computational linguistics and a track record of work on formal models of discourse and interpretability.",
+      "traits": [
+        "Penalizes papers that rely on external linguistic annotations or off-the-shelf parsers without either (a) end-to-end training that adapts the component or (b) a detailed error analysis quantifying parser impact (will lower score if no parser-error ablation).",
+        "Requires formal or at least clear theoretical justification when a key modeling choice is asserted as principled (will deduct points if novel claims\u2014e.g., unnormalized attention motivated by RST\u2014are not accompanied by analysis or clear theorem/intuition explaining why the choice is expected to help).",
+        "Demands at least three strong baselines, including: a competitive non-discourse model (e.g., flat BiLSTM + attention), a simple discourse-agnostic tree or hierarchical model, and an alternative attention/weighting scheme (e.g., normalized sibling attention); will downgrade if baselines are fewer or weak.",
+        "Insists on statistical significance testing and robustness checks across multiple datasets; will penalize results that are marginal improvements without confidence intervals or tests."
+      ],
+      "reviewing_style": "I prioritize theoretical clarity and rigorous ablation/error analysis; empirical gains are convincing only if accompanied by principled explanations and thorough comparisons."
+    },
+    "reviewer_b": {
+      "name": "Applied-structures Enthusiast",
+      "background": "Experienced machine learning/NLP practitioner focused on discourse-aware models and practical improvements for text categorization and sentiment analysis in industry and academia.",
+      "traits": [
+        "Rewards empirical gains driven by structured linguistic priors (will give a higher score if discourse-based modeling yields consistent improvements across multiple datasets even when using off-the-shelf parsers).",
+        "Values novel neural architectures and mechanisms that operationalize linguistic theory (will boost score for a recursive network over discourse dependency trees and an attention mechanism that automates hand-designed weighting schemes).",
+        "Favors strong ablation studies that illuminate which components contribute to gains (will increase score if the paper includes component-wise ablations and qualitative examples showing interpretability of attention over EDUs).",
+        "Prefers practical reproducibility: will give extra credit if code, trained models, or clear hyperparameter settings are released; but will not heavily penalize use of external parsers provided the empirical benefit is clear."
+      ],
+      "reviewing_style": "I emphasize practical impact from integrating linguistic structure with modern neural methods and reward clear empirical improvements plus interpretable components even if some engineering choices use existing tools."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

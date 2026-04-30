@@ -1,0 +1,72 @@
+{
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper targets an important problem\u2014weakly supervised semantic parsing over a large KB\u2014and presents a practically effective hybrid (seq2seq programmer + symbolic Lisp executor) that achieves state-of-the-art results on WEBQUESTIONSSP, substantially narrowing the gap to full supervision. Its combination of key-variable memory for compositionality and REINFORCE augmented by iterative maximum-likelihood offers a replicable approach that is likely to influence follow-up neural\u2013symbolic work and weakly supervised program induction. While there are practical limitations (KB query bottleneck, overfitting, limited generalization of learned operations), the method opens meaningful new directions and is likely to be built upon beyond this specific dataset."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a notable new architecture by combining a seq2seq \"programmer\" with a non-differentiable Lisp \"computer\" that both executes programs against Freebase and provides code-assistance, plus a key-variable memory to support compositionality\u2014features not present together in the cited prior work (e.g., Neural Programmer, RL-NTM). Its training recipe (REINFORCE augmented with an iterative maximum-likelihood beam-search to find pseudo-gold programs) is a non-trivial methodological combination tailored for weak supervision. These elements and the reported state-of-the-art on WEBQUESTIONSSP indicate clear differentiation from prior methods, so the contribution is notably novel though building on existing lines of work."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized and the flow from intro to method to experiments is clear: the seq2seq \"programmer\" and symbolic \"computer\" architecture and training procedure are described coherently. The main contributions are stated early (Neural Symbolic Machine, key-variable memory, REINFORCE + iterative ML) and the writing quality is reported as good. Notation and methodological descriptions appear consistent and understandable from the summary, though some presentation details (e.g., figures/tables impact and exact evaluation metrics) are not specified in the provided summary, suggesting only minor gaps in presentation."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported: the paper presents a concrete NSM architecture (seq2seq programmer + symbolic executor with code assistance and key-variable memory) and reports state-of-the-art results on WEBQUESTIONSSP with comparisons to several appropriate baselines. The training approach (REINFORCE augmented by iterative maximum-likelihood via beam search) is plausible and consistent with the reported weak-supervision setting. However, the summary omits details on evaluation metrics and statistical significance, and it notes dataset limitations (small dataset, many relations seen only once) and practical bottlenecks (KG query speed) that raise concerns about generality and robustness. Overall the technical claims are well-supported but minor methodological and generalization issues remain."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This work addresses semantic parsing / question answering over Freebase using a neural-symbolic seq2seq programmer and a symbolic executor with REINFORCE-based weak supervision, which is squarely within the scope of top NLP/ML conferences. The methodology (seq2seq with key-variable memory, non-differentiable Lisp 'computer', iterative maximum-likelihood + REINFORCE) and evaluation on the standard WEBQUESTIONSSP dataset against relevant baselines match community expectations. Related work coverage and reported hyperparameters indicate it is positioned for the venue despite noted limitations (dataset size, speed, generalization)."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against a range of appropriate and recent baselines (Neural Programmer, Dynamic Neural Module Network, RL-NTM, Dong & Lapata, Yih et al.) and evaluates on the standard WEBQUESTIONSSP dataset with Freebase, which indicates broadly fair and relevant comparisons. The summary also notes adequate related-work coverage and reports achieving state-of-the-art with weak supervision, and the paper analyzes how its key contributions (key-variable memory, code assistance, training procedure) differ from prior work. However, the provided summary does not explicitly confirm that all evaluation metrics and experimental conditions match prior work or that the authors explicitly acknowledge when prior methods perform comparably/better, so a minor uncertainty remains."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents strong empirical results (new state-of-the-art on WEBQUESTIONSSP using weak supervision) and describes concrete training/details (REINFORCE augmented with iterative ML, key-variable memory, hyperparameters reported), and it explicitly discusses several limitations (generalization of learned operations, overfitting, decoding speed). However, the summary does not report evaluation metrics, does not mention ablation studies that isolate contributions (e.g., effect of key-variable memory or code assistance), and code release is not stated, leaving some reproducibility and analysis gaps. These are minor but important omissions given the claims, so the work is solid overall but not exhaustively analyzed."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces Neural Symbolic Machine (NSM), combining a seq2seq \"programmer\" with a non-differentiable Lisp \"computer\" that executes programs against a large knowledge base and provides code assistance to prune search.",
+      "Uses a key-variable memory in the seq2seq programmer to support compositionality by saving and reusing intermediate results (variable names referring to symbolic results).",
+      "Trains the model from weak supervision by applying REINFORCE augmented with an iterative maximum-likelihood procedure that finds pseudo-gold programs via beam search.",
+      "On the WEBQUESTIONSSP dataset, NSM achieves new state-of-the-art performance with weak supervision and significantly narrows the gap between weak and full supervision for this task."
+    ],
+    "methodology": "A sequence-to-sequence neural \"programmer\" with key-variable memory generates programs in a high-level Lisp-like language; a symbolic non-differentiable \"computer\" executes programs against Freebase and provides code assistance; training optimizes expected task reward using REINFORCE augmented by an iterative maximum-likelihood (beam search) procedure to find pseudo-gold programs.",
+    "datasets": [
+      "WEBQUESTIONSSP",
+      "Freebase (knowledge base snapshot used during decoding)"
+    ],
+    "baselines": [
+      "Neural Programmer (Neelakantan et al., 2015)",
+      "Dynamic Neural Module Network (Andreas et al., 2016)",
+      "Reinforcement Learning Neural Turing Machines (RL-NTM) (Zaremba and Sutskever, 2015)",
+      "Dong and Lapata (2016) seq2seq approach",
+      "Methods cited for semantic parsing such as Yih et al. (2015) / Yih et al. (2016)"
+    ],
+    "metrics": [],
+    "limitations": [
+      "Operations learned with neural networks (e.g., addition and sorting) do not perfectly generalize to inputs larger than those seen in training.",
+      "Overfitting is a major problem (larger dropout produced better performance).",
+      "Decoding requires constant queries to the knowledge graph and is a speed bottleneck for training.",
+      "The dataset is small and some relations are only used once in the whole training set.",
+      "Desirable features from earlier work (e.g., OOPS ability to define new functions and modify code storage) remain future improvements."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - semantic parsing / question answering over knowledge bases",
+    "writing_quality": "good"
+  }
+}

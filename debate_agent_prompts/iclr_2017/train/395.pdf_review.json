@@ -1,0 +1,111 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and communicates its ideas clearly: contributions are stated early, the design and implementation of Edward are presented logically (modeling, inference, experiments), and experiments (e.g., benchmarks vs Stan/PyMC3, datasets like MNIST and Covertype) are described with reported hyperparameters and available code. Notation appears consistent and related work coverage is thorough; figures and tables (runtime and held-out likelihood) effectively support claims such as GPU speedups. A few presentation gaps remain around how the approach handles dynamic computation graphs and complex control flow\u2014these limitations are noted but could use clearer exposition for readers unfamiliar with TensorFlow internals. | B(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early, emphasizing Edward\u2019s Turing-completeness, compositional inference, and TensorFlow integration. Notation appears consistent and definitions are tied to the computational-graph representation of random variables; figures and tables (e.g., runtime and held-out likelihood comparisons against Stan and PyMC3) effectively illustrate claims like GPU HMC speedups. Writing quality is generally good, but a few important limitations\u2014handling complex control flow/recursion and extending to dynamic-graph frameworks\u2014are noted without fully detailed exposition, which makes those parts slightly harder to follow for readers focused on implementation implications.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and communicates its ideas clearly: contributions are stated early, the design and implementation of Edward are presented logically (modeling, inference, experiments), and experiments (e.g., benchmarks vs Stan/PyMC3, datasets like MNIST and Covertype) are described with reported hyperparameters and available code. Notation appears consistent and related work coverage is thorough; figures and tables (runtime and held-out likelihood) effectively support claims such as GPU speedups. A few presentation gaps remain around how the approach handles dynamic computation graphs and complex control flow\u2014these limitations are noted but could use clearer exposition for readers unfamiliar with TensorFlow internals."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early, emphasizing Edward\u2019s Turing-completeness, compositional inference, and TensorFlow integration. Notation appears consistent and definitions are tied to the computational-graph representation of random variables; figures and tables (e.g., runtime and held-out likelihood comparisons against Stan and PyMC3) effectively illustrate claims like GPU HMC speedups. Writing quality is generally good, but a few important limitations\u2014handling complex control flow/recursion and extending to dynamic-graph frameworks\u2014are noted without fully detailed exposition, which makes those parts slightly harder to follow for readers focused on implementation implications."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper presents a notable and practical novelty: treating inference as a first-class, composable programmatic abstraction and tightly integrating a Turing-complete PPL with a computational-graph backend (TensorFlow) to exploit GPU/parallelism. These design choices (random variables as graph objects, composable inference programs, data subsampling and GPU-accelerated HMC with large speedups versus Stan/PyMC3) clearly differentiate it from existing PPLs and are a non-trivial extension beyond prior toolchains. While it builds on well-studied problems and existing inference methods, the systems-level integration and composability would be informative and somewhat surprising to experts in probabilistic programming. | B(4): Edward presents a notable and timely integration of probabilistic programming with computational graphs (TensorFlow), treating random variables and inference as composable, first-class graph objects \u2014 a perspective that meaningfully departs from earlier PPLs by enabling GPU acceleration and data subsampling. While the overall goals (Turing-complete PPL, composable inference) build on established PPL ideas, the concrete design and demonstration of diverse, composable inference algorithms (VI, MCMC, GAN-style) within a graph-based runtime and the reported practical speedups represent a non-trivial and clearly differentiated extension. An expert would find the architecture and performance claims informative, even if the high-level problem is well studied.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper presents a notable and practical novelty: treating inference as a first-class, composable programmatic abstraction and tightly integrating a Turing-complete PPL with a computational-graph backend (TensorFlow) to exploit GPU/parallelism. These design choices (random variables as graph objects, composable inference programs, data subsampling and GPU-accelerated HMC with large speedups versus Stan/PyMC3) clearly differentiate it from existing PPLs and are a non-trivial extension beyond prior toolchains. While it builds on well-studied problems and existing inference methods, the systems-level integration and composability would be informative and somewhat surprising to experts in probabilistic programming."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Edward presents a notable and timely integration of probabilistic programming with computational graphs (TensorFlow), treating random variables and inference as composable, first-class graph objects \u2014 a perspective that meaningfully departs from earlier PPLs by enabling GPU acceleration and data subsampling. While the overall goals (Turing-complete PPL, composable inference) build on established PPL ideas, the concrete design and demonstration of diverse, composable inference algorithms (VI, MCMC, GAN-style) within a graph-based runtime and the reported practical speedups represent a non-trivial and clearly differentiated extension. An expert would find the architecture and performance claims informative, even if the high-level problem is well studied."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper clearly states its main claims and provides substantive experimental evidence (e.g., GPU HMC speedups up to 35x vs Stan and 6x vs PyMC3, evaluations on binarized MNIST and Covertype, and code release). Mathematical and implementation descriptions appear sound for a systems/construction paper. My concerns are experimental: the summary lacks details on controlled comparisons (matching HMC hyperparameters, warmup, number of independent runs/seeds, and precise CPU/GPU configurations), which are important to fully trust the reported speedups and runtime claims. These are minor methodological gaps that do not invalidate the contribution but warrant clarification for reproducibility. | B(4): The paper's central claims\u2014that Edward is a Turing-complete PPL built on TensorFlow, with composable random-variable representations and inference-as-first-class programs\u2014are clearly stated and supported by system design and experiments (e.g., GPU HMC speedups versus Stan and PyMC3, and evaluations on MNIST and Covertype). Mathematical content appears consistent with standard VI/MCMC formulations; no explicit incorrect derivations are reported in the summary. Experimental methodology uses reasonable baselines and metrics, though claims of \u201cno runtime overhead\u201d and large speedups rest on comparisons that may depend on particular implementations and hardware configurations, so the evidence is convincing but not exhaustive. Overall the paper is technically solid with minor empirical caveats and acknowledged limitations around complex control flow and dynamic-graph extensions.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims and provides substantive experimental evidence (e.g., GPU HMC speedups up to 35x vs Stan and 6x vs PyMC3, evaluations on binarized MNIST and Covertype, and code release). Mathematical and implementation descriptions appear sound for a systems/construction paper. My concerns are experimental: the summary lacks details on controlled comparisons (matching HMC hyperparameters, warmup, number of independent runs/seeds, and precise CPU/GPU configurations), which are important to fully trust the reported speedups and runtime claims. These are minor methodological gaps that do not invalidate the contribution but warrant clarification for reproducibility."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's central claims\u2014that Edward is a Turing-complete PPL built on TensorFlow, with composable random-variable representations and inference-as-first-class programs\u2014are clearly stated and supported by system design and experiments (e.g., GPU HMC speedups versus Stan and PyMC3, and evaluations on MNIST and Covertype). Mathematical content appears consistent with standard VI/MCMC formulations; no explicit incorrect derivations are reported in the summary. Experimental methodology uses reasonable baselines and metrics, though claims of \u201cno runtime overhead\u201d and large speedups rest on comparisons that may depend on particular implementations and hardware configurations, so the evidence is convincing but not exhaustive. Overall the paper is technically solid with minor empirical caveats and acknowledged limitations around complex control flow and dynamic-graph extensions."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Edward is a Turing-complete probabilistic programming language that provides compositional representations for random variables and inference, treating inference as a first-class citizen.",
+      "Edward integrates with computational graph frameworks (TensorFlow) to achieve computational efficiency (GPU/parallelism) and incurs no runtime overhead compared to handwritten TensorFlow.",
+      "Edward supports a wide range of composable inference methods (point estimation, variational inference, MCMC, GAN-style algorithms), data subsampling, and flexible model construction (including stochastic control flow and mutable state).",
+      "Edward attains substantial speedups in practice (e.g., GPU-accelerated HMC showing up to 35x speedup over Stan (1 CPU) and 6x over PyMC3 (12 CPU) on a logistic regression benchmark)."
+    ],
+    "methodology": "Design and implement Edward, a PPL built on top of computational graphs (TensorFlow), representing random variables as graph-embedded objects and representing inference as composable graph-based optimization/inference programs so that various inference algorithms can be composed and executed efficiently (including data subsampling and GPU acceleration).",
+    "datasets": [
+      "binarized MNIST",
+      "Covertype"
+    ],
+    "baselines": [
+      "Stan (PyStan)",
+      "PyMC3"
+    ],
+    "metrics": [
+      "held-out log likelihood (lower bound)",
+      "runtime (seconds) for fixed HMC iterations)"
+    ],
+    "limitations": [
+      "Open challenge to better facilitate programs with complex control flow and recursion and how to enable flexible inference strategies for them.",
+      "Unclear how to extend Edward\u2019s design to dynamic computational graph frameworks without sacrificing performance."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Probabilistic programming / Deep learning (inference and modeling)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Empirical Methods Specialist",
+      "background": "Senior ML engineer and researcher with a decade of experience designing, implementing, and evaluating probabilistic models and inference systems in production and research settings. Regularly replicates and benchmarks PPLs and optimization/inference algorithms across frameworks.",
+      "traits": [
+        "focuses on experimental rigor: requests clear baselines, hyperparameter settings, seeds, and run-time measurement methodology",
+        "values reproducibility and software engineering details: notices API design, versioning, and whether code is sufficient to re-run reported experiments",
+        "insists on proper controlled comparisons and ablations (e.g., same kernels/stepsizes for HMC, matched batch sizes for subsampling)",
+        "examines statistical claims carefully: looks for confidence intervals, number of trials, and sensitivity analyses"
+      ],
+      "reviewing_style": "Practical and detail-oriented: evaluates whether the experiments and implementation support the paper's empirical claims and whether results are reproducible and fairly compared."
+    },
+    "reviewer_b": {
+      "name": "Probabilistic Systems & Impact Researcher",
+      "background": "Professor and researcher in probabilistic programming and machine learning systems, with extensive publications on PPL expressivity, inference composability, and the integration of probabilistic methods with deep learning. Tracks the evolution of PPLs and their role in research and applied ML.",
+      "traits": [
+        "assesses novelty and positioning relative to prior PPLs (e.g., Church, Stan, PyMC3, Anglican) and deep-learning-driven inference work",
+        "values architectural and conceptual contributions: notices Turing-completeness claims, composability of inference, and representation choices (random variables as graph nodes)",
+        "considers broader impact and adoption: evaluates whether the design enables new modeling idioms, scales to real-world workloads, and lowers barriers for practitioners",
+        "looks for limitations and scope: attentive to what the system does not support (e.g., diagnostics, non-differentiable models, ease of extending inference)"
+      ],
+      "reviewing_style": "Strategic and context-aware: emphasizes the paper's contribution to the field, novelty over prior art, and the likely practical and research impact of the system."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

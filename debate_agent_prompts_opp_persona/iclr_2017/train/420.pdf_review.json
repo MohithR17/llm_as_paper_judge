@@ -1,0 +1,111 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well-organized and the main contributions (key-value(-predict) attention and the N-gram RNN) are stated early and carried through method and experiments, making the narrative easy to follow. Notation appears consistent and hyperparameters and related work are reported thoroughly, supporting reproducibility, and the writing quality is good. However, the summary does not indicate whether figures/tables are especially informative, and as a theory-oriented reader I would have liked clearer, explicit schematic illustrations or more formal definitions to accompany the intuition \u2014 small presentation gaps that prevent an exceptional score. | B(4): Overall the paper is well organized and presents a clear logical flow from motivation through method to experiments and conclusions; the main contributions (key-value-predict attention and the N-gram RNN) are stated early. Notation appears consistent and well defined, experiments and baselines are reported with metrics and hyperparameters, and figures/tables/examples effectively support claims (e.g., short attention span diagnostic). Writing quality is good, though a few methodological descriptions are dense and could be streamlined for reproducibility (e.g., explicit code release is not mentioned).",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well-organized and the main contributions (key-value(-predict) attention and the N-gram RNN) are stated early and carried through method and experiments, making the narrative easy to follow. Notation appears consistent and hyperparameters and related work are reported thoroughly, supporting reproducibility, and the writing quality is good. However, the summary does not indicate whether figures/tables are especially informative, and as a theory-oriented reader I would have liked clearer, explicit schematic illustrations or more formal definitions to accompany the intuition \u2014 small presentation gaps that prevent an exceptional score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and presents a clear logical flow from motivation through method to experiments and conclusions; the main contributions (key-value-predict attention and the N-gram RNN) are stated early. Notation appears consistent and well defined, experiments and baselines are reported with metrics and hyperparameters, and figures/tables/examples effectively support claims (e.g., short attention span diagnostic). Writing quality is good, though a few methodological descriptions are dense and could be streamlined for reproducibility (e.g., explicit code release is not mentioned)."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper proposes a specific key-value(-predict) split in attention vectors and evaluates it against prior memory-augmented RNNs, which is a modest architectural refinement rather than a fundamentally new paradigm. The finding that attentive models primarily exploit only ~5 most-recent outputs and that a simple N\u2011gram RNN matches performance is an informative empirical observation, but the methodological contribution is incremental and largely an engineering variation on existing key/value attention ideas. The authors do clearly differentiate their variants and compare to relevant baselines (RM, HORNN), so the work provides moderate novelty and useful empirical insight rather than a highly original theoretical advance. | B(3): The paper presents a modestly novel architectural tweak (key-value and key-value-predict splits) and pairs it with an empirically useful, simple baseline (N-gram RNN) that matches more complex memory-augmented models. These contributions are clear and differentiated from prior work (reimplementing RM and comparing to HORNNs) and the empirical finding\u2014that attention mainly exploits about five recent outputs\u2014is a valuable diagnostic. Overall this is an incremental but practical advance rather than a highly original theoretical breakthrough.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper proposes a specific key-value(-predict) split in attention vectors and evaluates it against prior memory-augmented RNNs, which is a modest architectural refinement rather than a fundamentally new paradigm. The finding that attentive models primarily exploit only ~5 most-recent outputs and that a simple N\u2011gram RNN matches performance is an informative empirical observation, but the methodological contribution is incremental and largely an engineering variation on existing key/value attention ideas. The authors do clearly differentiate their variants and compare to relevant baselines (RM, HORNN), so the work provides moderate novelty and useful empirical insight rather than a highly original theoretical advance."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper presents a modestly novel architectural tweak (key-value and key-value-predict splits) and pairs it with an empirically useful, simple baseline (N-gram RNN) that matches more complex memory-augmented models. These contributions are clear and differentiated from prior work (reimplementing RM and comparing to HORNNs) and the empirical finding\u2014that attention mainly exploits about five recent outputs\u2014is a valuable diagnostic. Overall this is an incremental but practical advance rather than a highly original theoretical breakthrough."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the empirical claims are supported by reasonable experiments and analyses (Wikipedia subset, CBT, ablations) and that the paper's mathematical content is lightweight but consistent. They also concur on shortcomings: lack of released code, no statistical significance testing, and limited dataset breadth/hyperparameter sensitivity studies. Given these are important but not fatal to the empirical conclusions, a score of 4 reflects confidence in the results while acknowledging the reproducibility and rigor gaps. ",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper's empirical claims (KV(-predict) attention outperforming prior memory-augmented models and the competitive N\u2011gram RNN, and the observation that models rely on ~5 most recent outputs) are supported by experiments on a Wikipedia subset and CBT and by ablations on memory length. There are no formal derivations to assess, and the experimental methodology includes reasonable baselines and reported hyperparameters, but it lacks rigorous statistical testing, extensive ablations on hyperparameter sensitivity, and broader datasets to establish generality. Given my requirement for theoretical justification and stringent statistical evidence, these omissions represent substantive concerns about the technical completeness of the claims, though they do not wholly invalidate the empirical findings."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper states clear empirical claims (key-value(-predict) attention, short effective memory, and competitive N-gram RNN) and supports them with experiments on a sizable Wikipedia corpus and CBT plus comparisons to reasonable baselines (vanilla LSTM, reimplemented RM, HORNNs) and reported hyperparameters. Mathematical content is lightweight (architectural descriptions) and appears consistent; the experimental methodology is broadly sound, but I note the absence of released code and no mention of statistical significance testing which would strengthen reproducibility and confidence. The claim about predominantly short attention usage is backed by analysis, so conclusions are largely justified, with only minor concerns about reproducibility and formal statistical validation."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Propose a key-value-predict attention mechanism that separates output vectors into key, value and predict parts for neural language modeling.",
+      "The proposed key-value(-predict) models outperform previous memory-augmented neural language models on a Wikipedia subset and the Children\u2019s Book Test, but they mainly utilize a short memory (about the five most recent outputs).",
+      "A much simpler N-gram RNN that concatenates a small number of recent output representations (e.g., a 4-gram RNN) achieves performance on par with the more sophisticated memory-augmented attentive models."
+    ],
+    "methodology": "Extend LSTM-based neural language models with (i) a key-value attention that splits output vectors into keys and values, (ii) a further key-value-predict split where a separate predict vector encodes the next-word distribution, and (iii) a simpler N-gram RNN that concatenates previous output representations to predict the next token.",
+    "datasets": [
+      "Wikipedia subset (7500 articles, split into train/dev/test; 22.5M/1.2M/1.2M words)",
+      "Children\u2019s Book Test (CBT)"
+    ],
+    "baselines": [
+      "Vanilla LSTM",
+      "Recurrent-Memory Model (Tran et al., 2016) reimplemented as RM(+tM-g)",
+      "Higher-Order RNNs (HORNNs, Soltani & Jiang, 2016)"
+    ],
+    "metrics": [
+      "Perplexity",
+      "Accuracy (reported for CBT subsets e.g., verbs and prepositions)"
+    ],
+    "limitations": [
+      "All attentive models mainly utilize a short recent memory (about the five most recent output representations).",
+      "Attentive neural language models investigated failed to exploit long-range dependencies; training models to leverage long-range context is hard."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - neural language modeling / attention and memory-augmented RNNs",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior researcher in machine learning theory with a focus on formal properties of sequence models and representation learning; long experience reviewing NeurIPS/ICLR submissions.",
+      "traits": [
+        "Heavily penalizes papers that present primarily empirical/engineering modifications without accompanying theoretical analysis or explanation of why the change should work (reduces score if no formal/analytical justification is given).",
+        "Requires rigorous statistical testing and extensive ablations: deducts points if significance tests are missing, ablations are shallow, or hyperparameter sensitivity is not thoroughly explored.",
+        "Demands conceptual novelty beyond re-packaging existing components: downgrades papers that mainly combine known mechanisms unless they provide new insight or formal characterization.",
+        "Places high value on demonstrating generality: penalizes claims based on a narrow set of datasets or short-range empirical phenomena (reduces score if results hinge on a particular small memory length or dataset)."
+      ],
+      "reviewing_style": "Critical, formalist reviewer who focuses on theoretical motivation, conceptual novelty, and rigorous ablation/statistical evidence; will score down empirical engineering work lacking analysis."
+    },
+    "reviewer_b": {
+      "name": "Empirical Pragmatist",
+      "background": "Senior NLP researcher with extensive experience building and evaluating language models and memory-augmented architectures; regular reviewer for ACL/EMNLP focused on practical model improvements and reproducibility.",
+      "traits": [
+        "Rewards clear, well-executed empirical improvements and strong baselines: increases score when a simple baseline matches or outperforms more complex prior work and when experiments are reproducible.",
+        "Positively biases toward papers that provide practical insight (e.g., showing attention/memory is short-lived), especially if accompanied by intuitive analysis and diagnostics, even without formal proofs.",
+        "Values parsimony and engineering clarity: gives higher scores to simpler architectures (like N-gram RNN) that achieve competitive performance and are easy to reproduce/deploy.",
+        "Prefers thorough empirical comparisons across standard benchmarks and penalizes missing baselines only moderately (will still reward a paper with solid experiments on multiple datasets)."
+      ],
+      "reviewing_style": "Pragmatic, empirically-driven reviewer who emphasizes strong baselines, reproducibility, and actionable insights about model behavior; inclined to reward simple effective methods and clear diagnostics."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 1,
+    "total_dimensions": 3,
+    "debate_rate": 0.333
+  }
+}

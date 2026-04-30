@@ -1,0 +1,72 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper addresses a core NLP task (multi-document summarization/concept-map generation) and releases a new, large corpus of concept maps summarizing heterogeneous web document clusters (30 topics), which is a valuable resource for the community. The introduced crowdsourcing scheme (low-context importance annotation combining Likert scoring and sampled pairwise comparisons with TrueSkill), the automatic pipeline (Open IE, confidence filtering, crowdsourced ranking, expert revision), and the provided baseline and evaluation scripts align with methods and evaluation standards expected at top NLP/ML venues (strict/METEOR/ROUGE metrics). Given the target audience (multidocument summarization and information-structuring researchers), the paper is well positioned and relevant to a top-tier conference."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important problem\u2014structuring and summarizing large, heterogeneous web-document clusters via concept maps\u2014by releasing a new corpus (30 topics) and code that concretely enables research in this area. Its novel low-context importance annotation method and end-to-end pipeline provide practical tools and benchmarks, and the baseline experiments that expose major bottlenecks (content selection and relation extraction) are likely to refocus research priorities. Given the dataset, annotation scheme, and exposed challenges, the work should be widely built upon and opens significant new directions for multidocument summarization and structured-summary generation."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s main claims are supported by a clear methodology and experimental evidence: they describe an Open IE + confidence filtering pipeline, a novel crowdsourcing scheme (Likert + sampled pairwise comparisons with TrueSkill), and expert revision to build the corpus, and report quantitative results (e.g., extraction covers ~76% of gold concepts but top-25 predictions include only 17% of gold concepts; poor relation extraction leads to low strict-proposition matches). There are no mathematical proofs to check, and the experimental setup uses reasonable metrics and a baseline system, but the summary notes missing reporting of hyperparameters and does not mention statistical significance testing or stronger comparative baselines\u2014minor issues that do not invalidate the main conclusions. Overall the technical approach and evidence are sound with only a few gaps in experimental reporting."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper evaluates on established datasets (DIP, TAC2008) and introduces a released baseline system, using multiple evaluation metrics (strict/METEOR/ROUGE) so comparisons are generally fair and reproducible. It also discusses where the baseline fails (content selection and relation extraction), and related work coverage is described as adequate. However, the summary indicates the empirical comparison centers on the presented baseline rather than a range of recent SOTA competing systems, so there are minor omissions in breadth of baselines."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper provides substantial experimental work: a new corpus, a baseline system, multiple evaluation metrics (strict/METEOR/ROUGE), experiments on existing datasets (DIP, TAC2008) and analysis demonstrating concrete failure modes (content selection coverage and poor relation extraction). Related work coverage is adequate and limitations/failure cases are explicitly discussed. However, the study lacks ablation/sensitivity analyses and some reproducibility details (hyperparameters not reported), which are notable but do not fatally undermine the overall experimental thoroughness."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents notable novelty by creating a new corpus of concept maps for large, heterogeneous web document clusters and by introducing a novel crowdsourcing scheme (low-context importance annotation combining Likert scoring and sampled pairwise comparisons with TrueSkill) to identify important propositions at scale. The end-to-end pipeline (Open IE extractions, confidence filtering, crowdsourced importance annotation, expert revision) is a purposeful integration tailored to concept-map-based multidocument summarization and is clearly differentiated from prior work. While many components (Open IE, expert revision, baseline heuristics) reuse existing techniques, the resource and annotation methodology represent a meaningful, non-trivial contribution that would inform experts in the field."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized with a clear intro, methodology, experiments, and conclusion \u2014 the main contributions (new corpus, crowdsourcing scheme, pipeline, baseline and evaluation) are stated early and carried through the methods and results. Notation and methods are presented coherently (Open IE pipeline, TrueSkill ranking, evaluation metrics like strict/METEOR/ROUGE are clearly described), and the writing quality is reported as good with effective examples and evaluation tables. Minor presentation gaps remain (e.g., hyperparameter reporting is missing and some implementation details such as relation-extraction failure modes could be more fully illustrated), so it reads well but could benefit from small clarifying additions."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "We present a newly created corpus of concept maps that summarize large, heterogeneous web document clusters (30 topics) to enable research on concept-map-based multidocument summarization.",
+      "We introduce a novel crowdsourcing scheme, low-context importance annotation, combining Likert scoring and sampled pairwise comparisons (with TrueSkill) to reliably identify important propositions in large document collections.",
+      "We describe an automatic pipeline using Open IE extractions, confidence-based filtering, crowdsourced importance annotation, and expert revision to construct gold-standard summary concept maps, and release the corpus along with a baseline system and evaluation scripts.",
+      "Baseline experiments reveal major challenges for automatic concept-map summarization: content selection (top-ranked concepts cover only a small fraction of gold concepts) and poor relation extraction leading to low strict-proposition matching scores."
+    ],
+    "methodology": "Process relevant sentences with Open IE to extract proposition tuples, filter by extraction confidence, crowdsource importance via Likert scores and sampled pairwise comparisons (TrueSkill) to rank propositions, have an expert revise and split propositions, and assemble top-ranked propositions into summary concept maps; provide a baseline system using NP extraction, concept merging, relation extraction heuristics and a Random Forest importance classifier.",
+    "datasets": [
+      "DIP corpus (Habernal et al., 2016)",
+      "TAC2008 (Dang and Owczarzak, 2008)",
+      "Newly created corpus of concept maps (this work)"
+    ],
+    "baselines": [
+      "Baseline method: NP extraction, concept merging, sentence-cooccurrence relation extraction, Random Forest classifier for concept importance, heuristic subgraph selection"
+    ],
+    "metrics": [
+      "Strict Match (precision/recall/F1 on propositions, after stemming)",
+      "METEOR-based proposition matching (accounts for synonyms/paraphrases)",
+      "ROUGE-2 on concatenated propositions",
+      "Pearson/Spearman correlation for annotation reliability/ agreement"
+    ],
+    "limitations": [
+      "Content selection is difficult: the extraction covers ~76% of gold concepts, but the top 25 predicted concepts contain only 17% of gold concepts.",
+      "Relation extraction performs poorly, leading to low strict proposition matching scores and propagation of errors through the pipeline.",
+      "Large and heterogeneous cluster sizes make summarization and content selection challenging."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "Multidocument summarization / concept map generation",
+    "writing_quality": "good"
+  }
+}

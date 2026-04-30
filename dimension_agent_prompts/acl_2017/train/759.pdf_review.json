@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "CLARITY": 3,
+  "ORIGINALITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses joint content selection and discourse-relation prediction in dialogues using structured prediction (log-linear/CRF-style model with latent relations, SampleRank, message-passing and ILP inference) and evaluates on standard meeting corpora (AMI, ICSI) with ROUGE and task-specific metrics. These topics, methods, datasets and baselines (e.g., comparisons to SVM baselines and Kim & Shah) are squarely within the scope and expectations of top NLP conferences and are of clear interest to the venue's audience. The problem formulation and evaluation align with community standards for discourse, summarization, and structured prediction research."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014identifying salient content and discourse structure in spoken meetings\u2014by jointly modeling phrase selection and discourse relations (Sections 3.1\u20133.3) and by proposing a latent-discourse variant when annotations are unavailable. Experiments on standard corpora (AMI/ICSI) show the joint model outperforms SVM baselines for both content selection and discourse prediction and yields better downstream prediction of consistency-of-understanding than the prior state-of-the-art (Section 5 and the COU results). This joint/latent approach is likely to influence subsequent work on meeting summarization and discourse-aware content extraction and to open productive follow-up directions, though it is an evolution rather than a paradigm shift."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims (joint modeling of phrase salience and discourse relations) are clearly stated and supported by experiments showing improved accuracy/F1 and COU prediction; the core model formulation (Eq.1) and decomposition into content, discourse and joint features is mathematically consistent and learning/inference procedures (SampleRank, message-passing for d, ILP for c) are plausible. Experimental methodology is mostly sound: comparisons include SVM baselines and prior work, and statistical tests (paired t-test p<0.05) are reported; however the paper relies on the assumption of given attachment structures in some settings and uses gold-standard phrase/discourse labels to construct training features for the COU classifier, which could bias results and is not fully controlled/justified. There is also no convergence or complexity analysis for the alternating optimization (so global optimality is not guaranteed), but these are minor and do not invalidate the reported empirical gains."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experimental evaluation is broad: phrase selection and discourse labeling are tested on AMI-SUB, AMI-FULL and ICSI-FULL (Tables 1\u20133) with comparisons of joint vs separate learning and inference, gold vs latent discourse, and the COU task is evaluated against Kim & Shah (2016) with statistical tests. The paper includes several ablations (joint vs separate, latent vs gold discourse, and different feature sets for COU) and describes learning/inference methods (SampleRank, message-passing, ILP). Related work is extensively cited across discourse and summarization literature. However, limitations and failure cases are only briefly noted (difficulty of obtaining discourse labels, assumption of given attachment structures) and important reproducibility details (full feature specifications referenced in Sec. 3.4, hyperparameters, and some implementation choices) are insufficiently detailed in the provided text."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall the paper is adequately organized (it follows intro -> model -> experiments -> conclusion and explicitly describes the joint model in Section 3.1 and experimental setup in Section 5), but presentation has notable clarity issues. The mathematical notation and equation (1) are mostly defined, yet formatting and terse expressions (e.g., broken sums and phrases like \u201cdi is hold\u201d) make some parts hard to parse. Figures/tables are referenced (Figure 1, Tables 1\u20133,5) but not shown here, and repeated/duplicated sentences throughout the excerpt (many paragraphs appear verbatim multiple times) create confusion and disrupt flow. With editing to remove repetition and fix grammatical/formatting errors the paper would be much clearer."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper proposes a joint log-linear model that simultaneously predicts phrase-level salient content and discourse relations (including a variant treating discourse relations as latent), which addresses a gap where prior work largely used gold-standard discourse labels as features. This is a meaningful combination and application of existing tools (feature-level joint terms, SampleRank learning, message-passing inference, ILP for phrase clustering) rather than a fundamentally new modeling paradigm. The authors clearly position their work relative to prior efforts (e.g., reliance on gold discourse labels in McKeown et al. and related work, and the different scope of Oya & Carenini\u2019s Dynamic CRF), so the contribution is a solid, moderate novelty\u2014non-trivial but essentially an incremental integration of known techniques. "
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against reasonable and relevant baselines: SVM-based classifiers for phrase selection (Tables 1\u20133) and the state-of-the-art COU system of Kim & Shah (2016) (Table 5), using the same AMI/ICSI datasets (they note rerunning Kim & Shah\u2019s system on their setup). Comparisons appear fair (same features/datasets, significance testing via paired t-test) and the paper analyzes joint vs. separate learning/inference and a latent-discourse variant. However, the text does not explicitly acknowledge cases where prior methods match or outperform theirs and lacks discussion of any newer alternative architectures, so the experimental comparison is strong but not fully exhaustive."
+    }
+  }
+}

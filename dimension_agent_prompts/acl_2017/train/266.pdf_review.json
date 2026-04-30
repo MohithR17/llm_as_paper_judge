@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 4,
+  "ORIGINALITY": 3,
+  "IMPACT": 4,
+  "SUBSTANCE": 3,
+  "CLARITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "MEANINGFUL_COMPARISON": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Yes \u2014 the paper addresses a core NLP problem (sentiment classification) using established representation-learning techniques (SGNS embeddings, concatenation, subjectivity filtering) and evaluates on standard sentiment benchmarks (Rotten Tomatoes, OpeNER) with appropriate baselines (random vs pretrained vectors) and metrics. The topic, datasets, and methods are squarely within the scope of top NLP conferences (and of interest to applied ML audiences), though the contribution is largely empirical/engineering (corpus selection and filtering) rather than methodological, which may limit appeal at the most theory-focused ML venues. Positioning and related work citations (Pang & Lee, Mikolov, Iyyer et al., Joshi et al.) indicate the paper is properly situated in the sentiment/embedding literature."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines existing ideas (subjectivity filtering from Pang & Lee 2004, task-/domain-specific embeddings and supervised sentiment vectors from prior work like Maas and Tang, and in-domain vs. generic embedding comparisons like Joshi et al. 2015) and applies them to train and concatenate task-specific and generic word vectors (sections 2.1, 4, conclusion). Its main contributions are empirical: quantifying subjectivity in corpora, showing concatenation of task-specific and generic embeddings helps, and estimating the amount of task data needed (section 4.3). These are useful, but represent an incremental, empirical advance rather than a genuinely new method or perspective."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses a practical and important problem\u2014how to create better word embeddings for sentiment tasks\u2014by showing embeddings trained on a task-specific Amazon movie corpus outperform Wikipedia-trained vectors on the Rotten Tomatoes test (Section 4.1: \u201cembeddings trained on the much smaller Amazon corpus give consistently better results than the Wikipedia corpus on the RT dataset\u201d). It also demonstrates actionable techniques (concatenating generic and task-specific vectors outperforms single representations; using subjectivity-filtered portions of generic corpora can approximate task data) reported in the Conclusion, which would change how practitioners select or construct corpora for embedding training. The paper quantifies data needs (improvements after ~10\u201312M tokens) and argues applicability to under-resourced languages, suggesting clear follow-up research directions in corpus selection by subjectivity/polarity and wider adoption in task-specific embedding pipelines."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper runs sensible experiments comparing embeddings trained on multiple corpora (Wikipedia, Europarl, MultiUN, Amazon Movie) and evaluates on two sentiment benchmarks (Rotten Tomatoes, OpeNER), includes a study of how much task-specific data is needed (reporting gains after ~10\u201312M tokens) and a qualitative analysis of missing sentiment-bearing words. However, ablation/detail is limited: there is little sensitivity analysis of modelling choices (e.g. DAN hyperparameters, training epochs/optimizer, vocab thresholds, whether/when to update embeddings), sparse quantitative evidence for concatenation vs alternatives, and the claim about under-resourced languages is not supported with explicit experiments. Reproducibility is only partial (some SGNS settings and tokenization specified but many training details omitted), and failure/negative results are discussed only superficially (domain mismatch and missing words)."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall organization follows a standard flow (Related Work \u2192 Data \u2192 Experiments \u2192 Conclusion), but presentation quality is weakened by formatting and editing problems. The contributions are described in the text (e.g. subjectivity-based filtering, concatenation of task/generic embeddings, low-resource application) but are not cleanly stated up front as an explicit contributions list. Notation is minimal and mostly consistent, but figures/tables are referenced (Figures 1\u20133, Table 1) yet not included, and section numbering skips (4.1 then 4.3), which harms readability. The manuscript contains many duplicated lines and repeated sentences (e.g. multiple repeats of the same citations and phrases), plus minor grammatical/formatting artifacts, so proofreading and re-structuring are needed for clarity."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper provides experimental evidence that embeddings trained on a task-specific corpus (Amazon Movie) outperform generic corpora on the Rotten Tomatoes task (Section 4.1) and analyzes missing sentiment-bearing words (Section 5.2), supporting parts of its main claims. However, several claims (e.g. that concatenating generic and task-specific vectors outperforms a single representation, that subjectivity-filtered generic corpora reliably approximate task-specific data, and benefits for low-resource languages) are asserted in the conclusion without corresponding experimental detail or results in the provided text. The experimental methodology omits statistical significance testing, and important methodological details (exact subjectivity-filtering procedure, concatenation/combination protocol, and controls for vocabulary/unknown-token effects) are missing, creating logical gaps. Overall, the core claim about task-specific embeddings is supported but other claims and some methodological rigor are insufficiently evidenced."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper runs sensible, controlled comparisons between embeddings trained on task-specific (Amazon) vs. generic corpora (Wikipedia, Europarl, MultiUN) and evaluates them with a consistent classifier/splits on Rotten Tomatoes and OpeNER (Sections 4.1, 4.3), and analyzes effects (missing words, subjectivity filtering). However, it does not experimentally compare to important alternative approaches for producing sentiment-aware embeddings or retrofitting (e.g. Tang et al. 2014/2016, Maas et al. 2011, Faruqui et al. 2015) nor present direct empirical comparisons to the most similar work (Joshi et al. 2015) despite citing them, limiting the completeness of the baseline set and cross-paper performance context."
+    }
+  }
+}

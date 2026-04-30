@@ -1,0 +1,39 @@
+{
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "CLARITY": 3,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 3,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical problem\u2014improving sequence tagging/slot-filling in NLU by integrating external structured knowledge into RNNs\u2014which addresses reliance on large labeled data and brittle feature-engineering. Its end-to-end, knowledge-guided attention approach that works with multiple knowledge formats (dependency parses and AMR) and shows improved ATIS performance and robustness to small-data settings suggests it would change how researchers incorporate prior knowledge into neural models. The method is general and seems likely to inspire follow-on work applying structural attention to other tasks and knowledge sources, and to be adopted in applied NLU systems. While not obviously transformative across all NLP, it represents a strong, broadly useful contribution to the field."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses a core NLP/ML topic (neural sequence tagging/NLU) by proposing K-SAN, an attention-based RNN that incorporates structured knowledge (dependency paths, AMR) to improve slot filling, which is squarely within top NLP/ML venues. Methods and evaluation match community standards (GRU-based tagger, attention/memory ideas, baselines like CRF/RNN/DCNN/Tree-RNN, experiments on the benchmark ATIS dataset with F-measure reporting). The framing, related work, and comparison to state-of-the-art models show it is positioned for the intended audience and conference reviewers."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper presents a plausible model and the RNN equations (Eq.5\u20138) and integration of a knowledge vector o into the hidden state are technically sound. Experimental methodology appears reasonable (ATIS benchmark, multiple training sizes, and appropriate baselines including CRF, RNN, CNN, DCNN, Tree\u2011RNN), and the paper evaluates different knowledge sources (dependency parsers, AMR). However, in the provided text key details are missing: the attention/knowledge\u2011encoding formulas are not fully specified in the excerpt, no numerical results or significance tests are shown to substantiate the claim of outperforming state\u2011of\u2011the\u2011art, and the efficiency claim lacks runtime/complexity evidence \u2014 these gaps prevent full technical validation of the main empirical claims."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is generally well-organized (intro \u2192 method \u2192 experiments) and clearly states its three main contributions early (bulleted in the intro). Figures and examples (e.g., Figures 2 and 3 illustrating K\u2011SAN and dependency substructures) are informative and help the exposition. However, the provided text contains many repeated/duplicated passages and some formatting/noise that make parts hard to follow, and a few notation items (e.g., M, Mo, Mkg, u, mi) are introduced with limited or inconsistent explanation, reducing overall clarity."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes K-SAN, which explicitly encodes knowledge-guided substructures (e.g., dependency paths or AMR edges) and learns an attention-weighted sentence representation end-to-end to guide an RNN tagger \u2014 a clear shift from prior work that used linguistic knowledge only as additional features. The authors explicitly differentiate from tree-based encoders (Ma et al., Tai et al.) and memory/attention models by emphasizing knowledge-as-teacher attention and schema-agnostic substructure encoding. This is a non-trivial and well-motivated extension that would be informative to experts, though it mainly combines existing components (parsing, attention/memory, and RNN tagging) rather than introducing a wholly new paradigm."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against reasonable and recent baselines (CRF (Tur et al. 2010), RNN (Mesnil et al. 2015), CNN (Kim 2014)) and structural competitors (DCNN Ma et al. 2015a, Tree\u2011RNN Tai et al. 2015) (Sec. 5.2), all evaluated on the same ATIS splits with F\u2011measure (Sec. 5.1). Comparisons appear fair (same data/metrics, hyperparameters tuned on dev), and the paper analyzes differences (e.g., why CNN can beat DCNN/Tree\u2011RNN and K\u2011SAN\u2019s benefits; Sec. 5.5 discusses dependency vs AMR knowledge). Minor omissions remain (e.g., no direct baseline of RNN+CRF or certain memory/attention models discussed in related work), so the empirical comparison is strong but not fully exhaustive."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments cover reasonable baselines, multiple training-size regimes, and show knowledge generalization across dependency/AMR and different parsers on ATIS (Sections 5.1, 5.2, 5.5), but they are limited to a single dataset and lack runtime/efficiency measurements supporting the efficiency claim or statistical significance testing. Ablation/sensitivity is partial (different knowledge types and data sizes) but no focused ablation isolating the attention component or detailed hyperparameter sensitivity is reported. Related work is covered broadly and fairly, but failure cases/limitations and negative results are not discussed. Reproducibility is moderately supported (model equations, optimizer, embedding/hidden sizes, parser choices) yet some implementation details (batch size, exact dev split, initialization) are missing."
+    }
+  }
+}

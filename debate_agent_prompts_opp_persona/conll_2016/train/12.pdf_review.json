@@ -1,0 +1,194 @@
+{
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "REPLICABILITY": 2,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "SUBSTANCE": 3,
+  "APPROPRIATENESS": 5,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper introduces a clearly articulated new modeling choice\u2014an explicit noise layer on top of a BiLSTM to correct cross-lingual projected POS labels\u2014that meaningfully departs from prior work (e.g., Duong et al. 2014a) which did not include such an explicit noise-correction mechanism. Framing POS tagging as joint learning over a small gold corpus and a larger projected-noisy corpus with an explicit noise model is a non-trivial extension rather than a mere re-run of existing baselines, and it yields improved results on both simulated and real low-resource languages. From a theory-focused perspective I would have liked formal justification or ablation-driven analysis of the noise layer, but as a contribution the idea is notable and would inform experts in low-resource cross-lingual tagging. | B(4): The paper proposes a clear, novel mechanism\u2014an explicit noise layer in a BiLSTM trained jointly on small gold and large projected noisy corpora\u2014to correct cross-lingual projection errors; this is a practical, interpretable modeling advance over prior approaches like Duong et al. (2014a) and two-output maxent baselines. The problem (low-resource POS via projection) is well-studied, but the targeted noise-modeling layer is a non-trivial and useful extension that demonstrably improves results on simulated and real low-resource languages (Malagasy, Kinyarwanda), so an expert would find the methodological contribution informative and practically valuable.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper introduces a clearly articulated new modeling choice\u2014an explicit noise layer on top of a BiLSTM to correct cross-lingual projected POS labels\u2014that meaningfully departs from prior work (e.g., Duong et al. 2014a) which did not include such an explicit noise-correction mechanism. Framing POS tagging as joint learning over a small gold corpus and a larger projected-noisy corpus with an explicit noise model is a non-trivial extension rather than a mere re-run of existing baselines, and it yields improved results on both simulated and real low-resource languages. From a theory-focused perspective I would have liked formal justification or ablation-driven analysis of the noise layer, but as a contribution the idea is notable and would inform experts in low-resource cross-lingual tagging."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clear, novel mechanism\u2014an explicit noise layer in a BiLSTM trained jointly on small gold and large projected noisy corpora\u2014to correct cross-lingual projection errors; this is a practical, interpretable modeling advance over prior approaches like Duong et al. (2014a) and two-output maxent baselines. The problem (low-resource POS via projection) is well-studied, but the targeted noise-modeling layer is a non-trivial and useful extension that demonstrably improves results on simulated and real low-resource languages (Malagasy, Kinyarwanda), so an expert would find the methodological contribution informative and practically valuable."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and follows a logical flow from motivation through method to experiments, and the main contributions (explicit noise layer for projected POS tags and joint learning on gold+projected corpora) are stated early. Notation appears consistent and related work is adequately covered, and figures/tables seem effective for comparing to baselines (Duong et al., BiLSTM variants). Presentation suffers minor clarity issues: hyperparameters are not reported, code availability is not mentioned, and some methodological choices (e.g., one-to-one alignment filtering) would benefit from clearer justification or illustration to aid reproducibility. | B(4): The paper is generally well organized and presents its main contributions early (explicit noise layer for cross-lingual projection and joint BiLSTM training on gold + projected data), with a clear method\u2192experiments\u2192conclusion flow. Notation and presentation are mostly consistent and readable, and figures/tables appear to effectively communicate experimental comparisons across the CoNLL/Europarl and two real low-resource datasets (Malagasy, Kinyarwanda). Minor presentation gaps\u2014hyperparameters are not reported and code isn\u2019t mentioned\u2014reduce reproducibility and slightly weaken clarity for a practitioner seeking to reproduce results, but these are relatively small issues given the overall clarity.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and follows a logical flow from motivation through method to experiments, and the main contributions (explicit noise layer for projected POS tags and joint learning on gold+projected corpora) are stated early. Notation appears consistent and related work is adequately covered, and figures/tables seem effective for comparing to baselines (Duong et al., BiLSTM variants). Presentation suffers minor clarity issues: hyperparameters are not reported, code availability is not mentioned, and some methodological choices (e.g., one-to-one alignment filtering) would benefit from clearer justification or illustration to aid reproducibility."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is generally well organized and presents its main contributions early (explicit noise layer for cross-lingual projection and joint BiLSTM training on gold + projected data), with a clear method\u2192experiments\u2192conclusion flow. Notation and presentation are mostly consistent and readable, and figures/tables appear to effectively communicate experimental comparisons across the CoNLL/Europarl and two real low-resource datasets (Malagasy, Kinyarwanda). Minor presentation gaps\u2014hyperparameters are not reported and code isn\u2019t mentioned\u2014reduce reproducibility and slightly weaken clarity for a practitioner seeking to reproduce results, but these are relatively small issues given the overall clarity."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "REPLICABILITY": {
+      "score": 2,
+      "justification": "Both reviewers agree the high-level method, datasets, and evaluation are clear but crucial engineering and preprocessing details (hyperparameters, training specifics, random seeds, and code) are missing. Because these omissions make faithful replication brittle and would require substantial tuning and author clarification, I rate replicability as low (2/5).",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "Key experimental ingredients are underspecified: hyperparameters and model training details are explicitly not reported and code availability is not mentioned, making exact reimplementation brittle. The data sources are named (CoNLL, Europarl, Malagasy/Kinyarwanda from Garrette & Baldridge), but the preprocessing choices (e.g., one-to-one alignment filtering) are only described at a high level without concrete thresholds or scripts. Evaluation metric (POS tagging accuracy) is clear, but lack of seeds/variance reporting and missing hyperparameter/configuration details mean reproduction would be difficult and require substantial guesswork."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper gives a clear high-level methodology (BiLSTM with an explicit noise layer, joint training on gold + projected data) and uses public corpora (CoNLL, Europarl) plus published low-resource datasets, and evaluation (POS accuracy) is standard. However key engineering details are missing: hyperparameters and training specifics are not reported, and code is not provided, so exact replication would require nontrivial tuning. Preprocessing is partially described (e.g. one-to-one alignment filtering) but not fully specified, making faithful reconstruction difficult without author guidance."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses an important practical problem and provides a simple, interpretable noise-layer approach that yields solid empirical gains, including improvements on two real low-resource languages. I give a 4 because the method is likely to be adopted by practitioners and shows clear empirical value, but its broader impact is tempered by limited real-language evaluation and the lack of theoretical analysis or extensive implementation details that would strengthen claims of generality and ease of adoption.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014leveraging noisy cross-lingual projected POS labels in low-resource settings\u2014by introducing an explicit noise layer that is empirically effective and matches or exceeds prior state-of-the-art in eight simulated languages and two real low-resource languages. From a theory-focused perspective its impact is moderate: the modeling choice is well-motivated empirically but lacks formal analysis or guarantees and the empirical validation relies heavily on simulated settings with only two real-language evaluations, limiting confidence in broad applicability. The approach nonetheless provides a concrete, extensible mechanism for handling projection noise that is likely to be adopted and extended, but I would expect follow-up work to be needed to establish robustness, theoretical grounding, and wider real-world utility."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles the practical and important problem of low-resource POS tagging by proposing a simple, interpretable noise layer that corrects cross-lingual projected tags and jointly trains on small gold and larger projected corpora. The method is easy to implement (BiLSTM + noise layer), matches or beats prior work in eight simulated settings and crucially outperforms the state-of-the-art on two real low-resource languages (Malagasy, Kinyarwanda), so practitioners will take notice. While code and hyperparameter details aren\u2019t reported in the summary (which may slow immediate adoption), the empirical gains on real languages and the explicit noise modeling make this a strong, practically useful contribution that others are likely to build on."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the empirical comparison is broadly fair and comprehensive against relevant baselines and datasets, showing clear gains on simulated and real low-resource settings. However, Reviewer A rightly notes missing details on variance reporting, an explicit ablation of the noise layer, and hyperparameter/reproducibility information, which weaken the completeness and robustness of the empirical claims; for these reasons I rate it a 4.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against appropriate and recent baselines including the Duong et al. (2014a) state-of-the-art and several BiLSTM and MAXENT baselines, and evaluates on the same multilingual CoNLL/EUROPARL settings plus two real low-resource languages, using the same POS accuracy metric\u2014so comparisons are broadly fair. However, the summary does not indicate reporting of variance across seeds or clear ablation of the proposed noise layer (critical to justify the claimed contribution), nor are hyperparameter/code details mentioned, which weakens claims of robustness and reproducibility. Given these minor but important omissions, the empirical comparison is strong but not fully comprehensive."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper compares to the prior state-of-the-art (Duong et al. 2014a) and multiple sensible baselines (supervised ME, two-output ME, and several BiLSTM variants) using the same datasets (CoNLL, Europarl, and the real Malagasy/Kinyarwanda corpora) and POS-accuracy metrics. It reports equal or better performance on eight simulated low-resource settings and clear gains on two real low-resource languages, and it discusses related work adequately. From a practical low-resource perspective this constitutes a comprehensive and fair empirical comparison against the most relevant competing approaches."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper states clear claims and presents experimental evidence across multiple simulated and real low-resource settings that generally supports the proposed noise-layer model. However, both note missing experimental details (hyperparameters, code release) and Reviewer A highlights the lack of key diagnostics (ablation studies, statistical significance/variance) which raises concerns about robustness. Given the empirical support but notable gaps in rigor and reproducibility, a cautious mid-range score of 3 is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper states clear claims and presents experimental evidence across eight simulated languages and two real low-resource languages showing the noise-layer model improves over baselines (including Duong et al.), but key rigor requirements are missing. There is no mention of formal analysis or theoretical justification for the noise model, hyperparameters are not reported, and the summary does not indicate critical diagnostic ablations isolating the noise layer nor statistical significance / variance across seeds. These omissions leave some concerns about robustness and whether the improvements are fully supported, so I rate the technical soundness as mixed."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and supported by experiments showing the noise-layer BiLSTM equals or exceeds prior work on eight simulated low-resource settings and improves on two real low-resource languages, with appropriate baselines including Duong et al. There are no mathematical proofs to verify, and the proposed noise-layer mechanism is an interpretable corrective that fits the problem. Experimental methodology appears sound (reasonable datasets, baselines, and realistic cross-lingual projection), though the absence of reported hyperparameters and no mention of released code reduces reproducibility and is a minor practical concern. Overall the conclusions are justified by the presented results, but missing experimental details prevent a perfect technical score."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the experimental evaluation is reasonably strong but limited by reliance on simulated settings and only two real languages, and both note missing hyperparameters/code and insufficient ablation/sensitivity analyses. Given these reproducibility and diagnostic gaps, which weaken the paper\u2019s practical claims despite solid comparative experiments, a middling score is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experiments cover multiple simulated low-resource settings and compare to reasonable baselines (including Duong et al.), and they include two real low-resource languages \u2014 but reliance on mostly simulated evaluations and only two real-language tests weakens claims about practical low-resource utility. Critical diagnostics are missing: although several BiLSTM baselines are reported, the summary does not indicate an explicit ablation isolating the proposed noise layer or robustness checks across random seeds and hyperparameters (hyperparameters are not reported), which is required given the method\u2019s core modeling assumption. Related work appears adequately covered and basic limitations about projection noise are acknowledged, but reproducibility (missing hyperparameters/code) and deeper failure analysis are insufficient."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The experimental suite is strong: evaluation across eight simulated low-resource settings plus two real low-resource languages, and comparisons to the prior state-of-the-art (Duong et al.) and reasonable baselines support the main claim that an explicit noise layer helps. However, the paper lacks reported hyperparameters and code which hinders reproducibility, and there is limited sensitivity/ablation analysis reported beyond the BiLSTM baselines to probe when the noise layer helps or fails. Related work coverage is adequate and basic limitations (coverage loss from alignment filtering, noisy projections) are noted, but deeper failure-mode analysis is missing."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper's topic, methods, and evaluations are well aligned with a top NLP venue, demonstrating clear empirical gains on realistic low-resource POS tagging tasks. While Reviewer A rightly notes reproducibility gaps (hyperparameters, code) that should be addressed, these issues do not undermine the paper\u2019s overall fit or contribution to the community, so I rate APPROPRIATENESS at the highest level.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper addresses a core NLP problem (low-resource POS tagging via cross-lingual projection) and employs methods and evaluations (BiLSTM with a noise layer, comparisons to Duong et al., experiments on CoNLL/Europarl and two real low-resource languages) that are squarely within the remit of a top NLP/ML venue. However, from the summary I note gaps that temper a perfect fit: hyperparameters are not reported, code availability is not mentioned, and the real-language evaluation is limited to only two languages \u2014 issues that impact reproducibility and claims about low-resource robustness. Given these practical concerns (and the lack of explicit mention of thorough diagnostic ablations or theoretical motivation), the paper is a good but not spotless fit for a top conference."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP venue: it tackles low-resource POS tagging with a practical, interpretable noise layer for correcting cross-lingual projection errors and demonstrates empirical gains on both simulated settings and two real low-resource languages (Malagasy, Kinyarwanda). The methodology (BiLSTM with an explicit noise model), evaluation against strong baselines (Duong et al. 2014a and sensible BiLSTM baselines), and focus on realistic low-resource scenarios match the audience and standards of the venue. While code and hyperparameter details would improve reproducibility, the clear empirical benefit and pragmatic approach make it highly relevant to the community I represent."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces a novel approach that learns to correct errors from cross-lingual projected POS tags via an explicit noise layer.",
+      "Frames POS tagging as joint learning over two corpora: a small gold-annotated corpus and a larger corpus with projected (noisy) tags.",
+      "Proposes a bidirectional LSTM model with a layer to explicitly handle noisy projection labels, which equals or exceeds state-of-the-art on eight simulated low-resource settings and outperforms prior work on two real low-resource languages (Malagasy and Kinyarwanda)."
+    ],
+    "methodology": "Train a bidirectional LSTM POS tagger jointly on gold annotated data and cross-lingually projected noisy labels, using an explicit noise layer to model and correct errors in the projected annotations.",
+    "datasets": [
+      "CoNLL data (for eight European languages)",
+      "Europarl parallel corpus (200k sentences per language for 8 languages)",
+      "Malagasy dataset from Garrette and Baldridge (2013)",
+      "Kinyarwanda dataset from Garrette and Baldridge (2013)"
+    ],
+    "baselines": [
+      "Duong et al. (2014a) (state-of-the-art)",
+      "Two-output maximum entropy model (Duong et al.)",
+      "Supervised maximum entropy model trained on annotated data (reported baseline)",
+      "BiLSTM Annotated, BiLSTM Projected, BiLSTM Ann+Proj (naive BiLSTM baselines)"
+    ],
+    "metrics": [
+      "POS tagging accuracy"
+    ],
+    "limitations": [
+      "Directly projected labels are very noisy and unwise to use without modeling due to poor word alignments and cross-lingual syntactic divergence.",
+      "One-to-one alignment filtering reduces coverage (fewer projected tokens) to avoid additional noise.",
+      "Gold annotated data is assumed to be small/limited for low-resource languages."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - low-resource POS tagging using cross-lingual projection",
+    "writing_quality": "adequate"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory-Focused Skeptic",
+      "background": "Senior NLP researcher with a PhD in computational linguistics and a track record of theoretical work on structured prediction and noise models.",
+      "traits": [
+        "Penalizes papers that lack formal analysis: expects either theoretical guarantees or clear formal motivation for modeling choices; deducts points if missing.",
+        "Requires comprehensive diagnostic ablations: will subtract score if key components (e.g., the noise layer) are not individually ablated across conditions.",
+        "Demands statistical significance and robustness checks across seeds and datasets; penalizes single-run reporting or missing variance estimates.",
+        "Disfavors papers that rely primarily on simulated experiments; expects substantial real-language evaluations for claims about low-resource settings."
+      ],
+      "reviewing_style": "Focuses on rigor: checks whether modeling assumptions are formally justified, whether critical components are ablated and whether empirical claims are supported by robust statistical evidence."
+    },
+    "reviewer_b": {
+      "name": "Practical Low-Resource Advocate",
+      "background": "Applied NLP researcher with experience building low-resource language tools and deploying cross-lingual transfer methods in real-world settings.",
+      "traits": [
+        "Rewards clear empirical improvements on realistic low-resource languages: gives higher scores when methods outperform prior work on real target languages (not just simulations).",
+        "Values simple, well-engineered models with practical utility: prefers methods that are easy to implement, require modest resources, and generalize across languages.",
+        "Credits papers that propose explicit, interpretable mechanisms for handling noise (e.g., noise layers) and demonstrate their effectiveness empirically.",
+        "Positively biases toward papers that include code, data splits, or detailed experimental recipes facilitating reproduction; deducts less for lack of deep theory."
+      ],
+      "reviewing_style": "Pragmatic and outcome-oriented: prioritizes empirical gains, ease of adoption, and evaluations on real low-resource languages over formal analysis."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 8,
+    "debate_rate": 0.75
+  }
+}

@@ -31,7 +31,10 @@ for _p in [str(_ROOT), str(_LIT_SURVEY_DIR), str(_NOVELTY_DIR)]:
         sys.path.insert(0, _p)
 
 from dimension_agents import DIMENSION_AGENTS, DimensionScore
-from debate_agents import score_dimension_with_debate, DEBATE_THRESHOLD
+from debate_agents import DEBATE_THRESHOLD, generate_reviewer_personas
+from two_stage_agents import extract_paper_facts, PaperSummary
+from novelty_augmented_debate_agents import score_dimension_with_debate_augmented
+from novelty_augmented_two_stage import SURVEY_AUGMENTED_DIMS, NOVELTY_AUGMENTED_DIMS
 
 load_dotenv()
 
@@ -183,33 +186,10 @@ def _run_lit_and_novelty(
     return survey, novelty
 
 
-def _format_novelty_context(report: dict) -> str:
-    claims = report.get("claims", [])
-    if not claims:
-        return ""
-    novel = [c for c in claims if c.get("is_novel")]
-    not_novel = [c for c in claims if not c.get("is_novel")]
-    lines = [
-        f"Automated novelty analysis ({len(claims)} claims, "
-        f"threshold={report.get('threshold', 0.35)}):",
-        f"Novel claims ({len(novel)}/{len(claims)}):",
-    ]
-    for c in novel[:5]:
-        lines.append(f"  • {c['claim'][:120]}")
-    if not_novel:
-        lines.append(f"Claims with prior-work overlap ({len(not_novel)}):")
-        for c in not_novel[:5]:
-            bm = c.get("best_match_title") or ""
-            lines.append(f"  • {c['claim'][:100]}  [closest: {bm[:60]}]")
-    lines.append(
-        f"Overall novel rate: {len(novel)}/{len(claims)} = {len(novel)/len(claims):.0%}"
-    )
-    return "\n".join(lines)
-
-
 # ── Full pipeline runner ──────────────────────────────────────────────────────
 
 _NOVELTY_LABEL = "__novelty_chain__"
+_ALL_AUGMENTED_DIMS = SURVEY_AUGMENTED_DIMS | NOVELTY_AUGMENTED_DIMS
 
 def run_full_pipeline(
     client: OpenAI,
@@ -225,29 +205,49 @@ def run_full_pipeline(
 ) -> dict[str, Any]:
     """
     Execution order:
-      1. All non-ORIGINALITY dimensions + novelty chain start in parallel.
-      2. on_progress is called from the main thread as each future resolves.
-      3. ORIGINALITY runs last with novelty context injected (if available).
+      1. Extract paper facts + reviewer personas (once per paper).
+      2. Non-augmented dimensions + novelty chain run in parallel.
+      3. Augmented dimensions (MEANINGFUL_COMPARISON, ORIGINALITY, SUBSTANCE) run
+         after the novelty chain resolves so they receive survey/novelty context.
     """
-    other_dims = [d for d in dimensions if d != "ORIGINALITY"]
-    has_originality = "ORIGINALITY" in dimensions
-
-    review: dict[str, Any] = {}
-    survey_result: dict | None = None
-    novelty_report: dict | None = None
-
     _error_result = lambda e: {
         "score": None, "justification": f"[ERROR] {e}",
         "reviewer_a": {"score": None, "justification": ""},
         "reviewer_b": {"score": None, "justification": ""},
         "debate_triggered": False, "score_delta": 0, "resolution_method": "error",
+        "survey_injected": False, "novelty_injected": False,
     }
+
+    # Stage 1: extract paper facts
+    summary: PaperSummary | None = None
+    try:
+        summary = extract_paper_facts(client, title, text)
+    except Exception as e:
+        if on_progress:
+            on_progress("⚙️ Paper extraction", None, f"failed: {e}")
+
+    # Stage 1b: generate reviewer personas
+    personas = None
+    if summary is not None:
+        try:
+            personas = generate_reviewer_personas(client, title, summary)
+        except Exception:
+            pass
+
+    # Partition dimensions: augmented dims wait for novelty; others run immediately
+    augmented_dims = [d for d in dimensions if enable_novelty and d in _ALL_AUGMENTED_DIMS]
+    other_dims = [d for d in dimensions if d not in augmented_dims]
+
+    review: dict[str, Any] = {}
+    survey_result: dict | None = None
+    novelty_report: dict | None = None
 
     max_workers = max(len(other_dims) + 2, 4)
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         all_futures: dict[Future, str] = {
             executor.submit(
-                score_dimension_with_debate, client, title, text, dim, None
+                score_dimension_with_debate_augmented,
+                client, title, summary, dim, personas, None, None,
             ): dim
             for dim in other_dims
         }
@@ -256,7 +256,6 @@ def run_full_pipeline(
                 executor.submit(_run_lit_and_novelty, api_key, base_url, text, paper_year, s2_key)
             ] = _NOVELTY_LABEL
 
-        # Process futures as they complete — progress callback fires here (main thread)
         for future in as_completed(all_futures):
             label = all_futures[future]
 
@@ -281,27 +280,38 @@ def run_full_pipeline(
                 except Exception as e:
                     review[label] = _error_result(e)
                     score = None
-                    detail = f"error"
+                    detail = "error"
                 if on_progress:
                     on_progress(label, score, detail)
 
-        # ORIGINALITY runs after novelty is resolved
-        if has_originality:
-            ctx = _format_novelty_context(novelty_report) if novelty_report else None
-            if on_progress:
-                on_progress("ORIGINALITY", None, "⏳ waiting for novelty context…")
-            try:
-                review["ORIGINALITY"] = score_dimension_with_debate(
-                    client, title, text, "ORIGINALITY", ctx
-                )
-                score = review["ORIGINALITY"].get("score")
-                debated = review["ORIGINALITY"].get("debate_triggered", False)
-                detail = "🔥 debated" if debated else "✅ consensus"
-            except Exception as e:
-                review["ORIGINALITY"] = _error_result(e)
-                score, detail = None, "error"
-            if on_progress:
-                on_progress("ORIGINALITY ✓", score, detail)
+        # Augmented dims run after novelty chain resolves, in parallel
+        if augmented_dims:
+            aug_futures: dict[Future, str] = {
+                executor.submit(
+                    score_dimension_with_debate_augmented,
+                    client, title, summary, dim, personas, survey_result, novelty_report,
+                ): dim
+                for dim in augmented_dims
+            }
+            for future in as_completed(aug_futures):
+                dim = aug_futures[future]
+                try:
+                    review[dim] = future.result()
+                    score = review[dim].get("score")
+                    debated = review[dim].get("debate_triggered", False)
+                    inj = []
+                    if review[dim].get("survey_injected"):
+                        inj.append("survey")
+                    if review[dim].get("novelty_injected"):
+                        inj.append("novelty")
+                    detail = ("🔥 debated" if debated else "✅ consensus")
+                    if inj:
+                        detail += f" +{','.join(inj)}"
+                except Exception as e:
+                    review[dim] = _error_result(e)
+                    score, detail = None, "error"
+                if on_progress:
+                    on_progress(f"{dim} ✓", score, detail)
 
     return {
         "review_results": review,
@@ -531,11 +541,6 @@ if "pipeline_result" in st.session_state:
 
     # ── Dimension breakdown ───────────────────────────────────────────────────
     st.subheader("🔍 Dimension Breakdown")
-    novelty_was_used = (
-        enable_lit_novelty
-        and novelty_report is not None
-        and "ORIGINALITY" in results
-    )
     for dim, result in results.items():
         score = result.get("score")
         if score is None:
@@ -544,7 +549,12 @@ if "pipeline_result" in st.session_state:
         debated = result.get("debate_triggered", False)
         delta = result.get("score_delta", 0)
         badge = "🔥 Referee" if debated else "✅ Consensus"
-        novelty_badge = " 🧬" if (dim == "ORIGINALITY" and novelty_was_used) else ""
+        inj_badges = []
+        if result.get("survey_injected"):
+            inj_badges.append("📚")
+        if result.get("novelty_injected"):
+            inj_badges.append("🧬")
+        novelty_badge = (" " + "".join(inj_badges)) if inj_badges else ""
 
         with st.expander(
             f"**{dim}**{novelty_badge} — {'⭐'*score}{'☆'*(5-score)} ({score}/5) | {badge}",

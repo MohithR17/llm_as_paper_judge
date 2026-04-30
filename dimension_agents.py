@@ -226,6 +226,20 @@ Base your judgment only on the provided text. Output only the JSON object, nothi
 """
 
 
+def has_ground_truth(paper_json: Path, reviews_dir: Path, dimensions: list) -> bool:
+    """Return True if the paper has ≥1 review with non-null scores for all required dimensions."""
+    paper_id = paper_json.stem.replace(".pdf", "")
+    review_file = reviews_dir / f"{paper_id}.json"
+    if not review_file.exists():
+        return False
+    with open(review_file) as f:
+        data = json.load(f)
+    for review in data.get("reviews", []):
+        if all(review.get(dim) not in (None, "", "N/A") for dim in dimensions):
+            return True
+    return False
+
+
 def load_paper_json(json_path: Path):
     """Load and parse a paper JSON file, same as monolithic baseline."""
     import re
@@ -303,10 +317,11 @@ def call_dimension_agent(client, title, parsed_text, dimension, novelty_context:
             },
         ],
         text_format=DimensionScore,
-        reasoning={"effort": "medium", "summary": "auto"},
+        reasoning={"effort": "low", "summary": "auto"},
         tools=[],
         store=True,
         include=["reasoning.encrypted_content"],
+        timeout=180,
     )
     return response.output_parsed
 
@@ -322,6 +337,10 @@ def _process_single_dimension(client, title, parsed_text, dimension):
 
 def process_paper(client, paper_json, dimensions, out_dir):
     """Run all dimension agents on a single paper in parallel and save combined output."""
+    out_file = out_dir / f"{paper_json.stem}_review.json"
+    if out_file.exists():
+        return paper_json.name
+
     title, parsed_text = load_paper_json(paper_json)
     results = {}
 
@@ -345,38 +364,51 @@ def process_paper(client, paper_json, dimensions, out_dir):
 
 
 def process_venue(client, venue_folder, venue_name, output_dir):
-    """Process all test papers for a venue with parallel paper processing."""
+    """Process all splits (train/dev/test) for a venue with parallel paper processing."""
     base = Path("PeerRead/data")
     venue_dir = base / venue_folder
-    split_dir = venue_dir / "test" / "parsed_pdfs"
-    if not split_dir.exists():
-        tqdm.write(f"Skipping {venue_folder}: no test/parsed_pdfs")
-        return
 
     dimensions = VENUE_DIMENSIONS.get(venue_folder, [])
     if not dimensions:
         tqdm.write(f"Skipping {venue_folder}: no dimensions defined")
         return
 
-    out_dir = output_dir / venue_folder / "test"
-    out_dir.mkdir(parents=True, exist_ok=True)
+    for split in ["train", "dev", "test"]:
+        split_dir = venue_dir / split / "parsed_pdfs"
+        reviews_dir = venue_dir / split / "reviews"
+        if not split_dir.exists():
+            continue
 
-    files = list(split_dir.glob("*.json"))
+        all_files = list(split_dir.glob("*.json"))
+        if reviews_dir.exists():
+            files = [f for f in all_files if has_ground_truth(f, reviews_dir, dimensions)]
+            skipped = len(all_files) - len(files)
+            if skipped:
+                tqdm.write(f"[INFO] {venue_name}/{split}: skipping {skipped}/{len(all_files)} papers with no GT scores")
+        else:
+            files = all_files
 
-    pbar = tqdm(total=len(files), desc=f"{venue_name} ({len(dimensions)} dims)", unit="paper")
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        futures = {
-            executor.submit(process_paper, client, paper_json, dimensions, out_dir): paper_json
-            for paper_json in files
-        }
-        for future in as_completed(futures):
-            try:
-                future.result()
-            except Exception as e:
-                paper = futures[future]
-                tqdm.write(f"[ERROR] {venue_name} {paper.name}: {e}")
-            pbar.update(1)
-    pbar.close()
+        if not files:
+            tqdm.write(f"[INFO] {venue_name}/{split}: no papers with GT scores, skipping split")
+            continue
+
+        out_dir = output_dir / venue_folder / split
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        pbar = tqdm(total=len(files), desc=f"{venue_name}/{split} ({len(dimensions)} dims)", unit="paper")
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures = {
+                executor.submit(process_paper, client, paper_json, dimensions, out_dir): paper_json
+                for paper_json in files
+            }
+            for future in as_completed(futures):
+                try:
+                    future.result()
+                except Exception as e:
+                    paper = futures[future]
+                    tqdm.write(f"[ERROR] {venue_name}/{split} {paper.name}: {e}")
+                pbar.update(1)
+        pbar.close()
 
 
 def main():

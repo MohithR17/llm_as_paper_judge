@@ -1,0 +1,116 @@
+{
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 5,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized and flows logically from motivation to method to experiments and conclusion; the main contributions are stated early and related work and hyperparameters are reported, aiding reproducibility. Notation is consistent and figures/tables (including NLL and human preference results) appear informative, and the writing quality is good overall. A few methodological subtleties\u2014e.g., the truncated BPTT trade-offs and preliminary hybrid experiments\u2014are terse and could benefit from slightly more exposition, but these are minor presentation issues rather than blockers. | B(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the SampleRNN contributions early, including the hierarchical frame/sample architecture and end-to-end training. Notation and hyperparameters are reported and related work is thorough, and figures/tables/examples (datasets, human AB tests, NLL metrics) effectively support the claims. Writing is generally clear and grammatically good, though a few methodological details (e.g., truncated BPTT trade-offs) could be expanded for absolute clarity.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized and flows logically from motivation to method to experiments and conclusion; the main contributions are stated early and related work and hyperparameters are reported, aiding reproducibility. Notation is consistent and figures/tables (including NLL and human preference results) appear informative, and the writing quality is good overall. A few methodological subtleties\u2014e.g., the truncated BPTT trade-offs and preliminary hybrid experiments\u2014are terse and could benefit from slightly more exposition, but these are minor presentation issues rather than blockers."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the SampleRNN contributions early, including the hierarchical frame/sample architecture and end-to-end training. Notation and hyperparameters are reported and related work is thorough, and figures/tables/examples (datasets, human AB tests, NLL metrics) effectively support the claims. Writing is generally clear and grammatically good, though a few methodological details (e.g., truncated BPTT trade-offs) could be expanded for absolute clarity."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper provides solid empirical evidence (NLL, human AB tests, and ablations) that supports the main claims about SampleRNN. Reviewer A\u2019s concerns about limited theoretical analysis, complexity scaling, and implications of truncated BPTT are valid but do not undermine the empirical validity and reproducibility emphasized by Reviewer B. Given strong experimental support with only modest methodological/analysis gaps, a score of 4 appropriately reflects soundness with room for deeper theoretical and scaling analysis.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper's main empirical claims are supported by experiments (NLL comparisons, human AB tests, and some ablations such as the Multi-Softmax variant) showing SampleRNN outperforms baselines on the reported datasets. However, there is little theoretical analysis or formal justification for why the hierarchical architecture captures long-term dependencies, no explicit time/memory complexity bounds for the multi-rate modules, and reliance on truncated BPTT is only empirically motivated without analysis of its implications. Given these methodological gaps\u2014particularly the lack of complexity scaling analysis and limited theoretical grounding\u2014I downgrade the score despite solid empirical results."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper clearly states its main claim (a hierarchical SampleRNN that enables tractable end-to-end raw audio generation) and supports it with quantitative NLL improvements, human AB preference tests, and ablations (e.g., Multi-Softmax failure), which aligns with my emphasis on perceptual quality. Mathematical description of the hierarchical architecture and training with truncated BPTT appears coherent and complete for reproducibility, and proper baselines (RNN, WaveNet, real-valued GMM variants) are included. Minor concerns remain about the breadth and statistical rigor of the listening tests and the surprising real-valued GMM behavior (noise despite competitive NLL) that could use deeper analysis, but these do not undermine the main conclusions. Overall the evidence justifies the claims with only modest open questions about evaluation detail and analysis depth."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 5,
+      "justification": "Both reviewers agree the multi-scale hierarchical recurrent design combined with sample-level autoregression is a clear departure from prior single-scale RNNs and WaveNet-style models and yields meaningful empirical gains. While Reviewer A reasonably notes the idea is an extension rather than a radical theoretical shift, the practical novelty and demonstrated impact on raw waveform modeling warrant a top originality score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a clearly articulated hierarchical autoregressive architecture (frame-level RNNs at multiple temporal resolutions conditioning a sample-level autoregressive MLP with discrete softmax outputs) that is not a trivial rehash of prior single-scale RNNs or WaveNet. It explicitly differentiates its contributions (multi-tier hierarchy, end-to-end training with truncated BPTT, discrete sample-level output) from existing baselines and demonstrates empirical gains. That said, the idea is an understandable extension of multi-scale sequence modeling rather than a radical paradigm shift, and the work leans heavily on empirical validation without accompanying theoretical justification, so I withhold the top score."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "From my perspective as an applied audio researcher, SampleRNN proposes a genuinely new architectural perspective: a hierarchical stack of RNNs operating at multiple temporal resolutions combined with a sample-level autoregressive softmax \u2014 a clear departure from prior single-scale RNNs and from WaveNet\u2019s dilated-convolution approach. The paper clearly differentiates itself with end-to-end training on raw waveforms, showing that this multiscale recurrent design makes modeling long-range dependencies tractable while improving perceptual quality and likelihoods, which would meaningfully inform experts in generative audio."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces SampleRNN, an end-to-end unconditional neural model for raw audio generation that uses a hierarchy of modules operating at different temporal resolutions to model long-term dependencies while remaining tractable.",
+      "Demonstrates that combining frame-level recurrent modules with a sample-level autoregressive MLP (with discrete softmax outputs) yields substantially better likelihoods and perceptual sample quality than baseline RNNs and competitive models.",
+      "Shows the model can be trained with truncated BPTT on short subsequences while the hierarchical structure lets it capture longer-term structure; human evaluations prefer SampleRNN (3-tier) over alternatives."
+    ],
+    "methodology": "SampleRNN is a hierarchical autoregressive model: higher-level deep RNN modules operate on non-overlapping frames (lower temporal resolution) and condition lower tiers via upsampled conditioning vectors, while the lowest tier is a sample-level MLP outputting a q-way softmax over quantized audio values; the whole model is trained end-to-end with truncated BPTT.",
+    "datasets": [
+      "Blizzard",
+      "Onomatopoeia",
+      "Music (Beethoven piano sonatas)"
+    ],
+    "baselines": [
+      "RNN (baseline)",
+      "WaveNet",
+      "RNN-GMM / SampleRNN-GMM (real-valued variants)"
+    ],
+    "metrics": [
+      "Negative Log-Likelihood (NLL) in bits per audio sample",
+      "Human AB preference tests (pairwise preference)",
+      "Speaker-consistency classification (mean fundamental frequency based)"
+    ],
+    "limitations": [
+      "RNNs do not scale well at very high temporal resolution without hierarchical design (stated challenge motivating the work).",
+      "Real-valued output variants (GMM) produced samples that were almost indistinguishable from random noise despite competitive NLL.",
+      "A variant without a sample-level autoregressive module (Multi-Softmax) scores significantly worse and fails to generate convincing samples.",
+      "Preliminary SampleRNN-WaveNet hybrid experiments did not meet expectations (not yet effective).",
+      "Training subsequence length trades off performance vs. memory; best results required subsequence length up to 512."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Audio generation / Sequence modeling (raw waveform generation)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theoretical Skeptic",
+      "background": "Tenured researcher in machine learning with a focus on probabilistic sequence models and learning theory; extensive experience reviewing work that claims new modeling paradigms.",
+      "traits": [
+        "Penalizes papers that primarily present empirical gains without formal or conceptual justification (score penalty if no theoretical analysis / guarantees).",
+        "Requires explicit complexity and scaling analysis (time/memory) for proposed architectures; deducts points if bounds or asymptotic costs are missing.",
+        "Insists on ablation studies that isolate each architectural choice (score penalty if key components are not individually evaluated).",
+        "Discounts results that rely on training heuristics (e.g., truncated BPTT) unless their implications are analyzed or justified theoretically."
+      ],
+      "reviewing_style": "I focus on whether a paper advances conceptual understanding or provides theoretical justification beyond empirical improvements; I downgrade empirical-only contributions lacking analysis."
+    },
+    "reviewer_b": {
+      "name": "Empirical Audio Enthusiast",
+      "background": "Senior applied researcher working on generative audio and speech synthesis systems with multiple deployed models; evaluates work on practical performance and perceptual quality.",
+      "traits": [
+        "Rewards clear empirical improvements in perceptual quality backed by human evaluations (gives higher score when human evals favor the method).",
+        "Favors architectural innovations that enable tractable modeling of long-range dependencies in raw audio (scores up if novel and practically effective).",
+        "Values end-to-end training and simple, reproducible designs (gives credit if model is trained end-to-end and implementation details/audio samples are provided).",
+        "Penalizes lack of meaningful baselines or poorly conducted listening tests (deducts points if human evals are weakly designed or baselines missing)."
+      ],
+      "reviewing_style": "I prioritize practical impact: improvements in sample quality, convincing human evaluations, and reproducibility convince me even if formal analysis is light."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 2,
+    "total_dimensions": 3,
+    "debate_rate": 0.667
+  }
+}

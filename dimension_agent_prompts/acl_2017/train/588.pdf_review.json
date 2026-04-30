@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "CLARITY": 3,
+  "MEANINGFUL_COMPARISON": 3,
+  "SUBSTANCE": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper introduces a clearly NLP/ML-centric task (rare entity prediction) and proposes modeling innovations (Hierarchical Double Encoder / temporal LSTM network, reuse of context encoder outputs) that directly target core conference audiences. Experimental setup follows standard venue expectations (Wikilinks dataset, train/validation/test splits, Accuracy/Recall@1 metric, comparisons to baselines and ablations) and integrates external knowledge sources (Freebase lexical definitions), which is well situated within related work on reading comprehension, QA and knowledge-aware models. Overall the topic, methods, evaluation and positioning (numerous citations to QA, Freebase, and related datasets) make it a strong fit for a top NLP/ML venue."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper frames a new task (\u201crare entity prediction\u201d) and proposes a hierarchical double-encoder (HIERENC) that stacks a temporal LSTM over per-context encoders, using averaged entity-definition embeddings as inputs (sec. 4.2), which is a clear methodological contribution for this specific task. However, the components (context encoders, LSTMs, use of Freebase/lexical definitions, and scoring via learned bilinear terms) are largely established techniques and the authors acknowledge closely related prior work (e.g., factoid QA using Freebase and concurrent WikiFacts by Ahn et al.), so the technical novelty is an application-driven, non\u2011trivial extension rather than a fundamentally new method. Overall this reads as a moderate, incremental advance with a new problem framing but limited methodological originality."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical challenge\u2014rare entity prediction in open web text with very large candidate sets\u2014and explicitly introduces the task and dataset setup (Wikilinks) and lexical resources (\"lexical definitions...the first sentences of their Freebase descriptions\"). It demonstrates that incorporating external knowledge via a Hierarchical Double Encoder (HIERENC) improves performance (e.g., HIERENC correctly predicts Larnaca where the context encoder favors frequent Istanbul) and states that \"models that make use of external knowledge...perform significantly better.\" By formalizing the task, proposing a hierarchical LSTM architecture for cross-context knowledge aggregation, and relating the work to QA/reading-comprehension and KB-integration, the paper is likely to change how researchers approach rare-entity/KB-augmented language understanding and open substantive follow-up work."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper clearly states the main claim (hierarchical double encoder using lexical definitions improves rare-entity prediction) and provides experimental comparisons (e.g. CONTENC vs HIERENC, Table 4 referenced) and a reasonable prediction formula P(...)=\u03c3(...). The mathematical description is brief but appears consistent and without obvious errors. However, experimental methodology lacks important details and controls: negative-sample handling (they say \u201call other entities\u201d as negatives) and candidate-set size are unspecified, no statistical significance tests are reported, and some design choices (e.g. simple averaging of f(Cei) as input to the temporal LSTM) are justified by convenience rather than evaluated. Given these gaps and limited experimental transparency, the conclusions are plausible but not fully supported by the provided evidence."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper has a clear high-level organization (sections 4.2, 5, 5.1, 6) and follows the expected intro\u2192method\u2192experiments\u2192discussion flow, but presentation issues make parts hard to follow. Notation and equations are introduced (e.g. the hierarchical temporal embedding and P(\u00b7) formula) but some symbols are not clearly defined or consistently used (Cei vs Ci, f and h_ei usage), and numerical details are truncated (\"learning rate of 0.\"). The text contains duplicated and garbled passages and repeated citations (e.g. repeated sentences about Freebase/WordNet and duplicated reference fragments), and several figures/tables are referenced without appearing in the excerpt, which reduces readability."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper evaluates its HIERENC model against internal baselines (context encoder CONTENC, embedding-average, double-encoder variants) on a held-out split of their Wikilinks-derived dataset using a clear metric (accuracy/Recall@1), and discusses observed differences (e.g. CONTENC vs embedding-average, and the Istanbul/Larnaca failure case). It also acknowledges closely related prior work (e.g. Ahn et al. 2016 and Freebase QA papers) in related work. However, it provides no experimental comparisons to those external, recent competing approaches or other strong published baselines/datasets, and analysis of differences beyond a few qualitative observations is limited."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents substantive experiments: dataset splits, definition of contexts, comparisons between embedding-average baseline, context-only encoder (CONTENC) and the hierarchical double encoder (HIERENC), plus experiments varying context/definition window sizes and a qualitative error example (Table 4) illustrating rare-entity failure modes. It provides related-work coverage across QA, KB and script learning literature with many citations. Ablation-style comparisons exist (baseline vs context encoder vs hierarchical model and context-window experiments) but there is limited sensitivity analysis of hyperparameters/model sizes and no detailed quantitative ablation breakdown shown in the excerpt. Reproducibility is partly supported (GloVe embeddings, LSTMs with peepholes, Adam optimizer, Theano implementation, dataset source) but key training/model hyperparameters are incomplete or missing (e.g., learning rate value truncated, layer sizes, negative-sampling details), so full replication would be difficult."
+    }
+  }
+}

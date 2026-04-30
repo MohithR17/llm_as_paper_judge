@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "CLARITY": 2,
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses bilingual embedding mappings and a self-learning framework (Algorithm 2) with direct applications to bilingual lexicon induction and cross-lingual similarity, which squarely falls within the scope of top NLP/ML venues. It compares to established baselines (Mikolov et al., Artetxe et al., Luong et al.) and uses standard datasets and evaluation protocols (Dinu et al. English\u2013Italian, RG-65, WordSim-353, Europarl), matching the methodological and evaluation expectations of such conferences. The problem formulation and experiments target the appropriate audience (cross-lingual/embedding researchers) and are positioned with thorough related-work discussion, making it a strong fit for a top-tier NLP/ML venue."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has a recognizable structure (Sections 2\u20134, algorithms described) but suffers from major presentation problems that impair comprehension. Contributions are mentioned but not stated clearly early (no introductory summary shown), and several sentences are truncated or repeated (e.g. multiple duplicated paragraphs, the phrase \u201cconstrain W to be an orthogonal matrix (i.\u201d is cut off). Notation is partially defined (X, Z, D appear) but some formal statements are incomplete and inconsistent. Figures/tables and experimental reporting are garbled (table numbers and results appear duplicated and malformed), and the text contains many repetitions and formatting artifacts that require substantial editing for clarity."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important problem\u2014reducing bilingual supervision for cross-lingual embeddings\u2014by proposing a simple self-learning loop that \"works with as little bilingual evidence as a 25 word dictionary or even an automatically generated list of numerals\" (conclusion) and demonstrating strong empirical gains when seed dictionaries are tiny (experiments, Section 4). This result could change how researchers and practitioners approach low-resource cross-lingual transfer by showing that iterative self-learning can replace larger parallel/dictionary resources and \"can be combined with any dictionary-based mapping technique\" (Section 3). It also opens follow-up directions (non-linear transforms, decipherment) and has clear applicability beyond the narrow subfield (machine translation, transfer learning, entity linking), so the contribution is likely to be widely built upon."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper proposes a simple self-learning framework that iteratively augments a seed bilingual dictionary and re-learns an embedding mapping (Algorithms 1\u20132), which is a clear but relatively straightforward idea built on existing bilingual-mapping methods (e.g. Artetxe et al. 2016). The problem (bilingual embedding mappings / lexicon induction) is well-studied, and the authors primarily combine known components (orthogonal mappings, nearest-neighbor/dot-product induction) with an iterative loop and efficiency engineering (block XWZ^T computation). While the finding that the approach works with very tiny seeds (25 entries or numerals) is noteworthy and would interest practitioners, the technical novelty is incremental rather than a fundamentally new method."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper makes a clear technical claim (an iterative self-learning framework that improves bilingual mapping even from very small seeds) and provides experimental comparisons against established baselines (Mikolov et al., Xing et al., Zhang et al., Artetxe et al.) on public datasets (e.g. Dinu et al. English\u2013Italian) and multiple seed sizes, which supports the main claim. However, important methodological details are missing or unclear in the provided text\u2014no explicit convergence/stop criterion for self-learning, limited description of the dictionary-induction policy (ties, 1-to-1 matching, or symmetric correspondences), and no hubness correction (e.g. globally-corrected/CSLS) or statistical significance testing\u2014introducing possible confounds. Mathematical content is minimal (they adopt Artetxe et al.\u2019s orthogonal mapping) so nothing to verify there, but the experimental comparisons may be affected by differing monolingual corpora sizes and coverage issues noted for some baselines. Overall the results are plausible but some omissions and potential confounds warrant caution, so a moderate score is appropriate."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents substantial experimental evaluation: multiple baselines (Mikolov, Xing, Zhang, Artetxe, Luong, BilBOWA), two tasks (bilingual lexicon induction and cross-lingual similarity), and systematic sensitivity to seed-dictionary size down to 25 entries and numerals (Section 4 and the described random subsets). However, it lacks focused ablation studies on components of the proposed loop (e.g. convergence behavior, number of iterations, mapping variants, preprocessing choices) and reports few concrete failure cases or limitations beyond brief future-work remarks. Reproducibility is partially supported (corpora, splits, embedding toolkit are described and code is said to be available), but important implementation details are missing or redacted (exact convergence criterion, hyperparameters, and some table/results are unclear), which would hinder exact replication."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against the main relevant baselines for dictionary-based mappings (Mikolov et al. 2013, Xing et al. 2015, Zhang et al. 2016, Artetxe et al. 2016) and also tests parallel-corpus methods (Luong et al. 2015, BilBOWA), using public datasets (Dinu et al. English\u2013Italian, Europarl/OPUS) and standard metrics (lexicon induction accuracy, cross-lingual similarity). Comparisons are mostly fair (they use the same test sets and retrain embeddings where appropriate) and the authors explicitly acknowledge when prior work is comparable or better (e.g. Lazaridou et al. 40.20% vs their 39.67%) and explain performance differences (e.g. parallel methods limited by smaller corpora). Minor omissions remain (e.g. globally-corrected retrieval from Dinu et al. is discussed but not clearly included in experiments, and some baseline corpus/coverage mismatches affect strict fairness), so the evaluation is strong but not perfectly comprehensive."
+    }
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well-organized (intro\u2192method\u2192experiments\u2192conclusion) and states its main contributions early \u2014 proposing multi-view clustering for substitutability and producing SubstClus inventories \u2014 which makes the narrative easy to follow. Notation and hyperparameter reporting appear consistent and adequate, and figures/tables/examples convey empirical comparisons (WordNet, TWSI, PPDBClus) effectively. Writing quality is good overall, though a few methodological choices (e.g., selecting cluster counts via Silhouette and the imperfect correlation between Best-Fit and Oracle GAP) are described with some ambiguity that could benefit from clearer exposition or a brief justification. Overall, presentation is strong with only minor clarifications needed for full reproducibility and interpretability. | B(4): Overall the paper is well organized and communicates its ideas clearly: the multi-view clustering approach, datasets, evaluation metrics (B-Cubed, GAP, Silhouette), and limitations are all described and placed in a logical method -> experiments -> conclusion flow. Main contributions are stated early and figures/tables (e.g., coverage and GAP comparisons to WordNet, TWSI, and PPDBClus) appear informative; notation and hyperparameters are reported, which aids reproducibility. I deduct one point because a few sections\u2014particularly the discussion of the Best-Fit vs. Oracle GAP and the trade-off introduced by the PPDB score cutoff\u2014could be clearer about practical implications for downstream use (e.g., explicit guidance or examples), but overall writing quality is good and jargon is handled well.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well-organized (intro\u2192method\u2192experiments\u2192conclusion) and states its main contributions early \u2014 proposing multi-view clustering for substitutability and producing SubstClus inventories \u2014 which makes the narrative easy to follow. Notation and hyperparameter reporting appear consistent and adequate, and figures/tables/examples convey empirical comparisons (WordNet, TWSI, PPDBClus) effectively. Writing quality is good overall, though a few methodological choices (e.g., selecting cluster counts via Silhouette and the imperfect correlation between Best-Fit and Oracle GAP) are described with some ambiguity that could benefit from clearer exposition or a brief justification. Overall, presentation is strong with only minor clarifications needed for full reproducibility and interpretability."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and communicates its ideas clearly: the multi-view clustering approach, datasets, evaluation metrics (B-Cubed, GAP, Silhouette), and limitations are all described and placed in a logical method -> experiments -> conclusion flow. Main contributions are stated early and figures/tables (e.g., coverage and GAP comparisons to WordNet, TWSI, and PPDBClus) appear informative; notation and hyperparameters are reported, which aids reproducibility. I deduct one point because a few sections\u2014particularly the discussion of the Best-Fit vs. Oracle GAP and the trade-off introduced by the PPDB score cutoff\u2014could be clearer about practical implications for downstream use (e.g., explicit guidance or examples), but overall writing quality is good and jargon is handled well."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper delivers clear empirical utility\u2014improving coverage and lexical substitution performance compared to WordNet and prior automatic resources\u2014while also noting notable limitations (weaker noun performance, best-fit WSD failures, and heuristic hyperparameter choices). Given the concrete, usable gains and likelihood that the resource and method will be adopted and extended, but tempered by the lack of formal objectives and incomplete analysis of failure modes, a moderately high impact score of 4 is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles a concrete, useful problem\u2014creating substitutability-optimized sense inventories\u2014and demonstrates empirical gains (SubstClus improves coverage over WordNet and benefits lexsub GAP). However, from a theory-purist perspective its impact is limited: the multi-view clustering lacks a formal objective/consistency argument and key hyperparameter choices (number of clusters via Silhouette, PPDB cutoff) are chosen heuristically without rigorous ablations or statistical testing. The evaluation is reasonably comprehensive (multiple baselines including WordNet, TWSI, PPDBClus) but failure modes (notably poorer noun performance and best-fit WSD breakdowns) and downstream trade-offs constrain broader influence, yielding a moderate (not transformative) contribution."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles a practical bottleneck\u2014creating substitutability-optimized sense inventories\u2014that directly improves downstream lexical substitution performance and coverage compared to WordNet and prior automatic resources (e.g., Cocos & Callison-Burch). The multi-view clustering approach and the demonstrated GAP gains when sense-filtering existing rankers suggest a concrete, usable resource that practitioners can adopt to improve lexsub systems and related applications. Limitations (weaker noun gains, best-fit WSD failures, coverage/noise trade-offs) temper its reach but do not negate the clear empirical utility; the work is likely to be built upon and to open pragmatic research on inventory construction and sense-aware ranking."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper compares against appropriate, recent baselines on shared datasets using suitable metrics and openly discusses when prior work outperforms theirs. I dock one point because an important hyperparameter (number of clusters) is chosen by a heuristic without theoretical justification, statistical testing, or a robustness ablation, which somewhat weakens the rigor of the comparisons despite the otherwise thorough empirical evaluation.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against multiple strong baselines (WordNet, TWSI, PPDB/PPDBClus and Cocos & Callison-Burch 2016) and evaluates under the same metrics (B-Cubed, GAP, Silhouette), and even acknowledges cases where prior work (TWSI) outperforms it on nouns. Differences and trade-offs (e.g., PPDB score cutoff, Best-Fit vs Oracle GAP) are discussed and related work coverage is described as thorough. I deduct one point because an important hyperparameter (number of clusters) is chosen by a heuristic (Silhouette) without theoretical justification, statistical testing, or ablation showing robustness, which weakens the fairness/rigor of comparisons."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper evaluates against the right and recent baselines (WordNet, TWSI, PPDB/PPDBClus from Cocos & Callison-Burch 2016) and uses shared datasets (CoInCo, PPDB, etc.) and appropriate metrics (GAP, B-Cubed, Silhouette) for fair comparison. It acknowledges when prior methods outperform theirs (e.g., TWSI on nouns) and reports sensible ablations (oracle vs best-fit GAP, PPDB score cutoff trade-offs), showing clear analysis of differences. Given the thorough empirical comparisons, realistic baselines, and reported limitations, the experimental comparison is comprehensive and fair."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper is a strong fit for a top NLP venue: it addresses an important problem, uses appropriate methods and evaluations, and demonstrates clear empirical benefits for downstream lexical substitution. While Reviewer A notes limited theoretical justification and heuristic hyperparameter choices and Reviewer B flags lack of explicit code release, these are minor concerns relative to the paper\u2019s practical contribution and empirical rigor, so I rate appropriateness at the highest level.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper addresses a core NLP problem (sense inventory induction and lexical substitution) using methods and evaluations (multi-view NMF, B-Cubed, GAP, comparison to WordNet/PPDB/TWSI and prior PPDBClus work) that are squarely within top NLP/ML venues. However, from the provided summary I note methodological weaknesses for a theory-oriented audience: the clustering choices (number of clusters via Silhouette) and lack of a formal objective or theoretical justification for the multi-view clustering are concerning. Given strong empirical evaluation and relevant baselines but limited theoretical grounding and reliance on heuristic hyperparameter selection, the paper is a good fit with minor scope concerns."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP venue: it proposes a practical multi-view clustering approach to produce sense inventories (SubstClus) and demonstrates clear empirical gains in coverage and lexical substitution quality over prior automatic resources (PPDBClus/Cocos, PPDB) and WordNet using standard metrics (GAP, B-Cubed) and realistic datasets (CoInCo, PPDB2.0, Gigaword, TWSI). The evaluation is comprehensive and focused on downstream utility (sense-filtering improves lexsub rankings), which matches my emphasis on deployable lexical resources, and the methodology and baselines are those expected by the community. The only minor concern is that code release is not mentioned in the summary (affecting reproducibility/utility), but this does not undermine topical fit."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the work is a practical, non-trivial combination of existing components (multi-view NMF over paraphrase/context/translation/WordNet) that yields empirical gains in coverage and downstream substitution performance. Reviewer A correctly notes the paper lacks a new formal theory and relies on heuristics, while Reviewer B highlights the methodological departure from prior single-view clustering and its applied utility. Given this balance \u2014 useful and notable methodological novelty in application though not a fundamental theoretical advance \u2014 I assign a score of 4.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents a pragmatic extension\u2014multi-view NMF clustering over paraphrase views (contextual AddCos, PPDB scores, translations, WordNet affinities)\u2014to produce substitutability-optimized inventories. This is a non-trivial engineering combination that clearly differentiates from single-view PPDBClus and shows empirical gains in coverage and GAP, but it largely blends existing techniques rather than proposing a fundamentally new theory or objective for sense induction. From a theory-purist standpoint the work lacks a formal justification for the clustering objective and relies on heuristic choices (e.g., Silhouette for k selection, PPDB cutoffs), so I judge the novelty as moderate rather than high."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable, practical novelty: a multi-view clustering (multi-view NMF) specifically optimized for substitutability that combines context-based AddCos, PPDB paraphrase strengths, translations, and WordNet affinities \u2014 a clear methodological departure from prior single-view paraphrase clustering (e.g., Cocos & Callison-Burch 2016). It differentiates itself empirically by producing SubstClus inventories with higher coverage than WordNet and improved lexical substitution performance (GAP) over previous automatic clusters, and it includes sensible model-selection (Silhouette) and use cases (sense-filtering) for downstream gains. While the components are familiar, their combination and optimization for substitutability is a non-trivial and useful extension likely to inform practitioners building lexical resources, so I rate it as notable novelty rather than purely incremental."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the experimental evaluation is solid, uses multiple realistic datasets and baselines, and candidly reports limitations and hyperparameters. Reviewer A rightly points out missing formal theoretical justification and limited robustness/sensitivity analyses, while Reviewer B views those as minor gaps relative to the strong empirical contribution. Given the practical strengths and only moderate methodological/theoretical shortcomings, a score of 4 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experimental suite is adequate \u2014 multiple datasets (CoInCo, TWSI), several baselines (WordNet, TWSI, PPDBClus, PPDB/Cocos) and relevant metrics (B-Cubed, GAP) are reported \u2014 but important theoretical and methodological rigor is missing. There is no formal objective or consistency/convergence argument for the proposed multi\u2011view clustering (\u22122 points per my standards), and key model choices (number of clusters, view weights and PPDB cutoff) are selected by Silhouette or heuristics without statistical testing or thorough sensitivity/ablation analyses (\u22121 to \u22122). The paper does discuss some failure modes and limitations (noun performance, WSD failures, coverage/noise tradeoffs) and reports hyperparameters, but code availability is unclear which impairs full reproducibility. Overall, solid empirical work but lacking the theoretical justification and deeper robustness analyses I require."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The experiments are solid and practically oriented: multiple realistic datasets (CoInCo, PPDB2.0, Gigaword, TWSI) and relevant baselines (WordNet, TWSI, PPDBClus/Cocos) are evaluated with appropriate metrics (B-Cubed, GAP, Silhouette), and the paper reports sensible sensitivity analyses (cluster selection via Silhouette, PPDB score cutoff trade-offs) and ablations (e.g., Best-Fit vs Oracle GAP). Related work appears thorough and limitations are candidly discussed (weaker gains for nouns, WSD failures, coverage/noise trade-offs). Reproducibility is mostly addressed (hyperparameters reported) but lack of explicit code release reduces ease of replication, so the work is strong empirically but has minor reproducibility gaps."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper presents strong empirical support that multi-view clustering improves coverage and lexsub performance and that limitations are acknowledged (e.g., weaker noun gains, WSD/best-fit issues). However, Reviewer A correctly highlights missing theoretical justification, principled hyperparameter selection, and deeper failure analysis. Given the solid empirical validation but notable methodological/theoretical gaps, a score of 4 reflects overall soundness with room for stronger rigor and analysis.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides substantial empirical evidence that multi-view clustering (SubstClus) improves coverage and lexsub GAP over prior automatic resources, but it lacks formal/theoretical justification for the proposed clustering objective or convergence/consistency guarantees for the multi-view NMF approach (deducted). Key model choices\u2014number of clusters (selected via Silhouette) and PPDB score cutoffs\u2014are set by heuristics without statistical testing, ablations, or principled selection (penalized). While many baselines are reported (WordNet, TWSI, PPDBClus/PPDB), a clear human-oracle upper bound and deeper qualitative failure analysis are missing, so some claims about general improvement are under-supported despite the presented experiments."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and largely supported by empirical evidence: multi-view clustering yields SubstClus inventories with higher coverage than WordNet and improved lexical substitution GAP over prior automatic clusters (Cocos & Callison-Burch 2016), and sense-filtering with those inventories boosts existing lexsub rankings. The methodology is pragmatic and well-evaluated across realistic resources (CoInCo, PPDB2.0, TWSI) with sensible metrics (B-Cubed, GAP, Silhouette), and limitations (weaker noun improvements, best-fit WSD failures, PPDB score cutoff trade-offs) are acknowledged. Minor concerns remain about the simple WSD/best-fit procedure not reliably finding optimal clusters and the lack of mention of released code for reproducibility, but these do not undermine the main technical claims."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a multi-view clustering method to generate sense inventories optimized for substitutability.",
+      "The generated SubstClus inventories have greater coverage than WordNet and produce better lexical substitutions than previous automatically clustered paraphrases (e.g., Cocos and Callison-Burch, 2016).",
+      "Using sense-filtering with these inventories improves lexical substitution rankings (measured by GAP) for existing lexsub ranking models."
+    ],
+    "methodology": "Use a multi-view clustering (multi-view NMF) over paraphrases with views encoding Context Substitutability (AddCos scores over many sentences), Paraphrase Similarity (PPDB2.0 scores), Shared Translations, and WordNet synset affinities; choose number of clusters by maximizing Silhouette Coefficient and produce SubstClus inventories used to filter lexsub rankings.",
+    "datasets": [
+      "CoInCo (Concepts In Context)",
+      "PPDB2.0-XXL",
+      "English Gigaword (referred to as AGiga)",
+      "WordNet",
+      "TWSI (Turk Bootstrap Word Sense Inventory)"
+    ],
+    "baselines": [
+      "WordNet",
+      "TWSI",
+      "PPDBClus (Cocos and Callison-Burch, 2016)",
+      "PPDB (Paraphrase Database)",
+      "Cocos and Callison-Burch (2016)"
+    ],
+    "metrics": [
+      "B-Cubed F-Score",
+      "Generalized Average Precision (GAP)",
+      "Silhouette Coefficient",
+      "PPDB2.0 Score (paraphrase strength)"
+    ],
+    "limitations": [
+      "SubstClus inventories are weakest for improving lexsub rankings for nouns (TWSI outperforms them on nouns).",
+      "The simple best-fit WSD method often fails to find the best sense cluster; Best-Fit GAP is not perfectly correlated with Oracle GAP.",
+      "Using a PPDB score cutoff (2.3) reduces coverage of the resulting sense inventory (trade-off between coverage and noise)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - lexical substitution / sense clustering / paraphrase resources",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior NLP researcher with a PhD in computational linguistics and a track record of work on formal semantics and provable learning algorithms.",
+      "traits": [
+        "Deducts points (-2 level) if a paper lacks a formal objective or theoretical justification for the proposed algorithm (e.g., no convergence/consistency argument for the clustering method).",
+        "Penalizes (-1 to -3) empirical papers that select important hyperparameters or model choices (e.g., number of clusters, view weights) solely by heuristics or generic metrics (Silhouette) without statistical testing or ablation.",
+        "Requires at least three strong baselines (including a simple oracle/human upper-bound and prior automatic methods) \u2014 if fewer than 3, scores reproducibility/evaluation low.",
+        "Subtracts points when failure modes or qualitative error analysis are missing (no analysis of when/why the method produces wrong senses or poor substitutions)."
+      ],
+      "reviewing_style": "Focuses on formal justification and rigorous evaluation; skeptical of empirical-only gains unless accompanied by theoretical insight, thorough ablations, and detailed error analysis."
+    },
+    "reviewer_b": {
+      "name": "Resource-focused Empiricist",
+      "background": "Applied NLP researcher in industry with experience building lexical resources and deploying paraphrase/sense inventories in downstream systems.",
+      "traits": [
+        "Rewards (+2 to +4) clear empirical improvements on practical metrics (coverage, GAP) and visible gains over prior automatic resources (e.g., Cocos, CB2016).",
+        "Gives credit (+1 to +3) for creation and release of usable resources or tooling (sense inventories, filters) that improve downstream tasks, even if theoretical analysis is limited.",
+        "Lenient on theoretical rigor if the method is well-motivated, evaluations are comprehensive across realistic settings, and baselines are competitive (prefers practical utility over formal proof).",
+        "Values thorough empirical comparisons and will deduct modestly (-1) only if key baselines are omitted; rewards (+1) if code/data are released and experiments are reproducible."
+      ],
+      "reviewing_style": "Pragmatic evaluator who emphasizes downstream impact, coverage gains, and usability of released resources; willing to accept heuristic choices if they lead to consistent empirical benefits."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "CLARITY": 2,
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This is squarely within top NLP/ML conference scope: it proposes a neural A* CCG parser combining bi-LSTM supertagging and biaffine dependency scoring (building on Lewis et al. 2016 and Dozat & Manning 2016) and evaluates on standard English and Japanese CCGbank splits with labeled/unlabeled F1 and attachment scores. The methods (bi-LSTMs, biaffine scoring, tri-training/silver data) and baselines (EasySRL, neuralccg, C&C) match community expectations, and the paper is positioned and compared to relevant prior work in CCG and dependency parsing, making it a strong fit for top-tier NLP/ML venues."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has a discernible section structure (background, method, experiments) but is poorly organized in the provided text: many paragraphs and sentences are duplicated or interleaved (e.g. repeated paragraphs about bi-LSTM dependency parsing and tri-training), which breaks logical flow. Main contributions are mentioned but not stated cleanly early and are buried among repetitions; notation and equations are introduced but sometimes fragmented (e.g. Eq. (4)/(5) text is disjoint and Utag/the third-order tensor is not clearly explained). Figures/tables are present and potentially informative (Table 5, Figure 5) but references and captions are garbled, and the writing contains numerous typos and grammatical errors (e.g. \u201clerning rate\u201d, \u201cconcatenatination\u201d, \u201cconstaints\u201d), reducing overall clarity."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses a central problem in CCG parsing\u2014how to recover syntactic structure efficiently while capturing long-range context\u2014by jointly modeling supertags and dependencies with bi-LSTMs yet keeping the model locally factored so A* search remains tractable (precomputation of scores). Empirically it reports state-of-the-art English results (88.8% labeled, 94.0% unlabeled F1) and substantial gains on Japanese (e.g. +4.0 points on attachments), demonstrating that dependency modeling materially improves parsing in freer-word-order languages. The approach is likely to change practice within lexicalized grammar parsing (encouraging joint supertag+dependency models and use of biaffine scoring in A* frameworks) and enables extensions such as tri-training on large silver data. Broader implications are moderate: impactful for parsing and grammar formalisms but not obviously transformative beyond syntactic/semantic parsing research."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper mainly combines existing components\u2014A* CCG parsing and supertagging (Lewis et al., 2016) with biaffine/bi-LSTM dependency scoring (Dozat & Manning, Kiperwasser & Goldberg)\u2014but introduces a specific joint formulation that keeps the model locally factored so probabilities can be precomputed and A* search remains tractable (e.g. \u201cthis keeps our joint model still locally factored and A* search tractable\u201d). The use of the most-probable-head hidden vector in supertag prediction (Eq.5) and the extension of tri-training to learn dependencies are non-trivial engineering/algorithmic additions. Overall this is an incremental but meaningful extension that combines known techniques in a novel, practically useful way rather than a fundamentally new paradigm."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims (factoring CCG tree probability into supertag and dependency factors using bi-LSTMs, precomputable scores enabling A* parsing, and improved English/Japanese results) are stated and supported by concrete model equations (biaffine/bilinear scoring in Eqns. 4\u20135) and experimental results (e.g. 88.8%/94.0% labeled/unlabeled F1 on English; Table 5 Japanese gains over baselines). The mathematical scoring formulations follow established prior work (Dozat & Manning) and look correct. Minor technical concerns remain: the use of the single most-probable head hi = argmaxh Pdep(h|x) in computing Ptag is an approximation that weakens the claim of a fully joint model and is not analyzed; some training-data conversion mismatches are noted but not quantified; and no statistical significance testing is reported. These issues do not, however, overturn the main experimental conclusions."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents solid experiments on English and Japanese CCGbanks (reports best English results 88.8% labeled / 94.0% unlabeled F1 and Japanese improvements in Table 5), evaluates different dependency-conversion choices (LEWISRULE vs HEADFIRST/HEADFINAL) and uses large silver data via tri\u2011training; it also provides many implementation and training details (LSTM/MLP sizes, optimizer and decay, embeddings, pruning, beam \u03b2, tag dictionary), aiding reproducibility. Related work is cited and integrated into the method (Lewis & Steedman, Dozat & Manning, Kiperwasser & Goldberg, Lee et al.). However, the paper lacks explicit ablation/sensitivity studies isolating contributions (e.g., effect of head\u2011prediction component, biaffine choices, pruning/beam settings) and gives only limited discussion of failure modes (aside from implementation speed and some Japanese ambiguity notes)."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares to a wide set of recent and appropriate baselines (Lewis and Steedman 2014/2016 EasySRL, Lee et al. 2016 neuralccg, Vaswani et al. 2016 C&C LSTM, Dozat & Manning 2016, Kiperwasser & Goldberg 2016, Noji & Miyao 2016, etc.) and reports standard metrics on standard splits (\"Sections 02-21... Section 23\", \"labeled and unlabeled F1\", using the C&C generate program). It discusses and analyzes differences (e.g. why dependency modeling helps Japanese, efficiency tradeoffs vs. Lee et al. 2016's recursive model, biaffine scoring choice) and acknowledges when prior work is comparable or better (\"except C&C with LSTM supertagger (Vaswani et al., 2016)\" and notes implementation differences). Overall the comparisons are comprehensive, relevant, and largely fair given the stated shared data and evaluation setup."
+    }
+  }
+}

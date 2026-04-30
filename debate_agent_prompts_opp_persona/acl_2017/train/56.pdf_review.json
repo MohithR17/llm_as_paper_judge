@@ -1,0 +1,182 @@
+{
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 3,
+  "IMPACT": 3,
+  "CLARITY": 4,
+  "SUBSTANCE": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "APPROPRIATENESS": 4,
+  "_details": {
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against the standard and recent baselines (SGNS/word2vec, GloVe, PPMI, SVD) and evaluates on the same datasets and metrics used in prior work, which is appropriate. However, fairness is somewhat compromised because the authors admit they kept baseline hyperparameter defaults and did not tune them for n\u2011grams, and there is no mention of statistical significance testing to support reported gains. The authors do acknowledge cases where prior methods perform comparably or better (e.g., inconsistent similarity gains, bi\u2011grams sometimes hurting SVD) and analyze some methodological differences (overlap vs non\u2011overlap effects, novel co\u2011occurrence matrix construction), but the comparison lacks rigorous ablations and formal cost bounds that would strengthen claims of hardware/memory advantages. Related work coverage is reported as thorough, so overall the empirical comparisons are solid but have notable omissions in rigor and fairness. | B(4): The paper compares against strong, relevant baselines (SGNS/word2vec, GloVe, PPMI, and SVD) and evaluates on standard similarity and analogy benchmarks (including datasets used by Levy et al.), so the choice of baselines and metrics is appropriate. Comparisons appear fair in terms of data and metrics, and the authors explicitly acknowledge cases where baselines (e.g., SVD with bi-grams) perform as well or better and analyze differences (e.g., overlap vs non-overlap effects); related work is treated thoroughly. I dock one point because the authors relied on baseline default hyperparameters and did not tune them for the ngram-augmented models, which can raise concerns about optimality and fairness of comparisons in a practical deployment context.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against the standard and recent baselines (SGNS/word2vec, GloVe, PPMI, SVD) and evaluates on the same datasets and metrics used in prior work, which is appropriate. However, fairness is somewhat compromised because the authors admit they kept baseline hyperparameter defaults and did not tune them for n\u2011grams, and there is no mention of statistical significance testing to support reported gains. The authors do acknowledge cases where prior methods perform comparably or better (e.g., inconsistent similarity gains, bi\u2011grams sometimes hurting SVD) and analyze some methodological differences (overlap vs non\u2011overlap effects, novel co\u2011occurrence matrix construction), but the comparison lacks rigorous ablations and formal cost bounds that would strengthen claims of hardware/memory advantages. Related work coverage is reported as thorough, so overall the empirical comparisons are solid but have notable omissions in rigor and fairness."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against strong, relevant baselines (SGNS/word2vec, GloVe, PPMI, and SVD) and evaluates on standard similarity and analogy benchmarks (including datasets used by Levy et al.), so the choice of baselines and metrics is appropriate. Comparisons appear fair in terms of data and metrics, and the authors explicitly acknowledge cases where baselines (e.g., SVD with bi-grams) perform as well or better and analyze differences (e.g., overlap vs non-overlap effects); related work is treated thoroughly. I dock one point because the authors relied on baseline default hyperparameters and did not tune them for the ngram-augmented models, which can raise concerns about optimality and fairness of comparisons in a practical deployment context."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper performs a systematic augmentation of established word-embedding methods (SGNS, GloVe, PPMI, SVD) by treating ngrams as context tokens and proposes a novel co-occurrence matrix construction to reduce memory. That is a useful engineering/generalization across multiple algorithms but is largely an incremental idea\u2014extending known models rather than introducing a new theoretical framework. The authors clearly differentiate their contributions (applying ngrams to four methods, and the memory-saving co-occurrence construction) and provide code and evaluations, but from a theoretical standpoint the techniques are non\u2011trivial only as engineering extensions rather than foundational innovations, so the novelty is moderate rather than high. | B(3): From a systems-practitioner perspective this paper offers a practical, moderately novel engineering contribution: treating n-grams as normal context types across SGNS, GloVe, PPMI and SVD is a straightforward extension of existing embedding pipelines, but packaging it consistently and showing gains across multiple algorithms is useful. The proposed memory-efficient co-occurrence matrix construction is the clearest non-trivial technical addition that could meaningfully reduce hardware costs. Overall the work is more an applied/engineering augmentation of well-studied methods than a fundamentally new idea, so I rate it as an incremental but practically valuable contribution.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper performs a systematic augmentation of established word-embedding methods (SGNS, GloVe, PPMI, SVD) by treating ngrams as context tokens and proposes a novel co-occurrence matrix construction to reduce memory. That is a useful engineering/generalization across multiple algorithms but is largely an incremental idea\u2014extending known models rather than introducing a new theoretical framework. The authors clearly differentiate their contributions (applying ngrams to four methods, and the memory-saving co-occurrence construction) and provide code and evaluations, but from a theoretical standpoint the techniques are non\u2011trivial only as engineering extensions rather than foundational innovations, so the novelty is moderate rather than high."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "From a systems-practitioner perspective this paper offers a practical, moderately novel engineering contribution: treating n-grams as normal context types across SGNS, GloVe, PPMI and SVD is a straightforward extension of existing embedding pipelines, but packaging it consistently and showing gains across multiple algorithms is useful. The proposed memory-efficient co-occurrence matrix construction is the clearest non-trivial technical addition that could meaningfully reduce hardware costs. Overall the work is more an applied/engineering augmentation of well-studied methods than a fundamentally new idea, so I rate it as an incremental but practically valuable contribution."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper tackles a relevant practical problem\u2014incorporating ngrams into four standard embedding methods\u2014and demonstrates empirical gains on analogy tasks and some similarity sets, with code provided which aids reproducibility. However, the improvements are mixed (bi-grams help analogies but sometimes worsen SVD results), and the claimed memory/hardware savings from the novel co-occurrence construction are not accompanied by formal complexity bounds or rigorous statistical significance testing. Given these factors the work is a useful, incremental contribution that practitioners may build on, but it is unlikely to fundamentally change how researchers think about representation learning without stronger theoretical or robustness analyses. | B(3): This is a practical, engineering-oriented contribution that extends multiple embedding methods (SGNS, GloVe, PPMI, SVD) to incorporate ngrams and proposes a co-occurrence matrix construction that reduces memory costs so ngram models can run on cheaper hardware\u2014valuable for systems-focused practitioners. Empirically it yields clear gains on analogy benchmarks and illuminates when bi-grams help, but improvements are inconsistent across similarity tasks and SVD can worsen with bi-grams; authors also did not fully retune hyperparameters for ngrams. Taken together, the work offers useful, broadly applicable techniques and implementation-level benefits, but the mixed results and remaining tuning/efficiency questions limit it to moderate impact rather than field-changing influence.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles a relevant practical problem\u2014incorporating ngrams into four standard embedding methods\u2014and demonstrates empirical gains on analogy tasks and some similarity sets, with code provided which aids reproducibility. However, the improvements are mixed (bi-grams help analogies but sometimes worsen SVD results), and the claimed memory/hardware savings from the novel co-occurrence construction are not accompanied by formal complexity bounds or rigorous statistical significance testing. Given these factors the work is a useful, incremental contribution that practitioners may build on, but it is unlikely to fundamentally change how researchers think about representation learning without stronger theoretical or robustness analyses."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "This is a practical, engineering-oriented contribution that extends multiple embedding methods (SGNS, GloVe, PPMI, SVD) to incorporate ngrams and proposes a co-occurrence matrix construction that reduces memory costs so ngram models can run on cheaper hardware\u2014valuable for systems-focused practitioners. Empirically it yields clear gains on analogy benchmarks and illuminates when bi-grams help, but improvements are inconsistent across similarity tasks and SVD can worsen with bi-grams; authors also did not fully retune hyperparameters for ngrams. Taken together, the work offers useful, broadly applicable techniques and implementation-level benefits, but the mixed results and remaining tuning/efficiency questions limit it to moderate impact rather than field-changing influence."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions (introducing ngrams into SGNS, GloVe, PPMI, and SVD and a novel co-occurrence construction) are stated early and carried through method and experiments. Notation appears consistent and the writing quality is reported as good; figures/tables/examples are effective enough to demonstrate analogy and similarity results on the stated datasets. Minor clarity issues remain: the novel co-occurrence matrix construction and the inconsistent SVD/bi\u2011gram behavior could use more explicit exposition and clearer linking to the reported limitations (hyperparameter interactions are acknowledged but not fully explained). From a presentation standpoint the manuscript is strong but would benefit from slightly more detailed explanation in those sections. | B(4): Overall the paper is well organized and presents its main contributions early (introducing ngrams into SGNS/GloVe/PPMI/SVD and a memory-saving co-occurrence construction). Notation and methodology are described consistently, hyperparameters and datasets are reported, and the writing quality is good with thorough related work coverage. Figures/tables and examples appear effective for demonstrating analogy and similarity gains, though some experimental sections (e.g., mixed effects of ngrams on SVD and similarity tasks) could be explained more deeply for clarity. From a practical-systems perspective the paper communicates implementation and resource claims clearly, but minor elaboration on hyperparameter interactions would make adoption easier.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions (introducing ngrams into SGNS, GloVe, PPMI, and SVD and a novel co-occurrence construction) are stated early and carried through method and experiments. Notation appears consistent and the writing quality is reported as good; figures/tables/examples are effective enough to demonstrate analogy and similarity results on the stated datasets. Minor clarity issues remain: the novel co-occurrence matrix construction and the inconsistent SVD/bi\u2011gram behavior could use more explicit exposition and clearer linking to the reported limitations (hyperparameter interactions are acknowledged but not fully explained). From a presentation standpoint the manuscript is strong but would benefit from slightly more detailed explanation in those sections."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and presents its main contributions early (introducing ngrams into SGNS/GloVe/PPMI/SVD and a memory-saving co-occurrence construction). Notation and methodology are described consistently, hyperparameters and datasets are reported, and the writing quality is good with thorough related work coverage. Figures/tables and examples appear effective for demonstrating analogy and similarity gains, though some experimental sections (e.g., mixed effects of ngrams on SVD and similarity tasks) could be explained more deeply for clarity. From a practical-systems perspective the paper communicates implementation and resource claims clearly, but minor elaboration on hyperparameter interactions would make adoption easier."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper presents adequate empirical evidence (multiple benchmarks, baselines, ablations), releases code, and covers related work well. However, they also concur that the paper lacks formal complexity/memory analysis, rigorous sensitivity/statistical robustness (multiple runs, hyperparameter tuning), and concrete compute/memory benchmarks to support efficiency claims. Given solid empirical contributions but important methodological and theoretical gaps, a middle score of 3 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experimental suite is adequate to demonstrate that adding ngrams can help (analogy and some similarity gains) and the paper provides code and reported hyperparameters, but it lacks the theoretical and complexity analysis I expect for claims about reduced hardware/memory costs (no formal bounds or worst-case comparisons). Ablations are present (e.g. overlap vs non-overlap, ngram types, and some method-specific outcomes) but hyperparameter interactions were not tuned and there is no evidence of statistical significance or multiple runs to establish robustness. Related work is covered well and authors explicitly state limitations and negative results, but the missing formal complexity guarantees and more rigorous sensitivity/statistical analyses prevent a higher score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper runs extensive evaluations across multiple standard similarity and analogy datasets and compares against strong baselines (SGNS, GloVe, PPMI, SVD), so experiments largely support the main claims. It includes some targeted analyses (e.g., role of overlapping ngrams, differing effects across models) and reports limitations and hyperparameters, but lacks thorough hyperparameter tuning for ngram models and more detailed empirical evidence of the claimed hardware/memory savings. Related work coverage is thorough and code is released, which aids reproducibility, though a few missing sensitivity studies (e.g., systematic cost/quality trade-offs across ngram sizes and compute/memory benchmarks) prevent a top score."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the empirical results are sensible and the paper is technically coherent, but they note missing rigor in key areas (limited theoretical analysis, absence of statistical significance testing and detailed ablations, and incomplete quantitative evidence for the claimed resource savings). Given these recurring gaps\u2014particularly the lack of formal guarantees, comprehensive experimental controls, and explicit complexity/resource measurements\u2014I give a cautious middle score reflecting that the work is promising but not fully validated.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper makes clear empirical claims and supports them with comprehensive experiments across multiple baselines and datasets, but offers little theoretical analysis or formal guarantees for why ngram augmentation should improve representations. Mathematical treatment appears minimal or absent, and the claimed memory/hardware reductions via a novel co-occurrence construction are not accompanied by explicit complexity bounds or worst-case analyses. Experimental methodology uses sensible baselines but lacks statistical significance testing, thorough ablations isolating each design choice, and careful hyperparameter tuning for the new models, leaving some results (e.g., mixed SVD behavior) insufficiently explained. Overall the conclusions are partially supported by the empirical results but important theoretical and experimental rigor is missing, so I rate it as a paper with some concerns (score 3)."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims and supports them with experiments across standard baselines (SGNS, GloVe, PPMI, SVD) and benchmark datasets (similarity and analogy sets), showing consistent analogy improvements from bi-grams. The mathematical treatment is straightforward and appropriate for the proposed augmentation, and the experimental methodology uses established baselines and datasets, though the authors admit they did not retune hyperparameters for ngram models. A practical concern is the hardware/memory reduction claim: while a novel co-occurrence matrix construction is proposed, the summary lacks quantitative resource measurements to fully validate the cost-saving assertion. Overall the technical work is sound with minor gaps in empirical evidence about resource savings and hyperparameter interactions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper is a strong fit for top NLP/ML venues: it addresses a relevant problem, provides a practical, modular augmentation applied across major methods, and evaluates on standard benchmarks with released code. Reviewer A\u2019s concerns about missing formal complexity/memory guarantees, limited statistical rigor (no confidence intervals/significance tests), and incomplete ablation/hyperparameter analysis justify a deduction from a perfect score, so I assign a 4 to reflect strong suitability with room for increased theoretical and experimental rigor.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The topic\u2014improving word representations by incorporating ngrams\u2014is squarely within top NLP/ML venues and will interest that audience; the experimental setup (SGNS/GloVe/PPMI/SVD baselines, standard similarity and analogy datasets) matches community expectations. However, from my theoretical-skeptic perspective the paper fails to provide formal complexity or memory bounds for its proposed co-occurrence construction, lacks statistical rigor (no confidence intervals/significance testing reported), and admits incomplete hyperparameter/ablation analysis\u2014issues that reduce its suitability for the very top conferences without stronger theoretical or robustness evidence. Overall, it is a good fit but would benefit from explicit complexity guarantees and a more rigorous experimental ablation suite to be a perfect match."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is a strong fit for a top NLP/ML venue: it presents a practical, modular extension (ngram augmentation) applied across SGNS, GloVe, PPMI and SVD and proposes a novel co-occurrence matrix construction that explicitly targets reduced memory/hardware costs\u2014an important engineering contribution. Evaluation compares to standard, strong baselines (word2vec, GloVe, PPMI, SVD) on widely used similarity and analogy benchmarks (including Google and MSR), and code and hyperparameters are provided. While improvements are not uniform (bi-grams help analogies more than similarity, and SVD can worsen with bi-grams) and authors note limited hyperparameter tuning, the work addresses the right audience and uses expected empirical standards, making it appropriate for a top venue."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce ngrams into four representation methods (SGNS, GloVe, PPMI, and SVD).",
+      "Ngram-augmented models learn improved word representations, showing gains on analogy tasks and some similarity tasks.",
+      "Trained ngram embeddings reflect semantic meanings and syntactic patterns (useful for antonyms and collocations).",
+      "Propose a novel approach to building ngram co-occurrence matrices to reduce hardware/memory costs, enabling ngram models to run on cheaper hardware."
+    ],
+    "methodology": "Treat ngrams as normal context tokens by adding ngram types into the context vocabulary for SGNS, and analogously incorporate ngrams into GloVe, PPMI, and SVD (with a novel co-occurrence matrix construction); SGNS training uses negative sampling. ",
+    "datasets": [
+      "same as Levy et al. (2015): six similarity datasets",
+      "same as Levy et al. (2015): two analogy datasets",
+      "Google analogy dataset",
+      "MSR analogy dataset"
+    ],
+    "baselines": [
+      "SGNS (word2vec)",
+      "GloVe",
+      "PPMI matrix",
+      "SVD factorization of PPMI"
+    ],
+    "metrics": [
+      "Similarity task (scalar similarity scores)",
+      "Analogy task accuracy",
+      "Additive (add) and multiplicative (mul) evaluation functions for analogy"
+    ],
+    "limitations": [
+      "Introduction of ngrams brings large computational and memory costs.",
+      "Improvements are not uniform: bi-grams help analogy tasks strongly but give little or inconsistent gains on similarity tasks; in SVD bi-grams sometimes worsen results.",
+      "Authors followed baseline hyperparameter defaults and did not tune them for ngrams; they state hyperparameter interactions with ngrams require further exploration.",
+      "Overlap vs non-overlap of ngrams with center word affects embedding properties (behavior differs)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - word embeddings / representation learning",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theoretical Skeptic",
+      "background": "Associate professor in machine learning and computational linguistics with a track record of work on theoretical foundations of representation learning.",
+      "traits": [
+        "Penalises papers that present only empirical improvements without accompanying theoretical analysis or formal guarantees (will deduct points if no complexity/consistency/bias analysis is given).",
+        "Requires explicit memory/time complexity bounds and concrete comparisons (will penalise if claimed hardware/memory cost reductions are not quantified with formulas or worst-case bounds).",
+        "Penalises missing statistical rigor: deducts points if experiments lack significance testing, confidence intervals, or sufficient runs to establish robustness.",
+        "Demands careful ablations isolating individual contributions (will deduct if ablation suite is incomplete or confounded)."
+      ],
+      "reviewing_style": "Highly critical of empirical-only work: focuses on whether claims are theoretically grounded, reproducible, and supported by rigorous ablations and complexity analysis."
+    },
+    "reviewer_b": {
+      "name": "Practical Systems Champion",
+      "background": "Senior research engineer in NLP and production ML systems, specializing in scalable embedding methods and resource-constrained deployment.",
+      "traits": [
+        "Rewards methods that lower resource requirements (memory/compute) or enable training on cheaper hardware (will award points when clear empirical evidence of reduced cost is provided).",
+        "Favors simple, modular ideas that integrate with many existing approaches (will give credit for practical extensions that apply to multiple algorithms like SGNS/GloVe/SVD).",
+        "Values strong empirical improvements and interpretability: rewards papers that show gains on standard benchmarks and provide qualitative analyses (embedding inspection, case studies).",
+        "Penalises papers that do not include comparisons to strong practical baselines (will expect at least the standard established baselines implemented reasonably)."
+      ],
+      "reviewing_style": "Practical and application-oriented: emphasizes empirical gains, efficiency improvements, broad applicability, and clarity for engineers who might adopt the method in production."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 3,
+    "total_dimensions": 7,
+    "debate_rate": 0.429
+  }
+}

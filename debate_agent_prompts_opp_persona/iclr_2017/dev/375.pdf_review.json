@@ -1,0 +1,131 @@
+{
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper presents a compact, practically effective combination (SIF weighting a/(a+p(w)) plus first-PC removal) that is not an obvious rehash of standard idf or averaging tricks and\u2014crucially\u2014derives the SIF weight from a modified generative model, which is a substantive theoretical contribution. That said, part of the pipeline (subtracting the first principal component) remains a heuristic with limited formal analysis in the summary, and downweights important cases (e.g., negation), so the work is better characterized as a notable, theoretically-informed refinement rather than a fundamentally new paradigm. Overall the clear probabilistic derivation of the weighting distinguishes it from prior empirical tweaks, but the heuristic common-component step prevents a top-score under my rigor-focused criteria. | B(4): The paper presents a simple but distinct combination\u2014a principled SIF weighting a/(a+p(w)) for word-vector averaging plus explicit removal of the first principal component\u2014together with a theoretical derivation from a generative discourse model. While averaging and PCA-based postprocessing are individually known, deriving the specific SIF weight and showing that the two steps together yield strong, robust gains (often matching supervised models across many benchmarks and embeddings) clearly differentiates the work from prior baselines. From an applied-NLP perspective, this is a notable, reproducible new perspective rather than a mere engineering tweak, though it is not a radical departure from established representation techniques.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper presents a compact, practically effective combination (SIF weighting a/(a+p(w)) plus first-PC removal) that is not an obvious rehash of standard idf or averaging tricks and\u2014crucially\u2014derives the SIF weight from a modified generative model, which is a substantive theoretical contribution. That said, part of the pipeline (subtracting the first principal component) remains a heuristic with limited formal analysis in the summary, and downweights important cases (e.g., negation), so the work is better characterized as a notable, theoretically-informed refinement rather than a fundamentally new paradigm. Overall the clear probabilistic derivation of the weighting distinguishes it from prior empirical tweaks, but the heuristic common-component step prevents a top-score under my rigor-focused criteria."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a simple but distinct combination\u2014a principled SIF weighting a/(a+p(w)) for word-vector averaging plus explicit removal of the first principal component\u2014together with a theoretical derivation from a generative discourse model. While averaging and PCA-based postprocessing are individually known, deriving the specific SIF weight and showing that the two steps together yield strong, robust gains (often matching supervised models across many benchmarks and embeddings) clearly differentiates the work from prior baselines. From an applied-NLP perspective, this is a notable, reproducible new perspective rather than a mere engineering tweak, though it is not a radical departure from established representation techniques."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper states clear claims and provides broad empirical evidence across many benchmarks, and that the proposed theoretical derivation is plausible though relies on approximations and modeling assumptions rather than tight guarantees. The main weaknesses are lack of rigorous analysis for the heuristic (first\u2011PC removal), limited controlled ablations/statistical testing, and some reproducibility details. Given the strong empirical support and reasonable theoretical motivation despite these gaps, a score of 4 is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper states clear claims and supports them with extensive empirical comparisons across many standard datasets and baselines, and it offers a derivation of the a/(a+p(w)) weighting from a generative random-walk-on-discourses model. However, the theoretical justification appears to rely on approximations (maximum\u2011likelihood approximations) rather than tight guarantees, and the heuristic step of removing the first principal component lacks rigorous analysis or bounds, which my reviewer persona penalizes. While the experimental suite is broad, the summary does not indicate fully controlled ablation studies with statistical significance testing for key components (e.g., first\u2011PC removal), leaving some unsupported assumptions about which effects drive gains. Overall the results are promising but there are notable gaps in formal rigor and in controlled empirical validation, so I assign a middling technical score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and backed by broad empirical evidence: evaluations across many STS benchmarks, SICK, SNLI and sentiment tasks show consistent gains over simple baselines and competitive performance with supervised models, and experiments test robustness to embeddings and frequency corpora. The theoretical derivation (SIF weight from a generative discourse model) provides a plausible justification, though it relies on approximations and modeling assumptions rather than a formal equivalence. Experimental methodology is strong in breadth and baselines, but the summary does not mention statistical significance testing, code release, or some implementation details that would aid reproducibility. Overall the technical claims are well supported, with only minor gaps in rigorous proof completeness and reproducibility evidence."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper is well organized, clearly written, and reproducible with comprehensive experiments, notation, and reporting. I deduct one point because Reviewer A reasonably notes the absence of fully controlled ablation studies and statistical tests for some heuristic components (e.g., first-PC removal), which would strengthen clarity about each component\u2019s contribution. Overall the presentation is strong but could benefit from tighter ablation/statistical reporting.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized and the main contributions are stated early; writing quality is good and experiments cover many datasets with reported hyperparameters, suggesting reproducibility. Notation and presentation appear consistent and figures/tables are effective from the summary, and the theoretical justification for SIF is clearly articulated rather than purely empirical. From a Theory Purist perspective I nonetheless deduct one point because the summary does not confirm fully explicit, controlled ablation studies and statistical tests for each claimed component (e.g., first-PC removal), and heuristic steps would benefit from tighter, formal analysis or clearer ablation reporting."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper is very well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early and clearly, including the SIF weighting and common-component removal. Notation and hyperparameter reporting are clear, and the experimental section comprehensively compares across many datasets and baselines (STS tasks, SICK, SNLI, sentiment datasets) with appropriate metrics. Figures/tables/examples and related-work coverage are informative, and the writing is generally free of ambiguity and grammatical issues, making the method easy to reproduce and reason about."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A simple unsupervised method\u2014weighted average of word vectors using smooth inverse frequency (SIF) followed by removing the projection on the first principal component\u2014yields strong sentence embeddings that significantly improve over unweighted averages and often outperform or match more sophisticated supervised models on textual similarity tasks.",
+      "They provide a theoretical justification for the SIF weighting via a modified random-walk-on-discourses generative model, deriving the a/(a+p(w)) weighting from a maximum-likelihood approximation.",
+      "The method is robust across different word embeddings and frequency-estimation corpora, improves existing paraphrastic embeddings (PSL), and contributes complementary benefits from both the weighting and the common component removal steps."
+    ],
+    "methodology": "Compute sentence vectors by taking a weighted average of word vectors with weight a/(a+p(w)) (SIF), then compute the first principal component over sentence vectors and subtract each sentence vector's projection on that component (common component removal).",
+    "datasets": [
+      "SemEval STS tasks (2012-2015)",
+      "SemEval 2015 Twitter task",
+      "SemEval 2014 Semantic Relatedness task (Marelli et al., 2014)",
+      "SICK (similarity and entailment)",
+      "SNLI",
+      "Stanford Sentiment Treebank (SST) binary",
+      "IMDB sentiment dataset",
+      "PPDB (used for training baselines)",
+      "commoncrawl (used for GloVe and p(w) estimates)",
+      "enwiki",
+      "poliblogs",
+      "text8"
+    ],
+    "baselines": [
+      "skip-thought (ST)",
+      "avg-GloVe",
+      "tfidf-GloVe",
+      "avg-PSL",
+      "PP (Wieting et al., 2016)",
+      "PP-proj.",
+      "DAN (deep averaging network)",
+      "RNN",
+      "iRNN",
+      "LSTM (with/without output gates)",
+      "NB-SVM"
+    ],
+    "metrics": [
+      "Pearson's correlation coefficient (for textual similarity)",
+      "Spearman's coefficient (used in PPDB hyperparameter selection)",
+      "classification accuracy (for supervised tasks)"
+    ],
+    "limitations": [
+      "Method underperforms some supervised RNN/LSTM models on sentiment tasks; performance drop attributed to distributional issues for sentiment (antonym problem).",
+      "The weighting downweights frequent words and can downweight important tokens for some tasks (e.g., negation words like \"not\" for sentiment).",
+      "On some rare datasets (e.g., MSRpar) the method can decrease performance."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - sentence/phrase embeddings",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Associate professor in theoretical machine learning and probabilistic models with extensive experience in formal analysis of representation learning.",
+      "traits": [
+        "Penalizes papers that rely primarily on empirical results without provable guarantees or clear, rigorous derivations (subtract 1-2 points if formal justification is approximate or heuristic).",
+        "Requires explicit, reproducible ablation studies for every claimed component; deducts points if key steps (e.g., first-PC removal) lack controlled ablations and statistical significance testing across datasets.",
+        "Penalizes heuristic steps that lack theoretical analysis (e.g., removing projection on first principal component) unless accompanied by formal justification or bounds.",
+        "Favors papers that present clear probabilistic/generative models with derivations; rewards (adds points) for exact or tight approximations derived from the model (not loose intuitions)."
+      ],
+      "reviewing_style": "Critical and formal: prioritizes theoretical rigor and principled derivations, and downgrades empirical-only contributions that rely on heuristics without solid analysis."
+    },
+    "reviewer_b": {
+      "name": "Applied NLP Engineer",
+      "background": "Senior research scientist working on practical NLP systems and representation learning; focuses on scalable, robust methods that improve downstream performance in real applications.",
+      "traits": [
+        "Rewards simple, computationally cheap methods that give large empirical gains on standard benchmarks (adds points if method improves strong baselines on multiple datasets).",
+        "Gives positive credit for robustness and transferability: rewards demonstrations that method works across different pre-trained embeddings and frequency corpora.",
+        "Boosts score for methods that are reproducible, have few hyperparameters, and are easy to integrate into existing pipelines (adds points if code or clear implementation details are provided).",
+        "Values empirical comparisons to both unsupervised and supervised baselines and will penalize only if major strong baselines are missing (but tolerates heuristic steps if they consistently help performance)."
+      ],
+      "reviewing_style": "Pragmatic and impact-driven: prioritizes empirical performance, simplicity, and reproducibility, and is sympathetic to methods that yield robust, broadly useful gains even if the theory is approximate."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 2,
+    "total_dimensions": 3,
+    "debate_rate": 0.667
+  }
+}

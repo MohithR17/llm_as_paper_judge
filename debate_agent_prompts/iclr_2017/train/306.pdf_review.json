@@ -1,0 +1,111 @@
+{
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and readable: introduction, method, experiments and conclusion are presented in a logical order and the main contributions (LSTM meta-learner that learns per-parameter update rules and a task-common initialization) are stated early. Notation appears consistent and hyperparameters and code are provided, which supports reproducibility. Figures, tables, and reported confidence intervals are informative; however the paper could be clearer about the gradient-independence simplifying assumption and the impact of using a self-created Mini-ImageNet split (these caveats are mentioned but deserve clearer placement and discussion). From an experimental-methodology viewpoint the writing is strong but a few clarifications would make replication and interpretation easier. | B(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early: an LSTM meta-learner that produces rapid per-parameter updates and a task-common initialization for few-shot classification. Notation appears consistent and the methodology is clearly described (treating network parameters as LSTM cell state, preprocessing gradients, gating updates), figures/tables and reported hyperparameters support the narrative, and related work coverage is thorough. A few presentation choices reduce clarity slightly for a specialist reader \u2014 e.g., the simplifying gradient-independence assumption and the self-created Mini-ImageNet split could be emphasized earlier to avoid confusion when comparing to prior work \u2014 but overall the writing is clear and largely free of ambiguity.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and readable: introduction, method, experiments and conclusion are presented in a logical order and the main contributions (LSTM meta-learner that learns per-parameter update rules and a task-common initialization) are stated early. Notation appears consistent and hyperparameters and code are provided, which supports reproducibility. Figures, tables, and reported confidence intervals are informative; however the paper could be clearer about the gradient-independence simplifying assumption and the impact of using a self-created Mini-ImageNet split (these caveats are mentioned but deserve clearer placement and discussion). From an experimental-methodology viewpoint the writing is strong but a few clarifications would make replication and interpretation easier."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early: an LSTM meta-learner that produces rapid per-parameter updates and a task-common initialization for few-shot classification. Notation appears consistent and the methodology is clearly described (treating network parameters as LSTM cell state, preprocessing gradients, gating updates), figures/tables and reported hyperparameters support the narrative, and related work coverage is thorough. A few presentation choices reduce clarity slightly for a specialist reader \u2014 e.g., the simplifying gradient-independence assumption and the self-created Mini-ImageNet split could be emphasized earlier to avoid confusion when comparing to prior work \u2014 but overall the writing is clear and largely free of ambiguity."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper clearly states its main claims and provides experimental evidence (accuracy with confidence intervals) showing the LSTM meta-learner outperforms simple baselines and is competitive with Matching Networks on their Mini-ImageNet split; code and hyperparameters are provided which aids reproducibility. However, there are methodological concerns that prevent a perfect score: the authors use a self-created Mini-ImageNet split (hindering direct comparison), adopt a gradient-independence simplification (avoiding second derivatives) without thorough analysis of its impact, and the summary lacks extensive ablations (meta-learner size, number of update steps, preprocessing choices) and multi-seed runs to firmly establish robustness. Overall the technical approach appears sound and empirically promising, but some missing diagnostics and dataset/split choices leave open questions about the generality and reproducibility of the claims. | B(4): The paper's central claims\u2014that an LSTM meta-learner can learn good initializations and per-parameter update rules yielding rapid few-shot generalization\u2014are empirically supported by episode-based training and comparisons to reasonable baselines (including Matching Networks) on Mini-ImageNet. Mathematical treatment is pragmatically consistent, but the explicit gradient-independence simplification (avoiding second derivatives) is a noteworthy caveat that weakens theoretical completeness. Experimental methodology is mostly sound (episode training, relevant baselines, reported hyperparameters, and available code), but use of a self-created Mini-ImageNet split limits direct comparability to prior work. Overall the technical claims are credible though minor methodological and theoretical limitations warrant caution.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims and provides experimental evidence (accuracy with confidence intervals) showing the LSTM meta-learner outperforms simple baselines and is competitive with Matching Networks on their Mini-ImageNet split; code and hyperparameters are provided which aids reproducibility. However, there are methodological concerns that prevent a perfect score: the authors use a self-created Mini-ImageNet split (hindering direct comparison), adopt a gradient-independence simplification (avoiding second derivatives) without thorough analysis of its impact, and the summary lacks extensive ablations (meta-learner size, number of update steps, preprocessing choices) and multi-seed runs to firmly establish robustness. Overall the technical approach appears sound and empirically promising, but some missing diagnostics and dataset/split choices leave open questions about the generality and reproducibility of the claims."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's central claims\u2014that an LSTM meta-learner can learn good initializations and per-parameter update rules yielding rapid few-shot generalization\u2014are empirically supported by episode-based training and comparisons to reasonable baselines (including Matching Networks) on Mini-ImageNet. Mathematical treatment is pragmatically consistent, but the explicit gradient-independence simplification (avoiding second derivatives) is a noteworthy caveat that weakens theoretical completeness. Experimental methodology is mostly sound (episode training, relevant baselines, reported hyperparameters, and available code), but use of a self-created Mini-ImageNet split limits direct comparability to prior work. Overall the technical claims are credible though minor methodological and theoretical limitations warrant caution."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a clearly new methodological perspective\u2014using a 2-layer LSTM as a per-parameter meta-learner that treats learner weights as LSTM cell state and outputs learned update gates\u2014applied to few-shot classification. This is distinctly different from the dominant metric-learning approaches (Matching Networks) and from simple fine-tuning baselines, and it non-trivially extends meta-learning by jointly learning initialization and an update rule. From an expert vantage I find the idea notable and differentiated, though it reads as a methodological innovation rather than a sweeping theoretical departure (hence not a maximal novelty score). | B(4): The paper advances a notable and concrete new perspective by applying an LSTM-based meta-learner to directly learn per-parameter update rules and a task-common initialization for few-shot classification \u2014 a departure from prevailing metric-learning approaches (e.g., Matching Networks). Treating the learner parameters as LSTM cell state and training the meta-learner to minimize learner test loss across episodes is a non-trivial methodological step that clearly differentiates the contribution from prior baselines and metric methods. While the core idea builds on existing learned-optimizer concepts, adapting and validating it specifically for few-shot classification constitutes a meaningful and informative novelty for experts in meta-learning.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a clearly new methodological perspective\u2014using a 2-layer LSTM as a per-parameter meta-learner that treats learner weights as LSTM cell state and outputs learned update gates\u2014applied to few-shot classification. This is distinctly different from the dominant metric-learning approaches (Matching Networks) and from simple fine-tuning baselines, and it non-trivially extends meta-learning by jointly learning initialization and an update rule. From an expert vantage I find the idea notable and differentiated, though it reads as a methodological innovation rather than a sweeping theoretical departure (hence not a maximal novelty score)."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper advances a notable and concrete new perspective by applying an LSTM-based meta-learner to directly learn per-parameter update rules and a task-common initialization for few-shot classification \u2014 a departure from prevailing metric-learning approaches (e.g., Matching Networks). Treating the learner parameters as LSTM cell state and training the meta-learner to minimize learner test loss across episodes is a non-trivial methodological step that clearly differentiates the contribution from prior baselines and metric methods. While the core idea builds on existing learned-optimizer concepts, adapting and validating it specifically for few-shot classification constitutes a meaningful and informative novelty for experts in meta-learning."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes an LSTM-based meta-learner that learns an optimization/update rule to train a neural network learner for few-shot classification tasks.",
+      "The meta-learner can learn a task-common initialization for the learner (good initial weights) and produce rapid parameter updates so the learner generalizes after a fixed small number of updates.",
+      "Empirically, the approach outperforms simple baselines and is competitive with state-of-the-art metric-learning methods (Matching Networks) on a Mini-ImageNet few-shot benchmark."
+    ],
+    "methodology": "Train a 2-layer LSTM meta-learner that treats the learner network parameters as the LSTM cell state and, given preprocessed gradients and losses from the learner, outputs per-parameter update gates (input/forget) to update the learner over a fixed number of steps; the meta-learner is trained by optimizing the learner's test-set loss across many k-shot, N-class episodes.",
+    "datasets": [
+      "Mini-ImageNet (their own 100-class split derived from ImageNet)"
+    ],
+    "baselines": [
+      "Nearest-neighbor baseline (embedding + NN)",
+      "Baseline-finetune (pretrain and fine-tune with fixed number of updates)",
+      "Matching Networks (basic and fully-conditional embedding/FCE variants)"
+    ],
+    "metrics": [
+      "Classification accuracy (mean accuracy with confidence intervals)",
+      "Test-set loss (Ltest) used as meta-training objective"
+    ],
+    "limitations": [
+      "Study focused only on few-shot and few-classes settings; does not address performance across a spectrum of numbers of training examples or classes.",
+      "Makes a gradient-independence simplifying assumption (ignores dependency of learner losses/gradients on meta-learner parameters), avoiding second derivatives.",
+      "Reported results use a self-created Mini-ImageNet split so numbers do not directly match prior published splits (Vinyals et al., 2016)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Meta-learning / Few-shot learning (vision)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Experimental Methodologist",
+      "background": "Senior ML engineer with 8+ years building and evaluating deep learning systems; experience reproducing research results across vision and meta-learning benchmarks.",
+      "traits": [
+        "insists on thorough ablation studies (e.g., effect of meta-learner size, number of update steps, preprocessing of gradients)",
+        "values clear training/evaluation protocols, hyperparameter reporting, and seed/statistical variability (confidence intervals or multiple runs)",
+        "looks for strong, well-implemented baselines and checks for leakage between meta-train/meta-test sets",
+        "prefers reproducible implementation details (pseudocode, compute budget, runtime) and diagnostic analyses (convergence curves, per-class performance)"
+      ],
+      "reviewing_style": "Focuses on empirical rigor and reproducibility: asks for experiments and documentation needed to trust that the claimed gains are real and replicable."
+    },
+    "reviewer_b": {
+      "name": "Meta-learning Impact Scholar",
+      "background": "Associate professor studying meta-learning and few-shot classification with a track record of publications on optimization-based and metric-based approaches.",
+      "traits": [
+        "evaluates novelty relative to prior meta-learning/optimization-as-learning work and situates contributions in the literature",
+        "assesses whether the proposed idea advances understanding (insights about learned optimizers, inductive biases, or generalization) beyond empirical gains",
+        "attends to broader applicability and limitations (scalability, transfer across architectures/tasks) and potential directions the community could build on",
+        "values clear statements of when the method should be preferred over competing paradigms (e.g., optimization-based vs metric-learning)"
+      ],
+      "reviewing_style": "Focuses on novelty, clarity of conceptual contribution, and the likely impact of the method on future research directions in meta-learning."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

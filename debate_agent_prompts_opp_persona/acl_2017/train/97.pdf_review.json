@@ -1,0 +1,172 @@
+{
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 2,
+  "MEANINGFUL_COMPARISON": 1,
+  "SUBSTANCE": 2,
+  "IMPACT": 2,
+  "APPROPRIATENESS": 2,
+  "ORIGINALITY": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early, with methodology and experimental setup described (datasets, RF hyperparameters) and writing quality noted as good. However, presentation could be improved: notation and modeling choices are not fully detailed in the summary (making reproducibility claims harder to judge), and there is little evidence that figures/tables or qualitative error examples effectively communicate failure modes or the relative contributions of surface vs. semantic features (no ablation results highlighted). With clearer explicit ablation tables, illustrative examples of systematic errors, and tighter definition of notation, the paper would reach an excellent clarity level. | B(4): Overall the paper reads well and follows a logical structure from introduction through methods, experiments, and conclusion; the main contributions (automated Japanese short-answer scoring with keyword and semantic features and a Linux web prototype) are stated early. Notation and hyperparameter reporting are adequate and the writing quality is good, making technical details (Random Forest setup, feature types, evaluation metrics) easy to follow. Minor presentation issues remain\u2014examples and visualizations could better illustrate failure modes (e.g., cases needing human revision) and the treatment of sparse/imbalanced training data could be explained more clearly for practitioners.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early, with methodology and experimental setup described (datasets, RF hyperparameters) and writing quality noted as good. However, presentation could be improved: notation and modeling choices are not fully detailed in the summary (making reproducibility claims harder to judge), and there is little evidence that figures/tables or qualitative error examples effectively communicate failure modes or the relative contributions of surface vs. semantic features (no ablation results highlighted). With clearer explicit ablation tables, illustrative examples of systematic errors, and tighter definition of notation, the paper would reach an excellent clarity level."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper reads well and follows a logical structure from introduction through methods, experiments, and conclusion; the main contributions (automated Japanese short-answer scoring with keyword and semantic features and a Linux web prototype) are stated early. Notation and hyperparameter reporting are adequate and the writing quality is good, making technical details (Random Forest setup, feature types, evaluation metrics) easy to follow. Minor presentation issues remain\u2014examples and visualizations could better illustrate failure modes (e.g., cases needing human revision) and the treatment of sparse/imbalanced training data could be explained more clearly for practitioners."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 2,
+      "justification": "Both reviewers agree the paper states clear, promising empirical claims but is undermined by weak experimental methodology: small, imbalanced per-item samples, no baselines, no statistical testing or confidence intervals, and no ablation studies. While there are no obvious logical errors and the applied approach looks promising, these substantive evaluation gaps substantially weaken the credibility and generalizability of the claims, so a low-but-not-minimal soundness score is warranted.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper states clear claims about Random Forests using surface and semantic features achieving 70\u201395% within-one-point agreement, but the experimental methodology is weak: no baselines, no statistical significance testing or confidence intervals, and no ablation isolating the contribution of surface vs. semantic features. The dataset is small (8 items, 70\u2013120 responses each) and imbalanced (many zeros), and there is limited error analysis or out-of-sample validation to support generality; these gaps constitute significant technical shortcomings that undermine the strength of the claims."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper clearly states and experimentally supports that a hybrid keyword + cosine-similarity Random Forest can predict short-answer scores within one point for many items on the Gakken trial dataset; reported hyperparameters and per-item concordance rates are useful. However, the experimental methodology is limited\u2014no baselines (e.g., simple heuristics or other classifiers), small/imbalanced per-item samples, and no statistical testing\u2014so the strength of the claims about broad effectiveness is uncertain. There are no mathematical proofs to check and no glaring logical errors, but unsupported assumptions about generalizability and reliance on keyword matching are not fully addressed. From an applied ed\u2011tech perspective the system looks promising, but the evaluation needs stronger controls and larger, balanced data to justify more confident conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 1,
+      "justification": "Both reviewers agree the manuscript omits any empirical, head-to-head comparisons to prior automated short-answer scoring methods, a major methodological gap given small, imbalanced item samples and the claimed accuracy numbers. Because the paper fails to situate its Random Forest predictor against reasonable algorithmic baselines or provide statistical tests, its reported performance cannot be reliably attributed to the proposed approach; this critical omission justifies the lowest meaningful comparison score.",
+      "reviewer_a": {
+        "score": 1,
+        "justification": "The paper presents no empirical comparisons against any prior automated short-answer scoring baselines\u2014no supervised or unsupervised competitive systems are evaluated\u2014so it fails to situate its Random Forest predictor relative to existing methods. From a methodological standpoint this omission is serious given small, imbalanced item-level samples (70\u2013120 responses) and the paper's claims of 70\u201395% within-one-point accuracy; without head-to-head baselines or statistical tests the reported gains cannot be attributed to the proposed feature mix. While related work is reportedly discussed, acknowledging prior methods is insufficient without quantitative, fair comparisons on the same data and metrics."
+      },
+      "reviewer_b": {
+        "score": 2,
+        "justification": "The paper reports promising results but includes no comparisons to appropriate algorithmic baselines (summary notes \u201cBaselines compared: none mentioned\u201d), which is a major omission for assessing advance over prior work. While evaluation metrics and dataset details are clear and related work coverage is said to be adequate, the lack of head-to-head experiments means differences vs. existing automated short-answer scoring methods are not demonstrated. From an applied ed-tech perspective this limits confidence that the system meaningfully improves teacher workload compared to prior approaches."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 2,
+      "justification": "Both reviewers agree the work demonstrates a functioning prototype and reports useful outcome statistics, but they also concur that experimental rigor is lacking\u2014no baselines, no ablations/sensitivity analyses, limited and imbalanced per-item samples, and only partial reproducibility. Given these substantive methodological and evaluation gaps that undermine causal claims and deployment-readiness, a rather low score is warranted until stronger comparative and analytical evidence is provided.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The experiments are shallow relative to the claims: no baseline comparisons, no cross-domain or out-of-sample validation, and small/imbalanced item-level samples (70\u2013120) limit generalisability. Crucially, ablation or sensitivity analyses isolating surface vs semantic feature contributions and statistical significance testing are absent, so causal attribution for gains is unsupported. The paper does fairly cover related work and explicitly discusses limitations and a negative result (case-grammar failure), but reproducibility is only partial (hyperparameters reported but no code or comprehensive dataset release). Given these gaps I judge the empirical evidence insufficiently rigorous for deployment claims."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper demonstrates a working prototype on real Gakken trial-exam data and reports useful outcome statistics (percent exact and within-one-point concordance), and it openly discusses key failure modes (entailment, imbalanced/limited training data). However, experiments lack critical comparisons and analyses I\u2019d expect for deployment-ready work: no baselines or alternative models, no ablation or sensitivity studies to show which features drive performance, and fairly small/imbalanced per-item sample sizes. Hyperparameters are reported, which helps reproducibility, but more comprehensive evaluations (comparisons, per-item error analysis, and ablations) are needed to fully support the claims about robustness and classroom utility."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 2,
+      "justification": "Both reviewers agree the paper addresses an important practical problem and shows promising within-one-point agreement on real exam data, but its impact is constrained by small, imbalanced item-level datasets, lack of baselines/statistical validation, reliance on surface/keyword features, and narrow coverage. Given these methodological gaps and limited generalizability, the work is a useful deployment-oriented prototype rather than a broadly influential research advance, so I rate its impact low\u2013moderate (2/5).",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper tackles a practically important problem (automating short-answer scoring for Japanese social-studies tests) and reports promising within-one-point rates (70\u201395% on many items), but its impact is limited by methodological shortcomings: no baseline comparisons, no statistical significance testing or confidence estimates, small and imbalanced dataset (8 items, 70\u2013120 samples each), and no cross-domain/out-of-sample validation. Given these gaps and the admitted reliance on surface keyword matching with weak semantic entailment, the contribution is a useful prototype for a niche application rather than a broadly influential advance that will change research or deployment practices."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "This work tackles a practical and important classroom problem\u2014automating short-answer scoring\u2014and demonstrates a working Linux/web prototype trained on real Gakken trial exam data with promising within-one-point agreement (\u224870\u201395%) and a human-in-the-loop design that aligns with teacher workflows. However, its impact is limited by small, imbalanced item-level datasets (70\u2013120 responses per item), reliance on keyword/limited semantic features, lack of baseline comparisons or public code, and narrow item coverage (8 social-studies items), so it\u2019s useful and deployment-oriented but not yet transformative for the broader field."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 2,
+      "justification": "Both reviewers agree the problem is relevant but the paper\u2019s evaluation and methodology are weak: no comparative baselines, no statistical testing, limited dataset size/imbalance, and little error analysis or ablation to isolate semantic contributions. While there is value in the applied prototype and real exam data, these strengths do not overcome the experimental gaps, so the work is better suited to a more applied venue unless the empirical rigor and comparisons are substantially improved.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The topic (automated short-answer scoring) is relevant to NLP/ML venues, but the paper\u2019s evaluation practices and experimental rigor fall short of top-tier expectations. Key omissions include no comparative baselines, no statistical significance or confidence intervals, no systematic ablation isolating surface vs. semantic feature contributions, and only small/imbalanced per-item datasets with no out-of-sample/cross-domain validation. Given these methodological gaps and limited error analysis, the work appears better suited for a more applied or educational-technology venue unless substantially strengthened."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper addresses an applied NLP problem (automated short-answer scoring) that is relevant to top NLP/ML venues, and it demonstrates a working Linux/web prototype and use of real Gakken trial exam data \u2014 strengths from an applied education perspective. However, the methodological contribution is limited (Random Forests over surface and cosine-similarity features), there are no baselines or stronger semantic modeling, and the dataset is small/imbalanced which constrains generalization. Given these trade-offs, the work is borderline for a top-tier NLP/ML conference: interesting and practically useful for educational audiences but needing stronger comparative experiments or more novel modeling to be a clear fit."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper applies well-known techniques (keyword matching, cosine similarity, Random Forests) to a new Japanese short-answer dataset and offers mainly an incremental, applied contribution rather than a novel algorithmic advance. Given the practical value of deploying a working system on real exam data but absence of methodological novelty or substantial extensions, a middle score reflects modest originality with useful applied merit for practitioners rather than a surprising scientific contribution.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The system applies well-known techniques (keyword/surface matching, cosine semantic similarity, Random Forest classifiers) to a new Japanese short-answer dataset but does not introduce a fundamentally new algorithmic idea or modelling perspective. The formulation\u2014automated short-answer scoring with a rescue-human-in-the-loop flag\u2014is a well-studied problem in educational NLP, and the paper reports no novel method or comparative baselines to show a distinct advance. Given the reliance on standard features and off-the-shelf RFs, the contribution reads as an applied combination of existing methods rather than a non-trivial methodological extension that would surprise an expert."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The work applies established techniques (keyword matching, cosine similarity features, Random Forest classifiers) to Japanese social-studies short-answer scoring and delivers a prototype web system on Linux using real Gakken trial-exam data. While the practical deployment and use of domain-relevant data are valuable from an applied perspective, the methodological combination is incremental rather than novel\u2014no new algorithms or substantial extensions beyond standard feature+classifier pipelines are proposed. The paper would inform practitioners looking for a ready-to-deploy approach but would not surprise an expert in automated short-answer scoring."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Developed an automated Japanese short-answer scoring and support system for social-studies short written tests and a prototype web system on Linux.",
+      "The system uses both surface (keyword) matching and semantic similarity features to predict human scores and recommends scores while leaving final judgment to humans.",
+      "Using Random Forests with many predictors yields predictions that are within one point of human scores for about 70\u201395% of items when high semantic judgment is not required."
+    ],
+    "methodology": "Collect human-scored short-answer data from a Gakken trial exam, extract surface and semantic (cosine) similarity features between model answers and written answers, and train Random Forest classifiers (using RF package in R, default 500 trees) to predict multi-level scores; the system flags cases needing human revision.",
+    "datasets": [
+      "Gakken nation-wide trial examination (fiscal year 2015) short-answer set (8 test items across world history, Japanese history, and geography); sample sizes per item ranged 70\u2013120"
+    ],
+    "baselines": [],
+    "metrics": [
+      "concordance rate (percent identical predictions)",
+      "probability/difference within one point (percent)",
+      "prediction probability of recommended score"
+    ],
+    "limitations": [
+      "Recognizing textual entailment between model and written answers remains difficult; approach relies on keyword collation and limited semantic judgment.",
+      "Insufficient and imbalanced human-scored training data (many answers scored zero) degrades machine learning performance for some items.",
+      "Case-grammar (agreement of case elements) provided almost no agreement and was not an effective predictor."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Educational NLP - automated short-answer scoring",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theoretical Methodologist",
+      "background": "Senior researcher in NLP and machine learning with a focus on principled model evaluation and interpretability in educational applications.",
+      "traits": [
+        "penalises papers that do not perform statistical significance testing on predictive results (e.g., confidence intervals, p-values, or bootstrap tests)",
+        "requires explicit ablation studies isolating the contribution of each feature group (surface vs semantic) and hyperparameter sensitivity",
+        "downgrades papers lacking thorough error analysis and qualitative examples explaining systematic failure modes",
+        "is skeptical of claims about practical readiness unless there is rigorous cross-domain or out-of-sample validation (e.g., different exam sets or schools)"
+      ],
+      "reviewing_style": "Focuses on methodological rigor and reproducibility; expects clear causal attributions for empirical gains and detailed analysis of limitations."
+    },
+    "reviewer_b": {
+      "name": "Applied Education NLP Engineer",
+      "background": "Experienced practitioner building and deploying NLP systems for educational assessment and edtech products, with a track record of moving prototypes into classroom trials.",
+      "traits": [
+        "rewards papers that demonstrate working prototypes or deployment-ready systems (web systems, Linux-based demos, integration details)",
+        "gives credit for using real, domain-relevant datasets (e.g., commercial trial exams) and for human-in-the-loop designs that keep teachers in control",
+        "values pragmatic evaluation metrics tied to user needs (e.g., percent within one point of human raters, flagging cases for review) over pure theoretical novelty",
+        "is generous when the system reduces human workload even if some statistical analyses are limited, provided failure modes are discussed"
+      ],
+      "reviewing_style": "Prioritises applied impact and usability; emphasizes whether the work meaningfully advances tools teachers can use and whether evaluation metrics align with classroom needs."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

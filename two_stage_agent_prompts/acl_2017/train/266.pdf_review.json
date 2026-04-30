@@ -1,0 +1,75 @@
+{
+  "ORIGINALITY": 3,
+  "APPROPRIATENESS": 4,
+  "SUBSTANCE": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "IMPACT": 3,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper presents moderately novel empirical observations\u2014using corpus subjectivity as a metric for usefulness in sentiment tasks, extracting subjective portions to approximate task-specific corpora, and concatenating separately-trained generic and task-specific SGNS embeddings\u2014which are useful but not fundamentally new methodological paradigms. The work appears to be an incremental advance grounded in standard techniques (SGNS embeddings, averaging networks) and compares against sensible baselines (generic vs combined training, random vectors) on multiple datasets (Wikipedia, Europarl, MultiUN, Amazon Movie, Rotten Tomatoes, OpeNER). The authors clearly differentiate their contributions from prior work and provide practical insights (e.g., utility for under-resourced languages), but the techniques are extensions of existing ideas rather than a highly original breakthrough."
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "This paper addresses a core NLP task (sentiment analysis) and studies representation learning strategies (task-specific vs. generic embeddings), which is squarely within the scope of top NLP conferences and relevant to ML venues concerned with applied representation learning. The methodology and evaluation meet venue standards (SGNS embeddings, Deep Averaging Network classifier, standard datasets like Rotten Tomatoes and OpeNER, and appropriate metrics such as accuracy and macro F1). The work is primarily empirical and task-focused (including practical limits like vocabulary coverage and domain mismatch), so while it is a strong fit for leading NLP venues, its contribution may be less compelling for a general ML audience seeking deeper methodological novelty."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents a solid and varied experimental set: subjectivity quantification, training SGNS embeddings on generic/task-specific/filtered corpora, concatenation vs single representations, varying embedding size and amounts of task-specific data, and evaluation on two datasets (Rotten Tomatoes and OpeNER) with appropriate baselines and metrics. Ablations and sensitivity checks (dimension, fine-tuning, filtering, data-size scaling) are included and limitations (vocabulary loss from filtering, domain mismatch, degradation when updating vectors on small labeled sets) are discussed; related work and hyperparameters are reported. Missing are direct multilingual or under-resourced language experiments to fully support the claim about under-resourced languages and no code release is mentioned, which slightly weakens reproducibility."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized \u2014 the summary describes a clear flow through methodology (training SGNS embeddings), datasets, baselines, and evaluation metrics, and the main contributions (subjectivity metric, task-specific corpora, concatenation, subjectivity filtering) are stated up front. Notation and hyperparameters are reported and related work coverage is thorough, aiding clarity and reproducibility. Minor presentation gaps remain: the summary does not mention figures or tables and code availability is not stated, but overall the writing quality and explicit discussion of limitations are good."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper's main claims are generally supported by empirical experiments (SGNS embeddings on generic vs task-specific corpora, concatenation vs combined training, subjectivity-filtering, and varying amounts of task data) and appropriate baselines (generic embeddings, random vectors, combined-data embedding). However, the summary does not report statistical significance testing, only two target datasets (Rotten Tomatoes and OpeNER/hotels), and the claim about benefits for under-resourced languages appears insufficiently evidenced in the provided summary. Overall the experimental methodology is reasonable but has gaps in evaluation breadth and statistical validation that leave some claims only partially supported."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against sensible and relevant baselines\u2014embeddings trained on generic corpora (e.g., Wikipedia), randomly initialized vectors, and a single representation trained on combined data\u2014and evaluates on the same datasets and metrics (Accuracy on Rotten Tomatoes, Macro F1 on OpeNER). It also explores variants (concatenation, subjectivity-filtered subsets, varying amounts of task-specific data) and acknowledges when alternative choices perform comparably or worse (e.g., updating vectors during classifier training hurts on small labeled sets). The summary does not report comparison to broader modern strong baselines (e.g., large contextual/pretrained models), so while comparisons are good and fair, they may omit some potentially relevant contemporary baselines."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper tackles a practical and relevant problem\u2014improving sentiment classification by measuring corpus subjectivity and using task-specific corpora to train embeddings\u2014and demonstrates concrete gains on Rotten Tomatoes and the OpeNER hotel subcorpus. Its finding that concatenating task-specific and generic vectors and that extracting subjective portions can improve performance (and help under-resourced languages with little task-specific data) is likely to influence practitioners' embedding choices. However, the impact is moderate rather than transformative given noted limitations (vocabulary loss from subjectivity filtering, domain mismatch, and sensitivity on small labeled sets), so the contribution is useful but not field-changing."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "The subjectivity of a corpus is a viable metric to determine its usefulness for sentiment analysis and task-specific corpora yield better word embeddings for sentiment classification.",
+      "Concatenating vectors trained separately on generic and task-specific datasets outperforms using a single representation trained on both datasets.",
+      "Extracting subjective portions from generic corpora can approximate task-specific data and improve embeddings when task-specific data is limited.",
+      "The proposed techniques can improve sentiment classification for under-resourced languages even with little task-specific data."
+    ],
+    "methodology": "They quantify subjectivity in several corpora, train Skip-gram with Negative Sampling (SGNS) word embeddings (various dimensions) on generic and task-specific corpora (and on subjectivity-filtered subsets), and evaluate these embeddings by feeding averaged word vectors into a Deep Averaging Network for sentiment classification on Rotten Tomatoes and the OpeNER hotel subcorpus; they also test concatenation of task-specific and generic embeddings and vary amounts of task-specific data.",
+    "datasets": [
+      "Wikipedia (2016 dump)",
+      "Europarl v7 (English)",
+      "MultiUN (English side of English-Spanish)",
+      "Amazon Movie Corpus (movie reviews)",
+      "Rotten Tomatoes (Pang and Lee, 2005)",
+      "OpeNER (hotel subcorpus)"
+    ],
+    "baselines": [
+      "Embeddings trained on generic corpora (e.g., Wikipedia)",
+      "Randomly initialized word vectors",
+      "Single representation trained on combined (generic + task-specific) data"
+    ],
+    "metrics": [
+      "Accuracy (Rotten Tomatoes)",
+      "Macro F1 (OpeNER/hotel)"
+    ],
+    "limitations": [
+      "Updating word vectors during classifier training hurt performance on small labeled datasets (e.g., OpeNER) when using task-specific vectors.",
+      "Filtering for subjectivity can remove many task-relevant wordforms (misspellings, creative words, adjectives/adverbs) which carry sentiment, impacting vocabulary coverage.",
+      "Domain mismatch: embeddings trained on one domain (movies) may not outperform generic embeddings on a different domain (hotels)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - sentiment analysis and task-specific word embeddings",
+    "writing_quality": "good"
+  }
+}

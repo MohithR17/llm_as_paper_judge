@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "CLARITY": 3,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper addresses an NLP/ML problem (rumor/fact classification on microblogs) using model/design contributions (Propagation Tree Kernel) and an evaluation typical of top venues. It explicitly builds on NLP/ML prior work (tree kernels, Ma et al. 2016 RNN, Kwon et al. 2017, Castillo et al. 2011), uses standard Twitter15/16 datasets and competitive baselines, and evaluates both accuracy and early-detection performance. The task formulation (per-source-tweet classification), methodological framing (kernel-based SVM with novel tree kernels for real-valued node features), and comparisons are all appropriate for a top NLP/ML conference audience."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states clear claims and reports experiments showing PTK/cPTK outperform baselines on Twitter15/16 (e.g., 75% accuracy within 24h), and it grounds the method in established tree-kernel theory. However, the provided excerpt omits the actual kernel definitions/equations (2,3) and full mathematical derivations, so correctness of the proposed extension to real-valued node vectors cannot be verified. The experimental methodology has some weaknesses or missing details in the excerpt: dataset construction involves a heuristic \"flip-over\" labeling tied to event labels (potential label noise/bias), no dataset statistics or train/test split procedures are shown, and no mention of significance testing or hyperparameter/control details. These gaps leave some uncertainty about the robustness of the empirical claims, so the work appears promising but incompletely supported in the provided text."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper has a logical structure (intro \u2192 related work \u2192 method \u2192 experiments) and clearly states its main contribution (Propagation Tree Kernel) early in the abstract/introduction. Notation is mostly defined (e.g., K(T1,T2), \u0394(vi,vj), \u03bb) but several references to equations/variants (eq.2/3, cPTK) are fragmented in the provided text, making parts of the method harder to follow. Figures and tables are referenced and seem informative (Figure 3\u20135, Table 1) but are not present here; their effectiveness cannot be fully judged. Presentation is weakened by numerous repeated/duplicated sentences and some grammatical/formatting artifacts that disrupt readability and flow."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes Propagation Tree Kernel (PTK) and its context-sensitive variant (cPTK), a substantial extension of traditional tree kernels to handle propagation trees whose nodes are high-dimensional real-valued vectors (paper: \u201cour proposed method is a substantial extension of tree kernel\u2026\u201d; \u201cnodes are not given as discrete values\u2026 but are represented as high dimensional real-valued vectors\u201d). While rumor detection is a well-studied problem, the work offers a finer-grained tweet-level formulation and explicitly models temporal/structural propagation patterns (early detection gains reported). The techniques are a non-trivial adaptation of existing tree-kernel ideas (cPTK \u201cshares similar intuition with the context-sensitive tree kernel\u201d), so the contribution is notable and clearly differentiated rather than purely incremental."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against a broad set of relevant baselines (SVM-TS (Ma et al. 2015), DTR (Zhao et al. 2015), DTC/SVM-RBF (Castillo/Yang), RFC (Kwon et al. 2017) and GRU (Ma et al. 2016)) and evaluates on datasets derived from Twitter15/16, including early-detection experiments (Figure 5). However, it is not fully clear whether all baselines were reconfigured fairly for the paper\u2019s finer-grained source-tweet (quaternary) task or exactly the same metrics/labeling rules were used for each comparator, and the paper does not highlight cases where prior methods match or outperform the proposed approach. The paper does discuss why its propagation-kernel differs from prior feature-/temporal-/RNN-based approaches and provides structural analysis, so overall comparisons are good but with minor omissions/clarity issues about fairness and outcome acknowledgment."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important, timely problem (rumor/fake-news detection) and formulates a finer-grained task (source-tweet classification) that is practically relevant. It proposes a substantive methodological contribution\u2014Propagation Tree Kernel (PTK/cPTK) that extends tree kernels to propagation trees with real-valued node representations\u2014and shows concrete practical gains (e.g., cPTK achieves ~75% accuracy within 24 hours on Twitter15/Twitter16) compared to feature-based and RNN baselines. By demonstrating that rich propagation substructures and early-stage diffusion patterns are discriminative, the work is likely to change how researchers model rumor diffusion and opens directions for structure-aware models and early-detection systems. Its techniques and findings also have potential applicability beyond rumor detection to other information-diffusion and cascade-analysis tasks."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper provides reasonable experimental comparisons on two real-world datasets (built from Twitter15/16) and compares PTK/cPTK against multiple baselines including RFC, GRU and DTR (see Section 5.1 and the referenced Figure 5 early-detection results), which supports the core claim that propagation kernels improve early detection. However, there are no reported ablation or sensitivity analyses for kernel components or hyperparameters (no study of PTK vs cPTK design choices beyond reporting both), and key reproducibility details are missing (Table 1 is referenced but not shown, dataset sizes/splits, exact kernel/SVM hyperparameters and training protocol are not provided). Related work coverage is reasonably thorough, but the paper does not discuss failure cases or limitations of the approach."
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "CLARITY": 3,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical gap\u2014scalable Bayesian learning for RNNs\u2014by adapting SG-MCMC (notably pSGLD) to recurrent architectures and allowing uncertainty on recurrent weights (sec. 4, discussion of recurrent weight uncertainty). Empirically it shows consistent gains over optimization baselines and dropout (e.g. pSGLD yields a 2.77 BLEU-4 improvement and better sentence-classification errors in Table 4/5), indicating the approach can change regularization/modeling choices in practice. The work opens clear new directions (combining SG-MCMC with dropout, using predictive uncertainty for decisions, and improving test-time efficiency) and is likely to be built on by researchers applying Bayesian methods to sequence models and related tasks. While impactful and broadly applicable across NLP and conditional sequence tasks, it is incremental relative to foundational Bayesian ML advances, so falls short of transformative."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper studies scalable Bayesian learning for RNNs with SG-MCMC and applies it to core NLP tasks (language modeling, image captioning, sentence classification), which squarely fits top ML/NLP venues. It formulates the posterior learning problem and scalable SG-MCMC approach (Sec. 4.1\u20134.2), compares pSGLD to standard optimizers and dropout baselines, and reports results on standard datasets/metrics (PTB, WP, Flickr8k/30k, TREC; BLEU/METEOR/Table 5). The related-work discussion properly situates the contribution among stochastic variational methods, dropout interpretations, and SG\u2011MCMC literature, making the paper well positioned for the venue\u2019s audience."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper has a standard, logical organization (Related Work \u2192 RNN architectures \u2192 SG\u2011MCMC \u2192 Experiments) and states its goal early (e.g., \"This paper seeks to scale up Bayesian learning of RNNs...\"). Notation is largely introduced (U(\u03b8), \u0168t, f\u0303t, pSGLD/SGLD) and equations are used to explain methods. However, presentation is marred by many duplicated sentences/paragraphs, LaTeX/line\u2011number artifacts and occasional citation/formatting errors (multiple repeated blocks such as the long repeated intro/Related Work paragraphs), which make parts hard to follow; figures/tables are referenced usefully (e.g. Table 5, Figs. 4\u20136) but some surrounding explanation is noisy. Overall readable but hindered by proofreading and formatting issues that require cleanup."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents extensive experiments across multiple tasks and datasets (character/word language modeling, image captioning on Flickr8k/30k, and sentence classification on TREC/MR/SUBJ/CR/MPQA) and compares pSGLD to strong baselines (RMSprop, dropout variants, Gal\u2019s dropout), including some architecture- and algorithm-level analyses (LSTM/GRU/vanilla RNN effects, learning-curve and uncertainty analyses on TREC). However, systematic sensitivity/ablation for key SG-MCMC hyperparameters (stepsize, number of posterior samples S, preconditioner choices) and runtime/efficiency trade-offs are not shown in the main text, failure modes are only briefly noted as future work, and many reproduction details are deferred to the Supplementary Material. These are minor but important gaps given the methodological focus, so the evaluation is solid but not exhaustive."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims (that SG-MCMC/pSGLD can scale Bayesian learning for RNNs and improve generalization vs. stochastic optimization/dropout) are supported by experiments (e.g., Table 5 and the image-caption BLEU comparisons discussed in \u00a75.2\u20135.3) and by standard theoretical references (finite-time error bounds cited from Chen et al., 2015a and SG-MCMC/SGLD updates in \u00a74 and Eq. (8)). The mathematical statements are standard and appear correct (use of mini-batch gradient estimators in (4), pSGLD preconditioning, and the noted connection to dropout in \u00a74.4), though a few claims are informal (e.g., interpreting combined SGLD+dropout as a sampled mixture is heuristic) and the wording about unbiasedness/asymptotic guarantees is slightly imprecise. Experimental methodology is generally sound (multiple datasets, baselines including RMSprop and Gal\u2019s dropout, reporting mean\u00b1std and multiple runs), but stronger or more diverse baselines (e.g., other optimizers/variational Bayesian RNNs) and more complete statistical testing would strengthen the empirical case."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper applies existing SG-MCMC algorithms (e.g., SGLD/pSGLD) to recurrent neural networks for language modeling\u2014filling a gap the authors note (\u201cthere has been little if any research reported for RNNs using SG-MCMC,\u201d Related Work) rather than introducing a fundamentally new inference algorithm. It also emphasizes the connection between SG-MCMC and dropout and proposes jointly applying SGLD and dropout (Eq. 8 and Sec. 4.4), but these ideas build directly on recent prior work (Li et al., 2016b; Gal & Ghahramani) and use preconditioners already proposed in pSGLD (Sec. 4.2). Overall this is a non-trivial, useful extension and empirical application to RNNs, but primarily an incremental use/adaptation of known methods rather than a novel methodological breakthrough."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares its pSGLD approach against reasonable and recent baselines (RMSprop, RMSprop+dropout, Gal & Ghahramani\u2019s dropout) across multiple tasks and metrics (e.g. Table 5, BLEU/METEOR/CIDEr for captioning) and analyzes behavior (learning curves, uncertainty visualizations). It also cites relevant Bayesian and SG-MCMC/variational works (SGLD, SGHMC, SGNHT, pSGLD, Blundell et al., Gal & Ghahramani). However, experimental comparisons omit some prominent alternatives (e.g. Adam, other SG-MCMC variants or variational Bayes methods) and some cited results (e.g. Zaremba et al.) are not directly reproduced, so the empirical evaluation is good but not fully comprehensive."
+    }
+  }
+}

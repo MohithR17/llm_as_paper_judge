@@ -1,0 +1,94 @@
+{
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem\u2014enabling users to naturalize a core programming language via interactive definition learning\u2014which is valuable for semantic parsing and end-user programming. The empirical results (community-built 240 complex voxel structures and naturalized language comprising 74.7% of the last 10K utterances) demonstrate practical adoption in a large action/denotation space where prior interactive methods did not scale. The chart-extension alignment technique that transplants derivations addresses generalization issues and could enable wider interactive language extension methods. Overall this is likely to change how researchers approach interactive language grounding and open new research on conservative, scalable rule induction for complex environments.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper sits squarely in the NLP/ML semantic parsing and interactive learning literature (naturalizing a seeded programming language, chart-extension/alignment, semantic parsing in Voxelurn), so the topic is within scope of a top-tier venue. The intended audience (researchers in semantic parsing, program induction, and interactive NLP) is appropriate, and the problem formulation (learning definitions to extend a core language) matches community standards. The work uses methods and evaluations expected at such venues (comparison to an interactive supervision baseline, a user study showing adoption rates and constructed artifacts, and concrete limitations discussed). Overall the positioning and empirical focus make it a strong fit for an NLP/ML conference.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a notable and concrete new mechanism for \u2018\u2018naturalizing\u2019\u2019 a seeded programming language via user-provided head/body definitions and a conservative chart-extension/alignment procedure to transplant derivations\u2014techniques not described in the cited prior work. While interactive semantic-parsing and imitation/interactive learning (e.g., the 2014/context-dependent parsing line and the Wang et al. 2016 approach) provide related foundations, the definition-as-sequence-of-known-utterances paradigm and the alignment-based chart transplantation are non-trivial extensions that clearly differentiate the contribution. Given this, the work is more than incremental but not a radical paradigm shift, so it merits a high but not maximal originality score.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is generally well organized and follows a clear flow from motivation to method (interactive definitions and chart-extension alignment) to experiments on Voxelurn, with main contributions stated early (naturalizing a core language, alignment-based transplanting, empirical adoption metrics). Notation and methodological descriptions appear consistent and examples/quantitative results (240 structures; 74.7% naturalized usage) are informative; limitations are explicitly noted. Minor presentation issues remain (e.g., lack of reported hyperparameters and code availability, and some procedural details are conservatively described), so while the writing is good overall, a few clearer specifics would improve reproducibility and clarity.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper's main claims are reasonably supported by empirical evidence (240 complex structures built and 74.7% usage of the naturalized language in the final 10K utterances), and the conservative alignment-based chart extension addresses low-precision rule induction. However, the summary indicates missing experimental details (no code, no hyperparameter reporting, and no mention of statistical tests), and the baseline comparison is described qualitatively (Wang et al. (2016) \u2018does not scale\u2019) rather than rigorously quantified. There are therefore some concerns about reproducibility and whether the scalability/robustness claims are fully supported, though no fundamental technical errors are apparent from the provided summary.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments demonstrate the main claims (deployment in Voxelurn, 240 complex structures built, and growth of naturalized language use to 74.7% of recent utterances) and introduce a targeted alignment-based method to address low-precision induced rules. The paper explicitly discusses limitations of naive rule induction and constrains the alignment procedure, and related work coverage is reported as adequate (e.g., connects to prior interactive semantic-parsing approaches such as Wang et al. (2016) and other context-dependent parsing work). Missing, however, are reproducibility artifacts (code and hyperparameters not reported) and more extensive ablations/sensitivity analyses of the alignment/chart-extension choices, so while the evaluation is solid it omits some important experiments and full reproducibility details.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper directly compares to a relevant interactive supervision baseline (Wang et al., 2016) and analyzes why that approach does not scale to the large action/denotation space of Voxelurn; it also describes conservative vs. alignment-based rule induction and acknowledges limitations of induced low-precision rules. Comparisons appear fair in spirit (same task/environment and discussion of metrics like usage of naturalized language), and the differences between methods are explained. However, the evaluation omits some other relevant prior approaches in context-dependent semantic parsing and imitation/interactive learning (e.g., the 2014 context-dependent semantic parsing work noted in the retrieval), so the set of baselines is not fully comprehensive.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce an interactive learning method that lets users \u2018naturalize\u2019 a seeded core programming language by providing definitions (head utterance mapped to bodies) to extend the language.",
+      "Apply the method to a voxel-world system (Voxelurn), showing a community of users can teach and use the naturalized language to build 240 complex voxel structures.",
+      "Introduce a chart-extension via alignment procedure to transplant derivations from definition bodies to new utterances to improve generalization (e.g., inferring synonyms like \u2018up\u2019\u2192\u2018top\u2019).",
+      "Show empirical usage: over three days, users moved from using only the core language to using the naturalized language in 74.7% of the last 10K utterances."
+    ],
+    "methodology": "Seed a core programming language and learn interactive definitions from users (each definition is a head utterance with a body of known utterances); induce grammar rules from these definitions and conservatively extend the parser chart by aligning spans of heads and bodies to transplant derivations and improve generalization.",
+    "datasets": [
+      "Voxelurn (voxel-world interactive environment)"
+    ],
+    "baselines": [
+      "Interactive supervision approach of Wang et al. (2016) (selecting from candidate parses)"
+    ],
+    "metrics": [
+      "number of complex voxel structures built (240)",
+      "percentage of utterances using the naturalized language (74.7% of last 10K utterances)"
+    ],
+    "limitations": [
+      "Low-precision induced rules significantly degrade user experience, so alignment-based rule induction is applied conservatively.",
+      "Chart-extension via alignment is only performed for single-utterance (paraphrase) definitions and when 1 or 2 tokens were left unmatched.",
+      "The original interactive candidate-selection approach (Wang et al., 2016) does not scale to large action/denotation spaces like Voxelurn."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - semantic parsing / interactive program induction",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 1,
+    "paper_novelty_mean": 0.9267,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

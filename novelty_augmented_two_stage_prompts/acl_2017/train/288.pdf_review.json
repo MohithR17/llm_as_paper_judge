@@ -1,0 +1,96 @@
+{
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses an NLP research question (effects of writing tasks on linguistic style) and presents results directly relevant to a core NLP task (ROC Story Cloze), including a new state-of-the-art accuracy using style features. The methodology (feature extraction, logistic regression) and evaluation (task accuracy, comparisons to prior work like DSSM and LexVec) match community standards, and the paper is clearly aimed at the NLP/ML audience concerned with dataset design and model biases. The positioning and related-work coverage are reported as thorough, so the topic is an excellent fit for a top-tier NLP/ML venue.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and supported by experiments showing that stylistic features and a simple linear classifier distinguish original/right/wrong endings and achieve strong performance on the ROC Story Cloze task relative to reported baselines. There are no mathematical derivations to check. The experimental methodology is generally sound (logistic regression, relevant baselines, hyperparameters reported), but the summary lacks mention of statistical significance testing and code release for reproducibility. The authors acknowledge a limitation about interpreting large coefficients, so conclusions are justified though minor concerns about statistical validation and reproducibility remain.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "This paper addresses an important problem by demonstrating that writing-task differences induce measurable stylistic signals and that a simple style-based classifier achieves a new state-of-the-art on the ROC Story Cloze task, substantially outperforming prior deep-learning results. Those findings are likely to change how researchers think about benchmark design and evaluation (showing that task framing can confound machine-reading datasets) and to prompt more scrutiny of dataset annotation protocols. The work opens clear follow-up directions (e.g., controlling for writing-task effects, developing adversarial or task-robust benchmarks) and is likely to be built upon by others investigating style artifacts, though its impact is mainly within NLP/reading-comprehension and dataset methodology rather than broadly transformative across all AI.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper presents a useful and interpretable application of stylometric analysis to the ROC Story Cloze task and documents concrete, novel empirical observations (e.g., ending-length differences and the strong predictive power of character n-grams). However, the core techniques (linear classifiers over n-gram and stylistic features) are well-established in prior work on stylometry and authorship (e.g., \"Writeprints\") and the Story Cloze literature already explored sentence/ending modeling and neural baselines ([3],[4],[5]). Thus the contribution is an incremental but informative perspective\u2014clearly differentiated and empirically thorough, but not a fundamentally new method or problem formulation.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized and presents a clear flow from problem motivation through methodology (feature extraction and linear classifiers) to experiments and conclusions; the main contributions are stated early and repeatedly (claims about writing-task effects and a style-based state-of-the-art). Notation and methodological descriptions appear consistent and sufficiently defined for replication (features, logistic regression, datasets, and metrics reported), and related work and evaluation metrics are covered thoroughly. Figures/tables and examples are described as effective, and overall writing quality is good, with only minor presentation issues (e.g., the caveat about coefficient interpretation highlights nuance but does not hinder readability).",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against several appropriate and recent baselines for the ROC Story Cloze task (DSSM, LexVec/Salle et al.) using the same dataset and accuracy metric, and reports hyperparameters. It analyzes feature differences (e.g., character vs. word n-grams) and acknowledges modeling caveats (large coefficients for rare features). Prior work is discussed thoroughly in related work. Minor omissions: while neural baselines are cited and outperformed, a more extensive analysis against additional strong neural models or ablations of those systems would make the comparison fully comprehensive.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are strong and directly support the core claims: classifiers using stylistic features distinguish original/right/wrong endings and achieve a new SOTA on the ROC Story Cloze task, with comparisons to prior baselines (e.g., LexVec, DSSM). The paper includes targeted feature analyses (character and word n-grams identified as most effective) and reports hyperparameters, and it discusses key limitations (e.g., instability of large logistic coefficients and task-framing confounds). Minor gaps remain \u2014 reproducibility would be strengthened by released code and a more extensive failure-case/error analysis \u2014 but overall the evaluation and related-work coverage (including Mostafazadeh et al. and Salle et al.) are thorough.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Different writing tasks (writing a full story, adding a coherent ending, adding an incoherent ending) induce measurable differences in authors' linguistic style.",
+      "A simple linear classifier using stylistic features (without seeing story context) can successfully distinguish among original, right, and wrong story endings.",
+      "A style-based classifier achieves a new state-of-the-art result on the ROC Story Cloze task, substantially outperforming prior deep-learning based results.",
+      "Character n-grams are among the most effective feature types for predicting the writing task, with word n-grams also capturing much of the signal."
+    ],
+    "methodology": "Extract stylistic features (e.g., character n-grams, word n-grams, POS distributions, punctuation and specific words) from story endings and train simple linear classifiers (logistic regression); evaluate their ability to distinguish original, coherent (right), and incoherent (wrong) endings and to solve the Story Cloze task.",
+    "datasets": [
+      "ROC Story corpus (training set)",
+      "ROC Story Cloze Task (development set)"
+    ],
+    "baselines": [
+      "Salle et al. (2016) result (LexVec cited)",
+      "DSSM (Mostafazadeh et al., 2016a)",
+      "LexVec (Salle et al., 2016)"
+    ],
+    "metrics": [
+      "task accuracy / percentage correct (reported as percentages and improvements over prior state-of-the-art)",
+      "human judgement scores (mentioned as taken from Mostafazadeh et al., 2016a)"
+    ],
+    "limitations": [
+      "Reliability of interpreting largest coefficients in linear models is unclear because logistic regression can assign large coefficients to rare features.",
+      "Different writing-task framings can confound dataset design for machine reading tasks (methodological challenge)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - writing style analysis / story cloze (machine reading)",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 5,
+    "paper_novelty_mean": 0.1545,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON",
+      "SUBSTANCE"
+    ],
+    "total_dims": 7
+  }
+}

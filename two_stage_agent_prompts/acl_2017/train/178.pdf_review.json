@@ -1,0 +1,90 @@
+{
+  "APPROPRIATENESS": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "The paper addresses a core NLP/ML topic\u2014learning joint embeddings of concepts, phrases, and words using a weakly-supervised skip-gram adaptation\u2014and evaluates against standard baselines and metrics (Spearman\u2019s \u03c1, cosine, MAP) on substantial biomedical and general-domain corpora (PubMed, clinical notes, Wikipedia) and ontologies (UMLS, YAGO). Its methods, datasets, and evaluation protocol match expectations for a top venue, and it targets the right audience working on representation learning and entity/concept embeddings. Minor scope concerns (strong biomedical emphasis, some datasets where prior work outperforms the method, and noted limitations in capturing non-lexical ontology structure and hyperparameter/code reporting) prevent a perfect fit but do not preclude suitability for a top conference."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a notable and clearly differentiated approach by combining structured ontology knowledge with skip-gram style distributional training to jointly embed concepts, phrases, and words, using known phrases as distant supervision and requiring no human corpus annotations. This is a non-trivial extension beyond standard word2vec variants and prior concept embedding work (e.g., DEVINE, CHOI, MENCIA) and the authors strengthen novelty by releasing a novel real-world entity similarity/relatedness dataset. While the approach appears incremental rather than revolutionary, its joint modeling design and weakly-supervised formulation would likely inform experts in the field."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s main claims are generally supported: the proposed weakly\u2011supervised skip\u2011gram adaptation is evaluated against appropriate baselines (including DEVINE, CHOI, CHIU variants) on multiple biomedical and general corpora and shows competitive concept embeddings on several biomedical benchmarks, and a new real\u2011world entity dataset and analyses are provided. Mathematical framing (skip\u2011gram with concept normalization) appears consistent and experiments use standard metrics (Spearman, MAP). However, some evidence is mixed (the method is outperformed on two smaller biomedical sets, phrase\u2011approximation outperforms direct concept embeddings on real\u2011world data, and MAPs are skewed toward 0 for many concept\u2013phrase proximities), and the summary notes missing details (no hyperparameter reporting or code mentioned, no mention of statistical significance testing). These are minor technical gaps that do not negate the main conclusions but prevent a flawless rating."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments are reasonably comprehensive in scope\u2014multiple biomedical and general-domain corpora (PUBMED, CLINICAL, WIKINYT), evaluation on standard biomedical benchmarks and a novel real-world entity dataset, and comparisons to many prior baselines using appropriate metrics (Spearman, MAP). The paper reports and discusses several failure modes and limitations, and related work coverage is thorough. However, ablation/sensitivity analyses appear limited (hyperparameter sensitivity is only noted but not fully explored) and key reproduction details are missing (hyperparameters not reported, code availability not mentioned), which constrains reproducibility and deeper analysis."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against a broad set of relevant prior methods (e.g., DEVINE, CHOI, MENCIA, CHIU variants and several phrase/word baselines) on standard biomedical and Wikipedia/NYT corpora and evaluates with standard metrics (Spearman, cosine, MAP). It explicitly acknowledges when prior work (CHOI) outperforms it on some biomedical datasets and analyzes differences (e.g., phrase-based approximation vs direct concept embeddings, ontology structure reflection). Related work coverage is described as thorough. Minor omissions that prevent a perfect score are lack of reported hyperparameters and no mention of code availability, which can affect fairness/reproducibility of comparisons."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "Based on the provided summary, the paper is well-organized with a logical flow (methodology, datasets, baselines, and experiments are clearly described) and the main contributions are stated early. Notation and methodological description are presented coherently (adaptation of skip-gram, joint embeddings for words/phrases/concepts), and related work coverage is thorough; overall writing quality is reported as good. Presentation has minor shortcomings: hyperparameters are not reported and code availability is not mentioned, which slightly weakens reproducibility and completeness of the exposition."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem by proposing a weakly-supervised method that jointly embeds concepts, phrases, and words using ontology-driven distant supervision and distributional training, requiring no human corpus annotations; its concept embeddings are competitive with prior annotated methods on biomedical similarity/relatedness while covering a larger vocabulary. It also contributes a novel real-world entity similarity/relatedness dataset and shows ontology structure reflected in the learned vectors, which could shift practice toward combining knowledge bases with unsupervised distributional learning and open follow-up work. However, being outperformed on some smaller biomedical datasets and exhibiting issues (concepts not always near representative phrases, limited non-lexical concept capture) limits it from being fully transformative."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Propose a weakly-supervised method that jointly embeds concepts, phrases, and words by combining structured knowledge from an ontology with skip-gram style distributional training on an unannotated corpus.",
+      "Method requires no human corpus annotations and uses known phrases as distant supervision, assuming any occurrence of a known phrase indicates occurrence of each concept it can refer to.",
+      "Learned concept embeddings are competitive with prior models that required human annotations on biomedical concept similarity and relatedness tasks, while covering a larger vocabulary.",
+      "Present a novel dataset of similarity and relatedness for real-world entities (identified by Wikipedia page and text phrase) and show analysis that ontology structure is reflected in the learned embeddings (concepts near representative phrases and clustering by semantic type)."
+    ],
+    "methodology": "Adapt the skip-gram with negative sampling (word2vec) to jointly learn d-dimensional embeddings for words (EW), phrases (EP), and concepts (EC) by training on tagged and untagged versions of a corpus using sliding context windows; concept updates use contexts of phrase mentions and are normalized by the number of concepts a phrase can represent.",
+    "datasets": [
+      "PUBMED (All abstracts from 2016 PubMed baseline)",
+      "CLINICAL (clinical notes from Ohio State Wexner Medical Center)",
+      "PM+CL (concatenation of PUBMED and CLINICAL)",
+      "WIKINYT (2015 English Wikipedia + New York Times portions of Gigaword)",
+      "UMLS (ontology for biomedical concepts)",
+      "YAGO (ontology / knowledge base for real-world entities)",
+      "MayoSRS",
+      "Mini Mayo SRS",
+      "UMNSRS Similarity",
+      "UMNSRS Relatedness",
+      "Novel real-world entity similarity/relatedness dataset (general-domain, 688 pairs for relatedness and 688 for similarity as reported)"
+    ],
+    "baselines": [
+      "APPROXPHRco",
+      "APPROXWORD",
+      "PHRASEco",
+      "WORD",
+      "WORDind",
+      "DEVINE (De Vine et al., 2014)",
+      "CHOI (Choi et al., 2016b)",
+      "MENCIA (Mencia et al., 2016)",
+      "CHIU-2 (Chiu et al., 2016a)",
+      "CHIU-30 (Chiu et al., 2016a)"
+    ],
+    "metrics": [
+      "Spearman's rank correlation coefficient (Spearman's \u03c1)",
+      "Cosine similarity",
+      "Mean Average Precision (MAP)"
+    ],
+    "limitations": [
+      "On two smaller biomedical datasets the method is outperformed by CHOI (Choi et al., 2016b).",
+      "On real-world entity datasets, the phrase-based concept approximation outperforms the direct concept embeddings.",
+      "Most concepts are not especially near their individual representative phrases in the vector space (MAP scores skewed toward 0), and phrases show high variance when compared to the average of their words.",
+      "Some non-lexical information about concepts is not being captured by the method; authors note it would benefit from including ontology structure directly as a training criterion and from application to more abstract general-domain data.",
+      "Optimized hyperparameters for the affine organization evaluations may change for downstream tasks (hyperparameter sensitivity)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - joint embeddings of concepts/entities, phrases, and words (biomedical and general-domain)",
+    "writing_quality": "good"
+  }
+}

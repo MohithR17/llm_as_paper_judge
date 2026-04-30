@@ -1,0 +1,44 @@
+{
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "CLARITY": 2,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "REPLICABILITY": 3,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper targets an important practical problem\u2014POS tagging for low-resource languages\u2014by explicitly modeling noise in cross-lingual projected annotations via a noise layer and joint BiLSTM training on gold and projected data (Sections 3\u20135). It empirically outperforms prior work on eight simulated settings and two real low-resource languages (Malagasy, Kinyarwanda), suggesting results that would change practitioner choices for leveraging parallel data. The approach is broadly applicable to other noisy-supervision scenarios (distant supervision, crowdsourcing), opening useful follow-on work, though it is an evolution of existing projection/noise-handling ideas rather than a paradigmatic shift."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper addresses a canonical NLP problem (low-resource POS tagging) using cross-lingual projection and a BiLSTM with an explicit noise layer, which is squarely within top-tier NLP/ML scope. The evaluation uses standard datasets and protocols (CoNLL simulated low-resource splits, Europarl projection, real languages Malagasy and Kinyarwanda) and compares to relevant state-of-the-art baselines (Duong et al., Garrette & Baldridge). The problem formulation, methodology, and empirical evaluation align with expectations for top NLP/ML venues and the paper is positioned appropriately within the cross-lingual and distant supervision literature."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a BiLSTM sequence-tagger augmented with an explicit noise layer to learn to correct errors from cross-lingual projection and jointly train on a small gold corpus plus noisy projected data \u2014 framed as a novel noise-handling layer and joint learning objective (paper: \u201clearns to correct the errors from cross-lingual projection using an explicit noise layer\u201d and \u201cframed as joint learning over two corpora\u201d). This clearly differentiates it from cited prior approaches that either used majority projected tags/default values or auxiliary outputs (Duong et al., 2014a) or graph propagation (Das and Petrov, 2011), so the technique is a non-trivial methodological extension rather than a simple combination of existing baselines. Given the context and comparisons reported, the contribution represents notable novelty (not merely incremental) within the cross-lingual projection / low-resource POS tagging literature."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states clear claims (a BiLSTM with an explicit noise layer improves POS tagging using small gold data plus projected labels) and describes reasonable experimental setups and baselines (CoNLL 1,000-token simulation, real Malagasy/Kinyarwanda sets, Duong et al. (2014a) baseline, BiLSTM baselines, GIZA++ alignment and filtering). However, the provided excerpt contains no mathematical derivation of the proposed noise layer, no detailed model/hyperparameter or training descriptions, and only fragmentary quantitative results (no full accuracy numbers or statistical significance testing), so the central performance claims are not fully verifiable from this text. Overall the methodology appears sensible, but missing quantitative evidence and technical detail create concerns about completeness of support for the conclusions."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has a discernible overall structure (Framework \u2192 Experiments \u2192 Conclusion) but presentation is marred by frequent repetitions, duplicated sentences/paragraphs, and clear formatting/editorial errors (e.g. multiple identical sentences, stray fragments like \"TeX\", broken citation lines such as \"McDonald et al.    , 2013\"). Figures/tables are not present in the provided text and examples are limited, reducing informativeness. Notation is minimal and generally understandable, but the pervasive duplication and grammatical/formatting issues make important sections hard to follow and require substantial copyediting."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Experiments are fairly comprehensive: evaluation on eight simulated European languages (CoNLL split with 1,000-token training) and two real low-resource languages (Malagasy, Kinyarwanda), use of large parallel corpora and comparison to strong baselines including Duong et al. (2014a). The paper compares multiple baselines (BiLSTM trained on annotated, projected, union data and prior SOTA), but does not present detailed ablations or sensitivity analyses for key design choices (e.g., explicit ablation of the noise layer components, amount/quality of projected data, alignment/filtering choices). Related work is cited broadly and fairly, yet limitations and failure cases are not discussed, and reproducibility is only partly supported (data sources and alignment/tagging tools given but architecture/hyperparameters/training details are missing)."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to appropriate and recent baselines (explicitly to Duong et al. (2014a) as the state-of-the-art, Garrette & Baldridge (2013), a two-output maxent model, supervised maxent, and several BiLSTM baselines) and uses the same evaluation setting/splits as Duong et al. (2014a) (e.g. \u201cwe share the same evaluation setting\u201d, \u201ctop results \u2026 taken from (Duong et al., 2014a)\u201d). It also evaluates on the same real low-resource datasets used by prior work. However, the excerpt shows limited explicit acknowledgement or detailed analysis when prior methods perform comparably or better, and relatively little in-depth analysis of why the proposed method improves over baselines (beyond describing the noise layer), so some comparative analysis is lacking."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "The paper specifies data sources and some preprocessing steps (e.g. use of Giza++ IBM Model 3 with one-to-one alignments, Stanford POS tagger for English, Yarowsky et al. (2001) sentence filtering; 200k Europarl sentences and CoNLL/ Garrette & Baldridge train sizes and the 1,000-token split are given). However, critical experimental details are missing: the BiLSTM architecture and the explicit noise-layer design, hyperparameters (hidden sizes, embeddings, optimizer, learning rate, epochs, batch size, random seeds), and full preprocessing/tokenization rules are not specified. Code is not mentioned and evaluation is only described at a high level (POS accuracy on splits) without precise metric definitions or tuning/selection procedures. Given these gaps, the method is reproducible in outline but lacks many important details for exact replication."
+    }
+  }
+}

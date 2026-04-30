@@ -1,0 +1,39 @@
+{
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "CLARITY": 3,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important, practical problem\u2014rapidly building NL\u2192SQL interfaces for new domains\u2014by directly mapping utterances to SQL (Section 4) and closing the loop with a feedback-driven training algorithm (Algorithm 1) that uses binary user feedback plus crowd annotations. It demonstrates practical viability (comparable benchmark accuracy on GEO880/ATIS, Section 5) and a live three-stage deployment that reached 63.51% accuracy from scratch (Section 6), showing the approach can be quickly deployed and improved in situ. These aspects meaningfully broaden how practitioners can bootstrap domain-specific semantic parsers and open new directions in interactive, human-in-the-loop learning and scalable annotation, suggesting strong but not purely transformative impact."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses neural semantic parsing to SQL and interactive, feedback-driven learning \u2014 squarely within NLP/ML conference scope (semantic parsing, seq2seq models, user-in-the-loop learning). It targets the right audience by building on and comparing to prior neural and SQL-generating work (e.g., Dong & Lapata, Jia & Liang, Poon) and by proposing practical deployment techniques (entity anonymization, PPDB paraphrasing). The problem formulation, methods (encoder\u2013decoder with attention, data augmentation, anonymization) and evaluations (GEO880 and ATIS benchmarks, simulated and live interactive experiments with execution-based accuracy) match venue standards. Overall the positioning and experimental setup indicate a strong fit for a top-tier NLP/ML venue."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper provides substantial experiments: benchmark evaluations on GEO880/ATIS (Section 5) showing comparable accuracy, a three-stage live interactive deployment with user feedback (Section 6.2) and simulated interactive experiments that study batch size, templates and paraphrasing effects (Section 6.4, Table 7). It also analyzes feedback quality and error modes (Table 6) and gives many training details (Section 5.2) and promises to release processed datasets, supporting reproducibility. Missing, however, are more systematic ablations of core model components (e.g., anonymization, embedding/architecture hyperparameters) and full specification of the template/paraphrase generation and model size settings, and the failure analysis is somewhat brief, hence not perfectly comprehensive."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper evaluates on standard benchmarks (GEO880 and ATIS) using standard splits and an execution-based accuracy metric and explicitly compares to recent strong baselines (e.g., Dong & Lapata 2016, Jia & Liang 2016, Poon/GUSP, Popescu et al.). The experimental methodology is fair (same data, verified SQL equivalence when converting IN to joins, cross-validation/hyperparameter tuning described) and the paper acknowledges when prior techniques perform similarly (noting Jia & Liang\u2019s data recombination boost) and discusses why certain augmentations help or not (templates vs. ATIS). Relevant competing approaches are cited and differences (direct SQL generation vs. intermediate representations, data augmentation and feedback loop) are discussed."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall the paper is organized in a standard logical order (method \u2192 experiments \u2192 conclusions) and the core ideas (feedback loop, direct SQL generation, entity anonymization) are described and exemplified (e.g., Algorithm 1, entity anonymization, interactive experiment results). However presentation suffers from numerous formatting and editing problems (repeated/duplicated reference sentences, missing punctuation/typos such as \u201cIs is\u2026\u201d, broken line breaks around Algorithm 1 and section headings) that make parts hard to follow; figures are referenced but not shown and some table captions/placements are unclear. Notation is largely consistent for the model (encoder/decoder and hi, mi, qi) but occasional abrupt text breaks and duplicated bibliographic fragments reduce clarity and would benefit from careful copyediting."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper does not propose wholly new primitives but makes a notable and practical combination of ideas: adapting neural sequence-to-sequence models to emit full SQL (Section 4) and pairing this with a feedback-based online learning loop that leverages binary user feedback plus selective crowdsourced annotation (Algorithm 1, Section 3). Prior work has generated SQL and applied neural seq2seq to other meaning representations (Popescu et al. 2003; Poon 2013; Dong & Lapata 2016; Jia & Liang 2016) and has explored feedback or interaction, but the paper clearly differentiates its contribution as applying these techniques together to enable a live, rapidly deployable system and reports a three-stage online experiment learning from scratch (Section 6). The techniques are therefore a non-trivial, well-motivated integration rather than a purely novel algorithmic breakthrough, likely to be informative to experts building practical NL-to-SQL systems."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper\u2019s main claims are clearly stated and supported by empirical evidence: they evaluate a seq2seq-to-SQL model on standard GEO880/ATIS splits (execution-based accuracy), report training details, and present both a live three-stage online deployment (10 new users per stage) and simulated interactive experiments showing improving accuracy and reduced annotation effort. There are no nontrivial mathematical derivations to check and the model description (BiLSTM encoder, global attention, beam search) is sound. However, there are methodological shortcomings that limit the strength of the claims: simulated interactive experiments assume perfect user feedback (an unrealistic oracle), the live experiment is small-scale and reports a high rate of non-executing generated queries (22.3%) and nontrivial user feedback error (~6%), and no statistical significance testing or detailed baseline re-implementation controls are reported. These issues introduce logical gaps about generality and robustness, so the results support the paper\u2019s conclusions but with notable caveats."
+    }
+  }
+}

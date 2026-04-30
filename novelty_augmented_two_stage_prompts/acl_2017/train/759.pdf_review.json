@@ -1,0 +1,102 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses a core NLP research topic\u2014joint modeling of content selection and discourse relations in dialogues\u2014which is squarely within top-tier NLP/ML venues. It uses appropriate methods (log-linear joint model, SampleRank training, alternating inference) and standard evaluation metrics (F1, ROUGE) on canonical meeting corpora (AMI, ICSI), comparing to sensible baselines. The problem formulation (joint inference, latent-discourse variant) and evaluation (including downstream COU prediction) match community expectations, and positioning appears correct despite the noted practical limitation of requiring attachment structure during training/testing.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem\u2014jointly modeling content selection and discourse relations in meeting dialogues\u2014and demonstrates measurable gains over separate SVM classifiers on standard corpora (AMI, ICSI). Showing a latent-variable variant when annotations are unavailable and that model-derived features improve consistency-of-understanding (outperforming prior state-of-the-art) suggests the approach will influence how researchers combine discourse and content signals. The reliance on annotated discourse relations and the assumption of given attachment structures limit immediate broad adoption, but the results are strong enough to open meaningful directions for follow-up work.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper presents a joint content-and-discourse CRF-style model which overlaps closely with an existing work of the same title, so the overall problem formulation is not new. Its primary novelties are methodological: an alternating optimization inference procedure, ILP casting with cluster-consistency constraints, and a latent-variable training variant when discourse labels are unavailable. These techniques are non-trivial extensions but amount to an incremental advance rather than a fundamentally new idea, so the contribution is moderately novel.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is generally well-organized with a logical flow from introduction through method and experiments, and the main contributions are stated early (joint model, latent-variable variant, COU application). Notation appears consistent and well-defined, and figures/tables/examples are effective and informative; however, some presentation details are missing (e.g., hyperparameter reporting and code availability) which prevent an exceptional rating. Overall the writing is clear with good coverage of related work, though a few minor presentation issues remain.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are fairly comprehensive: multiple datasets (AMI, ICSI, full/subsets), comparisons to reasonable baselines (SVM classifiers, Kim & Shah HMM for COU), and a latent-variable variant for when discourse annotations are unavailable. The paper includes analysis showing joint learning helps and applies model features to a downstream COU task, and it acknowledges key limitations (need for discourse annotations; assuming given attachment structure). However, reproducibility is weakened by missing hyperparameter reporting and no mention of code release, and it is unclear whether thorough ablation/sensitivity analyses were performed beyond the joint vs. separate comparisons. These gaps justify a strong but not perfect score.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s main claims are clearly stated and appear to be supported by experiments on multiple datasets (AMI, ICSI) comparing against sensible baselines (SVM phrase classifiers, Kim & Shah HMM for COU, n-gram and heuristic baselines) using appropriate metrics (Accuracy, F1, ROUGE). The model formulation (log-linear joint model trained with SampleRank and alternating inference) is technically plausible; no complex mathematical proofs were required and none are reported. A notable limitation is the reliance on given attachment structure during training/testing and the lack of reported hyperparameters or statistical significance testing, which are minor methodological gaps that do not invalidate the main empirical conclusions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper evaluates against reasonable and recent baselines for both phrase selection and COU (SVM classifiers, n-gram baselines, LONGEST/ CENTROID DAs, and the Kim and Shah (2016) HMM for COU) using the same corpora (AMI, ICSI) and standard metrics (F1, accuracy, ROUGE), indicating generally fair comparisons. It acknowledges limitations and reports when prior methods are competitive, and analyzes interactions between content and discourse relative to baselines. Minor omissions (e.g., no mention of code or hyperparameter reporting) and only a small set of competing approaches in the provided context prevent a top score, but overall the experimental comparisons are solid and appropriate.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A joint model that simultaneously selects salient phrases and predicts discourse relations in meeting dialogues improves performance over separate SVM-based classifiers.",
+      "Treating discourse relations as latent variables is a viable variation of the model when annotations are unavailable, with training possible using true attachment structure when available.",
+      "Joint learning and joint inference leveraging interactions between content and discourse yield better phrase selection and discourse-relation prediction, and features from the model can be used to predict consistency of understanding (COU), outperforming prior state-of-the-art."
+    ],
+    "methodology": "A log-linear joint model (CRF-style) that represents candidate phrases and discourse relations with content-only, discourse-only, and joint features, trained with a SampleRank-based algorithm; inference uses an alternating optimization (message-passing for discourse, ILP for content) and a latent-variable variant sums over discourse relations.",
+    "datasets": [
+      "AMI-FULL",
+      "AMI-SUB",
+      "ICSI-FULL",
+      "AMI corpus",
+      "ICSI corpus"
+    ],
+    "baselines": [
+      "SVM-based classifiers (phrase selection)",
+      "Kim and Shah (2016) Hidden Markov Model system for COU",
+      "ngrams baseline (unigrams and bigrams)",
+      "LONGEST DA",
+      "CENTROID DA"
+    ],
+    "metrics": [
+      "Accuracy",
+      "F1",
+      "ROUGE (including ROUGE-SU4 F1)"
+    ],
+    "limitations": [
+      "Acquiring labeled training data for discourse relations is time-consuming (requires human annotation).",
+      "The model assumes the attachment structure between discourse units is given during both training and testing.",
+      "Automatic discourse parsing in dialogues is still a challenging problem."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - discourse modeling and content selection in meeting/dialogue summarization",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 1,
+    "paper_novelty_mean": 0.5231,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

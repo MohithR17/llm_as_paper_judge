@@ -1,0 +1,72 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "CLARITY": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses historical text normalization using character-level encoder-decoder models with multi-task learning (G2P auxiliary task) and is directly within the scope of top-tier NLP venues. The methodology (seq2seq LSTMs, attention, beam search, lexical filtering), datasets (Anselm corpus, CELEX), and baselines (Norma, averaged perceptron, Bollmann & S\u00f8gaard) and evaluation metrics (word accuracy, error counts) match standards expected at such conferences. The work targets the correct NLP audience and is positioned with thorough related work and appropriate problem formulation, making it a strong fit for a top NLP venue."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses a concrete and relevant problem for historical text processing and demonstrates a consistent, measurable improvement (\u22482% absolute) over prior methods across a broad evaluation on 43 Anselm texts, which makes the contribution practically useful. Its use of grapheme-to-phoneme multi-task learning and the claim that MTL can induce attention-like focusing are likely to influence follow-up work and open modest new directions (integrating pronunciation information into normalization). However, the gains are incremental rather than transformational, and limitations (training-data scarcity, word-in-isolation modeling, and degraded performance when combining MTL with explicit attention) suggest the impact will be moderate and concentrated within the historical-NLP/normalization subfield rather than broadly transformative."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main empirical claims are supported by experiments across a large set of 44 Anselm texts (43 for final eval), comparisons to strong baselines (Norma, averaged perceptron, Bollmann & S\u00f8gaard 2016), and use of CELEX as auxiliary data; reported hyperparameters and consistent evaluation metrics (word accuracy/error counts) further strengthen the evidence. However, the summary does not mention statistical significance testing of the reported ~2% absolute gain, and the claim that MTL \u201clearns to focus attention\u201d appears to rely on qualitative analysis rather than quantified proof. There are no obvious mathematical derivations to check, and overall the experimental methodology is sound but would be stronger with significance tests and clearer quantitative support for the attention-related claim."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Experiments are broad and comparative: evaluated across 43\u201344 Anselm texts, multiple baselines (Norma, perceptron, bi-LSTM), and model variants (attention, beam search, lexical filtering, MTL), supporting the main claims. The paper reports hyperparameters, examines negative results (MTL+attention decline), and discusses limitations (data scarcity, lack of context), indicating reasonable sensitivity analysis and failure analysis. Related work coverage is described as thorough. However, code release is not mentioned and some deeper ablations (e.g., varying auxiliary-data size or more systematic sensitivity to hyperparameters) appear absent, so I mark it as solid with minor gaps."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper applies a clearly articulated multi-task learning idea\u2014using grapheme-to-phoneme prediction as an auxiliary task\u2014to historical text normalization, which is a novel application of G2P MTL to this problem and is differentiated from prior sequence-labeling and rule-based approaches (e.g., Bollmann & S\u00f8gaard 2016, Norma). The claim that MTL can induce attention-like focus without explicit attention and the reported ~2% absolute improvement over baselines indicate a non-trivial methodological extension rather than a straightforward combination of existing components. That said, the core components (encoder\u2013decoder, attention, beam search) are standard, and the problem itself is well-studied, so the contribution is notable but not revolutionary."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares to appropriate and recent baselines (Norma tool, an averaged perceptron model, and the sequence-labeling approach of Bollmann & S\u00f8gaard 2016) and evaluates on the same Anselm corpus data using standard metrics (word accuracy and error counts) across 43 texts. It reports fair conditions (same data and metrics), discusses when variants underperform (e.g., combining MTL with attention led to a decline in word accuracy), analyzes differences (effect of attention, beam search, lexical filtering, and MTL behavior), and the summary states the related work coverage is thorough and the most relevant competing approaches are cited."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized (introduction \u2192 methods \u2192 experiments \u2192 conclusion) and states its main contributions early (MTL G2P auxiliary task improving normalization and attention behavior). Notation and experimental details are consistently reported (hyperparameters given, clear description of datasets, baselines, and metrics across 43\u201344 texts), and results are presented with informative metrics (word accuracy, error counts, Fleiss\u2019 kappa). Writing quality is described as good overall, with only minor presentation omissions (e.g., code availability not mentioned)."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A multi-task learning (MTL) encoder-decoder architecture using a grapheme-to-phoneme (G2P) auxiliary task improves historical text normalization and pushes the state of the art by an absolute ~2% in performance.",
+      "Multi-task learning can learn to focus attention during decoding in ways remarkably similar to explicit attention mechanisms.",
+      "The proposed encoder-decoder architectures (with attention, beam search, and lexical filtering) outperform baselines including the Norma tool and an averaged perceptron, and MTL variants outperform the sequence-labeling approach of Bollmann and S\u00f8gaard (2016).",
+      "The models and analyses are evaluated across 44 texts from the Anselm corpus of Early New High German (with final evaluation on 43 texts, excluding one used for hyperparameter tuning)."
+    ],
+    "methodology": "Train character-based encoder-decoder LSTM sequence-to-sequence models for historical-to-modern wordform normalization, optionally with an attention mechanism; augment training via multi-task learning by alternating main-task examples with grapheme-to-phoneme pronunciation prediction using CELEX as auxiliary data, and use greedy or beam-search decoding (beam size 5) with optional lexical filtering.",
+    "datasets": [
+      "Anselm corpus (Early New High German)",
+      "CELEX (German phonetic transcriptions)"
+    ],
+    "baselines": [
+      "Averaged perceptron model (character n-gram predictions with Levenshtein alignment)",
+      "Deep bi-LSTM sequential tagger (Bollmann and S\u00f8gaard, 2016)",
+      "Norma tool (rule-based and Levenshtein-based algorithms)"
+    ],
+    "metrics": [
+      "Word accuracy",
+      "Word error counts (per test set)",
+      "Fleiss' kappa (word-level agreement)"
+    ],
+    "limitations": [
+      "Training data scarcity: texts are short and overall limited amount of training data for the task.",
+      "Models consider word forms in isolation (no token context), which causes ambiguity (e.g. jn -> in vs. ihn).",
+      "Combining multi-task learning with attention led to a decline in word accuracy in their experiments."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - historical text normalization (character-based sequence-to-sequence / grapheme-to-phoneme MTL)",
+    "writing_quality": "good"
+  }
+}

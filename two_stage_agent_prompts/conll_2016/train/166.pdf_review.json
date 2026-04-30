@@ -1,0 +1,77 @@
+{
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 3,
+  "REPLICABILITY": 3,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within the scope of a top NLP venue: it addresses cross-lingual named entity recognition using language-independent wikification features and evaluates on standard multilingual benchmarks (CoNLL2002/2003, REFLEX, LORELEI) and several low-resource languages. It compares against appropriate established baselines (Ratinov and Roth 2009; T\u00e4ckstr\u00f6m 2012), reports phrase-level F1, and discusses practical limitations (Wikipedia/FreeBase coverage), matching the methods and evaluation standards expected by the community. The problem formulation and positioning\u2014improving cross-lingual and multilingual NER via grounding to English Wikipedia\u2014are directly relevant to the venue\u2019s audience."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and supported by experimental evidence showing improvements over reasonable baselines (Ratinov and Roth 2009; T\u00e4ckstr\u00f6m 2012) on CoNLL datasets and multiple low-resource languages, and the methodology (wikification to English Wikipedia + gazetteers fed to an averaged-perceptron BIO model) is coherent. There are no mathematical derivations to evaluate, and the experimental setup uses appropriate datasets and baselines, but the summary indicates missing experimental details (no hyperparameter reporting, no mention of statistical significance tests) and reliance on FreeBase/Wikipedia coverage which the authors acknowledge; these are minor methodological gaps that do not undermine the main conclusions."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical problem\u2014cross-lingual NER\u2014and introduces a simple, language-independent approach that grounds text to English Wikipedia to produce transferable features. It demonstrates solid empirical gains (outperforming comparable methods on CoNLL Spanish/German/Dutch and improving performance on several low-resource languages) and shows multi-source training and monolingual improvements, which suggests immediate utility for researchers and practitioners. However, reliance on Wikipedia size, FreeBase coverage, and interlanguage links limits applicability for the lowest-resource languages, tempering its universality but not its overall significance."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper runs evaluations across standard CoNLL datasets (Spanish, German, Dutch) and several low-resource languages, compares to relevant baselines (Ratinov & Roth; T\u00e4ckstr\u00f6m), and measures phrase-level F1, which supports the main empirical claims. However, the summary does not mention ablation studies or sensitivity analyses of the wikifier features, and key reproducibility details are missing (hyperparameters and code not reported). The authors do acknowledge limitations (small Wikipedias, FreeBase coverage, missing interlanguage links) and related work coverage is described as adequate, but the absence of deeper analyses and reproducibility artifacts leaves important gaps."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "The paper names standard public datasets (CoNLL2002/2003, REFLEX, LORELEI, Wikipedia dump) and reports the evaluation metric (phrase-level F1), so core data and metrics are available. However, hyperparameters and training details are not reported, and code availability is not mentioned, making exact replication difficult. The high-level method (wikification to English, FreeBase types, averaged-perceptron BIO model) is described but important implementation/preprocessing choices (wikifier configuration, gazetteer construction, thresholds) are absent, so reproduction would require nontrivial guesswork."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a clear, distinct idea\u2014cross-lingual wikification that grounds non-English text to English Wikipedia (using Wikipedia categories and FreeBase types) to produce delexicalized, language\u2011independent NER features\u2014which is not a trivial rehash of prior tagging models. It differentiates itself from Ratinov & Roth (2009) and T\u00e4ckstr\u00f6m (2012) baselines and demonstrates utility across CoNLL languages and several low\u2011resource languages, plus benefits from multi\u2011source training and monolingual improvements. Because the approach leans on existing resources (Wikipedia, FreeBase) and builds on established perceptron BIO modeling, it is a notable and non\u2011trivial extension rather than a radical, wholly new paradigm."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well organized with a clear progression from introduction through methodology and experiments, and the main contributions (cross-lingual wikification features and their benefits) are stated early and consistently. The methodology is described at a readable level (language-independent wikifier features, gazetteers, and an averaged-perceptron BIO model) and known limitations are clearly reported. The summary does not comment on notation specifics or the presence/effectiveness of figures and tables, and hyperparameters and code availability are not reported, which slightly reduces experimental clarity. Overall the writing quality is described as good and the presentation seems strong aside from those minor gaps."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against established baselines (Ratinov & Roth 2009; T\u00e4ckstr\u00f6m 2012) on standard datasets (CoNLL2002/2003 and others) using phrase-level F1, so the comparisons appear fair and conducted under the same conditions. Differences introduced by the wikification features and Wikipedia-derived gazetteers are described and related work coverage is reported as adequate. However, the summary does not indicate comparisons to more recent neural or multilingual transfer baselines nor does it explicitly state cases where prior methods match or outperform the proposed approach, so there are minor omissions."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce a language-independent method for NER based on cross-lingual wikification that grounds non-English text to English Wikipedia entries to produce language-independent features.",
+      "When trained on English, the proposed model outperforms comparable approaches on standard CoNLL datasets (Spanish, German, Dutch) and performs well on several low-resource languages (Turkish, Tagalog, Yoruba, Bengali, Tamil).",
+      "The method allows training on multiple source languages, which typically improves NER results on target languages.",
+      "The language-independent wikifier features can also improve monolingual NER systems across the nine evaluated languages."
+    ],
+    "methodology": "Ground words and phrases in target-language text to English Wikipedia entries (obtaining Wikipedia categories and FreeBase types) to produce delexicalized, language-independent features; incorporate these wikifier features and Wikipedia-derived gazetteers into an averaged-perceptron BIO NER model based on Ratinov and Roth (2009).",
+    "datasets": [
+      "CoNLL2002",
+      "CoNLL2003",
+      "REFLEX",
+      "LORELEI",
+      "Multilingual Wikipedia dump"
+    ],
+    "baselines": [
+      "Ratinov and Roth (2009)",
+      "T\u00e4ckstr\u00f6m (2012)"
+    ],
+    "metrics": [
+      "phrase-level F1"
+    ],
+    "limitations": [
+      "Wikifier features are less helpful for low-resource languages with small Wikipedia sizes.",
+      "The method relies on FreeBase coverage; FreeBase lacks entities for some languages (e.g., Yoruba, Bengali, Tamil), harming feature coverage.",
+      "Performance degrades when interlanguage links to English titles are missing or removed, reducing fired features and FreeBase types."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - cross-lingual named entity recognition",
+    "writing_quality": "good"
+  }
+}

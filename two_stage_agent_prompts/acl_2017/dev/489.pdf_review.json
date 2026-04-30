@@ -1,0 +1,73 @@
+{
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 3,
+  "CLARITY": 4,
+  "IMPACT": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper falls squarely within top-tier NLP/ML interests: multimodal vision\u2013language modeling and zero-shot referring expression/naming. It uses standard methods and evaluations expected at these venues (GoogleNet visual features, 400-dim word2vec, TRANSFER/WAC/SIM-WAP comparators, hit@k and embedding-distance metrics) and evaluates on REFERIT/SAIAPR with attention to zero-shot generalization. The topic, audience, problem formulation, and positioning (combining distributional and referential signals for naming) are well aligned with current multimodal NLP and ML research, despite the authors\u2019 noted vocabulary-scale limitation."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper runs a focused set of experiments comparing TRANSFER, WAC, and SIM-WAP on REFERIT with clear metrics (hit@k, cosine distances), evaluates zero-shot naming (including plural/singular cases), and shows that aggregating models improves accuracy\u2014supporting the main claims. It reports model details (visual and lexical representations, hyperparameters) and discusses limitations (distributional vs. referential mismatches, TRANSFER/WAC failure modes), and related work coverage is thorough. Missing or underreported elements include explicit ablation/sensitivity studies and broader-scale evaluation (vocabulary limited to 159 entry-level names), and code availability is not mentioned, which constrains reproducibility. Overall the experiments are solid with minor gaps."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines established interfacing methods (TRANSFER, a cross-modal mapping into distributional space, and WAC, per-word visual classifiers) with a novel twist (SIM-WAP) that trains visual predictors using continuous lexical-similarity labels from distributional vectors. The use of soft/continuous supervision for word predictors and the empirical finding that aggregating TRANSFER, SIM-WAP and WAC yields complementary gains are useful contributions. However, the core components are adaptations of well-known techniques rather than wholly new paradigms, and experiments are on a reduced 159-word vocabulary, so the contribution feels like a moderate, incremental advance rather than a major novelty."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and the main contributions are stated early; the methodology is presented clearly (image features, word2vec dims, and the three interfacing methods TRANSFER, WAC, SIM-WAP are described) and evaluation metrics (hit@k, cosine distances) and hyperparameters are reported. Notation and experimental details appear consistent, and related work coverage and writing quality are noted as good. A minor presentational limitation is the reduced 159-word vocabulary and inclusion of \u2018stuff\u2019 entities, which the authors acknowledge but which could have been emphasized more when discussing applicability."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses an important multimodal problem\u2014zero-shot and referential object naming\u2014and provides empirical evidence that training word predictors with continuous lexical similarity (SIM-WAP) improves zero-shot generalization (notably singular/plural cases) and that aggregating TRANSFER, SIM-WAP, and WAC yields higher naming accuracy, showing these approaches capture complementary aspects of referential meaning. These findings (evaluated on REFERIT with GoogleNet visual features and word2vec embeddings) are useful for researchers designing cross-modal naming systems and suggest a productive direction of using distributional signals as training targets. However, the work is incremental rather than transformative given limitations noted (reduced 159-word vocabulary, presence of \u2018stuff\u2019 entities in REFERIT, and cases where distributional similarity is misleading), so its impact is moderate rather than field-changing."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper directly compares three concrete interfacing methods (TRANSFER, WAC, SIM-WAP) on the same REFERIT data using the same hit@k and embedding-distance metrics, and reports where each method succeeds or fails (e.g., TRANSFER\u2019s coarse but semantically coherent lists vs. WAC\u2019s fine-grained but taxonomically distant errors). The authors analyze complementary strengths, acknowledge limitations (distributional signals can mislead; TRANSFER/WAC failure modes), and report hyperparameters with thorough related-work discussion. Minor shortcomings remain (experiments use a reduced 159-word vocabulary and there\u2019s no mention of broader external state-of-the-art baselines), so comparisons are strong but not fully comprehensive."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s main claims are clearly articulated and supported by experimental evidence comparing TRANSFER, WAC, and SIM-WAP on REFERIT using pretrained GoogleNet features and word2vec embeddings, with sensible metrics (hit@k and cosine distance) and reported hyperparameters. Mathematical components are straightforward (ridge regression mapping, per-word classifiers) and appear correctly applied, and the experiments include appropriate baselines (the three interfacing methods) and relevant analyses (e.g., semantic coherence vs. referential specificity). However, the summary does not report statistical significance testing or code release, and the reduced 159-term vocabulary plus REFERIT\u2019s inclusion of \u2018stuff\u2019 entities limit generalizability, so some claims (especially about zero-shot generalization) require cautious interpretation. Overall the methods and evidence are sound with minor methodological limitations that do not overturn the main conclusions."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Direct cross-modal mapping (TRANSFER) produces semantically appropriate and mutually highly similar object names in its top-n lists but sometimes fails to make desired fine-grained distinctions.",
+      "Visual word predictors (WAC) react to subtle visual distinctions and can select specific terms, but they sometimes produce taxonomically distant (less semantically appropriate) names.",
+      "A model that trains word predictors using continuous lexical similarity signals from a distributional space (SIM-WAP) generalizes better in zero-shot naming (notably for singular/plural cases) than TRANSFER or WAC.",
+      "Combining the three approaches (TRANSFER, SIM-WAP, WAC) by aggregating their ranked predictions improves object-naming accuracy over any individual model, indicating they capture complementary aspects of referential word meaning."
+    ],
+    "methodology": "They represent image regions with a pretrained GoogleNet CNN (1024-dim) plus 7 location features (1031-dim) and use 400-dim word2vec embeddings; they compare three interfacing methods\u2014TRANSFER (ridge regression mapping visual vectors to word2vec space), WAC (per-word visual classifiers), and SIM-WAP (per-word predictors trained with continuous cosine-similarity labels derived from distributional vectors)\u2014and evaluate naming and zero-shot naming on REFERIT data.",
+    "datasets": [
+      "REFERIT (based on the SAIAPR image collection)",
+      "SAIAPR image collection",
+      "ImageNet (used to pretrain GoogleNet)"
+    ],
+    "baselines": [
+      "TRANSFER",
+      "SIM-WAP",
+      "WAC"
+    ],
+    "metrics": [
+      "hit @k (accuracy for k=1,5,10)",
+      "cosine distance between word2vec embeddings of generated nouns (top-k)"
+    ],
+    "limitations": [
+      "Distributional similarities do not always carry over to referential meaning and can be misleading for zero-shot naming.",
+      "TRANSFER can fail to make desired fine-grained referential distinctions despite producing semantically coherent predictions.",
+      "WAC can produce taxonomically distant errors (i.e., semantically inappropriate words) for some cases.",
+      "Experiments are on a reduced vocabulary of 159 entry-level names (smaller scale than some prior work) and the REFERIT data contains \u2018stuff\u2019 entities (e.g., sky, grass) that fall outside typical object recognition schemes."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Multimodal NLP / Vision\u2013language (referring expression generation / object naming)",
+    "writing_quality": "good"
+  }
+}

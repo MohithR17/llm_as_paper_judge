@@ -1,22 +1,82 @@
 {
-  "IMPACT": 4,
-  "APPROPRIATENESS": 5,
-  "CLARITY": 3,
-  "ORIGINALITY": 3,
   "SUBSTANCE": 4,
-  "MEANINGFUL_COMPARISON": 4,
   "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 4,
   "_details": {
-    "IMPACT": {
+    "SUBSTANCE": {
       "score": 4,
-      "justification": "[Consensus avg=4] A(4): The paper tackles the important problem of what NMT models learn about morphology and provides systematic, cross-linguistic empirical evidence (Arabic, German, French, Czech, Hebrew) using POS/morphological tagging on encoder and decoder representations. Key findings\u2014strong encoder morphological representations, limited decoder morphological learning, the impact of attention on encoder/decoder roles, and advantages of character-CNNs\u2014are likely to influence how researchers analyze and design NMT architectures and subword modeling. These results open clear follow-up directions (improving decoder morphology, leveraging encoder features) and are likely to be adopted by those working on NMT interpretability and morphologically-rich language translation. | B(4): The paper tackles an important and timely problem\u2014what NMT models learn about morphology\u2014using systematic, crosslinguistic experiments (Arabic, German, Czech, French, Hebrew) and extrinsic POS/morphological probing. Its findings (encoder representations encode morphology much better than decoder; attention reduces decoder morphological signal; character-CNNs yield stronger morphological representations; depth and target language matter) directly inform model design and interpretation, so they are likely to change how researchers probe and build NMT systems. The work opens clear follow-ups (improving decoder-side morphology, attention designs, multilingual probing) and its probing methodology has broader applicability beyond MT.",
+      "justification": "[Consensus avg=4] A(3): The experiments address the core claims (encoder vs decoder, char-CNN vs word-based, attention ablation) and evaluate across multiple language pairs, which provides reasonable coverage. However, key reproducibility details are missing (no hyperparameters reported, code not mentioned, no info on random seeds or variance estimates), and the decoder analysis is explicitly limited by lack of gold annotated parallel data. Related work is adequate and limitations are discussed, but the study lacks statistical robustness and full ablation/sensitivity reporting needed to firmly support all claims. | B(4): The experimental setup is broadly convincing: multiple language pairs (including morphologically rich languages), encoder vs decoder comparisons, attention vs no-attention, and word- vs char-based representations were evaluated with POS and morphological tagging tasks. However, some sensitivity analyses and ablation detail appear missing (no reported hyperparameters, limited decoder-side gold annotations forcing use of predicted tags), and reproducibility is weakened by lack of code/hyperparameter reporting. The paper does acknowledge limitations and reports negative findings about decoder representations, but would benefit from more thorough sensitivity studies and clearer replication details.",
       "reviewer_a": {
-        "score": 4,
-        "justification": "The paper tackles the important problem of what NMT models learn about morphology and provides systematic, cross-linguistic empirical evidence (Arabic, German, French, Czech, Hebrew) using POS/morphological tagging on encoder and decoder representations. Key findings\u2014strong encoder morphological representations, limited decoder morphological learning, the impact of attention on encoder/decoder roles, and advantages of character-CNNs\u2014are likely to influence how researchers analyze and design NMT architectures and subword modeling. These results open clear follow-up directions (improving decoder morphology, leveraging encoder features) and are likely to be adopted by those working on NMT interpretability and morphologically-rich language translation."
+        "score": 3,
+        "justification": "The experiments address the core claims (encoder vs decoder, char-CNN vs word-based, attention ablation) and evaluate across multiple language pairs, which provides reasonable coverage. However, key reproducibility details are missing (no hyperparameters reported, code not mentioned, no info on random seeds or variance estimates), and the decoder analysis is explicitly limited by lack of gold annotated parallel data. Related work is adequate and limitations are discussed, but the study lacks statistical robustness and full ablation/sensitivity reporting needed to firmly support all claims."
       },
       "reviewer_b": {
         "score": 4,
-        "justification": "The paper tackles an important and timely problem\u2014what NMT models learn about morphology\u2014using systematic, crosslinguistic experiments (Arabic, German, Czech, French, Hebrew) and extrinsic POS/morphological probing. Its findings (encoder representations encode morphology much better than decoder; attention reduces decoder morphological signal; character-CNNs yield stronger morphological representations; depth and target language matter) directly inform model design and interpretation, so they are likely to change how researchers probe and build NMT systems. The work opens clear follow-ups (improving decoder-side morphology, attention designs, multilingual probing) and its probing methodology has broader applicability beyond MT."
+        "justification": "The experimental setup is broadly convincing: multiple language pairs (including morphologically rich languages), encoder vs decoder comparisons, attention vs no-attention, and word- vs char-based representations were evaluated with POS and morphological tagging tasks. However, some sensitivity analyses and ablation detail appear missing (no reported hyperparameters, limited decoder-side gold annotations forcing use of predicted tags), and reproducibility is weakened by lack of code/hyperparameter reporting. The paper does acknowledge limitations and reports negative findings about decoder representations, but would benefit from more thorough sensitivity studies and clearer replication details."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper states clear empirical claims and presents experiments (encoder/decoder, word vs char-CNN, attention ablation) that broadly support them, but the experimental rigor is incomplete. Key reproducibility details (hyperparameters, code/checkpoints) are not reported, statistical variance/significance across seeds is missing, and stronger controls (e.g., untrained/random baselines, more ablation isolating char-CNN contribution) are not described. The decoder-side analysis is also limited by using predicted tags rather than gold annotations, which weakens that specific claim. Overall the methodology is reasonable but has enough missing controls and reporting to raise concerns about the solidity of some conclusions. | B(4): Overall the experimental setup (freezing NMT models, extracting encoder/decoder features, training classifiers for POS/morph tags) is an appropriate empirical test and supports the main claims that encoders capture morphology and char-CNNs improve POS accuracy. However, there are methodological weaknesses that prevent full technical validation: decoder-side analysis relies on predicted tags rather than gold annotations, hyperparameters are not reported, and baselines appear limited (majority baseline only), with no mention of statistical tests. These are minor but important gaps that do not overturn the central experimental findings but do reduce confidence in some specific claims (especially about decoder representations and the effect of attention).",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper states clear empirical claims and presents experiments (encoder/decoder, word vs char-CNN, attention ablation) that broadly support them, but the experimental rigor is incomplete. Key reproducibility details (hyperparameters, code/checkpoints) are not reported, statistical variance/significance across seeds is missing, and stronger controls (e.g., untrained/random baselines, more ablation isolating char-CNN contribution) are not described. The decoder-side analysis is also limited by using predicted tags rather than gold annotations, which weakens that specific claim. Overall the methodology is reasonable but has enough missing controls and reporting to raise concerns about the solidity of some conclusions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the experimental setup (freezing NMT models, extracting encoder/decoder features, training classifiers for POS/morph tags) is an appropriate empirical test and supports the main claims that encoders capture morphology and char-CNNs improve POS accuracy. However, there are methodological weaknesses that prevent full technical validation: decoder-side analysis relies on predicted tags rather than gold annotations, hyperparameters are not reported, and baselines appear limited (majority baseline only), with no mention of statistical tests. These are minor but important gaps that do not overturn the central experimental findings but do reduce confidence in some specific claims (especially about decoder representations and the effect of attention)."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early; the intro, methods, experiments and conclusions present a clear logical flow. Notation and definitions appear consistent and readable, and figures/tables/examples are generally effective at illustrating the encoder/decoder comparisons and char-vs-word results. Writing quality is good with adequate related-work coverage, though presentation suffers from omission of key experimental details (e.g. hyperparameters, and no mention of released code) which reduces clarity around reproducibility and makes some experimental descriptions harder to follow precisely. | B(4): The paper appears well-organized with a clear progression from problem motivation through methods, experiments, and conclusions, and its main contributions are stated early (encoder vs. decoder morphology, char-CNN benefits). Notation is reported as consistent, and figures/tables/examples are effective and informative; overall writing quality is good. Minor presentation gaps include omission of hyperparameter details and explicit code availability, and the decoder-side limitations could be framed more precisely for readers reproducing the work.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early; the intro, methods, experiments and conclusions present a clear logical flow. Notation and definitions appear consistent and readable, and figures/tables/examples are generally effective at illustrating the encoder/decoder comparisons and char-vs-word results. Writing quality is good with adequate related-work coverage, though presentation suffers from omission of key experimental details (e.g. hyperparameters, and no mention of released code) which reduces clarity around reproducibility and makes some experimental descriptions harder to follow precisely."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper appears well-organized with a clear progression from problem motivation through methods, experiments, and conclusions, and its main contributions are stated early (encoder vs. decoder morphology, char-CNN benefits). Notation is reported as consistent, and figures/tables/examples are effective and informative; overall writing quality is good. Minor presentation gaps include omission of hyperparameter details and explicit code availability, and the decoder-side limitations could be framed more precisely for readers reproducing the work."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper addresses an important, practical question\u2014what NMT encoders and decoders learn about morphology\u2014and provides useful empirical evidence (across multiple language pairs and word/char-based models) that encoder features, especially char-CNNs, capture POS/morphological information while decoder representations are weaker. Its probing methodology (freeze models and train classifiers) is likely to influence how researchers analyze representation content and to motivate follow-up work on encoder architectures and attention effects. However, limitations noted in the summary (no reported hyperparameters, limited decoder-side annotation, and lack of reproducibility details) reduce immediate uptake and prevent this from being transformative; the contribution is a solid, moderately impactful empirical study rather than a field-changing result. | B(4): This paper addresses an important and timely problem\u2014what NMT models learn about morphology\u2014using a clear probing methodology across multiple language pairs, and its findings (encoder representations encode morphology well; char-CNN improves POS tagging; decoder and attention reduce morphological signal) have direct practical implications for modeling choices in morphologically-rich settings. The results are likely to change how researchers think about representation design (favoring character-level encoders and cautioning about decoder/attention interpretability) and open concrete follow-ups (deeper decoder analyses, morphology-aware architectures). Given its cross-lingual experiments and relevance to MT and low-resource morphology, the work should be widely built upon, though it is not fully transformative in isolation.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper addresses an important, practical question\u2014what NMT encoders and decoders learn about morphology\u2014and provides useful empirical evidence (across multiple language pairs and word/char-based models) that encoder features, especially char-CNNs, capture POS/morphological information while decoder representations are weaker. Its probing methodology (freeze models and train classifiers) is likely to influence how researchers analyze representation content and to motivate follow-up work on encoder architectures and attention effects. However, limitations noted in the summary (no reported hyperparameters, limited decoder-side annotation, and lack of reproducibility details) reduce immediate uptake and prevent this from being transformative; the contribution is a solid, moderately impactful empirical study rather than a field-changing result."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses an important and timely problem\u2014what NMT models learn about morphology\u2014using a clear probing methodology across multiple language pairs, and its findings (encoder representations encode morphology well; char-CNN improves POS tagging; decoder and attention reduce morphological signal) have direct practical implications for modeling choices in morphologically-rich settings. The results are likely to change how researchers think about representation design (favoring character-level encoders and cautioning about decoder/attention interpretability) and open concrete follow-ups (deeper decoder analyses, morphology-aware architectures). Given its cross-lingual experiments and relevance to MT and low-resource morphology, the work should be widely built upon, though it is not fully transformative in isolation."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper applies representation-probing (freeze NMT, train classifiers on extracted features) to study morphology in NMT, which is a well-established analysis paradigm, so the core method is not new. However, the focused examination across encoder vs. decoder, attention vs. no-attention, and word- vs. char-based inputs across multiple language pairs provides a useful, moderately novel empirical perspective that differentiates specific architectural choices (char-CNN benefit, decoder weakness, attention effects). Given the lack of new algorithmic techniques and reliance on probing classifiers, the contribution is incremental but informative to experts. | B(3): The paper applies representation probing to study morphological knowledge in NMT encoders/decoders\u2014an approach that is an incremental but sensible extension of existing probing work rather than a wholly new method. Its cross-lingual comparison (Arabic, Czech, German, etc.), explicit encoder/decoder contrast and examination of character-based (char-CNN) vs. word-based representations provide clear, useful differentiation from prior studies. However, the core methodology (freeze models, extract features, train classifiers for POS/morph tags) is a well-established probing paradigm, so the contribution is moderate rather than highly novel. The decoder-side findings about attention degrading target-side morphological representations are interesting and would inform experts, but do not constitute a major methodological advance.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper applies representation-probing (freeze NMT, train classifiers on extracted features) to study morphology in NMT, which is a well-established analysis paradigm, so the core method is not new. However, the focused examination across encoder vs. decoder, attention vs. no-attention, and word- vs. char-based inputs across multiple language pairs provides a useful, moderately novel empirical perspective that differentiates specific architectural choices (char-CNN benefit, decoder weakness, attention effects). Given the lack of new algorithmic techniques and reliance on probing classifiers, the contribution is incremental but informative to experts."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper applies representation probing to study morphological knowledge in NMT encoders/decoders\u2014an approach that is an incremental but sensible extension of existing probing work rather than a wholly new method. Its cross-lingual comparison (Arabic, Czech, German, etc.), explicit encoder/decoder contrast and examination of character-based (char-CNN) vs. word-based representations provide clear, useful differentiation from prior studies. However, the core methodology (freeze models, extract features, train classifiers for POS/morph tags) is a well-established probing paradigm, so the contribution is moderate rather than highly novel. The decoder-side findings about attention degrading target-side morphological representations are interesting and would inform experts, but do not constitute a major methodological advance."
       },
       "score_delta": 0,
       "debate_triggered": false,
@@ -24,59 +84,14 @@
     },
     "APPROPRIATENESS": {
       "score": 5,
-      "justification": "[Consensus avg=5] A(5): The paper studies what NMT models learn about morphology using quantitative probing (POS/morph tagging) across multiple morphologically-rich language pairs, encoder vs decoder, attention, and char vs word representations\u2014topics squarely within NLP/ML conference scope. It uses standard MT data (WIT3/IWSLT), BLEU reporting, and established probing methodology (training classifiers on frozen representations), matching expected methods/evaluation. The work is aimed at the NLP/ML audience interested in model analysis and representation learning and is positioned with relevant prior work (e.g., Shi et al., Adi et al.), making it a strong fit for a top venue. | B(5): The paper clearly addresses core NLP/ML topics\u2014analysis of neural MT representations and what they capture about morphology\u2014which is squarely within top-tier conference scope. It targets the right audience (NMT and representation-learning researchers) and uses standard problem formulation (extrinsic POS/morphological tagging of frozen encoder/decoder features) and datasets (WIT3/IWSLT, gold/predicted tags). Experimental methodology (word vs. char representations, attention ablation, encoder vs. decoder, multiple morphologically-rich language pairs) and positioning against relevant prior work (e.g., Shi et al., Johnson et al.) match expectations for a top venue.",
+      "justification": "[Consensus avg=5] A(5): This paper addresses a core NLP/ML research question\u2014what representations NMT models learn about morphology\u2014and uses standard analysis techniques (probing classifiers, multiple language pairs, attention ablations) that target the community interested in interpretability and representation learning. The multilingual experiments and evaluation on POS/morphological tagging align well with top-tier conference audiences; while reproducibility details (hyperparameters, code) are lacking in the summary, that is a weakness in reporting rather than scope. Overall the topic, methods, and cross-lingual analyses make it a strong fit for a top NLP/ML venue. | B(5): This paper addresses a central question for the NLP/ML community\u2014what NMT models learn about morphology\u2014using probing classifiers across multiple language pairs and representation types (word vs. char, encoder vs. decoder), which is squarely within the conference scope. The methodology (freeze pretrained NMTs and probe for POS/morphological tags) and evaluations (POS accuracy, BLEU) follow established standards and will interest both researchers in representation learning and applied morphology. Minor concerns such as lack of reported hyperparameters, no mention of code release, and decoder-side reliance on predicted tags could affect reproducibility, but these do not detract from the paper\u2019s clear relevance to a top-tier venue.",
       "reviewer_a": {
         "score": 5,
-        "justification": "The paper studies what NMT models learn about morphology using quantitative probing (POS/morph tagging) across multiple morphologically-rich language pairs, encoder vs decoder, attention, and char vs word representations\u2014topics squarely within NLP/ML conference scope. It uses standard MT data (WIT3/IWSLT), BLEU reporting, and established probing methodology (training classifiers on frozen representations), matching expected methods/evaluation. The work is aimed at the NLP/ML audience interested in model analysis and representation learning and is positioned with relevant prior work (e.g., Shi et al., Adi et al.), making it a strong fit for a top venue."
+        "justification": "This paper addresses a core NLP/ML research question\u2014what representations NMT models learn about morphology\u2014and uses standard analysis techniques (probing classifiers, multiple language pairs, attention ablations) that target the community interested in interpretability and representation learning. The multilingual experiments and evaluation on POS/morphological tagging align well with top-tier conference audiences; while reproducibility details (hyperparameters, code) are lacking in the summary, that is a weakness in reporting rather than scope. Overall the topic, methods, and cross-lingual analyses make it a strong fit for a top NLP/ML venue."
       },
       "reviewer_b": {
         "score": 5,
-        "justification": "The paper clearly addresses core NLP/ML topics\u2014analysis of neural MT representations and what they capture about morphology\u2014which is squarely within top-tier conference scope. It targets the right audience (NMT and representation-learning researchers) and uses standard problem formulation (extrinsic POS/morphological tagging of frozen encoder/decoder features) and datasets (WIT3/IWSLT, gold/predicted tags). Experimental methodology (word vs. char representations, attention ablation, encoder vs. decoder, multiple morphologically-rich language pairs) and positioning against relevant prior work (e.g., Shi et al., Johnson et al.) match expectations for a top venue."
-      },
-      "score_delta": 0,
-      "debate_triggered": false,
-      "resolution_method": "consensus"
-    },
-    "CLARITY": {
-      "score": 3,
-      "justification": "[Consensus avg=3] A(3): The paper has a recognizable structure (data, encoder/decoder analysis, related work) and clearly states its high-level goal of analyzing NMT representations, but the flow is disrupted by numerous duplicated sentences, formatting artifacts, and abrupt repetitions (e.g., repeated paragraphs in Related Work and Word representations). Notation is minimal and generally defined (ENC, DEC, ENCi(s)), but presentation of figures/tables is inconsistent and poorly formatted (Table and Figure references are present but the table rendering and placement are messy), which reduces readability. Overall the ideas are communicated, but significant copy-editing and cleanup are needed to remove redundancy and fix formatting for clearer presentation. | B(3): The paper has a reasonable high-level organization (intro, data, encoder/decoder analysis, related work, experiments) and key terms/notations like ENC/DEC and ENCi(s) are introduced and used consistently. However, presentation is marred by numerous formatting and duplication issues (e.g., repeated paragraphs in Related Work, repeated lines about MT data and character CNN), typographical artifacts (e.g., \"ArabicHebrew\", the broken word \"morphol-\"), and inline footnote clutter that make sections harder to follow. Figures/tables are referenced (Figure 1, Tables 1/3/4) and the encoder/decoder analysis is explained clearly, but the noisy repetition and editing problems significantly reduce overall clarity and polish.",
-      "reviewer_a": {
-        "score": 3,
-        "justification": "The paper has a recognizable structure (data, encoder/decoder analysis, related work) and clearly states its high-level goal of analyzing NMT representations, but the flow is disrupted by numerous duplicated sentences, formatting artifacts, and abrupt repetitions (e.g., repeated paragraphs in Related Work and Word representations). Notation is minimal and generally defined (ENC, DEC, ENCi(s)), but presentation of figures/tables is inconsistent and poorly formatted (Table and Figure references are present but the table rendering and placement are messy), which reduces readability. Overall the ideas are communicated, but significant copy-editing and cleanup are needed to remove redundancy and fix formatting for clearer presentation."
-      },
-      "reviewer_b": {
-        "score": 3,
-        "justification": "The paper has a reasonable high-level organization (intro, data, encoder/decoder analysis, related work, experiments) and key terms/notations like ENC/DEC and ENCi(s) are introduced and used consistently. However, presentation is marred by numerous formatting and duplication issues (e.g., repeated paragraphs in Related Work, repeated lines about MT data and character CNN), typographical artifacts (e.g., \"ArabicHebrew\", the broken word \"morphol-\"), and inline footnote clutter that make sections harder to follow. Figures/tables are referenced (Figure 1, Tables 1/3/4) and the encoder/decoder analysis is explained clearly, but the noisy repetition and editing problems significantly reduce overall clarity and polish."
-      },
-      "score_delta": 0,
-      "debate_triggered": false,
-      "resolution_method": "consensus"
-    },
-    "ORIGINALITY": {
-      "score": 3,
-      "justification": "[Consensus avg=3] A(3): The paper applies the now-common probing-classifier methodology (e.g. Shi et al. 2016; Adi et al. 2016; Qian et al.) to study morphology in NMT, so the core idea is not novel. Its contributions are nonetheless a non-trivial extension: systematic cross-linguistic focus on morphologically-rich languages, analysis of both encoder and decoder representations (including the surprising decoder weakness), and investigation of attention and char-CNN vs word-based representations (sections 4\u20135 and 5.1). Overall this is an incremental but useful empirical extension rather than a fundamentally new method or problem formulation. | B(3): The paper is an empirical analysis rather than a new method: it applies classifier-probing of NMT encoder/decoder representations for POS/morphology, extending prior probing work (e.g. Shi et al. 2016) to morphologically-rich languages, to both source and target sides, and to character-CNN vs word representations. The authors explicitly position it relative to prior work (Shi et al.; Vylomova et al.) and add non-trivial empirical dimensions (attention vs. no-attention, encoder vs. decoder, language-pair variation), but the contribution is primarily an incremental, systematic study rather than a fundamentally new idea.",
-      "reviewer_a": {
-        "score": 3,
-        "justification": "The paper applies the now-common probing-classifier methodology (e.g. Shi et al. 2016; Adi et al. 2016; Qian et al.) to study morphology in NMT, so the core idea is not novel. Its contributions are nonetheless a non-trivial extension: systematic cross-linguistic focus on morphologically-rich languages, analysis of both encoder and decoder representations (including the surprising decoder weakness), and investigation of attention and char-CNN vs word-based representations (sections 4\u20135 and 5.1). Overall this is an incremental but useful empirical extension rather than a fundamentally new method or problem formulation."
-      },
-      "reviewer_b": {
-        "score": 3,
-        "justification": "The paper is an empirical analysis rather than a new method: it applies classifier-probing of NMT encoder/decoder representations for POS/morphology, extending prior probing work (e.g. Shi et al. 2016) to morphologically-rich languages, to both source and target sides, and to character-CNN vs word representations. The authors explicitly position it relative to prior work (Shi et al.; Vylomova et al.) and add non-trivial empirical dimensions (attention vs. no-attention, encoder vs. decoder, language-pair variation), but the contribution is primarily an incremental, systematic study rather than a fundamentally new idea."
-      },
-      "score_delta": 0,
-      "debate_triggered": false,
-      "resolution_method": "consensus"
-    },
-    "SUBSTANCE": {
-      "score": 4,
-      "justification": "[Consensus avg=4] A(4): The paper presents a broad empirical study: multiple language pairs (including several morphologically rich ones and both translation directions), word vs. character representations, encoder vs. decoder analyses, attention ablation, classifier variants, and use of gold vs. predicted tags \u2014 providing solid evidence for its claims. It also discusses negative/ surprising results (weak decoder representations) and offers hypotheses. Minor gaps remain: some reproducibility details are deferred to supplementary material and the excerpt shows no experiments on alternate subword methods or systematic data-size sensitivity, so the evaluation is strong but not exhaustively comprehensive. | B(4): The paper runs a broad set of experiments across multiple language pairs (Arabic, German, French, Czech, Arabic\u2013Hebrew, Arabic\u2013German) and evaluates encoder vs. decoder representations, word vs. character models, and the role of attention (including attention/no-attention ablations). It uses both predicted and gold tags where available, reports BLEU alongside tagging accuracy (e.g. Table 4), and situates the work well in related work. The authors acknowledge and analyze negative results (poor decoder representations) and test hypotheses (attention removal), but some reproduction details (full hyperparameters, exact tagger setups) are deferred to supplementary material and are not present in the excerpt, leaving modest gaps in sensitivity/reproducibility.",
-      "reviewer_a": {
-        "score": 4,
-        "justification": "The paper presents a broad empirical study: multiple language pairs (including several morphologically rich ones and both translation directions), word vs. character representations, encoder vs. decoder analyses, attention ablation, classifier variants, and use of gold vs. predicted tags \u2014 providing solid evidence for its claims. It also discusses negative/ surprising results (weak decoder representations) and offers hypotheses. Minor gaps remain: some reproducibility details are deferred to supplementary material and the excerpt shows no experiments on alternate subword methods or systematic data-size sensitivity, so the evaluation is strong but not exhaustively comprehensive."
-      },
-      "reviewer_b": {
-        "score": 4,
-        "justification": "The paper runs a broad set of experiments across multiple language pairs (Arabic, German, French, Czech, Arabic\u2013Hebrew, Arabic\u2013German) and evaluates encoder vs. decoder representations, word vs. character models, and the role of attention (including attention/no-attention ablations). It uses both predicted and gold tags where available, reports BLEU alongside tagging accuracy (e.g. Table 4), and situates the work well in related work. The authors acknowledge and analyze negative results (poor decoder representations) and test hypotheses (attention removal), but some reproduction details (full hyperparameters, exact tagger setups) are deferred to supplementary material and are not present in the excerpt, leaving modest gaps in sensitivity/reproducibility."
+        "justification": "This paper addresses a central question for the NLP/ML community\u2014what NMT models learn about morphology\u2014using probing classifiers across multiple language pairs and representation types (word vs. char, encoder vs. decoder), which is squarely within the conference scope. The methodology (freeze pretrained NMTs and probe for POS/morphological tags) and evaluations (POS accuracy, BLEU) follow established standards and will interest both researchers in representation learning and applied morphology. Minor concerns such as lack of reported hyperparameters, no mention of code release, and decoder-side reliance on predicted tags could affect reproducibility, but these do not detract from the paper\u2019s clear relevance to a top-tier venue."
       },
       "score_delta": 0,
       "debate_triggered": false,
@@ -84,33 +99,71 @@
     },
     "MEANINGFUL_COMPARISON": {
       "score": 4,
-      "justification": "[Consensus avg=4] A(4): The paper situates itself among relevant prior work (e.g. Shi et al. (2016) and Vylomova et al. (2016)) and cites key methods for handling morphology (char-CNN, BPE/word-piece) in Related Work. It performs controlled, fair comparisons (same WIT3 data, dev/test sets, encoder vs. decoder, attention ablation, word- vs. char-based representations; reports majority and linear classifier baselines, Table 4 and \u00a75.1). The paper does not, however, present direct quantitative head-to-head results against prior published representation-analysis numbers (beyond qualitative contrasts), a minor omission given its empirical focus. | B(4): The paper situates itself with and cites relevant recent work (e.g. Shi et al. 2016 as most similar, Vylomova et al. 2016) and compares different modeling choices (word vs. char CNN, encoder vs. decoder, attention vs. no-attention) using the same WIT3 data and POS/morph tagging evaluation, including gold vs. predicted tags, which supports fair comparisons. It analyzes and acknowledges prior analyses and the division of labor between encoder/decoder rather than claiming unjustified improvements. Minor omissions: it does not present direct numeric comparisons to prior published baselines for POS/morph tagging or alternative subword approaches (e.g. BPE/word-piece) in the same evaluation, which would make the comparison set more comprehensive.",
+      "justification": "[Consensus avg=4] A(4): The paper performs solid empirical comparisons between word- and char-based NMT encoders across multiple language pairs and evaluates encoder vs decoder representations using the same tagging tasks and metrics, which makes the core comparisons fair. However, comparisons are limited to word-based baselines and a majority baseline (and BLEU for MT) without stronger external baselines (e.g., supervised taggers, pretrained monolingual embeddings or alternative probing methods) or full reporting of hyperparameters/code for reproducibility. The authors do analyze differences (attention, encoder vs decoder) and cover related work adequately, but the omission of some prominent competing baselines and missing experimental-detail disclosure are notable minor gaps. | B(4): The paper compares char- vs word-based NMT representations and encoder vs decoder representations across multiple language pairs, using consistent evaluation metrics (POS accuracy, BLEU) and baseline word-based representations; related work coverage is reported as adequate. However, the decoder-side analysis is weakened by using predicted tags (no gold annotations), and the only simple baseline explicitly mentioned is a majority baseline, suggesting some more recent or diverse representation-learning baselines may be missing. Overall the comparisons are good and largely fair, with minor omissions and a limitation in decoder evaluation noted.",
       "reviewer_a": {
         "score": 4,
-        "justification": "The paper situates itself among relevant prior work (e.g. Shi et al. (2016) and Vylomova et al. (2016)) and cites key methods for handling morphology (char-CNN, BPE/word-piece) in Related Work. It performs controlled, fair comparisons (same WIT3 data, dev/test sets, encoder vs. decoder, attention ablation, word- vs. char-based representations; reports majority and linear classifier baselines, Table 4 and \u00a75.1). The paper does not, however, present direct quantitative head-to-head results against prior published representation-analysis numbers (beyond qualitative contrasts), a minor omission given its empirical focus."
+        "justification": "The paper performs solid empirical comparisons between word- and char-based NMT encoders across multiple language pairs and evaluates encoder vs decoder representations using the same tagging tasks and metrics, which makes the core comparisons fair. However, comparisons are limited to word-based baselines and a majority baseline (and BLEU for MT) without stronger external baselines (e.g., supervised taggers, pretrained monolingual embeddings or alternative probing methods) or full reporting of hyperparameters/code for reproducibility. The authors do analyze differences (attention, encoder vs decoder) and cover related work adequately, but the omission of some prominent competing baselines and missing experimental-detail disclosure are notable minor gaps."
       },
       "reviewer_b": {
         "score": 4,
-        "justification": "The paper situates itself with and cites relevant recent work (e.g. Shi et al. 2016 as most similar, Vylomova et al. 2016) and compares different modeling choices (word vs. char CNN, encoder vs. decoder, attention vs. no-attention) using the same WIT3 data and POS/morph tagging evaluation, including gold vs. predicted tags, which supports fair comparisons. It analyzes and acknowledges prior analyses and the division of labor between encoder/decoder rather than claiming unjustified improvements. Minor omissions: it does not present direct numeric comparisons to prior published baselines for POS/morph tagging or alternative subword approaches (e.g. BPE/word-piece) in the same evaluation, which would make the comparison set more comprehensive."
+        "justification": "The paper compares char- vs word-based NMT representations and encoder vs decoder representations across multiple language pairs, using consistent evaluation metrics (POS accuracy, BLEU) and baseline word-based representations; related work coverage is reported as adequate. However, the decoder-side analysis is weakened by using predicted tags (no gold annotations), and the only simple baseline explicitly mentioned is a majority baseline, suggesting some more recent or diverse representation-learning baselines may be missing. Overall the comparisons are good and largely fair, with minor omissions and a limitation in decoder evaluation noted."
       },
       "score_delta": 0,
       "debate_triggered": false,
       "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Neural MT encoders learn useful morphological information usable for POS and morphological tagging.",
+      "Character-based (char-CNN) representations yield better POS tagging accuracy than purely word-based representations.",
+      "Decoder representations are substantially weaker at encoding morphology than encoder representations, and the attention mechanism reduces decoder word representation quality."
+    ],
+    "methodology": "Train sequence-to-sequence NMT models (with/without attention, word- vs. char-based), freeze them, extract word representations from encoder/decoder, and train classifiers to predict POS and morphological tags from these features.",
+    "datasets": [
+      "WIT3 corpus of TED talks (IWSLT 2016)",
+      "Language pairs: Arabic-English, English-Arabic, German-English, French-English, Czech-English, Arabic-Hebrew, Arabic-German"
+    ],
+    "baselines": [
+      "word-based NMT representations",
+      "majority baseline (20% referenced)"
+    ],
+    "metrics": [
+      "POS tagging accuracy",
+      "BLEU"
+    ],
+    "limitations": [
+      "For decoder-side analysis they only experimented with predicted tags due to lack of available parallel data with gold POS/morphological annotations.",
+      "Decoder representations give low POS tagging accuracy, indicating limited learning about target morphology."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - neural machine translation and morphological representation",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Controlled Empiricist",
+      "background": "Senior ML engineer with 10+ years running large-scale NLP experiments and building reproducible evaluation pipelines for sequence models in both academia and industry.",
+      "traits": [
+        "meticulous about experimental controls, baseline selection, and hyperparameter reporting",
+        "looks for statistical significance, variance estimates, and robustness checks across seeds and datasets",
+        "values clear ablation studies that isolate the contribution of each component (e.g., char-CNN vs word, attention vs no-attention)",
+        "expects reproducibility: code, model checkpoints, exact preprocessing, and classifier training details"
+      ],
+      "reviewing_style": "Focuses on the rigor and validity of the experimental methodology and whether the results convincingly support the claims."
     },
-    "SOUNDNESS_CORRECTNESS": {
-      "score": 4,
-      "justification": "[Consensus avg=4] A(4): The paper\u2019s main claims (encoder representations capture morphology well; decoder representations are weaker; character-based inputs improve morphological signals; attention shifts where information is stored) are clearly stated and supported by experimental evidence (multi-language WIT3 training, encoder/decoder feature extraction, POS/morph classifiers, and attention vs. no-attention ablation as reported in Tables/Section 5.1). There are no mathematical derivations to check. Minor methodological concerns remain: the excerpt lacks details on classifier capacity, statistical significance testing, and some experiments rely on predicted tags and teacher-forcing of target words (which the authors note) and could confound interpretation of decoder representations. These do not undermine the main empirical conclusions but merit further controls/ reporting. | B(4): The paper\u2019s main claims (that encoder representations capture morphology better than decoder representations, that character-based input improves tagging, and that attention changes the encoder/decoder division of labor) are directly tested with reasonable experiments: frozen pretrained encoders/decoders used to extract word features, POS/morphology classifiers trained on gold/predicted tags, and an attention ablation study (see \u00a74\u20135 and Table 4). There are no mathematical derivations to check. However, methodological details are missing in the provided text (classifier architectures/hyperparameters, dataset sizes for each probe, and no mention of statistical significance), and the decoder analysis may be confounded by the use of teacher-forcing (decoder given gold target words) and by relying often on predicted tags; these omissions are minor but leave some interpretive claims (about attention \u2018hurting\u2019 decoder representations) less conclusively supported.",
-      "reviewer_a": {
-        "score": 4,
-        "justification": "The paper\u2019s main claims (encoder representations capture morphology well; decoder representations are weaker; character-based inputs improve morphological signals; attention shifts where information is stored) are clearly stated and supported by experimental evidence (multi-language WIT3 training, encoder/decoder feature extraction, POS/morph classifiers, and attention vs. no-attention ablation as reported in Tables/Section 5.1). There are no mathematical derivations to check. Minor methodological concerns remain: the excerpt lacks details on classifier capacity, statistical significance testing, and some experiments rely on predicted tags and teacher-forcing of target words (which the authors note) and could confound interpretation of decoder representations. These do not undermine the main empirical conclusions but merit further controls/ reporting."
-      },
-      "reviewer_b": {
-        "score": 4,
-        "justification": "The paper\u2019s main claims (that encoder representations capture morphology better than decoder representations, that character-based input improves tagging, and that attention changes the encoder/decoder division of labor) are directly tested with reasonable experiments: frozen pretrained encoders/decoders used to extract word features, POS/morphology classifiers trained on gold/predicted tags, and an attention ablation study (see \u00a74\u20135 and Table 4). There are no mathematical derivations to check. However, methodological details are missing in the provided text (classifier architectures/hyperparameters, dataset sizes for each probe, and no mention of statistical significance), and the decoder analysis may be confounded by the use of teacher-forcing (decoder given gold target words) and by relying often on predicted tags; these omissions are minor but leave some interpretive claims (about attention \u2018hurting\u2019 decoder representations) less conclusively supported."
-      },
-      "score_delta": 0,
-      "debate_triggered": false,
-      "resolution_method": "consensus"
+    "reviewer_b": {
+      "name": "Applied Morphology Scholar",
+      "background": "Academic researcher in computational linguistics specializing in morphology and representation learning, with extensive experience evaluating linguistic analyses extracted from neural models.",
+      "traits": [
+        "places work within the landscape of prior linguistic and representation learning studies and values clear novelty",
+        "notices linguistic validity: whether the probes reveal true morphological knowledge versus surface correlations",
+        "cares about broader impact: practical implications for MT, low-resource languages, and linguistic analysis",
+        "looks for insightful interpretation of results and suggestions for future research directions or applications"
+      ],
+      "reviewing_style": "Assesses novelty, linguistic validity, and the significance of the findings for both the research community and practical NLP tasks."
     }
   },
   "_debate_stats": {

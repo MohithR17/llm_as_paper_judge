@@ -1,0 +1,99 @@
+{
+  "IMPACT": 4,
+  "APPROPRIATENESS": 4,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "SUBSTANCE": 3,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical problem\u2014making anchor-based interactive topic modeling both higher-quality and faster\u2014by introducing tandem (multiword) anchors that empirically yield better topic quality, improved clustering/classification metrics, and more specific topic-word distributions for downstream tasks. Its emphasis on fast interactive refinement (much faster than sampling-based Interactive Topic Models) and demonstrable gains over single-word anchors suggests researchers and practitioners may adopt or extend the idea. However, evaluation appears limited (20 Newsgroups only, no mention of code or hyperparameter reporting) and some practical constraints (no metadata assumptions, excluded interactive baselines in user studies due to runtime) temper the breadth of immediate impact, placing it short of transformative.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "The paper addresses interactive topic modeling, a well-established NLP/ML area, and proposes a method (multiword/tandem anchors) clearly targeted to that audience. The formulation (augmenting anchor-word algorithms with pseudowords and convex reconstructions) and the evaluations (20 Newsgroups, classification accuracy, clustering metrics, coherence, and comparisons to single-word anchors and other interactive approaches) match standards expected at top venues. Minor concerns (single dataset, no code or hyperparameter reporting noted, and some user-study exclusions of slower baselines) suggest scope/replicability issues but do not undermine topical fit.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and follows a logical flow from introduction through method to experiments and conclusion, and the main contributions (tandem anchors, pseudowords, and interactive speedups) are stated early. The methodology and notation for constructing multiword anchor facets and pseudowords are described clearly, and writing quality is reported as good with adequate related work coverage. Minor presentation gaps remain (e.g., hyperparameter reporting and code availability not mentioned, and figures/tables effectiveness not specified), so the paper is strong but has small clarity/presentation omissions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and recent baselines (single-word anchors, Gram\u2013Schmidt anchors, Interactive Topic Model / Utopian for runtime, and Hu et al. 2014) using the same dataset (20NEWS) and standard metrics (classification accuracy, ARI, VI, coherence, significance). Comparisons appear generally fair, though only one dataset is used and hyperparameters are not reported, which could affect reproducibility and fairness. The paper notes limitations and runtime trade-offs (explaining exclusion of slow methods from the user study) and analyzes differences via multiple quantitative metrics, and it cites relevant competing approaches, so the evaluation is strong with minor omissions.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable and concrete extension of the anchor-word approach by defining multiword anchor facets (pseudowords) that augment the cooccurrence matrix Q and enable single-pass precomputation and much faster interactive updates\u2014claims flagged as novel in the automated analysis. These technical moves (constructing synthetic pseudoword cooccurrence rows and combining multiword profiles) go beyond prior knowledge-incorporation work (e.g., 2015 methods) and constitute a non-trivial methodological contribution rather than a mere reapplication. The manuscript differentiates its contributions clearly (speed, Q augmentation, and multiword anchors) and would likely inform experts familiar with anchor-based and constrained topic modeling, hence a score indicating notable novelty.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states clear main claims and presents a plausible algorithmic extension (multiword anchor facets combined into pseudowords and convex reconstructions via KL) with experiments on 20NEWS showing improved classification and clustering metrics versus single-word and Gram\u2013Schmidt anchors. However, the summary lacks details on mathematical completeness (proofs/derivation completeness unclear), omitted hyperparameters and code, and no mention of statistical tests or full baselines in interactive comparisons (ITM and Utopian were excluded from the user study for runtime), which weakens experimental rigor. These gaps constitute moderate concerns but do not obviously invalidate the core technical contribution, so the assessment is cautiously positive.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments provide reasonable evidence for the main claims (classification and clustering gains on 20NEWS and runtime advantages over sampling-based interactive models), but evaluation is limited to a single dataset and several interactive baselines (e.g., ITM, Utopian) were excluded from the user study due to runtime, weakening comparative conclusions. No hyperparameters or code are reported and there is no mention of ablation or sensitivity analyses for key design choices (e.g., how multiword facet construction or pseudoword combination affects results), which hampers reproducibility and understanding of method robustness. Related work appears adequately covered and the paper discusses some limitations (e.g., reliance on metadata in one experiment), but more thorough empirical analysis and clearer reproduction details would be needed to be rated higher; this assessment aligns with prior work on incorporating knowledge into topic models (e.g., 2015 methods) that emphasize thorough ablations and multiple datasets.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Tandem Anchors (multiword anchors) improve topic quality for interactive topic modeling compared to single-word anchors (higher classification accuracy and better clustering metrics).",
+      "Tandem Anchors make anchor-based topic modeling more intuitive for users and enable fast interactive refinement (much faster than sampling-based Interactive Topic Models).",
+      "Augmenting the anchor algorithm with multiword anchor facets (pseudowords) yields topics with more specific word distributions that serve as better features for downstream tasks like classification."
+    ],
+    "methodology": "Extend the anchor-word algorithm by constructing multiword anchor facets and combining their cooccurrence profiles into synthetic pseudowords that augment the cooccurrence matrix Q to form S; solve per-word convex reconstructions via KL divergence to obtain coefficients C and recover topic-word distributions with Bayes' rule.",
+    "datasets": [
+      "20 Newsgroups (20NEWS)"
+    ],
+    "baselines": [
+      "single-word anchors",
+      "unsupervised Gram-Schmidt anchors",
+      "Interactive Topic Model (mentioned as comparison for runtime)",
+      "Utopian (mentioned)",
+      "Hu et al. (2014) (comparison)"
+    ],
+    "metrics": [
+      "classification accuracy",
+      "adjusted Rand index",
+      "variation of information",
+      "topic coherence (Newman et al., 2010)",
+      "topic significance metrics (AlSumait et al., 2009)"
+    ],
+    "limitations": [
+      "The method cannot assume metadata is available to build tandem anchors (metadata used only for a high-water mark experiment).",
+      "Interactive comparisons exclude Interactive Topic Model and Utopian from user study because their run times are too slow for users."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - interactive topic modeling",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 2,
+    "paper_novelty_mean": 0.4,
+    "augmented_dims": [
+      "MEANINGFUL_COMPARISON",
+      "ORIGINALITY",
+      "SUBSTANCE"
+    ],
+    "total_dims": 7
+  }
+}

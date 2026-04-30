@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses weakly supervised cross-lingual NER, a core NLP problem of clear interest to top NLP/ML venues (Sec. 4 Representation Projection; Sec. 2 NER models). It targets the right audience by combining representation learning (cross-lingual embedding mapping, word2vec variants) and sequence-labeling models (CRF/MEMM, neural NN1/NN2) that ML/NLP researchers expect. The problem formulation is standard (sequence labeling with IOB tags) and the experimental protocol uses community benchmarks (CoNLL 02/03) and comparisons to prior cross-lingual work (Ta\u0308ckstro\u0308m et al., Tsai et al.), indicating appropriate methods and evaluation standards. Overall the paper is well positioned within the NLP cross-lingual transfer literature and fits a top-tier venue."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper targets an important practical problem\u2014building NER for languages with no human annotation\u2014by proposing two complementary, lightweight transfer methods (annotation projection with a heuristic data-selection scheme and representation projection that maps target embeddings into an English space to use a single universal NER model). The combination via co-decoding and the claim that \"the combined systems outperform the previous two approaches... on the CoNLL test data\" (and approach supervised performance) suggests the results would materially influence practitioners and researchers working on low-resource cross-lingual NLP. The methods are broadly applicable (can add new languages without retraining and rely on monolingual corpora + linear mappings), opening realistic directions for scalable multilingual NER, so the contribution has strong but not necessarily transformative impact."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and follows a logical flow from motivation to methods to experiments (e.g. the summary paragraph that begins \u201cIn this paper, we present two approaches...\u201d and the separate sections on annotation/representation projection and experiments). The main contributions are stated early and clearly, and key formulas/notation are defined (e.g. the frequency table T(e,l) and the sentence quality score q(y) in (5)); Table 1 gives an informative concrete example. Presentation weaknesses are minor: a few typographic/formatting issues and small editorial slips (e.g. \u201cOn approach\u201d instead of \u201cOne approach\u201d, a stray \u201cLaTeX with hyperref package\u201d line), and figures are referenced (Figure 1) but not shown in the provided excerpt. Overall the writing is clear with only modest polishing needed."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines existing techniques\u2014annotation projection for weak labeling and cross-lingual embedding mapping (linear mapping M_fe) for direct model transfer (Sections 3.1 and 4.3)\u2014and applies them to NER, adding practical components like the frequency-based sentence quality score q(y) (Eq.5\u20136) and co-decoding schemes. These elements are clear adaptations and engineering improvements over prior work (cited Mikolov et al., Klementiev et al., Ta\u0308ckstro\u0308m et al.), but do not introduce a fundamentally new theoretical approach; the contributions are incremental and pragmatically useful rather than highly novel."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper evaluates on standard CoNLL development/test sets and reports F1, explicitly comparing its top systems to prior cross-lingual NER approaches (Ta\u0308ckstro\u0308m et al. (2012) and Tsai et al. (2016)) on the CoNLL test data (see mention of Table 5) and uses the same English training/dev data for tuning (Section 6.3). It also analyzes component behavior (e.g. AP and NN1 tend to have high precision, NN2 more balanced; co-decoding improves over the best by 1.3\u20133.6 F1 as noted in the results discussion and Table 4). However, only two prior cross-lingual NER baselines are directly compared, so the baseline set is somewhat limited despite being fairly and transparently evaluated."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s main claims (two projection approaches and co-decoding improve cross-lingual NER) are clearly stated and supported by empirical results on CoNLL and in-house sets (references to Table 4/5 and the reported improvements over Ta\u0308ckstro\u0308m et al. and Tsai et al.). The mathematical/formal pieces are simple and correct (e.g. the sentence quality score q(y) in Eq. (5) and selection rule Eq. (6)); model descriptions (NN1/NN2, CRF/MEMM, linear mapping Mfe for representation projection) are coherent and implementable. The experimental methodology is generally sound\u2014reasonable baselines (English CRF, prior cross-lingual work), development tuning, multiple languages\u2014but the paper omits some important implementation details (how the cross-lingual linear mapping is trained/seed dictionary size, embedding dimensionality choices) and does not report statistical significance tests. Overall the results support the conclusions, with only minor technical/documentation gaps that do not undermine the main findings."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments cover multiple target languages (in-house Japanese/Korean/German/Portuguese and CoNLL Spanish/Dutch/German), compare the two projection approaches (annotation projection and representation projection with NN1/NN2), and evaluate two co-decoding schemes against prior work (Sections 6.1 and 6.3), which supports the main claims. Some ablation is present (NN1 vs NN2, AP vs representation projection, co-decoding variants), but I see no sensitivity analysis of the heuristic data-selection thresholds q and n or detailed study of how mapping quality affects transfer. Related work is discussed (Sec. 4.4), but explicit failure cases and limitations are not analyzed, and reproducibility is partial because key implementation/training details (exact mapping-training procedure, many hyperparameters) are not fully specified in the provided text."
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper falls squarely within top-tier NLP/ML scope as an Open Information Extraction contribution (MinIE) and targets readers interested in IE, information extraction pipelines, and downstream NLP applications. Its problem formulation (minimized, annotated SRO extractions) is appropriate for the venue, and the methods/evaluation follow community expectations: implemented on ClausIE, compared against ClausIE/OLLIE/Stanford OIE, evaluated on standard NYT and Wikipedia samples with factual precision/recall and extraction-length metrics. The paper is well positioned within the research community (code released, thorough related work) and therefore represents a strong fit for a top NLP/ML conference."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments compare MinIE to multiple baselines on a large NYT-10k set and two smaller samples, report precision/recall and extraction length, and show MinIE achieves competitive or higher accuracy while producing shorter extractions, which supports the main claims. The paper provides several minimization modes (MinIE-S/F/C/A) giving some sensitivity analysis, but it lacks explicit ablation studies and does not report hyperparameters, limiting deeper sensitivity/reproducibility analysis. Related work coverage is described as thorough, and several failure modes and limitations (parser errors, collocation/NER issues, coarse modality treatment) are explicitly discussed. Code availability helps reproducibility, but the missing hyperparameter details prevents full replication without additional effort."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and empirically supported: MinIE is implemented on ClausIE with added implicit patterns and produces shorter, annotated extractions while attaining competitive or higher precision and recall against ClausIE, OLLIE and Stanford OIE on the reported datasets. There are no mathematical derivations to check and the experimental setup uses reasonable baselines and metrics, but the methodology has minor shortcomings (no hyperparameter reporting, no mention of statistical significance tests, and two small 200-sentence evaluation samples). The authors acknowledge key failure modes (dependency parsing, collocation/NER errors, coarse modality treatment), so these are minor issues that do not overturn the main conclusions."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem in Open IE\u2014producing minimal, non-redundant extractions with explicit annotations for polarity, modality, attribution and quantities\u2014which is valuable for downstream consumption. Empirically it achieves competitive or higher precision and recall than ClausIE/OLLIE/Stanford OIE while producing much shorter extractions (evaluated on NYT-10k, NYT and Wiki samples), demonstrating a convincing tradeoff between minimality and accuracy. By exposing configurable minimization modes and factuality annotations (and providing code), it is likely to influence how researchers and practitioners design and use OIE systems and to enable follow-up work, though limitations (dependency-parsing errors and coarse modality handling) keep it from being fully transformative."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a clearly new objective within OIE\u2014producing minimized, annotated extractions that explicitly record polarity, modality, attribution, and quantities\u2014which is a distinct perspective from prior systems. Although it is implemented on top of an existing system (ClausIE) and thus builds on known techniques, the use of implicit-extraction patterns, lexica, rewrite rules, and multiple minimization modes constitutes a non-trivial, well-differentiated extension. Since open IE itself is a well-studied problem, the novelty lies in the minimization/annotation formulation and practical systemization rather than a wholly new problem definition."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and clearly states its main contributions early (the MinIE system, its minimization modes, and annotated extractions). Notation and terminology are consistent and understandable (e.g., MinIE-S/F/C/A modes), and the experimental presentation (datasets, baselines, factual/attribution precision metrics, and extraction-length statistics) makes the results easy to follow. Writing quality is described as good and related work coverage is thorough, though some presentation details are missing (e.g., hyperparameters not reported), so I rate it as well-written with minor presentation issues."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares MinIE against appropriate OIE baselines (ClausIE, OLLIE, Stanford OIE) using the same datasets (NYT-10k, NYT, Wiki) and common metrics (precision, recall, attribution precision, extraction length), and reports that MinIE attains competitive or higher precision and recall. The method differences (minimization modes, annotations, implementation on top of ClausIE) are clearly described and related work coverage is noted as thorough. One minor gap in the summary is that it does not explicitly state whether the authors acknowledge cases where prior methods perform comparably or better, so the comparisons appear strong but may omit explicit discussion of any baselines outperforming MinIE."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes MinIE, an OIE system that produces minimized, annotated extractions by removing overly-specific parts and representing polarity, modality, attribution, and quantities as annotations.",
+      "Implements MinIE on top of ClausIE and augments ClausIE extractions with implicit-extraction patterns, lexica, and rewrite rules to generate basic and then minimized extractions.",
+      "Provides multiple minimization modes (MinIE-S, MinIE-F, MinIE-C, MinIE-A) with increasing aggressiveness to trade off minimality and precision.",
+      "Empirically shows that MinIE attains competitive or higher precision and recall than several prior systems while producing much shorter extractions."
+    ],
+    "methodology": "MinIE takes ClausIE extractions (plus implicit extractions), detects and removes parts encoding polarity, modality, attribution, and quantities (recording them as annotations), and applies configurable minimization modes (safe to aggressive) to produce minimized, annotated subject-relation-object triples.",
+    "datasets": [
+      "NYT-10k (random 10,000 sentences from New York Times Annotated Corpus)",
+      "NYT (random sample of 200 sentences from NYT Annotated Corpus)",
+      "Wiki (random sample of 200 sentences from Wikipedia)"
+    ],
+    "baselines": [
+      "ClausIE",
+      "OLLIE",
+      "Stanford OIE"
+    ],
+    "metrics": [
+      "total number of extractions (recall)",
+      "factual precision (fraction of correct triples)",
+      "attribution precision (fraction correct with correct attributions)",
+      "mean word count per extraction (\u00b5) and standard deviation (\u03c3)",
+      "number of nonredundant extractions"
+    ],
+    "limitations": [
+      "Errors in dependency parsing propagate to MinIE and are a main source of errors (notably affecting MinIE-S).",
+      "Dropping adjectives can break collocations (e.g., \"assistant director\") when the collocation is not present in the dictionary, causing incorrect minimizations.",
+      "Named-entity recognition errors can produce incorrect extractions (e.g., misrecognized first word of a named entity).",
+      "The basic modality/negation treatment focuses on easy cases and only uses coarse factuality levels (CT and PS), omitting more advanced handling."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - Open Information Extraction",
+    "writing_quality": "good"
+  }
+}

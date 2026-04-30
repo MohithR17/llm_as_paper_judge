@@ -1,0 +1,178 @@
+{
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "APPROPRIATENESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a clear and distinguishable methodological innovation: factorizing generation into grammar-driven APPLYRULE and GENTOKEN actions to produce ASTs and then deterministically convert to surface code, which is a notable departure from sequence- or tree-decoder baselines (SEQ2TREE, LPN). The use of parent-feeding and a pointer copy mechanism to operate within this syntactic decoder is a non-trivial extension that leverages target-language grammar as an explicit prior; this differentiates it materially from prior neural approaches. From my formal-methods perspective the contribution is not a radical theoretical breakthrough (no new provable guarantees), but it is a well-articulated, novel architecture that would inform experts working on grammar-constrained structured prediction. | B(4): The paper presents a clear and practically useful novelty by structuring neural code generation around grammar-driven AST actions (APPLYRULE/GENTOKEN) with parent-feeding and pointer-copy, which is a meaningful departure from sequence or latent-leaf approaches like LPN/SEQ2TREE. While the problem (NL-to-code/semantic parsing) is well-studied, the explicit incorporation of target-language grammar as a decoding prior and the deterministic AST-to-code conversion are notable engineering advances that non-trivially improve results (~3% absolute) and scale to more complex programs. The authors also differentiate their approach from prior work and provide sensible design choices (unary closure, copy mechanism) that would inform experts building production-oriented code generators.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a clear and distinguishable methodological innovation: factorizing generation into grammar-driven APPLYRULE and GENTOKEN actions to produce ASTs and then deterministically convert to surface code, which is a notable departure from sequence- or tree-decoder baselines (SEQ2TREE, LPN). The use of parent-feeding and a pointer copy mechanism to operate within this syntactic decoder is a non-trivial extension that leverages target-language grammar as an explicit prior; this differentiates it materially from prior neural approaches. From my formal-methods perspective the contribution is not a radical theoretical breakthrough (no new provable guarantees), but it is a well-articulated, novel architecture that would inform experts working on grammar-constrained structured prediction."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a clear and practically useful novelty by structuring neural code generation around grammar-driven AST actions (APPLYRULE/GENTOKEN) with parent-feeding and pointer-copy, which is a meaningful departure from sequence or latent-leaf approaches like LPN/SEQ2TREE. While the problem (NL-to-code/semantic parsing) is well-studied, the explicit incorporation of target-language grammar as a decoding prior and the deterministic AST-to-code conversion are notable engineering advances that non-trivially improve results (~3% absolute) and scale to more complex programs. The authors also differentiate their approach from prior work and provide sensible design choices (unary closure, copy mechanism) that would inform experts building production-oriented code generators."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against the key prior systems for this problem (LPN, SEQ2TREE, and a standard NMT baseline) on the same datasets (HEARTHSTONE, DJANGO, IFTTT) using the same exact-match and BLEU metrics, which constitutes a solid and relevant baseline set. However, the summary indicates only a ~3% absolute gain without mention of statistical significance or broader multilingual/grammar-varied baselines, and it is unclear whether the authors explicitly acknowledge cases where prior methods are comparable or stronger. From a theory-centric perspective this is a good empirical comparison but suffers minor omissions in rigor (significance testing) and breadth (additional recent/strong baselines), so I deduct one point. | B(4): The paper compares against appropriate and established baselines (LPN, SEQ2TREE, NMT and other baselines from Ling et al. 2016) on standard datasets (HS, DJANGO, IFTTT) using matching metrics (exact match, BLEU), so comparisons appear fair and commensurate. Related work coverage is reported as thorough and the paper describes architectural differences (grammar-driven actions, parent feeding, copy mech.) that clarify why improvements arise. Minor omissions prevent a full top score: the summary does not indicate release of code or whether any very recent competing models beyond the cited baselines were evaluated, nor does it explicitly state cases where prior methods outperform the proposal.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against the key prior systems for this problem (LPN, SEQ2TREE, and a standard NMT baseline) on the same datasets (HEARTHSTONE, DJANGO, IFTTT) using the same exact-match and BLEU metrics, which constitutes a solid and relevant baseline set. However, the summary indicates only a ~3% absolute gain without mention of statistical significance or broader multilingual/grammar-varied baselines, and it is unclear whether the authors explicitly acknowledge cases where prior methods are comparable or stronger. From a theory-centric perspective this is a good empirical comparison but suffers minor omissions in rigor (significance testing) and breadth (additional recent/strong baselines), so I deduct one point."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against appropriate and established baselines (LPN, SEQ2TREE, NMT and other baselines from Ling et al. 2016) on standard datasets (HS, DJANGO, IFTTT) using matching metrics (exact match, BLEU), so comparisons appear fair and commensurate. Related work coverage is reported as thorough and the paper describes architectural differences (grammar-driven actions, parent feeding, copy mech.) that clarify why improvements arise. Minor omissions prevent a full top score: the summary does not indicate release of code or whether any very recent competing models beyond the cited baselines were evaluated, nor does it explicitly state cases where prior methods outperform the proposal."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early and clearly (grammar-driven AST generation, parent-feeding and copy mechanisms, language-agnostic claim). Notation and methodological descriptions are generally consistent and precise enough to follow the APPLYRULE/GENTOKEN factorization, and figures/tables/examples supporting datasets and baselines are informative. Writing quality is good overall, though a couple of methodological trade-offs (e.g., unary closure and its impact on grammar size) could benefit from slightly clearer formal exposition and more explicit figure references. | B(4): Overall the paper is well organized and communicates its ideas clearly: the intro, method (APPLYRULE/GENTOKEN actions, parent-feeding, pointer copy), experiments and conclusion follow a logical flow and the main contributions are stated up front. Notation appears consistent and the presentation of datasets, baselines, metrics, and reported hyperparameters is thorough; figures/tables and examples (e.g., AST-driven decoding) are informative. A few minor clarity issues remain (e.g., the unary-closure tradeoff and lack of explicit code release are mentioned but not deeply explained), so while the writing is strong it stops short of being exemplary.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early and clearly (grammar-driven AST generation, parent-feeding and copy mechanisms, language-agnostic claim). Notation and methodological descriptions are generally consistent and precise enough to follow the APPLYRULE/GENTOKEN factorization, and figures/tables/examples supporting datasets and baselines are informative. Writing quality is good overall, though a couple of methodological trade-offs (e.g., unary closure and its impact on grammar size) could benefit from slightly clearer formal exposition and more explicit figure references."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and communicates its ideas clearly: the intro, method (APPLYRULE/GENTOKEN actions, parent-feeding, pointer copy), experiments and conclusion follow a logical flow and the main contributions are stated up front. Notation appears consistent and the presentation of datasets, baselines, metrics, and reported hyperparameters is thorough; figures/tables and examples (e.g., AST-driven decoding) are informative. A few minor clarity issues remain (e.g., the unary-closure tradeoff and lack of explicit code release are mentioned but not deeply explained), so while the writing is strong it stops short of being exemplary."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper tackles an important problem and introduces a reusable, grammar-driven AST decoder that yields modest but consistent SOTA gains (~3%) and sensible mechanisms (parent-feeding, pointer copy). Impact is likely practical and will influence follow-on work and practitioner practice, though broader language-agnostic claims, lack of extensive diagnostics or formal guarantees, and dataset/code-release limitations moderate immediate paradigm shift\u2014hence a slightly above-moderate score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper addresses an important problem\u2014mapping NL to general-purpose code\u2014by explicitly leveraging target-language grammars to produce ASTs, which is a useful structural inductive bias and achieves state-of-the-art results on HS, DJANGO and IFTTT. However, the reported gains (~3% absolute) over strong baselines are modest and the claim of language-agnosticity is not strongly substantiated across diverse languages or grammar complexities, limiting immediate paradigm shift. The approach does open sensible follow-on work (grammar-constrained decoders, copy mechanisms, parent-feeding) but lacks formal guarantees or diagnostic analysis that would drive deeper theoretical adoption, so I assess moderate impact."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses an important, practical problem\u2014mapping NL to general-purpose code\u2014by explicitly incorporating target-language grammars into a neural decoder, an engineering design that plausibly improves sample efficiency and syntactic correctness. The reported ~3% absolute SOTA gain across realistic datasets (HEARTHSTONE, DJANGO, IFTTT), plus mechanisms like parent-feeding and pointer copy, make this approach likely to change practitioner practice for structured code generation. Lack of mentioned code release and relatively small datasets temper immediate widespread adoption, but the grammar-driven AST framework is a strong, reusable idea that should open productive follow-on work."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper presents solid empirical gains on established datasets, reports key hyperparameters and architectural choices, and discusses some ablation components and limitations. However, they also note incomplete ablation/sensitivity analyses, limited evidence for broad language-agnostic claims, and lack of released code which hampers reproducibility. Given the consistent improvements and reasonable analysis but not exhaustive evaluation, a score of 4 reflects a strong contribution with room for deeper validation.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides reasonable empirical evidence (results on HEARTHSTONE, DJANGO, IFTTT and ~3% absolute improvement over prior work) and reports hyperparameters and some architectural choices (parent feeding, pointer copy). However, from the summary there is no clear evidence of thorough ablation/sensitivity studies isolating each component, no reported statistical significance testing, and the language-agnosticity claim is weakly supported (only a few datasets of limited linguistic/grammar diversity). Related work appears well covered and some limitations are acknowledged, but reproducibility is hampered by no mention of released code and the diagnostic analysis of failure modes and systematic AST errors is insufficient."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The experimental evaluation is solid: the model is tested on three established datasets (HEARTHSTONE, DJANGO, IFTTT) and shows consistent gains (\u22483% absolute) over strong baselines, and the paper reports hyperparameters and architectural choices (parent-feeding, pointer copy). Ablation-style components (parent feeding, copy mechanism, unary closure trade-off) are discussed, and limitations about dataset size and unary-closure costs are acknowledged. However, reproduction would be easier if code were released and experiments on more diverse languages/grammars were included to strengthen the generality claim, so the analysis is strong but not exhaustive."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper\u2019s central claim\u2014that a grammar-constrained AST decoder with parent-feeding and copy improves exact-match accuracy\u2014is supported by experiments against strong baselines, yielding consistent ~3% gains. However, they also agree important empirical rigor is missing (no significance testing, limited ablations, and narrow dataset scope) and theoretical guarantees are absent; these are shortcomings but not fatal. Given the solid empirical signal and reasonable methodology, but acknowledging the noted gaps, a score of 4 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states and experimentally supports its central claim that a grammar-constrained AST decoder improves exact-match accuracy (reporting ~3% absolute gains) and compares against appropriate prior baselines (LPN, SEQ2TREE, NMT). However, there are missing theoretical guarantees or formal analyses about syntactic correctness or compositional generalization, and the \u2018\u2018language-agnostic\u2019\u2019 claim is weakly supported (evaluations limited to HS, DJANGO, IFTTT rather than diverse programming languages). The methodology appears reasonable but the summary does not mention statistical significance testing, nor sufficient diagnostic ablations isolating each architectural component (parent feeding, copy mechanism, unary closure), leaving some empirical claims insufficiently disentangled. Overall the results are promising but important evidence and formal analysis are lacking, so I downgrade the score accordingly."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's primary claims\u2014that a grammar-driven AST decoder with parent-feeding and copy mechanism improves code generation\u2014are clearly stated and supported by experiments showing ~3% absolute gains across HEARTHSTONE, DJANGO, and IFTTT versus strong baselines (LPN, SEQ2TREE, NMT). Mathematical framing is straightforward (no deep proofs required) and appears consistent with the described decoder actions; hyperparameters are reported. My concerns are practical rather than fatal: datasets are relatively small which limits generality, there is no mention of significance testing or code release to aid reproducibility, and the unary-closure tradeoff could use more empirical analysis. Overall the results and methodology are sound and justify the conclusions, with minor gaps in empirical rigor and reproducibility."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper fits squarely within top-tier NLP/ML scope, tackles an appropriate problem (grammar-aware code generation), and evaluates against strong baselines on standard datasets with clear empirical gains. I assign a 4 because, while the approach and evaluation are solid and relevant, Reviewer A\u2019s concerns about limited language diversity and dataset size temper the strength of the generality claims and suggest this is a strong but not flawless fit for the highest rating.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper falls squarely within the scope of top-tier NLP/ML venues: it tackles code generation / semantic parsing with an explicit grammar-aware decoder, compares to strong baselines (LPN, SEQ2TREE, NMT) on standard datasets (HEARTHSTONE, DJANGO, IFTTT), and uses expected metrics (exact match, BLEU). From my theory-focused perspective it targets the right audience, but I have minor scope concerns: the claim of language-agnosticity is weakly supported (only three datasets, limited language diversity) and the datasets are small, which may limit the generality of the empirical claims despite a reported ~3% improvement. Overall it is a good fit for the venue, though stronger cross-language validation or formal analysis would increase its appeal to the community I represent."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper sits squarely within top-tier NLP/ML scope: structured semantic parsing and code generation are core topics and the work targets the community interested in sequence-to-structure models. The formulation\u2014grammar-driven AST generation with APPLYRULE/GENTOKEN actions, parent-feeding and pointer-copy mechanisms\u2014is appropriate and leverages program-structure inductive bias in a way that will interest both NLP and ML audiences. Evaluation uses standard datasets (HEARTHSTONE, DJANGO, IFTTT), baselines (LPN, SEQ2TREE, NMT) and accepted metrics (exact match, BLEU), and reports a clear empirical improvement (~3% absolute), meeting the venue\u2019s methodological and empirical expectations. Positioning and related work coverage appear thorough; the only minor gap is missing mention of released code, but that doesn\u2019t affect topical fit."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce a syntactic neural model that generates abstract syntax trees (ASTs) for mapping natural language descriptions to general-purpose programming language code, explicitly leveraging the target language grammar as prior knowledge.",
+      "Model is programming-language agnostic and generates code by first predicting an AST (via APPLYRULE and GENTOKEN actions) then deterministically converting the AST to surface code.",
+      "Proposed model attains state-of-the-art results, outperforming previous code generation and semantic parsing approaches (e.g., a reported ~3% absolute improvement over prior work).",
+      "The architecture scales to generate more complex programs by structuring the decoder around the syntax tree (including parent feeding and copy mechanisms)."
+    ],
+    "methodology": "They factorize code generation as sequential application of grammar-driven actions: APPLYRULE to expand nonterminals and GENTOKEN to populate variable terminals, and estimate action probabilities with an attentional encoder-decoder RNN that uses parent-feeding and a pointer copy mechanism; at inference beam search is used to produce the best AST which is then converted to code.",
+    "datasets": [
+      "HEARTHSTONE (HS)",
+      "DJANGO",
+      "IFTTT"
+    ],
+    "baselines": [
+      "Latent Predictor Network (LPN) (Ling et al., 2016)",
+      "SEQ2TREE (Dong and Lapata, 2016)",
+      "Neural Machine Translation (NMT) (Neubig, 2015)",
+      "Other baselines reported in Ling et al. (2016)"
+    ],
+    "metrics": [
+      "exact match accuracy (channel and full parse tree)",
+      "token-level BLEU-4 (averaged smoothed BLEU)"
+    ],
+    "limitations": [
+      "Datasets used are relatively small for neural models, necessitating strong regularization.",
+      "Unary closure reduces action steps but can potentially increase the size of the grammar (trade-off explicitly noted)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - code generation / semantic parsing",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Associate professor in formal methods and programming languages with a secondary appointment in ML; extensive experience in semantic parsing theory and grammar-constrained inference. Publishes on formal guarantees for structured prediction and compositional generalization.",
+      "traits": [
+        "Demands theoretical novelty: penalizes papers that provide mainly empirical gains without new formal analysis or provable properties (e.g., compositional generalization bounds or guarantees about syntactic correctness).",
+        "Requires strong diagnostic evaluation: deducts points if ablation studies do not isolate each architectural component's contribution, or if error analysis lacks insight into systematic failures (e.g., types of AST errors, grammar coverage).",
+        "Strict about baselines and statistical rigor: penalizes when improvements are small (<5%) over strong baselines unless accompanied by significance testing and varied datasets or languages.",
+        "Skeptical of broad claims: discounts language-agnosticity claims unless demonstrated across multiple, diverse programming languages and grammar complexities."
+      ],
+      "reviewing_style": "Critically examines conceptual and theoretical contributions first; expects clear formalization and diagnostic evidence before granting high empirical credit."
+    },
+    "reviewer_b": {
+      "name": "Empirical Pragmatist",
+      "background": "Senior researcher in applied NLP and code intelligence with a track record of building production-oriented models for code generation and program synthesis; focuses on architectures that improve real-world developer productivity.",
+      "traits": [
+        "Rewards empirical impact: gives credit for clear, reproducible improvements in end-task performance (e.g., SOTA gains, practical error reductions) and values scalability to realistic program sizes.",
+        "Values engineering and design that incorporate domain knowledge: favors models that leverage grammars, copy mechanisms, and structural decoders to improve sample efficiency and output correctness.",
+        "Prefers pragmatism in evaluation: walks back demands for formal proofs if the method shows consistent gains across representative datasets and provides code/ablation details enabling reproduction.",
+        "Supports language-agnostic claims when accompanied by plausible architecture design and at least a couple of different target languages or grammars, but is forgiving if full multi-language evaluation is future work."
+      ],
+      "reviewing_style": "Focuses on practical novelty and empirical robustness; rewards clear improvements and reproducible engineering contributions even when formal analysis is light."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 4,
+    "total_dimensions": 7,
+    "debate_rate": 0.571
+  }
+}

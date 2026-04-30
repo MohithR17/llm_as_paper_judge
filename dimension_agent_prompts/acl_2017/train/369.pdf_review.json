@@ -1,0 +1,39 @@
+{
+  "SUBSTANCE": 3,
+  "APPROPRIATENESS": 4,
+  "CLARITY": 2,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "MEANINGFUL_COMPARISON": 3,
+  "IMPACT": 3,
+  "_details": {
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper provides reasonable experimental coverage (small and large Chinese\u2013Spanish corpora with statistics in Table 2), compares the proposed NN classifier against SVMs, random forests and other NNs, and reports strong metrics (\u224898% gender, \u224893% number, and +0.7 METEOR). However, important analyses are missing: there is no detailed ablation of the proposed architecture (e.g. contribution of embedding / conv / recurrent components), limited sensitivity analysis or hyperparameter details for reproduction, and no systematic failure analysis or discussion of limitations. Related work on morphology and Chinese\u2013Spanish MT is cited reasonably, but reproducibility is weakened by omission of many training/architecture specifics."
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "The paper addresses a clear NLP/ML research problem\u2014morphology generation for Chinese\u2192Spanish MT\u2014using deep learning and standard evaluation (classification accuracies, METEOR) and datasets (UN, TAUS, BTEC), which fits top-tier NLP venues. It proposes a neural classification architecture (embedding + conv + recurrent + softmax), compares to SVMs/random forests and incorporates MT baselines (Moses) and rescoring, showing measurable gains (\u22480.7 METEOR). Minor scope concerns are that the work is application-focused on phrase-based SMT (rather than end-to-end NMT) and is primarily an engineering/empirical improvement for a specific language pair, but overall it is well positioned for a top NLP/ML conference."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has a recognizable structure (Related Work \u2192 MT architecture \u2192 experiments \u2192 conclusions) but presentation is marred by section-numbering oddities and missing or poorly placed elements (e.g. Table 1 is referenced but absent, Figure 1 is mentioned without the figure). Main contributions are stated (decoupling translation and morphology generation; a neural classifier) but mostly appear late (conclusions) rather than clearly up front. Notation/terminology show inconsistencies and typos (e.g. \u201cCFR\u201d vs CRF), and the manuscript contains many duplicated paragraphs and grammatical/formatting errors that significantly reduce clarity."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper builds on an established two-step 'simplified translation + morphology generation' paradigm (citing Toutanova et al. 2008; Formiga et al. 2013) and uses known preprocessing/rescoring and rule-based fallbacks, so the problem formulation and pipeline are well-studied. Its main claimed novelty is applying a specific neural classification architecture (embedding \u2192 convolutional \u2192 recurrent \u2192 sigmoid/softmax) to number/gender generation for Chinese\u2192Spanish and evaluating on new corpora; this is an application and combination of existing NN components rather than a fundamentally new method. The contribution is therefore a moderate, empirical/engineering novelty for this language pair rather than a highly original algorithmic advance."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states clear technical claims (a neural classification architecture for number/gender achieving >98% and >93% accuracy and a +0.7 METEOR translation gain) and provides an experimental setup (corpora, Moses baseline, preprocessing, use of Freeling), but key supporting details and comparisons are incomplete. There are missing quantitative breakdowns and baselines for the reported classifier accuracies and translation scores (only one small table for number features is shown, no gender table, no numeric baseline METEORs, no per-system comparisons to SVM/RF/LSTM/Conv results), and no statistical significance or ablation analyses. No mathematical derivations are necessary and none are incorrect, but the methodology has gaps (unclear how the simplified-translation system was trained/controlled, limited reporting of hyperparameters and evaluation protocol), so the conclusions are plausible but not fully supported by the presented evidence."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper includes experimental comparisons of the proposed classifier against standard ML baselines (\"linear, cuadratic and sigmoid kernels SVMs, random forests, convolutional and LSTM neural networks\") and uses a Moses phrase-based MT baseline for end-to-end results, reporting a 0.7 METEOR gain. However, although prior morphology-generation methods (Toutanova et al. 2008; Clifton and Sarkar 2011; Kholy and Habash 2012; Formiga et al. 2013) and neural MT work (Jean et al. 2015) are cited, they are not directly reimplemented or evaluated on the same datasets for fair head-to-head comparison. The paper therefore provides some fair internal comparisons for the classifier but misses important prior-system baselines (CRF/MEMM morphology generators and strong neural MT baselines) for the overall task."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper tackles an important practical problem\u2014generating target morphology for morphologically rich languages from morphologically poor sources\u2014and proposes a decoupled pipeline (simplified translation + morphology generation) that is language-independent (Section 3.2, Section 4). It reports strong classification results (\"over 98% accuracy in gender classification, over 93% in number classification\") and a measurable end-to-end translation gain (\"up to 0.7 METEOR\"), evaluated on both small and large Chinese\u2013Spanish corpora (Section 5, Conclusions). While these results make the approach immediately useful and extendable to other language pairs, the modest BLEU/METEOR gain suggests the contribution is practically valuable but not likely to be transformative for the field as a whole."
+    }
+  }
+}

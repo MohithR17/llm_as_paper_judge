@@ -1,0 +1,76 @@
+{
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "REPLICABILITY": 5,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important and under-addressed problem\u2014broad-coverage semantic parsing for representations (UCCA) that include multiple parents, nonterminal nodes and discontinuities\u2014and introduces the first techniques to handle these properties directly. By proposing both conversion protocols to leverage existing parsers and a novel transition-based BSP that natively supports remote edges, demonstrating strong empirical results (nearly 70% labeled F-score) and releasing code and converters, the work is likely to change practice and enable follow-up research. Some limitations (lossy conversions and deferred handling of implicit units) reduce immediate completeness but point to clear future directions, so the contribution should have strong but not transformative impact."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and appear supported by the presented experimental evidence (conversion protocols and a novel transition-based BSP, with the best parser reaching ~70% labeled F-score on English UCCA corpora). Mathematical content is minimal/engineering-focused and the paper provides training details, hyperparameters, and released code aiding reproducibility. The experimental methodology uses reasonable baselines (multiple parsers and conversion approaches), though the summary does not mention statistical significance testing and notes some DAG parsers were excluded for practical reasons. These are minor issues that do not undermine the core technical contributions, so the work is largely sound."
+    },
+    "REPLICABILITY": {
+      "score": 5,
+      "justification": "The paper reports hyperparameters and training details (e.g., averaged structured perceptron, MINUPDATE) and explicitly states hyperparameters are reported. The preprocessing/conversion protocols (UCCA to dependency and discontinuous constituency trees) are described and converters are released. The dataset (English UCCA corpora by Abend and Rappoport, 2013) is identified and publicly available. Code and converters/parsers are stated as publicly released, and evaluation metrics (labeled F-score and primary-edge F-score) are specified, supporting full reproducibility."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well organized and follows a logical flow from problem statement to methods and experiments, with the main contributions clearly stated early (introducing conversion protocols and the BSP parser). Notation and method details are sufficiently specified to support reproducibility (e.g., training details like averaged structured perceptron and MINUPDATE, hyperparameters reported), and datasets, baselines, and evaluation metrics are clearly described. Writing quality is noted as good and related work coverage is thorough, though the summary does not confirm every figure/table or all notation choices in detail, suggesting only minor presentation issues remain."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses a core NLP problem\u2014broad-coverage semantic parsing (UCCA)\u2014and introduces both conversion-based baselines and a novel transition-based parser (BSP) that directly supports multiple parents, nonterminals and discontinuities, which is highly relevant to top-tier NLP/ML venues. The methodology and evaluation match community standards: comparisons to strong baselines (MaltParser, Stack LSTM parser, UPARSE), evaluation on English UCCA corpora with labeled F-score, and release of code and hyperparameters for reproducibility. The problem formulation, positioning within semantic parsing research, and audience targeting are appropriate for such venues."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents clearly novel contributions for UCCA-style Broad-coverage Semantic Structures (supporting multiple parents, nonterminal nodes and discontinuous units) by proposing both conversion protocols to dependency/discontinuous-constituency formalisms and a new transition-based Broad-coverage Semantic Parser (BSP). The BSP introduces non-trivial extensions to standard transition systems (e.g., LEFT-REMOTEX/RIGHT-REMOTEX for remote edges) and is positioned as the first method directly handling full BSS properties, distinguishing it from prior parsers. Given these substantive, well-differentiated technical additions and practical artifacts (converters and code), the work constitutes notable novelty though it builds on existing transition-based and conversion ideas rather than overturning prior paradigms."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents a solid experimental evaluation: multiple complementary approaches (conversion to dependency/constituency targets and a novel BSP), comparisons to several strong baselines (Malt, stack LSTM, UPARSE), and results on English UCCA corpora with code and hyperparameters released, which supports the main claims. Related work is reported as thorough, and limitations (lossiness of conversions, omitted implicit units, unavailable DAG parser code) are explicitly discussed. However, the summary does not mention targeted ablation or sensitivity analyses of BSP components or broader multilingual/dataset evaluation, and some relevant DAG parsers were excluded due to unavailable code, representing minor gaps in analysis and coverage."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate, state-of-the-art baselines (MaltParser variants, Dyer et al. Stack-LSTM, UPARSE) and uses the same English UCCA corpora and labeled F-score metrics, indicating fair experimental conditions. It explicitly analyzes differences between conversion-based and direct transition-based approaches (noting conversion is lossy) and describes novel transitions and training details. It also acknowledges limitations (e.g., not using some dependency DAG parsers because code was unavailable) and reports thorough related-work coverage. The omission of some DAG parsers (albeit acknowledged) is a minor gap, so the comparisons are strong but not perfectly comprehensive."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce the first techniques for parsing Broad-coverage Semantic Structures (BSS) supporting multiple parents, nonterminal nodes and discontinuous units (using the UCCA scheme).",
+      "Propose two complementary transition-based strategies: (1) conversion protocols mapping UCCA to dependency trees and discontinuous constituency trees to leverage existing parsers, and (2) a novel transition-based Broad-coverage Semantic Parser (BSP) that directly supports the full set of BSS properties.",
+      "Demonstrate experimentally on English UCCA-annotated corpora that transition-based methods are effective for BSS parsing, with the highest-scoring parser reaching nearly 70% labeled F-score.",
+      "Release converters and parsers publicly upon publication and provide training/feature details (e.g., averaged structured perceptron, MINUPDATE) to support reproducibility."
+    ],
+    "methodology": "Use two approaches: (1) lossily convert UCCA graphs to dependency trees and discontinuous constituency trees and parse them with existing state-of-the-art parsers; (2) develop a novel transition-based parser (BSP) that extends standard transitions (SHIFT/REDUCE/NODE/SWAP) with remote-edge transitions (LEFT-REMOTEX/RIGHT-REMOTEX), tailored features, and train it with the averaged structured perceptron and MINUPDATE.",
+    "datasets": [
+      "English UCCA-annotated corpora (Abend and Rappoport, 2013)"
+    ],
+    "baselines": [
+      "MaltParser (arc-standard and arc-eager)",
+      "Stack LSTM-based arc-standard parser (Dyer et al., 2015)",
+      "UPARSE (beam-search; beam size 4)",
+      "Conversion-based parsing methods (dependency and discontinuous constituency targets)"
+    ],
+    "metrics": [
+      "Labeled F-score",
+      "F-score on primary edges"
+    ],
+    "limitations": [
+      "Conversion to dependency or constituency formalisms is necessarily lossy because those formalisms are more restrictive than BSS.",
+      "UCCA graphs may contain implicit units not grounded in the text; parsing of these implicit units is deferred to future work and not handled here.",
+      "Some existing dependency DAG parsers were not used because their code was unavailable."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Semantic parsing - broad-coverage semantic parsing (UCCA); transition-based parsing",
+    "writing_quality": "good"
+  }
+}

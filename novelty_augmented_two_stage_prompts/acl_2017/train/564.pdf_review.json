@@ -1,0 +1,96 @@
+{
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 1,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and supported by a concrete algorithm (GBS) and experiments on multiple datasets showing BLEU improvements, and it demonstrates applicability to attention-based NMT and handling of subword units. Mathematical description of the grid-beam mechanism and coverage vectors appears conceptually sound; no formal proofs were expected for an algorithmic decoding method. Experimental methodology uses reasonable baselines (standard beam search and Pick-Revise) and multiple corpora, but the summary lacks mention of statistical significance tests and concrete runtime/efficiency evaluations beyond asymptotic complexity, leaving some practical questions. Overall the conclusions about effectiveness are justified by results, with minor concerns about evaluation depth and runtime trade-offs.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014incorporating user-specified lexical constraints into sequence generation\u2014by proposing Grid Beam Search (GBS) that works with any sequence model and handles multi-token and discontinuous constraints. Because it enables control at decoding time without retraining and shows large improvements in interactive and domain-adaptation scenarios (e.g., Pick-Revise, specialized corpora), the results are likely to influence practitioners and be adopted in applications. While the added runtime complexity (O(k t c)) limits out-of-the-box efficiency, the method nonetheless opens useful directions for controllable decoding and integration with subword models to handle unseen tokens.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized and presents a clear logical flow from problem to Grid Beam Search method and experiments (intro -> method -> experiments -> conclusion). The main contributions are stated early and the methodology is described concretely (coverage vectors, open/closed hypotheses, grid indexing), with datasets and hyperparameters reported. Notation appears consistent and the writing quality is reported as good, with thorough related-work coverage. Minor presentation issues remain (e.g., higher runtime complexity is noted and might benefit from expanded efficiency discussion), so I rate it 4/5.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within the scope of top NLP/ML venues: it proposes a decoding algorithm (Grid Beam Search) for lexically constrained sequence generation, demonstrates integration with neural MT models, and evaluates on standard MT datasets (Europarl, CommonCrawl, JRC-Aquis, OpenSubtitles, Autodesk) using BLEU with relevant baselines (standard beam search, Pick-Revise). The problem formulation, methodology (coverage vectors, grid of beams), and evaluation practices match community expectations, and the work is positioned for the NLP/MT audience while acknowledging practical limitations (runtime complexity, unseen tokens) and mitigation (subword units). Overall it targets the right audience and uses the expected methods and standards for a top-tier venue.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 1,
+      "justification": "The provided literature search lists an identical prior work (same title and approach) matching the paper\u2019s Grid Beam Search method, indicating the contribution is not new. Although the paper articulates detailed mechanisms (open/closed hypotheses, coverage vectors, handling discontinuous constraints), these are presented in the summary as the same method already documented in the retrieved prior entry. Therefore the submission offers no meaningful novelty over the existing work.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares GBS to standard beam-search NMT and to a relevant interactive approach (Pick-Revise, Cheng et al., 2016) using the same datasets and BLEU metric, and discusses runtime and constraint-related limitations. It analyzes differences (coverage vectors, open/closed hypotheses) and reports comparable settings, indicating fair comparisons. However, while related work is described as thorough, the evaluation omits broader alternative constrained-decoding methods beyond Pick-Revise, so comparisons are good but not fully comprehensive.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents multiple experiments (interactive Pick-Revise simulation and domain adaptation) across several corpora (Europarl, CommonCrawl, JRC-Aquis, OpenSubtitles, Autodesk) and compares to reasonable baselines (standard beam search and Pick-Revise), which supports the main claims. It reports hyperparameters and discusses practical limitations (runtime O(k t c) and unseen-token risk mitigated via subword units), but the summary does not indicate systematic ablation or sensitivity analyses of key design choices (e.g., beam/grid sizing, constraint types) nor availability of code for full reproducibility. Related work coverage is described as thorough and directly situates the method relative to prior lexically constrained decoding work. Overall the evaluation is strong but missing some analyses and reproducibility artifacts, so a 4 is appropriate.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Grid Beam Search (GBS) extends beam search to allow inclusion of pre-specified lexical constraints (words or phrases) in sequence generation without modifying model parameters or training data.",
+      "GBS can handle multi-token and discontinuous constraints (e.g., phrasal verbs) and integrates with subword units to avoid unknown-token issues.",
+      "GBS is applicable to any sequence model (demonstrated with attention-based NMT) and yields large improvements in interactive scenarios (e.g., simulated Pick-Revise) and domain adaptation tasks."
+    ],
+    "methodology": "Grid Beam Search arranges beams in a grid indexed by timestep and constraint coverage, maintaining open/closed hypotheses and coverage vectors to enforce lexical constraints during decoding; it operates on top of any sequence model and can use subword units to handle unseen tokens.",
+    "datasets": [
+      "Europarl",
+      "CommonCrawl",
+      "JRC-Aquis",
+      "OpenSubtitles",
+      "Autodesk Post-Editing corpus"
+    ],
+    "baselines": [
+      "standard time-based beam search (baseline NMT)",
+      "Pick-Revise (Cheng et al., 2016)"
+    ],
+    "metrics": [
+      "BLEU"
+    ],
+    "limitations": [
+      "Naive GBS has higher runtime complexity O(k t c) because beams are multiplied by number of constraints, requiring efficiency considerations and parallelization.",
+      "Risk that constraints contain tokens unseen in training data (mitigated by using subword representations)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - Neural Machine Translation / lexically constrained decoding",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 2,
+    "paper_novelty_mean": 0.7933,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON",
+      "SUBSTANCE"
+    ],
+    "total_dims": 7
+  }
+}

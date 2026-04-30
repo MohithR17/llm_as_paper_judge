@@ -1,0 +1,100 @@
+{
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 5,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 3,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and supported by experimental evidence: joint bi-LSTM prediction of supertags and dependency heads with biaffine scoring and A* search yields state-of-the-art results on English and Japanese CCGbank and improves attachment accuracy for Japanese. Mathematical components (MLPs, biaffine/bilinear scoring) are standard and appear correctly applied; no missing formal proofs were required. The experiments use appropriate baselines, datasets, and evaluation metrics, though the lack of released code and a noted slower reimplementation of EasySRL leave some reproducibility/efficiency questions. Overall the results justify the conclusions, with only minor concerns about implementation details and replication.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem\u2014accurate and efficient CCG parsing\u2014by integrating dependency modeling into an A* supertagging framework and achieving state-of-the-art results on English and Japanese CCGbanks. The approach (shared bi-LSTM representations with biaffine head prediction and precomputed local distributions) meaningfully changes how practitioners can trade off global search with explicit dependency modeling and improves attachment accuracy, especially for Japanese. This is likely to be adopted and extended in CCG and parsing research, opening directions for combining local dependency predictions with exact inference, though it is not broadly transformative across NLP as a whole.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a logical flow from motivation through method to experiments and conclusion, and the main contributions (jointly factoring supertags and dependencies with a bi-LSTM + biaffine head predictor enabling A* search) are stated early. Notation appears consistent and definitions are provided (hyperparameters reported and related work coverage is thorough), and experimental presentation uses standard evaluation metrics (F1, UAS) with appropriate baselines. Writing quality is good overall, though there are minor presentation issues (e.g., implementation/efficiency details and some heuristic discussions could be more fully explained) that prevent it from being exceptional.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper sits squarely within top-tier NLP/ML conference scope: it proposes a novel neural A* CCG parsing model combining bi-LSTM\u2013based supertagging with explicit dependency prediction (biaffine/bilinear heads) and demonstrates state-of-the-art results on standard English and Japanese CCGbanks. The methodology, datasets, baselines, and evaluation metrics (labeled/unlabeled F1 and UAS) match community expectations, hyperparameters and related work are reported, and the topic is well positioned for the NLP/ML audience interested in parsing and structured prediction.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against a wide and relevant set of recent baselines (EasySRL/supertag-factored, neuralccg, C&C LSTM, Noji & Miyao, RBGParser, Dyer et al.) on the same datasets (English and Japanese CCGbank) using standard metrics (F1, UAS). It explicitly builds on and integrates ideas related to biaffine head scoring (cf. Deep Biaffine Attention) and A*-style supertagging/dependency factoring, discusses when prior heuristics/methods fail (e.g., supertag-only degradation on Japanese), and reports thorough related-work coverage. Comparisons appear fair and the paper acknowledges when prior methods have comparable behavior or limitations, so overall the empirical comparison is comprehensive and well-situated in prior work.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are broad (English and Japanese CCGbank) and compare against a wide set of strong baselines, reporting labeled/unlabeled F1 and UAS and claiming state-of-the-art gains; hyperparameters are reported. The paper explicitly addresses a key limitation of pure supertag-factored models for Japanese and discusses practical negative results (e.g., slower EasySRL reimplementation and heuristic failures), and the related-work discussion appears thorough and situates the approach relative to A* CCG and biaffine dependency work (cf. [1],[2]). Missing, however, are explicit statements about public code release and the summary does not confirm detailed ablation/sensitivity studies of modeling choices (e.g., effect of biaffine vs bilinear or importance of shared BiLSTM layers), leaving some reproducibility and analysis gaps\u2014hence a strong but not perfect rating.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines known components\u2014supertag factoring with BiLSTM representations, precomputed local distributions for A* search, and biaffine/bilinear head prediction\u2014into a joint A* CCG parser. However, a closely related prior work explicitly applies a dependency-factored A* CCG model (retrieved item [1]) and the biaffine head scorer mirrors established techniques from Deep Biaffine parsing ([2]), so the technical recipe is largely an informed combination rather than a radical new method. The work does offer non-trivial empirical findings (notably improved performance on Japanese HEADFINAL dependencies and new state-of-the-art numbers on English/Japanese CCGbank), and it clearly differentiates its contributions and results from prior baselines, placing it as a solid incremental advance rather than a highly original breakthrough.",
+      "survey_injected": true,
+      "novelty_injected": true
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Propose a new A* CCG parsing model that factors tree probability into CCG categories and dependency structure both predicted with bi-directional LSTMs.",
+      "The model allows precomputation of local probabilities (supertags and head choices) and enables efficient A* search while explicitly modeling dependencies via a biaffine/bilinear head-prediction component.",
+      "The proposed model achieves state-of-the-art results on English and Japanese CCG parsing, outperforming several baselines and improving attachment accuracy particularly for Japanese."
+    ],
+    "methodology": "Share bi-LSTM representations to jointly predict supertag (Ptag) and dependency head distributions (Pdep) using MLPs and a biaffine/bilinear scoring function; precompute unigram distributions per word and run an A* CCG parser that is locally factored and tractable.",
+    "datasets": [
+      "English CCGbank",
+      "Japanese CCGbank"
+    ],
+    "baselines": [
+      "EasySRL (Lewis et al., 2016) / supertag-factored model",
+      "neuralccg (Lee et al., 2016)",
+      "C&C with LSTM (Vaswani et al., 2016)",
+      "Noji and Miyao (2016) shift-reduce CCG parser (Jigg)",
+      "RBGParser (Lei et al., 2014)",
+      "transition-based lstm-parser (Dyer et al., 2015)"
+    ],
+    "metrics": [
+      "labeled F1",
+      "unlabeled F1",
+      "unlabeled attachment score (UAS)"
+    ],
+    "limitations": [
+      "Simple application of the supertag-factored model is not effective for Japanese (degraded attachment scores) \u2014 motivating need for dependency modeling.",
+      "Their EasySRL reimplementation is slower than the original supertag-factored implementation, indicating room for efficiency optimization.",
+      "Heuristics used in prior work (e.g., attach-low) are not flawless and can fail in some situations."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - CCG parsing / dependency parsing",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 2,
+    "paper_novelty_mean": 0.32,
+    "augmented_dims": [
+      "MEANINGFUL_COMPARISON",
+      "SUBSTANCE",
+      "ORIGINALITY"
+    ],
+    "total_dims": 7
+  }
+}

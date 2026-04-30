@@ -1,0 +1,177 @@
+{
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 3,
+  "ORIGINALITY": 3,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "IMPACT": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "[Consensus avg=5] A(5): This paper addresses a core NLP problem (abstractive sentence summarization) with a clearly described novel mechanism (selective gate network) and standard seq2seq+attention architecture, which is squarely within top NLP/ML venue scope. It evaluates on standard benchmarks (English Gigaword, DUC 2004, MSR-ATC), compares to strong, relevant baselines (ABS, CAs2s, Feats2s, Luong-NMT, s2s+att), and reports ROUGE metrics and hyperparameters \u2014 matching the methods and evaluation standards expected. From a methodological reviewer perspective it targets the right audience and is positioned well for the community focused on neural summarization and encoder\u2013decoder improvements. | B(5): This paper sits squarely in the core interests of top NLP/ML venues: it proposes a clearly motivated model change (selective gate) for abstractive sentence summarization and evaluates it on standard benchmarks (Gigaword, DUC2004, MSR-ATC) using widely accepted metrics (ROUGE) and strong baselines. The methodology (BiGRU encoder, selective gating, attention GRU decoder) and thorough related work place it well within the community on sequence-to-sequence summarization research, and the experimental protocol meets venue expectations for comparability and reproducibility.",
+      "reviewer_a": {
+        "score": 5,
+        "justification": "This paper addresses a core NLP problem (abstractive sentence summarization) with a clearly described novel mechanism (selective gate network) and standard seq2seq+attention architecture, which is squarely within top NLP/ML venue scope. It evaluates on standard benchmarks (English Gigaword, DUC 2004, MSR-ATC), compares to strong, relevant baselines (ABS, CAs2s, Feats2s, Luong-NMT, s2s+att), and reports ROUGE metrics and hyperparameters \u2014 matching the methods and evaluation standards expected. From a methodological reviewer perspective it targets the right audience and is positioned well for the community focused on neural summarization and encoder\u2013decoder improvements."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper sits squarely in the core interests of top NLP/ML venues: it proposes a clearly motivated model change (selective gate) for abstractive sentence summarization and evaluates it on standard benchmarks (Gigaword, DUC2004, MSR-ATC) using widely accepted metrics (ROUGE) and strong baselines. The methodology (BiGRU encoder, selective gating, attention GRU decoder) and thorough related work place it well within the community on sequence-to-sequence summarization research, and the experimental protocol meets venue expectations for comparability and reproducibility."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The experimental setup covers multiple standard datasets (Gigaword, DUC-2004, MSR-ATC) and compares against a range of strong baselines (ABS, CAs2s, Feats2s, s2s+att), and hyperparameters are reported \u2014 so core evaluation is adequate. However, no ablation or sensitivity analyses are mentioned to isolate the contribution of the selective gate (e.g., gate vs. no-gate, gate variants, or control for additional parameters), and failure modes or limitations are not discussed. Related work coverage is reported as thorough. Overall the paper provides reasonable evidence for its claims but lacks key ablations and robustness analyses needed for stronger methodological confidence. | B(3): The paper evaluates the model on three standard datasets (Gigaword, DUC2004, MSR-ATC) and compares against several strong baselines, with hyperparameters reported, which supports the main performance claims. However, no ablation studies or sensitivity analyses are mentioned to isolate the contribution of the selective gate, and failure cases or limitations are not discussed; code availability is also not indicated, reducing reproducibility. Related work coverage is reported as thorough. Overall the experimental depth is adequate but missing important analyses that would strengthen the evidence.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experimental setup covers multiple standard datasets (Gigaword, DUC-2004, MSR-ATC) and compares against a range of strong baselines (ABS, CAs2s, Feats2s, s2s+att), and hyperparameters are reported \u2014 so core evaluation is adequate. However, no ablation or sensitivity analyses are mentioned to isolate the contribution of the selective gate (e.g., gate vs. no-gate, gate variants, or control for additional parameters), and failure modes or limitations are not discussed. Related work coverage is reported as thorough. Overall the paper provides reasonable evidence for its claims but lacks key ablations and robustness analyses needed for stronger methodological confidence."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper evaluates the model on three standard datasets (Gigaword, DUC2004, MSR-ATC) and compares against several strong baselines, with hyperparameters reported, which supports the main performance claims. However, no ablation studies or sensitivity analyses are mentioned to isolate the contribution of the selective gate, and failure cases or limitations are not discussed; code availability is also not indicated, reducing reproducibility. Related work coverage is reported as thorough. Overall the experimental depth is adequate but missing important analyses that would strengthen the evidence."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper proposes a selective encoding mechanism (element-wise selective gate combining BiGRU word vectors hi and a sentence vector s to produce gated inputs h'i) which is a clear architectural addition to standard seq2seq+attention models. However, the idea of using gates and input selection to bias decoder input is a relatively straightforward, incremental extension of existing attention and gating mechanisms rather than a fundamentally new problem formulation or paradigm. The authors do differentiate their contribution from prior summarization seq2seq baselines (ABS, s2s+att, Feats2s, etc.) and evaluate on standard datasets (Gigaword, DUC2004, MSR-ATC), but the technique would likely be unsurprising to experts familiar with gating/selection in neural encoders.  | B(3): The paper proposes a selective gate network that gates encoder hidden states with a sentence-level vector before attention, which is a clear, concrete mechanism for content selection in abstractive sentence summarization. However, the idea is an incremental architectural refinement over well-studied seq2seq+attention models (BiGRU encoder, attention GRU decoder) and resembles prior gating/selection intuitions rather than a fundamentally new problem formulation. The authors do differentiate their contribution from existing baselines (ABS, CAs2s, Feats2s, s2s+att) and provide empirical gains, but the technique reads as a non-trivial yet expected extension rather than a surprising departure that would substantially shift how experts approach the task.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper proposes a selective encoding mechanism (element-wise selective gate combining BiGRU word vectors hi and a sentence vector s to produce gated inputs h'i) which is a clear architectural addition to standard seq2seq+attention models. However, the idea of using gates and input selection to bias decoder input is a relatively straightforward, incremental extension of existing attention and gating mechanisms rather than a fundamentally new problem formulation or paradigm. The authors do differentiate their contribution from prior summarization seq2seq baselines (ABS, s2s+att, Feats2s, etc.) and evaluate on standard datasets (Gigaword, DUC2004, MSR-ATC), but the technique would likely be unsurprising to experts familiar with gating/selection in neural encoders. "
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper proposes a selective gate network that gates encoder hidden states with a sentence-level vector before attention, which is a clear, concrete mechanism for content selection in abstractive sentence summarization. However, the idea is an incremental architectural refinement over well-studied seq2seq+attention models (BiGRU encoder, attention GRU decoder) and resembles prior gating/selection intuitions rather than a fundamentally new problem formulation. The authors do differentiate their contribution from existing baselines (ABS, CAs2s, Feats2s, s2s+att) and provide empirical gains, but the technique reads as a non-trivial yet expected extension rather than a surprising departure that would substantially shift how experts approach the task."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and reads clearly: the flow from introduction to method to experiments and conclusion is logical, and the main contributions (selective gate mechanism and its role in tailoring sentence representations) are stated early. Notation for the BiGRU encoder, selective gate, and attention GRU decoder appears consistent and well-defined in the summary, and figures/tables (ROUGE results across Gigaword, DUC2004, MSR-ATC) are informative. Writing quality is good with thorough related work and reported hyperparameters, though the presentation would benefit from an explicit discussion of limitations and a note about code availability to aid reproducibility. | B(4): Overall the paper is well organized and the main contributions (selective gate network and tailored sentence representations) are stated early and followed by a clear method \u2192 experiments \u2192 conclusion flow. Notation appears consistent (hi, s, sGatei, h'i) and equations for the selective gate are provided, and experiments/tables (ROUGE results on Gigaword, DUC2004, MSR-ATC) are reported with hyperparameters\u2014figures and examples are effective. Writing quality is good and related work coverage is thorough, though the manuscript could more explicitly acknowledge limitations and make the availability of code clearer to improve reproducibility.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and reads clearly: the flow from introduction to method to experiments and conclusion is logical, and the main contributions (selective gate mechanism and its role in tailoring sentence representations) are stated early. Notation for the BiGRU encoder, selective gate, and attention GRU decoder appears consistent and well-defined in the summary, and figures/tables (ROUGE results across Gigaword, DUC2004, MSR-ATC) are informative. Writing quality is good with thorough related work and reported hyperparameters, though the presentation would benefit from an explicit discussion of limitations and a note about code availability to aid reproducibility."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions (selective gate network and tailored sentence representations) are stated early and followed by a clear method \u2192 experiments \u2192 conclusion flow. Notation appears consistent (hi, s, sGatei, h'i) and equations for the selective gate are provided, and experiments/tables (ROUGE results on Gigaword, DUC2004, MSR-ATC) are reported with hyperparameters\u2014figures and examples are effective. Writing quality is good and related work coverage is thorough, though the manuscript could more explicitly acknowledge limitations and make the availability of code clearer to improve reproducibility."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper's main claim\u2014that a selective gate improves abstractive sentence summarization\u2014is clearly stated and empirically supported by comparisons to strong seq2seq and attention baselines on Gigaword, DUC2004, and MSR-ATC, with hyperparameters reported. The selective gating equations are straightforward and appear correct; no complex derivations were required. However, methodological details that matter to reproducibility and robustness are missing or weak: code is not provided, there is no mention of statistical significance testing, and failure modes or limitations are not discussed. These are minor but important gaps, so while the results are credible the paper falls short of being technically flawless. | B(4): The paper's main claim (a selective gate that tailors encoder representations improves abstractive sentence summarization) is clearly stated and supported by experiments on standard datasets (Gigaword, DUC2004, MSR-ATC) showing gains over strong baselines (ABS, CAs2s, Feats2s, s2s+att) using ROUGE metrics. The mathematical formulation of the selective gate is simple and correct as presented, and hyperparameters are reported. Methodologically the comparisons are reasonable, but the summary provides no mention of statistical significance testing or deeper analysis of when/why the gate helps (beyond the intuition that it \u2018relieves\u2019 the decoder), so there are minor gaps in robustness of the experimental claims. Overall the conclusions are plausible and mostly justified by the reported results.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper's main claim\u2014that a selective gate improves abstractive sentence summarization\u2014is clearly stated and empirically supported by comparisons to strong seq2seq and attention baselines on Gigaword, DUC2004, and MSR-ATC, with hyperparameters reported. The selective gating equations are straightforward and appear correct; no complex derivations were required. However, methodological details that matter to reproducibility and robustness are missing or weak: code is not provided, there is no mention of statistical significance testing, and failure modes or limitations are not discussed. These are minor but important gaps, so while the results are credible the paper falls short of being technically flawless."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claim (a selective gate that tailors encoder representations improves abstractive sentence summarization) is clearly stated and supported by experiments on standard datasets (Gigaword, DUC2004, MSR-ATC) showing gains over strong baselines (ABS, CAs2s, Feats2s, s2s+att) using ROUGE metrics. The mathematical formulation of the selective gate is simple and correct as presented, and hyperparameters are reported. Methodologically the comparisons are reasonable, but the summary provides no mention of statistical significance testing or deeper analysis of when/why the gate helps (beyond the intuition that it \u2018relieves\u2019 the decoder), so there are minor gaps in robustness of the experimental claims. Overall the conclusions are plausible and mostly justified by the reported results."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper evaluates on standard datasets (Gigaword, DUC2004, MSR-ATC) using ROUGE and compares to a wide set of strong baselines (ABS, ABS+, Chopra et al., Feats2s, Luong-NMT, s2s+att), which is appropriate. From the summary, hyperparameters and related work are reported thoroughly, supporting fair comparisons, but the manuscript does not mention code release or explicit acknowledgement of cases where prior methods match or outperform the proposal, and detailed ablation/analysis of differences is not clearly described\u2014hence overall good comparisons with minor omissions. | B(4): The paper compares against a strong set of relevant baselines (ABS, ABS+, CAs2s, Feats2s, Luong-NMT, s2s+att) on standard datasets (Gigaword, DUC-2004, MSR-ATC) using ROUGE, and reports hyperparameters \u2014 indicating largely fair, reproducible comparisons. Related work coverage is described as thorough and the proposed selective gate is contrasted with standard seq2seq+attention architectures. However, the paper does not appear to explicitly acknowledge cases where prior methods perform comparably or to deeply analyze when/why gains arise, so I deduct one point for limited comparative analysis and discussion of competing methods\u2019 performance.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper evaluates on standard datasets (Gigaword, DUC2004, MSR-ATC) using ROUGE and compares to a wide set of strong baselines (ABS, ABS+, Chopra et al., Feats2s, Luong-NMT, s2s+att), which is appropriate. From the summary, hyperparameters and related work are reported thoroughly, supporting fair comparisons, but the manuscript does not mention code release or explicit acknowledgement of cases where prior methods match or outperform the proposal, and detailed ablation/analysis of differences is not clearly described\u2014hence overall good comparisons with minor omissions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against a strong set of relevant baselines (ABS, ABS+, CAs2s, Feats2s, Luong-NMT, s2s+att) on standard datasets (Gigaword, DUC-2004, MSR-ATC) using ROUGE, and reports hyperparameters \u2014 indicating largely fair, reproducible comparisons. Related work coverage is described as thorough and the proposed selective gate is contrasted with standard seq2seq+attention architectures. However, the paper does not appear to explicitly acknowledge cases where prior methods perform comparably or to deeply analyze when/why gains arise, so I deduct one point for limited comparative analysis and discussion of competing methods\u2019 performance."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper targets an important subproblem\u2014abstractive sentence summarization\u2014and proposes a concrete architectural addition (selective gate) that yields empirical gains over strong seq2seq and attention baselines on Gigaword, DUC2004, and MSR-ATC. From a methodology perspective the idea of pre-selecting salient token representations to ease decoding is practical and likely to be adopted or adapted in related encoder\u2013decoder work. However, the contribution is an incremental architectural refinement rather than a paradigm shift: impact depends on reproducibility (code not mentioned) and whether gains hold across broader settings, so I rate it as moderate but useful rather than transformative. | B(4): The paper addresses an important practical problem\u2014improving abstractive sentence summarization\u2014by introducing a selective gate that explicitly prunes and tailors encoder representations before decoding, evaluated on standard benchmarks (Gigaword, DUC2004, MSR-ATC) with ROUGE improvements over strong baselines. From an application and modeling perspective this gating mechanism is a useful architectural tool that could alter how researchers think about separating content selection from generation and is likely to be adopted or extended in follow-up work. While not necessarily transformative, the approach opens clear avenues for further study of pre-decoder selection modules and has moderate potential for broader impact across summarization and related generation tasks.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper targets an important subproblem\u2014abstractive sentence summarization\u2014and proposes a concrete architectural addition (selective gate) that yields empirical gains over strong seq2seq and attention baselines on Gigaword, DUC2004, and MSR-ATC. From a methodology perspective the idea of pre-selecting salient token representations to ease decoding is practical and likely to be adopted or adapted in related encoder\u2013decoder work. However, the contribution is an incremental architectural refinement rather than a paradigm shift: impact depends on reproducibility (code not mentioned) and whether gains hold across broader settings, so I rate it as moderate but useful rather than transformative."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper addresses an important practical problem\u2014improving abstractive sentence summarization\u2014by introducing a selective gate that explicitly prunes and tailors encoder representations before decoding, evaluated on standard benchmarks (Gigaword, DUC2004, MSR-ATC) with ROUGE improvements over strong baselines. From an application and modeling perspective this gating mechanism is a useful architectural tool that could alter how researchers think about separating content selection from generation and is likely to be adopted or extended in follow-up work. While not necessarily transformative, the approach opens clear avenues for further study of pre-decoder selection modules and has moderate potential for broader impact across summarization and related generation tasks."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a selective encoding mechanism (selective gate network) that constructs a tailored sentence representation for abstractive sentence summarization.",
+      "The selective encoding model (BiGRU encoder + selective gate + attention GRU decoder) improves performance over strong sequence-to-sequence and attention baselines.",
+      "Selective gate relieves the decoder by determining importance of input words and selecting salient information prior to decoding."
+    ],
+    "methodology": "A bidirectional GRU encoder produces word representations hi and a sentence vector s; a selective gate network computes element-wise gates sGatei = \u03c3(Ws hi + Us s + b) and produces tailored representations h'i = hi * sGatei; an attention-equipped GRU decoder generates summaries from the gated representations.",
+    "datasets": [
+      "Annotated English Gigaword (English Gigaword)",
+      "DUC 2004",
+      "MSR-ATC (MSR abstractive sentence summarization dataset by Toutanova et al. 2016)"
+    ],
+    "baselines": [
+      "ABS (Rush et al., 2015)",
+      "ABS+",
+      "CAs2s (Chopra et al., 2016)",
+      "Feats2s (Nallapati et al., 2016)",
+      "Luong-NMT (Luong et al., 2015)",
+      "s2s+att"
+    ],
+    "metrics": [
+      "ROUGE-1",
+      "ROUGE-2",
+      "ROUGE-L"
+    ],
+    "limitations": [],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - abstractive sentence summarization",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Methodology-Focused Engineer",
+      "background": "Senior ML engineer with 8+ years building and evaluating sequence-to-sequence models for NLP tasks in both industry and academic collaborations. Experienced in reproducible experimentation, large-scale training, and deployment constraints.",
+      "traits": [
+        "looks for clear experimental protocols, reproducible hyperparameters, training/validation/test splits, and runtime/compute details",
+        "values strong baselines, ablation studies, and statistical significance when claiming improvements",
+        "checks implementation details and potential sources of improvement (e.g., extra parameters, decoding tricks, pretraining) to ensure fair comparisons",
+        "notes robustness, error analysis, and failure cases (e.g., hallucination, length control) relevant to summarization"
+      ],
+      "reviewing_style": "Evaluates papers primarily on experimental rigor and reproducibility, requiring concrete ablations and clear reporting to support empirical claims."
+    },
+    "reviewer_b": {
+      "name": "Domain-Impact Senior Researcher",
+      "background": "Associate professor and long-time NLP researcher focusing on text generation and summarization, with broad knowledge of the literature on extractive and abstractive methods and evolving evaluation paradigms.",
+      "traits": [
+        "assesses novelty relative to prior models and architectures, and whether contributions are conceptual or incremental",
+        "considers broader impact: applicability across datasets, limitations (e.g., factuality), and alignment with needs of the summarization community",
+        "values clear positioning with respect to past work (e.g., content selection, gating mechanisms, pointer-networks, and attention variants) and theoretical intuition behind design choices",
+        "looks for meaningful qualitative analysis and discussion of when and why the method helps"
+      ],
+      "reviewing_style": "Judges papers on novelty, clarity of contribution, and potential impact on the field, asking for stronger contextualization and discussion of limitations when needed."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  }
+}

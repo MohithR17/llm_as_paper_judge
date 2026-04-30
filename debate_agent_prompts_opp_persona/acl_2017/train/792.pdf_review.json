@@ -1,0 +1,188 @@
+{
+  "CLARITY": 4,
+  "APPROPRIATENESS": 4,
+  "ORIGINALITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 4,
+  "IMPACT": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the main contributions early (LSTMEmbed and LSTMEmbedSW). Notation and methodological descriptions appear clear enough to follow (hyperparameters reported and related work coverage thorough), though the summary gives limited evidence about the clarity/utility of figures and tables\u2014so I mark a minor presentation issue there. Overall the writing is good and readable, with only small ambiguities around how joint projection details are presented for LSTMEmbedSW. | B(4): The paper is well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (LSTMEmbed and LSTMEmbedSW). Notation is reported consistent and hyperparameters are given, and figures/tables/examples are described as effective, with overall writing quality assessed as good. Minor presentation issues remain\u2014e.g., the explanation for LSTMEmbedSW\u2019s poorer empirical performance and practical training cost concerns could be clearer\u2014so I rate it a strong but not perfect 4.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the main contributions early (LSTMEmbed and LSTMEmbedSW). Notation and methodological descriptions appear clear enough to follow (hyperparameters reported and related work coverage thorough), though the summary gives limited evidence about the clarity/utility of figures and tables\u2014so I mark a minor presentation issue there. Overall the writing is good and readable, with only small ambiguities around how joint projection details are presented for LSTMEmbedSW."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (LSTMEmbed and LSTMEmbedSW). Notation is reported consistent and hyperparameters are given, and figures/tables/examples are described as effective, with overall writing quality assessed as good. Minor presentation issues remain\u2014e.g., the explanation for LSTMEmbedSW\u2019s poorer empirical performance and practical training cost concerns could be clearer\u2014so I rate it a strong but not perfect 4."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The topic\u2014learning word and sense embeddings with a BiLSTM and evaluations across standard benchmarks (SemCor, SEW, BabelNet, WS353, SimLex999, etc.)\u2014is squarely within top NLP/ML conference scope and targets the right audience. However, from a theory-focused perspective the work appears primarily empirical (predicting pretrained embeddings, comparisons to word2vec/GloVe, SW2V, AutoExtend, SensEmbed) with no substantive theoretical analysis of representational capacity or inductive bias and no mention of released code; this weakens its appeal to those seeking conceptual advances. Methodology and evaluations meet community standards (reported hyperparameters, thorough baselines), so it is a good fit overall but loses points for limited theoretical insight and reliance on pretrained embeddings as ground truth. | B(4): This paper sits squarely in the representation-learning track of top NLP/ML venues: it proposes a model for word and sense embeddings and evaluates on a wide collection of standard benchmarks (WS353, SimLex999, SimVerb3500, SemEval, etc.) against strong baselines (word2vec, GloVe, SensEmbed, AutoExtend). The formulation and training/evaluation protocols (cosine objective, Spearman correlations, multiple datasets) match community expectations, and the coverage of related work and hyperparameter reporting is solid. My only reservations are practical: the LSTM-based approach is computationally heavier than typical embedding learners and the joint word\u2013sense variant underperforms, which raises deployment/impact questions \u2014 these are minor scope concerns rather than mismatches with the venue.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The topic\u2014learning word and sense embeddings with a BiLSTM and evaluations across standard benchmarks (SemCor, SEW, BabelNet, WS353, SimLex999, etc.)\u2014is squarely within top NLP/ML conference scope and targets the right audience. However, from a theory-focused perspective the work appears primarily empirical (predicting pretrained embeddings, comparisons to word2vec/GloVe, SW2V, AutoExtend, SensEmbed) with no substantive theoretical analysis of representational capacity or inductive bias and no mention of released code; this weakens its appeal to those seeking conceptual advances. Methodology and evaluations meet community standards (reported hyperparameters, thorough baselines), so it is a good fit overall but loses points for limited theoretical insight and reliance on pretrained embeddings as ground truth."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper sits squarely in the representation-learning track of top NLP/ML venues: it proposes a model for word and sense embeddings and evaluates on a wide collection of standard benchmarks (WS353, SimLex999, SimVerb3500, SemEval, etc.) against strong baselines (word2vec, GloVe, SensEmbed, AutoExtend). The formulation and training/evaluation protocols (cosine objective, Spearman correlations, multiple datasets) match community expectations, and the coverage of related work and hyperparameter reporting is solid. My only reservations are practical: the LSTM-based approach is computationally heavier than typical embedding learners and the joint word\u2013sense variant underperforms, which raises deployment/impact questions \u2014 these are minor scope concerns rather than mismatches with the venue."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper offers a modestly novel architectural twist\u2014using a bidirectional LSTM to predict pretrained token embeddings from fixed context windows and proposing a summed-and-projected word+sense input (LSTMEmbedSW)\u2014but this is largely an incremental combination of existing ideas (contextual encoders + pretrained embedding targets; prior work on joint word/sense spaces like SW2V and AutoExtend). The contribution is reasonably differentiated in the experiments (comparisons to SENSEMBED, SW2V, AutoExtend), but there is no theoretical analysis of why the BLSTM inductive bias should yield qualitatively new representational properties, and the joint variant does not empirically beat the simpler model. From a theory\u2011purist perspective this reads as an engineering refinement rather than a conceptually new formulation, so I mark it as moderate novelty. | B(3): This paper proposes a sensible but incremental idea: using a bidirectional LSTM to predict pretrained token embeddings from local contexts and extending it to a summed word+sense input to learn a shared space. The formulation addresses a well-studied problem (word/sense embeddings) and the methods are a relatively straightforward application and combination of existing tools (BLSTMs, pretrained vectors, and projection/summing) rather than a fundamentally new paradigm. The authors do clearly differentiate from prior work (e.g., SW2V, AutoExtend, SensEmbed) and report useful empirical comparisons, but the techniques are a non-trivial yet modest extension beyond existing methods that would inform practitioners rather than surprise experts.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper offers a modestly novel architectural twist\u2014using a bidirectional LSTM to predict pretrained token embeddings from fixed context windows and proposing a summed-and-projected word+sense input (LSTMEmbedSW)\u2014but this is largely an incremental combination of existing ideas (contextual encoders + pretrained embedding targets; prior work on joint word/sense spaces like SW2V and AutoExtend). The contribution is reasonably differentiated in the experiments (comparisons to SENSEMBED, SW2V, AutoExtend), but there is no theoretical analysis of why the BLSTM inductive bias should yield qualitatively new representational properties, and the joint variant does not empirically beat the simpler model. From a theory\u2011purist perspective this reads as an engineering refinement rather than a conceptually new formulation, so I mark it as moderate novelty."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "This paper proposes a sensible but incremental idea: using a bidirectional LSTM to predict pretrained token embeddings from local contexts and extending it to a summed word+sense input to learn a shared space. The formulation addresses a well-studied problem (word/sense embeddings) and the methods are a relatively straightforward application and combination of existing tools (BLSTMs, pretrained vectors, and projection/summing) rather than a fundamentally new paradigm. The authors do clearly differentiate from prior work (e.g., SW2V, AutoExtend, SensEmbed) and report useful empirical comparisons, but the techniques are a non-trivial yet modest extension beyond existing methods that would inform practitioners rather than surprise experts."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper evaluates against strong, relevant baselines (word2vec, GloVe, SW2V, AutoExtend, SenseEmb/SensEmbed) across standard datasets and metrics (Spearman, cosine, SemEval), and reports hyperparameters, suggesting largely fair conditions. It also candidly acknowledges when prior methods or variants outperform the proposed models (e.g., on analogy tasks and LSTMEmbedSW underperforming), and the related work coverage is described as thorough. I deduct one point because, while empirical comparisons are extensive, the paper could better analyze sensitivity to the choice/quality of pretrained embeddings and provide deeper diagnostics connecting architectural inductive biases to observed differences \u2014 important given my theoretical concerns about treating pretrained embeddings as fixed targets. | B(4): The paper compares against strong, relevant baselines (word2vec/Skip-gram, GloVe, SW2V, AutoExtend, SensEmbed) across many standard benchmarks (WS353, SimLex999, SimVerb3500, SemEval, etc.) and uses consistent metrics (Spearman, cosine-based losses). The authors acknowledge when prior methods outperform them (e.g., analogies) and analyze differences between LSTMEmbed and LSTMEmbedSW, reporting hyperparameters and limitations. Given this thorough coverage the comparisons are broadly fair, though the summary omits whether all methods were trained/evaluated under identical pretrained-embedding conditions and code/results reproducibility details are not mentioned, so I deduct one point for these minor gaps.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper evaluates against strong, relevant baselines (word2vec, GloVe, SW2V, AutoExtend, SenseEmb/SensEmbed) across standard datasets and metrics (Spearman, cosine, SemEval), and reports hyperparameters, suggesting largely fair conditions. It also candidly acknowledges when prior methods or variants outperform the proposed models (e.g., on analogy tasks and LSTMEmbedSW underperforming), and the related work coverage is described as thorough. I deduct one point because, while empirical comparisons are extensive, the paper could better analyze sensitivity to the choice/quality of pretrained embeddings and provide deeper diagnostics connecting architectural inductive biases to observed differences \u2014 important given my theoretical concerns about treating pretrained embeddings as fixed targets."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against strong, relevant baselines (word2vec/Skip-gram, GloVe, SW2V, AutoExtend, SensEmbed) across many standard benchmarks (WS353, SimLex999, SimVerb3500, SemEval, etc.) and uses consistent metrics (Spearman, cosine-based losses). The authors acknowledge when prior methods outperform them (e.g., analogies) and analyze differences between LSTMEmbed and LSTMEmbedSW, reporting hyperparameters and limitations. Given this thorough coverage the comparisons are broadly fair, though the summary omits whether all methods were trained/evaluated under identical pretrained-embedding conditions and code/results reproducibility details are not mentioned, so I deduct one point for these minor gaps."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper delivers a broad, well\u2011reported empirical evaluation with clear limitations discussed and comparisons to strong baselines, which supports its substantive contribution. However, they also concur there are gaps in deeper analysis\u2014limited ablations, sensitivity studies, and theoretical diagnostics\u2014preventing full confidence in why certain variants fail. Given the strong empirical work but missing targeted analyses, a score of 4 reflects solid contribution with room for more rigorous investigation.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experimental suite is broad (many standard similarity datasets, SemCor/SEW/Babel sources) and hyperparameters are reported, and the paper honestly reports limitations (analogy failure, SW variant underperforming). However, from a representation-learning/theory perspective it lacks formal analysis of the model\u2019s inductive biases or representational capacity, and the summary indicates few targeted ablations or statistical-significance tests to explain why LSTMEmbedSW degrades or how pretrained-embedding quality drives results. Related work appears thorough, but the work reads as largely empirical without the theoretical diagnostics I expect, so depth is adequate but not fully convincing."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper provides a broad empirical evaluation across many standard word/sense benchmarks (WS353, RG65, MEN, SimLex999, SimVerb3500, SemEval relational similarity, SemCor/SEW/BabelWiki) and compares against strong baselines (word2vec, GloVe, SenseEmbed, AutoExtend, SW2V). Hyperparameters are reported and several limitations are explicitly discussed (weaker analogy performance, LSTM computational cost, LSTMEmbedSW underperforming LSTMEmbed). However, there are minor gaps for deployment-minded readers: no mention of code or wall\u2011clock/training cost comparisons and the summary does not indicate thorough ablations/sensitivity analyses (e.g., window sizes, contribution of pretrained embedding quality) beyond the reported variants, so I rate it as solid with minor gaps."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper is an incremental, empirically grounded contribution with mixed gains (competitive on similarity/synonym benchmarks but weaker on analogies), higher computational cost, and limited theoretical analysis or ablations. Given these shared points, I assign a middling score: the work is useful and will likely inform follow-up work on leveraging pretrained targets and shared word\u2013sense spaces, but it is not transformative for the field.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper tackles an important subproblem (learning word and sense embeddings) but does so with an incremental architectural combination (bidirectional LSTM predicting pretrained embeddings and a summed word-sense projection) without accompanying theoretical analysis of inductive bias or representational capacity. Empirical gains are mixed (LSTMEmbed competitive on similarity/synonym benchmarks but not on analogies, and the joint LSTMEmbedSW variant performs worse), and there is no indication of rigorous ablations or significance testing; the approach is also more computationally costly. Given these facts, the work is a limited-impact, empirical contribution that is unlikely to change how researchers think about embedding learning or open major new directions."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "This paper tackles a useful problem\u2014learning contextualized word and sense representations by predicting pretrained embeddings with a BiLSTM\u2014and shows competitive gains on standard similarity and synonym benchmarks across multiple datasets (WS353, SimLex999, SimVerb3500) and sensible comparisons to strong baselines (word2vec, GloVe, SensEmbed). However, the practical impact is limited by higher computational cost, weaker performance on analogies, and the LSTMEmbedSW joint-space variant underperforming the simpler model, which reduces its immediate appeal for practitioners. The work is a solid, empirically grounded contribution that is likely to inform follow-up work on leveraging richer pretrained targets and shared word\u2013sense spaces, but it is not transformative for the field."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper states its claims clearly and provides broad empirical comparisons to strong baselines across many benchmarks, but note gaps in theoretical analysis, deeper diagnostics for underperforming variants, and lack of statistical significance and reproducibility details. These shortcomings limit interpretability but do not overturn the core experimental findings, so a slightly above-average score reflects solid empirical work with important but non-fatal methodological omissions.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its claims and provides extensive experimental comparisons across many benchmark datasets (WS353, SimLex999, SimVerb3500, SemEval, etc.) showing LSTMEmbed is competitive and that richer pretrained embeddings help, but it lacks formal theoretical analysis of the model\u2019s inductive bias or representational capacity \u2014 a key omission for a representation-learning contribution. Mathematical content appears limited (no proofs) and there is no indication of necessary ablation breadth or statistical significance testing for key empirical claims (e.g., why LSTMEmbedSW underperforms), leaving some experimental conclusions under-supported. Overall the methodology is reasonable with appropriate baselines, but the absence of theory and rigorous diagnostics prevents a higher technical score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims and provides broad experimental evidence across many standard similarity and synonym benchmarks, comparing to strong baselines (word2vec, GloVe, SensEmbed, AutoExtend). The modelling approach is straightforward and derivations appear complete for a predictive BLSTM trained to match pretrained vectors, and hyperparameters and multiple datasets are reported. However, there are minor methodological gaps: the joint word-sense variant underperforms without deeper analysis, statistical significance testing and training/compute costs are not reported, and code availability is unclear \u2014 issues that do not overturn the core experimental claims but limit reproducibility and interpretation."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes LSTMEmbed, a bidirectional LSTM model that learns word and sense representations by predicting pretrained embeddings of target tokens from their contextual windows.",
+      "Introduces LSTMEmbedSW, an extension that jointly learns word and sense embeddings in a shared vector space by summing and projecting word and sense embeddings into the BLSTM inputs.",
+      "Shows that LSTMEmbed obtains competitive results on standard word similarity and synonym identification benchmarks and that richer pretrained embeddings improve the resulting representations."
+    ],
+    "methodology": "Use a bidirectional LSTM that reads fixed-size left and right context windows (of words and/or senses) to produce a predicted embedding for a target token; training maximizes cosine similarity between the model output and the target token's pretrained embedding. The LSTMEmbedSW variant sums word and sense embeddings and projects them before feeding to the BLSTM to learn a joint word-sense space.",
+    "datasets": [
+      "SemCor",
+      "SEW (Semantically Enriched Wikipedia)",
+      "BabelWiki",
+      "BabelNet (used as unified sense inventory)",
+      "WS353 (with WSSim/WSRel splits)",
+      "RG65",
+      "MEN",
+      "SimLex999",
+      "YP130",
+      "SimVerb3500",
+      "SemEval-2012 (Measuring Degrees of Relational Similarity)"
+    ],
+    "baselines": [
+      "word2vec (Skip-gram)",
+      "GloVe",
+      "SW2V",
+      "AutoExtend",
+      "SENSEMBED / SensEmbed"
+    ],
+    "metrics": [
+      "Cosine similarity (used in training/loss)",
+      "Spearman correlation",
+      "MaxDiff (for SemEval analogy)"
+    ],
+    "limitations": [
+      "Model is not competitive on the word analogy task compared to word2vec/GloVe (authors hypothesize relations may be higher-order).",
+      "LSTMEmbedSW performs worse than LSTMEmbed on most evaluated datasets despite providing a joint word-sense space.",
+      "LSTMs are computationally more complex/slow compared to word2vec and GloVe (stated as a practical concern)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - word and sense embeddings (representation learning)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Associate professor in computational linguistics with a focus on representation learning theory and provable properties of neural models.",
+      "traits": [
+        "Penalizes papers that are primarily empirical without formal or theoretical analysis (deducts points if no discussion of model inductive bias or representational capacity).",
+        "Demands clear ablation and statistical significance testing for empirical claims (lowers score if key ablations or significance tests are missing).",
+        "Skeptical of methods that treat pretrained embeddings as ground truth without justification (penalizes if no analysis of how pretrained embedding quality affects learning beyond a few experiments).",
+        "Prefers concise, novel theoretical contributions over incremental engineering changes (reduces score for architectures that are minor combos of existing components unless accompanied by insight)."
+      ],
+      "reviewing_style": "I focus on whether the paper advances conceptual understanding and provides rigorous analysis; strong empirical work must be accompanied by theory or careful diagnostics to receive a high score."
+    },
+    "reviewer_b": {
+      "name": "Practical Empiricist",
+      "background": "Senior NLP researcher in industry with extensive experience building and evaluating representation learning systems for downstream applications.",
+      "traits": [
+        "Rewards robust empirical results and practical advances on standard benchmarks (adds points for consistent gains across multiple datasets).",
+        "Prefers methods that leverage existing pretrained resources effectively and shows how to improve on standard embeddings (gives credit for sensible use of pretrained vectors and transferability).",
+        "Values realistic model variants and ablations that demonstrate deployment viability (favors papers that present shared-space models and simple, scalable architectures).",
+        "Insists on comparing to strong baselines and reporting wall-clock/training costs when proposing deployable models (penalizes missing comparisons or cost metrics)."
+      ],
+      "reviewing_style": "I evaluate based on empirical rigor, practical impact, and whether the method could be readily adopted or extended in real systems; solid benchmark wins and scalable designs are compelling."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 3,
+    "total_dimensions": 7,
+    "debate_rate": 0.429
+  }
+}

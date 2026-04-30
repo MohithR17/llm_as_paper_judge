@@ -1,0 +1,115 @@
+{
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper presents a notable and concrete new architecture (hierarchical multi-scale SampleRNN with frame-level RNN tiers conditioning a sample-level autoregressive MLP) specifically designed for raw waveform generation and tractable training via truncated BPTT. This formulation and the end-to-end training of mixed-resolution modules for long-term audio dependency modelling is a clear differentiation from prior single-scale RNNs and alternative autoregressive approaches (e.g., bespoke WaveNet reimplementation), and the empirical comparisons and ablations support that the techniques are a non-trivial extension rather than a trivial recombination. An expert would find the hierarchical conditioning + sample-level softmax design and the training protocol informative, even if related ideas (autoregression, multi-timescale modelling) existed before. | B(4): From the summary, SampleRNN proposes a distinct hierarchically structured autoregressive model for raw waveform generation\u2014stacking frame-level RNN tiers that condition a sample-level MLP\u2014allowing end-to-end training with truncated BPTT. This architectural decomposition and the specific training strategy meaningfully differ from single-scale RNNs and contemporaneous waveform models (e.g., WaveNet re-implementation) rather than merely combining known pieces. While the idea builds on established autoregressive and hierarchical modeling principles, the particular application and design choices for scalable raw-audio synthesis represent a notable and non-trivial novelty that would inform experts in audio generation.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper presents a notable and concrete new architecture (hierarchical multi-scale SampleRNN with frame-level RNN tiers conditioning a sample-level autoregressive MLP) specifically designed for raw waveform generation and tractable training via truncated BPTT. This formulation and the end-to-end training of mixed-resolution modules for long-term audio dependency modelling is a clear differentiation from prior single-scale RNNs and alternative autoregressive approaches (e.g., bespoke WaveNet reimplementation), and the empirical comparisons and ablations support that the techniques are a non-trivial extension rather than a trivial recombination. An expert would find the hierarchical conditioning + sample-level softmax design and the training protocol informative, even if related ideas (autoregression, multi-timescale modelling) existed before."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "From the summary, SampleRNN proposes a distinct hierarchically structured autoregressive model for raw waveform generation\u2014stacking frame-level RNN tiers that condition a sample-level MLP\u2014allowing end-to-end training with truncated BPTT. This architectural decomposition and the specific training strategy meaningfully differ from single-scale RNNs and contemporaneous waveform models (e.g., WaveNet re-implementation) rather than merely combining known pieces. While the idea builds on established autoregressive and hierarchical modeling principles, the particular application and design choices for scalable raw-audio synthesis represent a notable and non-trivial novelty that would inform experts in audio generation."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well-organized and follows a logical flow from motivation to method to experiments and conclusion; the main contributions are stated early (hierarchical tiers + sample-level MLP and tractable training via truncated BPTT). Notation appears consistent and definitions are provided, figures/tables (human AB tests, NLL results, datasets) and examples effectively support claims, and hyperparameters and code availability aid reproducibility. From a reproducibility-engineer perspective, a few minor presentation clarifications (e.g., explicit subsequence lengths used in key experiments, and more detailed captions for some figures) would make the paper exceptional, hence a 4 rather than a 5. | B(4): The paper is well organized and follows a logical flow from introduction through method, experiments, and conclusion, and its main contributions are stated early (hierarchical SampleRNN with truncated BPTT and end-to-end training). Notation and modeling choices are presented clearly enough to reproduce results (hyperparameters and code are provided), and figures/tables and human evaluation descriptions appear informative. Writing is generally good with adequate related-work coverage and explicit discussion of limitations; a few minor places (e.g., succinct explanation for real-valued GMM failures and some experimental trade-offs) could be expanded for complete clarity.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well-organized and follows a logical flow from motivation to method to experiments and conclusion; the main contributions are stated early (hierarchical tiers + sample-level MLP and tractable training via truncated BPTT). Notation appears consistent and definitions are provided, figures/tables (human AB tests, NLL results, datasets) and examples effectively support claims, and hyperparameters and code availability aid reproducibility. From a reproducibility-engineer perspective, a few minor presentation clarifications (e.g., explicit subsequence lengths used in key experiments, and more detailed captions for some figures) would make the paper exceptional, hence a 4 rather than a 5."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized and follows a logical flow from introduction through method, experiments, and conclusion, and its main contributions are stated early (hierarchical SampleRNN with truncated BPTT and end-to-end training). Notation and modeling choices are presented clearly enough to reproduce results (hyperparameters and code are provided), and figures/tables and human evaluation descriptions appear informative. Writing is generally good with adequate related-work coverage and explicit discussion of limitations; a few minor places (e.g., succinct explanation for real-valued GMM failures and some experimental trade-offs) could be expanded for complete clarity."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper\u2019s main claims are clearly stated and supported by experiments showing improved NLL and human preferences across three datasets, and the hierarchical SampleRNN architecture and training with truncated BPTT are plausibly described and implemented end-to-end. However, from the provided summary there are methodological gaps: human preference tests and speaker-memory claims lack reported statistical significance and detailed ablations isolating each architectural choice (e.g., effect of number of tiers, upsampling method, truncated BPTT length) to firmly attribute gains. Mathematical modeling appears correct for an autoregressive factorization, but the reported failure modes (GMM outputs) and the trade-offs between subsequence length, memory, and convergence are noted without sufficient analysis. Overall the results support the main conclusions, but additional controlled experiments and significance reporting are needed for full technical validation. | B(4): The paper's main claims are clearly stated and supported by experiments: hierarchical SampleRNN trained end-to-end with truncated BPTT and a sample-level autoregressive MLP is evaluated quantitatively (NLL) and with human AB tests, and comparisons include reasonable baselines (RNN, RNN-GMM, a WaveNet reimplementation). The mathematical framing is straightforward and correct for an autoregressive factorization; experimental methodology is generally sound though the summary does not report statistical significance testing and the WaveNet reimplementation fidelity is not fully verifiable from the summary. Overall the results and analyses (including the speaker-consistency test) justify the conclusions, with only minor gaps around statistical reporting and reproducibility details of baselines.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and supported by experiments showing improved NLL and human preferences across three datasets, and the hierarchical SampleRNN architecture and training with truncated BPTT are plausibly described and implemented end-to-end. However, from the provided summary there are methodological gaps: human preference tests and speaker-memory claims lack reported statistical significance and detailed ablations isolating each architectural choice (e.g., effect of number of tiers, upsampling method, truncated BPTT length) to firmly attribute gains. Mathematical modeling appears correct for an autoregressive factorization, but the reported failure modes (GMM outputs) and the trade-offs between subsequence length, memory, and convergence are noted without sufficient analysis. Overall the results support the main conclusions, but additional controlled experiments and significance reporting are needed for full technical validation."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and supported by experiments: hierarchical SampleRNN trained end-to-end with truncated BPTT and a sample-level autoregressive MLP is evaluated quantitatively (NLL) and with human AB tests, and comparisons include reasonable baselines (RNN, RNN-GMM, a WaveNet reimplementation). The mathematical framing is straightforward and correct for an autoregressive factorization; experimental methodology is generally sound though the summary does not report statistical significance testing and the WaveNet reimplementation fidelity is not fully verifiable from the summary. Overall the results and analyses (including the speaker-consistency test) justify the conclusions, with only minor gaps around statistical reporting and reproducibility details of baselines."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces SampleRNN, an end-to-end unconditional model for raw audio waveform generation using a hierarchy of modules operating at different temporal resolutions.",
+      "Demonstrates that using RNNs at multiple scales with a sample-level autoregressive MLP enables tractable training (with truncated BPTT) and models long-term dependencies while training on short subsequences.",
+      "Empirically shows SampleRNN outperforms baseline RNNs (and is preferred to other models in human evaluations) across three audio datasets and analyzes contributions of model components."
+    ],
+    "methodology": "SampleRNN models the joint distribution of audio samples autoregressively using a hierarchy of modules: higher tiers are frame-level RNNs operating at lower temporal resolution and provide conditioning vectors that are upsampled to lower tiers, while the lowest tier is a sample-level MLP producing a q-way softmax over quantized sample values; trained end-to-end with truncated BPTT and teacher forcing.",
+    "datasets": [
+      "Blizzard (speech subset, ~20.5 hours)",
+      "Onomatopoeia (3.5 hours)",
+      "Music (32 Beethoven piano sonatas, ~10 hours)"
+    ],
+    "baselines": [
+      "RNN (baseline)",
+      "WaveNet (re-implementation)",
+      "RNN-GMM",
+      "SampleRNN-GMM"
+    ],
+    "metrics": [
+      "Negative Log-Likelihood (NLL) in bits per audio sample",
+      "Human AB preference tests (pairwise preference)",
+      "Speaker-consistency classification via mean fundamental frequency (for memory test)"
+    ],
+    "limitations": [
+      "Real-valued output variants (GMM) produced samples that were almost indistinguishable from noise (stated failure).",
+      "Training on longer subsequences improves performance but substantially increases memory usage and convergence time (trade-off).",
+      "A SampleRNN-WaveNet hybrid variant was tried but did not meet expectations and is noted as future work."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Audio generation - neural audio synthesis",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Reproducible Systems Engineer",
+      "background": "Senior ML engineer with a PhD in speech signal processing and 8+ years building and evaluating large-scale neural sequence models for audio and text; experience releasing reproducible code and benchmarks.",
+      "traits": [
+        "insists on clear experimental protocol: data splits, preprocessing, random seeds, compute budgets, and exact hyperparameters",
+        "values comprehensive ablations that isolate contributions of architectural components and training choices",
+        "checks for proper baselines, matched-capacity comparisons, and statistical significance of reported human/preference studies",
+        "looks for reproducible implementation details (training curves, truncated BPTT settings, inference sampling procedure) and runtime/memory tradeoffs"
+      ],
+      "reviewing_style": "Focuses on methodological rigor and reproducibility, asking for experiments and documentation that make empirical claims verifiable and components' effects measurable."
+    },
+    "reviewer_b": {
+      "name": "Audio ML Researcher \u2014 Modeling & Impact",
+      "background": "Associate professor in machine learning and audio processing with a track record of publications on generative audio models and perceptual evaluation; advises applied teams on which techniques advance the field.",
+      "traits": [
+        "evaluates novelty relative to prior hierarchical, autoregressive, and raw-waveform generation work and notices conceptual differences and connections",
+        "values demonstrated perceptual quality and practical impact: whether the approach enables new applications or outperforms existing methods in meaningful ways",
+        "looks for discussion of limitations, failure modes, and how the method scales to varied audio domains (speech, music, environmental sounds)",
+        "assesses clarity of exposition around modeling choices and how the approach positions itself for follow-up research"
+      ],
+      "reviewing_style": "Assesses scientific contribution and field impact, weighing novelty, perceptual gains, and whether the work meaningfully advances audio generation practice and research directions."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

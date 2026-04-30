@@ -1,0 +1,95 @@
+{
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses semantic parsing and program induction over a large KB (Freebase) using a neural seq2seq \"programmer\" and symbolic Lisp \"computer\", which is squarely within top-tier NLP/ML topics (neural-symbolic methods, weak supervision, program learning). It evaluates on standard benchmarks (WEBQUESTIONSSP / WEBQUESTIONS), reports improved state-of-the-art when trained from question-answer pairs, and uses expected methods (REINFORCE with iterative maximum-likelihood stabilization), so the methodology and evaluation meet venue norms. The audience (NLP/ML researchers working on semantic parsing, program induction, and weakly supervised learning) is appropriate and the paper is well positioned within related work. Overall this is an excellent fit for a top NLP/ML conference.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The summary indicates the main claims are clearly stated and supported by empirical evidence (state-of-the-art on WEBQUESTIONSSP using weak supervision) and a plausible training strategy (REINFORCE augmented with iterative maximum-likelihood using beam search). Mathematical content appears limited and no incorrect derivations are noted. Experimental methodology includes reasonable baselines, but the summary omits details on evaluation metrics and statistical significance, and the reliance on beam-search found pseudo-gold programs could be a brittle assumption\u2014these are minor issues that do not overthrow the main conclusions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important problem of learning semantic parsers from weak supervision over a large KB, introducing a hybrid neural-symbolic approach (seq2seq programmer + symbolic Lisp executor) that achieves new state-of-the-art results on WEBQUESTIONSSP. By reducing the gap between weak and full supervision and stabilizing REINFORCE with an iterative maximum-likelihood pseudo-gold search, it demonstrates a practical path for scalable KB QA without heavy annotation. This work is likely to change how researchers approach program induction and neural-symbolic integration and to open follow-up work on richer symbolic interfaces and training strategies. Its techniques and demonstrated empirical gains make it likely to be built upon across semantic parsing and related program-execution tasks.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are solid and demonstrate state-of-the-art results on WEBQUESTIONSSP using only QA pairs, with comparisons to relevant baselines (Neural Programmer, Dynamic Neural Module Network, RL-NTM) and hyperparameters reported, supporting the main claims. The paper includes some sensitivity observations (e.g., dropout effects) and discusses limitations (generalization of learned operations, overfitting, missing features), but the summary does not indicate extensive ablation studies isolating each component (e.g., key-variable memory vs. training procedure) or full reproducibility artifacts (code not mentioned). Related work coverage is described as thorough and the methodological innovations build clearly on prior weak-supervision and semantic-parsing efforts, so overall the empirical treatment is strong though with minor gaps in systematic analysis and reproducibility details.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against several recent and relevant baselines (Neural Programmer 2015, Dynamic Neural Module Network 2016, RL-NTM 2015, pointer networks) on the same WebQuestions/WebQuestionsSP datasets and reports state-of-the-art results, indicating appropriate baselines and conditions. The authors acknowledge limitations and discuss related work thoroughly, situating their contribution relative to prior large-scale/weakly supervised semantic parsing efforts (e.g., earlier Freebase-focused approaches). Differences between NSM and baselines are clearly explained (neural programmer + symbolic executor, key-variable memory, REINFORCE+iterative ML), suggesting comprehensive and fair comparisons with relevant competing approaches.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and follows a logical flow from motivation to method to experiments and conclusion, and the main contributions (NSM architecture, key-variable memory, and REINFORCE + iterative ML training) are clearly stated early. Notation appears consistent and well-defined given the detailed methodology description (seq2seq programmer, Lisp computer, key-variable memory), and related work coverage is thorough. Writing quality is reported as good with manageable jargon, but some presentation details are unclear in the summary (e.g., evaluation metrics not specified and figures/tables effectiveness not mentioned), so while generally well-written, there are minor presentation issues that prevent an exceptional rating.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable and distinguishable combination of ideas \u2014 a seq2seq \"programmer\" paired with a symbolic non-differentiable Lisp \"computer,\" a key-variable memory for compositionality, and an iterative ML + REINFORCE training regime \u2014 that together achieve state-of-the-art weakly supervised results on WEBQUESTIONSSP. While the task (semantic parsing over Freebase) and elements such as weak supervision and large-scale KB handling have been explored before (e.g., prior large-scale and scaling semantic parsing work), the specific integration of symbolic pruning via the computer and the pseudo-gold program iterative procedure appears to be a non-trivial and clearly differentiated advancement. Given these novel methodological combinations and empirical gains, the contribution is more than incremental but stops short of introducing a wholly new research direction, so it rates as notable novelty.",
+      "survey_injected": true,
+      "novelty_injected": true
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces Neural Symbolic Machines (NSM), combining a seq2seq \"programmer\" with a symbolic non-differentiable Lisp \"computer\" that executes programs against a large knowledge base and provides code assistance.",
+      "Proposes a key-variable memory in the seq2seq programmer to support compositionality by saving and reusing intermediate results.",
+      "Trains the model from weak supervision using REINFORCE augmented with an iterative maximum-likelihood procedure that finds pseudo-gold programs.",
+      "Achieves new state-of-the-art performance on the WEBQUESTIONSSP dataset when trained from question-answer pairs only, reducing the gap between weak and full supervision."
+    ],
+    "methodology": "A seq2seq neural \"programmer\" with a key-variable memory generates programs which are executed by a symbolic non-differentiable Lisp \"computer\" against Freebase; training optimizes task reward with REINFORCE and is stabilized by an iterative maximum-likelihood process that finds pseudo-gold programs via beam search.",
+    "datasets": [
+      "WEBQUESTIONSSP",
+      "WEBQUESTIONS"
+    ],
+    "baselines": [
+      "Neural Programmer (Neelakantan et al., 2015)",
+      "Dynamic Neural Module Network (Andreas et al., 2016)",
+      "Reinforcement Learning Neural Turing Machines (RL-NTM) (Zaremba and Sutskever, 2015)",
+      "Pointer networks (Vinyals et al., 2015) (as related work/comparison)"
+    ],
+    "metrics": [],
+    "limitations": [
+      "Operations learned with neural networks such as addition and sorting do not perfectly generalize to inputs larger than those seen in training.",
+      "Overfitting is a major problem (larger dropout produced better performance).",
+      "NSM lacks features such as defining new functions and modifying code storage, noted as future improvements."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - semantic parsing / program induction over knowledge bases",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 4,
+    "paper_novelty_mean": 0.2667,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON",
+      "ORIGINALITY"
+    ],
+    "total_dims": 7
+  }
+}

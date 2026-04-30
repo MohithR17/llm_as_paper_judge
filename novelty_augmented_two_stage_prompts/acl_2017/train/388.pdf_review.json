@@ -1,0 +1,96 @@
+{
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 3,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 5,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important problem of building a (mostly) language-independent semantic interface for UD, enabling multilingual QA against Freebase and showing empirical improvements across English, Spanish, and German (including best reported result on GraphQuestions English). Its introduction of a graph-aware variable-binding mechanism (BIND) and an enhancement step to enrich UD graphs is likely to influence how researchers approach UD-to-logical-form mapping and multilingual semantic parsing. While the reliance on unlexicalized UD information and omission of lexical phenomena (quantifiers, negation, intentional verbs) limit semantic specificity, the approach opens substantial new directions for language-agnostic semantic interfaces and cross-lingual QA systems that others can build upon.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents notable novelty by extending UD-to-semantics interfaces to handle graph-structured dependencies via a formal variable-binding mechanism (BIND) and an explicit enhancement step, while restricting composition to unlexicalized UD information\u2014capabilities not handled in the cited prior works (e.g., Universal Semantic Parsing and earlier dependency-to-logical-form efforts which are limited to trees). Its formalization of BIND and the claim that it gives a proper lambda-calculus interpretation (unlike DEPLAMBDA) and the reliance solely on UD labels/POS for substitution are non-trivial extensions over existing methods. Given the close prior art, this is more than incremental but not a radical departure, so the contribution is a clear, notable advance that would inform experts. ",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments span multiple datasets and languages (WebQuestions, GraphQuestions, and Spanish/German translations) and compare against several strong baselines, which supports the main empirical claims. However, the summary does not report evaluation metrics or any ablation/sensitivity analyses (e.g., impact of the enhancement step or BIND mechanism), and code/hyperparameters are not provided, limiting reproducibility. Related work coverage is described as thorough and the paper situates itself relative to prior UD-to-semantics efforts (e.g., prior \"Universal Semantic Parsing\" work) that could not handle graphs. The paper does discuss concrete limitations (lexicalized phenomena, quantifiers, negation), but lacks deeper error analysis or quantitative breakdowns.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses multilingual semantic parsing grounded in Universal Dependencies and introduces a language-independent interface (UDEPLAMBDA) with empirical evaluation on standard QA datasets (WebQuestions, GraphQuestions) across English, Spanish, and German, which is squarely within top NLP/ML venue scope. The methodology (UD-based composition, enhancement step, BIND mechanism) and comparisons to strong baselines (DEPLAMBDA, CCGGRAPH, GRAPHPARSER variants) match the community\u2019s expectations for methods and evaluation. Although it concedes limitations (lack of lexicalized handling for quantifiers, negation, and intentional verbs), it provides thorough related work coverage and clear empirical gains (best reported GraphQuestions result), making it well positioned for the venue\u2019s audience.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against multiple strong baselines (SINGLEEVENT, DEPTREE, CCGGRAPH, several GRAPHPARSER variants, and DEPLAMBDA) across standard datasets (WebQuestions, GraphQuestions and multilingual translations), and reports state-of-the-art results on GraphQuestions. The authors explicitly discuss limitations and differences (e.g., the BIND mechanism and enhancement step vs. prior UD-to-semantics work) and provide thorough related-work coverage; this addresses closely related efforts such as prior \"Universal Semantic Parsing\" and other UD-to-logical-form converters. Comparisons therefore appear comprehensive and fair, with relevant competing approaches cited and analyzed.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized and the main contributions (UDEPLAMBDA, the BIND mechanism, and the enhancement step) are stated early and described clearly. Notation and method descriptions appear consistent and understandable from the summary, and writing quality is reported as good with thorough related work coverage. Presentation weaknesses include missing reporting of evaluation metrics details, hyperparameters, and code availability, which hinder reproducibility and are minor issues in an otherwise clear manuscript.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported by multilingual empirical evaluation against multiple strong baselines (including prior DEPLAMBDA and several graph-parsing variants), and the paper explicitly acknowledges known limitations (lack of lexicalization, quantifier/negation/intentional constructions). There is no indication of incorrect mathematical derivations in the summary, but formal proofs/derivations are not emphasized. Experimental methodology is broadly sound (appropriate baselines, multilingual tests) but key details are missing in the summary (evaluation metrics, statistical significance, hyperparameters, code availability), which prevents full verification. Overall the work is technically solid with minor methodological reporting gaps that do not invalidate the main conclusions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces UDEPLAMBDA, a (mostly) language-independent semantic interface for Universal Dependencies (UD).",
+      "UDEPLAMBDA handles graph-structured dependency input by introducing a variable-binding mechanism (BIND) and an enhancement step to add missing syntactic and long-distance dependency information.",
+      "UDEPLAMBDA relies only on unlexicalized UD information (dependency labels and POS) for lambda-expression assignment and composition, avoiding reliance on lexical forms.",
+      "Empirical evaluation on QA against Freebase in English, Spanish, and German shows UDEPLAMBDA outperforms strong baselines across datasets and achieves the best reported result on GraphQuestions for English."
+    ],
+    "methodology": "UDEPLAMBDA restricts binarization, substitution, and composition to information in UD (dependency labels and POS), applies an enhancement step to enrich UD trees/graphs with missing syntactic and long-distance dependencies, and uses a variable-binding mechanism (BIND) to produce lambda-calculus logical forms from dependency graphs.",
+    "datasets": [
+      "WebQuestions",
+      "GraphQuestions",
+      "Translations of WebQuestions and GraphQuestions to German and Spanish"
+    ],
+    "baselines": [
+      "SINGLEEVENT",
+      "DEPTREE",
+      "CCGGRAPH",
+      "Three versions of GRAPHPARSER (entity cliques, dependency trees, CCG-based)",
+      "DEPLAMBDA (discussed as prior work)"
+    ],
+    "metrics": [],
+    "limitations": [
+      "To achieve language independence, UDEPLAMBDA sacrifices semantic specificity and does not lexicalize substitutions (e.g., cannot canonicalize roles like arg1/arg2 for verbs such as broke).",
+      "Constructions requiring lexical information (quantifiers like every/some/most, negation markers like no/not, intentional verbs like believe/said) are not handled; UD lacks labels for these and quantifier handling is not implemented (discussed only in supplementary material)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - multilingual semantic parsing / question answering",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 3,
+    "paper_novelty_mean": 0.5846,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "APPROPRIATENESS": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 3,
+  "_details": {
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper evaluates on multiple standard meeting corpora (AMI, ICSI) and compares to sensible baselines including SVM-based phrase selection, n-gram baselines, and the Kim & Shah (2016) SOTA, as well as simple dialogue-act summarizers, using common metrics (F1, ROUGE). Comparisons appear broadly fair (same datasets/metrics) and the model variants (including a latent-discourse variant) are directly contrasted, but the summary does not report key experimental details I care about (hyperparameter reporting, statistical significance/error bars) nor does it explicitly describe thorough ablations isolating the joint vs independent contributions; these omissions prevent a full, pristine evaluation of comparative claims. Overall the empirical comparison is strong but has minor gaps in rigor and ablation clarity that a theoretical reviewer must penalize. | B(4): The paper compares against reasonable and recent baselines (SVM classifiers, n-gram baselines, Kim & Shah 2016 SOTA, and simple DA summarizers) on standard datasets (AMI, ICSI) using common metrics (F1, accuracy, ROUGE), and it demonstrates downstream gains on COU prediction. Comparisons appear fair in setup and metrics, and the authors acknowledge when annotation requirements or parsing make alternatives competitive; they also analyze joint vs. separate training and a latent-variable variant. Minor omissions reduce completeness: hyperparameters and code are not reported and it's unclear whether the very latest neural/sequence models were included as baselines, so I rate the comparisons as strong but not fully comprehensive.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper evaluates on multiple standard meeting corpora (AMI, ICSI) and compares to sensible baselines including SVM-based phrase selection, n-gram baselines, and the Kim & Shah (2016) SOTA, as well as simple dialogue-act summarizers, using common metrics (F1, ROUGE). Comparisons appear broadly fair (same datasets/metrics) and the model variants (including a latent-discourse variant) are directly contrasted, but the summary does not report key experimental details I care about (hyperparameter reporting, statistical significance/error bars) nor does it explicitly describe thorough ablations isolating the joint vs independent contributions; these omissions prevent a full, pristine evaluation of comparative claims. Overall the empirical comparison is strong but has minor gaps in rigor and ablation clarity that a theoretical reviewer must penalize."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against reasonable and recent baselines (SVM classifiers, n-gram baselines, Kim & Shah 2016 SOTA, and simple DA summarizers) on standard datasets (AMI, ICSI) using common metrics (F1, accuracy, ROUGE), and it demonstrates downstream gains on COU prediction. Comparisons appear fair in setup and metrics, and the authors acknowledge when annotation requirements or parsing make alternatives competitive; they also analyze joint vs. separate training and a latent-variable variant. Minor omissions reduce completeness: hyperparameters and code are not reported and it's unclear whether the very latest neural/sequence models were included as baselines, so I rate the comparisons as strong but not fully comprehensive."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early; the introduction \u2192 method \u2192 experiments \u2192 conclusion flow is clear and writing quality is reported as good. Notation and formalism are generally consistent and the methodology (joint log-linear model, SampleRank learning, inference alternation) is described coherently, though the alternation between message-passing and ILP is likely dense and could benefit from an extra worked example or clearer diagram. Figures/tables/examples appear effective but the summary does not report extensive illustrative material, and a few practical details (e.g., hyperparameter reporting) are omitted which slightly reduces reproducibility clarity. | B(4): The paper is generally well organized and follows a logical flow from motivation to method to experiments and conclusion, and its main contributions (joint log-linear model, latent-variable variant, downstream COU prediction gains) are stated early and clearly. Notation and model components are presented coherently, and figures/tables and examples appear effective for conveying experimental results (datasets, baselines, metrics) though the summary notes some missing practical details (e.g., hyperparameter reporting, code release) that would improve reproducibility. Writing quality is good with few ambiguities, but the paper could better foreground assumptions (such as relying on given attachment structures) and provide a few more implementation details for clarity.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early; the introduction \u2192 method \u2192 experiments \u2192 conclusion flow is clear and writing quality is reported as good. Notation and formalism are generally consistent and the methodology (joint log-linear model, SampleRank learning, inference alternation) is described coherently, though the alternation between message-passing and ILP is likely dense and could benefit from an extra worked example or clearer diagram. Figures/tables/examples appear effective but the summary does not report extensive illustrative material, and a few practical details (e.g., hyperparameter reporting) are omitted which slightly reduces reproducibility clarity."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is generally well organized and follows a logical flow from motivation to method to experiments and conclusion, and its main contributions (joint log-linear model, latent-variable variant, downstream COU prediction gains) are stated early and clearly. Notation and model components are presented coherently, and figures/tables and examples appear effective for conveying experimental results (datasets, baselines, metrics) though the summary notes some missing practical details (e.g., hyperparameter reporting, code release) that would improve reproducibility. Writing quality is good with few ambiguities, but the paper could better foreground assumptions (such as relying on given attachment structures) and provide a few more implementation details for clarity."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper makes clear empirical claims and shows consistent improvements across datasets, and that the modeling and inference approach is plausible. They also agree on notable weaknesses: reliance on given attachment structure, missing statistical significance/error bars, and sparse details on hyperparameters and learning/identifiability\u2014issues that weaken confidence but do not invalidate the core contributions. Given these strengths and the concerns, a score of 4 reflects solid empirical contribution with some important but addressable methodological gaps.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper makes clear empirical claims and supports them with experiments across multiple datasets showing improvements and a latent-variable variant; however, from the provided summary there is no theoretical analysis of identifiability or convergence for the SampleRank learning/inference loop and hyperparameters are not reported. It is also unclear whether the contribution of joint versus independent components is dissected via thorough ablations and the report omits mention of statistical significance or error bars, which weakens confidence in the experimental claims. Finally, the assumption that attachment structure is given at train/test introduces a strong unsupported constraint that limits applicability and should have been examined more rigorously."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and empirically supported: joint modeling improves phrase selection and discourse prediction across AMI/ICSI and the latent-discourse variant works without gold annotations, and predicted features yield better COU prediction on AMI-SUB. The mathematical model (log-linear with SampleRank) and inference strategy are plausible and consistent, though no detailed proofs are required. Experimental methodology is generally sound with reasonable baselines and downstream evaluation, but the summary omits statistical significance reporting, hyperparameter details, and code release, and the model relies on the strong assumption that attachment structure is given. These are minor gaps that do not overturn the main technical contributions or results."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses a relevant problem with appropriate datasets and evaluation and presents a principled joint modeling approach that yields useful downstream gains. I give a score of 4 because while the contribution and empirical results are compelling and fit a top-tier venue, the methodological omissions noted by Reviewer A (assumed attachment structure, missing hyperparameter/code details, and limited ablations/formal analysis) prevent a clear top score without additional diagnostic experiments or clearer exposition.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper\u2019s topic\u2014joint modeling of content selection and discourse relations in meeting dialogues\u2014is squarely within the scope of a top NLP/ML venue and the datasets and evaluations used (AMI, ICSI; F1/ROUGE) match community expectations. However, from the summary I see important theoretical and experimental gaps that matter for a top-tier venue: the model assumption that attachment structure is given, no reported hyperparameters or code, and no mention of formal analysis (identifiability/convergence) or thorough ablations disentangling joint vs. independent contributions. These omissions make it a borderline fit: relevant and promising, but requiring stronger theoretical justification and diagnostic experiments to meet top-conference standards."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top-tier NLP/ML venue: it addresses a core dialogue/meeting-analysis problem with a principled joint model that combines content selection and discourse relations, evaluated on realistic meeting corpora (AMI, ICSI) and showing downstream utility (improved COU prediction on AMI-SUB). The methodology (log-linear joint model, SampleRank learning, latent-variable variant) and evaluation metrics (F1, ROUGE) match community expectations, and the work is targeted to the right audience interested in joint modeling and practical dialogue analysis. The authors acknowledge realistic limitations (labeling cost, assumed attachment structure) and mitigate them with a latent-relations variant, making the contribution both relevant and applicable."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses an important practical problem and demonstrates clear empirical gains across datasets, including a useful latent-variable variant for missing discourse annotations. Remaining concerns\u2014dependence on annotated attachments, lack of released code/hyperparameter details, and limited theoretical guarantees\u2014temper its transformative potential but do not outweigh its likely pragmatic influence on future content\u2013discourse work, so a score of 4 is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles the practically important task of jointly modeling content selection and discourse relations in meeting dialogues and shows competitive performance (including a latent-relation variant) across AMI/ICSI and improved COU prediction on AMI-SUB, so it is a useful contribution. However, its impact is constrained by dependence on annotated discourse attachments, lack of released code/hyperparameter details, and no indication of formal guarantees or principled identifiability\u2014issues that will slow broad adoption and theoretical uptake. Overall, this work is a solid, moderately impactful engineering and empirical contribution that is likely to be built upon but not to fundamentally change the field."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles an important, practical problem\u2014jointly modeling content selection and discourse relations in meetings\u2014and demonstrates clear empirical benefits (phrase selection and discourse prediction gains across AMI/ICSI and improved COU prediction on AMI-SUB). The joint log-linear formulation with SampleRank learning and a latent-variable variant addresses robustness to missing discourse annotations, which is valuable for real-world deployment. While not fully transformative (attachment structure still assumed and code/hyperparams not reported), the approach offers a pragmatic, reusable strategy that is likely to influence future integrated content\u2013discourse work and downstream meeting-analysis systems."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper presents strong empirical results across multiple corpora and a useful latent-variant analysis, and shows downstream improvements, but they also consistently note missing reproducibility details (hyperparameters/code), lack of significance/error bars, and the strong assumption of gold attachment structure without sensitivity/ablation analyses. These omissions limit assessment of robustness but do not negate the empirical contributions; given solid results tempered by important gaps, a score of 4 reflects the paper's overall strength while acknowledging the need for additional analyses and reproducibility materials.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experimental suite covers multiple datasets (AMI-FULL/SUB, ICSI) and evaluates both the full and latent-relation variants, which supports the core empirical claims about joint modeling and downstream COU prediction. However, from the provided summary I see no reported hyperparameter settings or significance testing/error bars, the model assumes gold attachment structure (not learned), and it is unclear whether sufficient ablations disentangle joint vs independent contributions beyond the latent variant\u2014shortcomings that a theoretical purist must penalize. These gaps leave important questions about reproducibility, sensitivity, and the unique contribution of joint features unanswered, so the work is solid but missing some crucial analyses."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Experiments are strong: evaluations across multiple corpora (AMI, ICSI), comparisons to reasonable baselines and a downstream COU task where they outperform prior SOTA support the main claims. The paper studies a latent-variable variant for missing discourse labels and contrasts joint vs separate modeling, but important reproducibility details are missing (no code, hyperparameters not reported) and the model assumes gold attachment structures rather than learning them. Limitations (annotation effort, difficulty of automatic discourse parsing) are acknowledged, but I would have liked clearer sensitivity analyses (e.g., hyperparameter/ablation sweep and impact of attachment errors) to fully assess robustness in realistic settings."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper offers a useful and practically relevant joint modeling approach with a sensible latent-variable extension and demonstrated downstream gains, but it largely composes existing methods (log-linear models, SampleRank, message-passing, ILP) and assumes given attachment structure. Given the clear empirical contributions but limited theoretical novelty or methodological innovation, a moderate originality score of 3 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents a useful combination of content selection and discourse-relation prediction within a single joint log-linear model and explores treating discourse relations as latent\u2014an applied integration that appears novel in the meeting-dialogue summarization literature but not a fundamentally new modeling paradigm. The methodology largely composes existing elements (log-linear features, SampleRank learning, message-passing and ILP inference) rather than introducing new theoretical guarantees, identifiability analysis, or principled learning/inference advances, which a theoretical audience would expect. The latent-variable variant and using predicted labels to improve COU detection are sensible extensions but read as moderate incremental innovation rather than a radical new perspective. Overall, the contribution would inform practitioners in dialogue summarization but offers limited theoretical novelty."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable and practically useful joint modeling perspective by integrating phrase-level content selection with discourse-relation prediction in a single log-linear framework (content-only, discourse-only, and joint features learned with SampleRank), which is more than a straightforward application of existing classifiers. The latent-variable variant that marginalizes discourse relations when annotations are unavailable and the demonstrated downstream utility for COU prediction (outperforming prior SOTA on AMI-SUB) further differentiate it from prior work. That said, the approach builds on known components (log-linear models, message-passing, ILP) and assumes given attachment structure, so it is a clear, non-trivial extension rather than a radically new paradigm."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A joint log-linear model can simultaneously perform phrase-based content selection and discourse relation prediction in meeting dialogues, leveraging interactions between content and discourse to improve performance.",
+      "Treating discourse relations as latent variables is feasible and the model variant achieves competitive results when gold-standard discourse annotations are unavailable.",
+      "Features constructed from the model\u2019s predicted phrase and discourse labels can be used to predict consistency of understanding (COU) among meeting participants and outperform prior state-of-the-art on the AMI-SUB dataset."
+    ],
+    "methodology": "A log-linear joint model with content-only, discourse-only, and joint content-discourse feature functions is learned (using SampleRank); inference alternates between optimizing discourse relations (message-passing) and phrase selection (ILP with clustering of candidates). A latent-variable variant marginalizes over discourse relations when annotations are not available.",
+    "datasets": [
+      "AMI-FULL",
+      "AMI-SUB",
+      "ICSI-FULL",
+      "AMI corpus",
+      "ICSI corpus"
+    ],
+    "baselines": [
+      "SVM-based classifiers (for phrase selection)",
+      "Separate-Learn (separate classifiers)",
+      "n-gram (unigram and bigram) SVM baseline",
+      "Kim and Shah (2016) state-of-the-art system",
+      "LONGEST DA and CENTROID DA dialogue-act-level summarization baselines"
+    ],
+    "metrics": [
+      "Accuracy",
+      "F1",
+      "ROUGE (including ROUGE-SU4 F1)"
+    ],
+    "limitations": [
+      "Acquiring labeled training data for discourse relations is time-consuming.",
+      "Automatic discourse parsing in dialogues remains a challenging problem.",
+      "The model assumes the attachment structure between discourse units is given during both training and testing (i.e., attachment structure is not learned)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - dialogue discourse analysis and meeting summarization",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theoretical Purist",
+      "background": "Associate professor in computational linguistics with a decade of experience in probabilistic models and formal discourse theory.",
+      "traits": [
+        "Penalises papers lacking theoretical analysis: deducts points if no explanation of model identifiability, convergence guarantees, or formal justification for objective/learning algorithm.",
+        "Requires thorough ablations: penalises if joint vs independent contributions are not disentangled by clear ablation experiments (e.g., remove joint features, vary SampleRank/inference components).",
+        "Skeptical of heavy engineering/feature hacks: penalises papers that rely primarily on many handcrafted features or ad-hoc preprocessing without principled justification.",
+        "Demands statistical rigor: expects reported significance tests/error bars for main comparisons and will downscore papers that omit them."
+      ],
+      "reviewing_style": "Prioritises formal understanding and diagnostic analysis over incremental empirical gains; will reward clear theoretical contributions and crisp ablations."
+    },
+    "reviewer_b": {
+      "name": "Applied Dialogue Engineer",
+      "background": "Senior research scientist focused on dialogue systems and meeting summarization, with experience deploying summarization and analysis components in industrial settings.",
+      "traits": [
+        "Rewards practical joint modelling and task integration: gives credit for methods that jointly model interacting components (content + discourse) and demonstrate downstream utility.",
+        "Values strong empirical improvements on real datasets: awards points for methods that achieve clear gains over prior SOTA on realistic benchmarks and downstream tasks (e.g., COU prediction on AMI-SUB).",
+        "Favors methods robust to missing annotations: positively biases papers that present latent-variable approaches that work when gold labels are unavailable.",
+        "Prefers reproducibility and applicability: will score higher if code, trained models, or processing pipelines are released or if the method is clearly practical (scalable inference, reasonable runtime)."
+      ],
+      "reviewing_style": "Pragmatic evaluator who emphasizes empirical gains, robustness, and applicability in realistic dialogue/meeting analysis settings; willing to accept engineering complexity if it yields clear utility."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 5,
+    "total_dimensions": 7,
+    "debate_rate": 0.714
+  }
+}

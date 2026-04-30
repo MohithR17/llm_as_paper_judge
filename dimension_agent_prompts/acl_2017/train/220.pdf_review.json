@@ -1,0 +1,39 @@
+{
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "CLARITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem (metonymy resolution/NER ambiguity) and contributes both a novel, linguistically motivated feature extraction method (PreWin) and a new balanced dataset (ReLocaR) that corrects annotation biases in SemEval. Empirically it attains (slightly) new SOTA on SemEval (86.3% vs 86.2%) and strong performance on the new dataset while using a minimal, resource-light approach, suggesting broader applicability. These contributions are likely to influence work on NER and geographical parsing by encouraging dependency-guided, compact context windows and providing a new evaluation resource, opening clear follow-on research directions."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper addresses a classic NLP task (metonymy resolution) with a new dataset (ReLocaR, \u00a73) and a clearly described modeling contribution (Predicate Window, \u00a74.1) and evaluates against established benchmarks (SemEval 2007, \u00a75) with baselines and ensemble comparisons reporting SOTA-level results. The methods (dependency parsing, LSTMs, embeddings), baselines (immediate/paragraph), annotation details and IAA (\u00a73.4) match expectations for a top-tier NLP venue, and the paper is positioned with respect to the SemEval literature and recent work (Related Work \u00a72), making it well targeted to the venue's community."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper offers moderate novelty: it introduces a new, better-balanced Wikipedia-based dataset (ReLocaR) and a clear annotation tweak (treating political-entity readings as metonymic) which are useful dataset contributions (Section 3). Methodologically the Predicate Window (PreWin) \u2014 using the entity\u2019s head dependency to extract up to 5 context words \u2014 is a simple but new heuristic for MR compared to standard fixed-context or paragraph baselines (Section 4.1\u20134.3). However, the approach is an incremental engineering idea (a dependency-based focused window and small LSTM ensemble) rather than a fundamentally new modeling paradigm, and dependency-based selection has precedents in other NLP tasks (cited work like Bunescu & Mooney, Liu et al.), with only minor SOTA gains reported."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper runs multiple experiments across three training sets (ReLocaR, SemEval, CoNLL) and two test sets, compares PreWin to immediate/paragraph baselines and an ensemble, and reports sensitivity to embedding dimensionality (Section 5, 5.5, 5.6) and dataset/annotation details (Section 3, 3.4). It discusses failure modes and limitations (Section 5.3) and provides inter-annotator agreement and dataset statistics. Missing, however, are full reproducibility details (exact model/hyperparameter settings, training regime, code) and more systematic ablations (e.g. deeper exploration of window-size/parser choices and per-model contributions beyond the ensemble voting), so the evaluation is strong but not exhaustively detailed."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper\u2019s main claims (PreWin outperforms immediate/paragraph baselines and an ensemble reaches a slight SOTA gain) are supported by reported experimental numbers (e.g. ensemble SemEval accuracy 86.3% vs prior 86.2%, ReLocaR results and per-class f\u2011scores), but the experimental methodology lacks crucial details and controls. Key concerns: small datasets (1k train/test for ReLocaR), class balancing by discarding examples (possible sampling bias), annotation procedure relying largely on a single main annotator with limited double\u2011annotation (IAA reporting includes a dubious \u201c97% agreement with self\u201d), no statistical significance testing of small improvements, and sparse model/hyperparameter/replication details (training splits, seeds, architecture tuning, parser variability, ablations). There are therefore some unsupported assumptions and missing evidence that weaken confidence in the robustness of the reported gains, though the results are not invalidated."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall the paper follows a logical structure (Related Work \u2192 Our Approach \u2192 Methodology \u2192 Results \u2192 Discussion) and clearly states its main contributions early (new ReLocaR dataset and the PreWin feature extraction method). Notation is minimal and consistent (PreWin, Immediate, Paragraph are defined and used coherently) and many concrete examples and table references (e.g. Table 3, example sentences) help understanding. However, presentation is undermined by numerous duplicated/repeated passages, formatting artifacts and missing/inlined figure content (many figures/appendix references without the visuals), which make parts of the text hard to follow and suggest the manuscript needs careful copyediting and reorganization."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to appropriate, relevant baselines (SemEval 2007 winners, Nastase & Strube 2009/2013, Farkas et al., Brun et al.) and reports standard metrics on the SemEval test set and new ReLocaR data (e.g. cites prior SOTA 86.2% and reports 86.3%). It clearly analyzes differences (PreWin vs Immediate/Paragraph baselines, error analysis) and discusses prior methods\u2019 reliance on external resources. One fairness caveat is that the reported SemEval ensemble was trained using additional annotated CoNLL data (section 4.5/5.5), so training conditions are not fully identical to some prior systems, which the paper does not fully control for."
+    }
+  }
+}

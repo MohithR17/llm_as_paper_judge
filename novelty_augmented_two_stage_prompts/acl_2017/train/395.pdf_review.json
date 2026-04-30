@@ -1,0 +1,100 @@
+{
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important problem\u2014learning multi-sense word representations\u2014and introduces a novel RL-based joint training scheme with linear-time sense selection and non-parametric sense-number discovery. Empirically it achieves state-of-the-art contextual similarity (SCWS) while using much less training data, which could change practitioner choices for sense induction and embedding learning. The approach\u2019s joint Q-learning formulation and efficient selection mechanism are likely to be built upon and open new research directions in sense-aware representation learning and efficient inference. Broader NLP tasks that rely on contextualized lexical semantics could benefit, though the impact beyond this subfield is conditional on wider adoption and replication. ",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper provides convincing experimental evidence on SCWS and demonstrates efficiency (linear-time selection) and automatic sense-number discovery, and reports hyperparameters\u2014supporting the main claims. However, evaluation is narrowly focused (single contextual similarity benchmark) and the summary does not indicate extensive ablation or sensitivity analyses of key design choices (e.g., reward design, exploration strategies) despite noting some training issues. Related work appears to be covered thoroughly and limitations (policy-gradient issues, exploration trade-offs) are explicitly discussed, but lack of mentioned code and broader downstream/NLP task evaluations (cf. prior multi-sense work such as Neelakantan et al. 2014 and Adaptive Skip-gram 2015) limits full reproducibility and empirical breadth.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The summary indicates the main claims are clearly stated and supported by experiments comparing to appropriate baselines (including recent multi-sense methods) and reported hyperparameters; the model design (MDP formulation, Q\u2011learning selection module, skip\u2011gram reward) is internally consistent. Mathematical framing appears sound in outline, and the paper justifies moving from policy\u2011gradient to Q\u2011learning; however the summary does not mention formal proofs or statistical significance testing, and code is not provided for reproducibility. There are minor gaps (e.g., reliance on empirical argument for linear\u2011time claim and lack of reported significance), but nothing that undermines the main technical conclusions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a clear intro, method, experiments and conclusion and states main contributions early (novel DRL-Sense framework, joint Q-learning formulation, linear-time selection, automatic sense-number discovery). Writing quality is reported as good and related work coverage thorough, which supports clarity; notation appears consistent and the methodology (MDP + Q-learning with CBOW-style Q-value estimation) is described in adequate detail. However, some presentation issues remain: figures/tables effectiveness and specific examples are not mentioned in the summary, and discussions around exploration challenges and comparisons to other methods (e.g., exponential vs linear claims) could benefit from clearer exposition.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses a core NLP/ML topic\u2014multi-sense word representations\u2014and proposes a novel DRL-based framework (sense selection as an MDP with Q-learning) that is directly relevant to the community. It evaluates on standard corpus (Wikipedia) and benchmarks (SCWS) with expected metrics (Spearman, AvgSimC/MaxSimC) and compares to appropriate baselines, demonstrating state-of-the-art results. The methodology (joint training of selection and representation modules, linear-time selection, non-parametric sense discovery) and thorough related-work situate it well for a top-tier NLP/ML audience. Overall the scope, audience, problem formulation, and evaluation meet venue expectations.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable and reasonably novel methodological shift by formulating sense selection as an MDP and using a Q-learning reward-passing mechanism to jointly train a sense selection module with a pure sense-level representation module \u2014 an approach not seen in the listed prior works (e.g., mixture models, adaptive skip-gram, or multilingual multi-sense methods). While the underlying problem (multi-sense embeddings) is well-studied and related works (e.g., mixture models and adaptive skip-gram) address similar goals, the reinforcement-learning formulation, surrogate reward design from representation likelihoods, and claimed linear-time sense selection together constitute a non-trivial and clearly differentiated extension. Given the close literature (items [1], [6] etc.), the contribution is more than incremental but stops short of a radical departure, so it merits a strong-but-not-maximal originality score.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against a strong set of relevant baselines (Huang et al. 2012; Neelakantan et al. 2014; Tian et al. 2014; Qiu et al. 2016; Bartunov et al. 2016; Li & Jurafsky 2015) and evaluates on standard data (April 2010 Wikipedia) and metrics (Spearman \u03c1, AvgSimC, MaxSimC / SCWS), which supports fair comparisons. The authors discuss methodological differences (Q-learning vs policy-gradient/EM) and report limitations and efficiency claims (linear-time selection vs Qiu et al.), and related-work coverage is described as thorough. However, some other closely related approaches (e.g., Adaptive Skip-gram / mixture-model style methods and a few 2015\u20132017 papers on multi-sense embeddings) appear in the surrounding literature and may not be fully compared or ablated in the experiments, so comparisons are strong but not exhaustively comprehensive.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "DRL-Sense is a novel reinforcement-learning based framework for learning multi-sense word representations composed of a sense selection module and a sense representation module.",
+      "The model jointly trains sense selection and sense representation via a reward-passing Q-learning formulation, enabling efficient (linear-time) sense selection and pure sense-level representation learning.",
+      "The approach supports non-parametric discovery of the number of senses per word (automatic sense-number determination) and demonstrates strong performance on contextual word similarity (state-of-the-art on SCWS) while using much less training data compared to word2vec."
+    ],
+    "methodology": "The paper formulates sense selection as an MDP and uses a Q-learning (reinforcement learning) approach with a CBOW-style estimation of Q-values to select senses; selected senses are passed to a sense representation module (skip-gram with negative sampling) which computes collocation likelihoods used as rewards to update the selection module, training both modules jointly.",
+    "datasets": [
+      "April 2010 Wikipedia dump (training corpus)",
+      "Stanford Contextual Word Similarities (SCWS)"
+    ],
+    "baselines": [
+      "Huang et al. (2012)",
+      "Neelakantan et al. (2014)",
+      "Tian et al. (2014)",
+      "Qiu et al. (2016)",
+      "Bartunov et al. (2016)",
+      "Li and Jurafsky (2015)"
+    ],
+    "metrics": [
+      "Spearman's rank correlation (\u03c1)",
+      "AvgSimC",
+      "MaxSimC"
+    ],
+    "limitations": [
+      "Policy-gradient joint probabilistic formulation underestimates probability for senses not yet selected and negative log-likelihood causes undesirable updates (motivating use of Q-learning).",
+      "Greedy sense selection performs poorly in early training due to exploration-exploitation trade-off (requires exploration mechanisms such as dropout).",
+      "Selection of sense identity sequences via prior EM methods can be computationally expensive; paper argues Qiu et al. (2016) is exponential while their method is linear (stated as comparison)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - multi-sense word representations / word embeddings",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 6,
+    "paper_novelty_mean": 0.6967,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

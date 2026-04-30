@@ -1,0 +1,170 @@
+{
+  "SOUNDNESS_CORRECTNESS": 3,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "APPROPRIATENESS": 3,
+  "SUBSTANCE": 3,
+  "ORIGINALITY": 3,
+  "IMPACT": 3,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper makes clear, testable claims and provides empirical comparisons showing improvement over PMI-IR, but the technical support is incomplete: there is no formal theoretical justification for why a PCA-derived 2D sentiment axis yields reliable sentiment orientations and no proofs or bounds are given. The experimental methodology is weakly controlled \u2014 only a single, dated unsupervised baseline (PMI-IR) is used and evaluation appears limited to IMDB/Stanford settings with no diverse modern baselines or ablation studies (e.g., PCA dimensionality, reference-word selection). Given these gaps, the results are promising but some key claims (robustness, data-efficiency, generality) are not fully supported by the evidence presented. | B(3): The paper presents a plausible, practically useful method (Word2Vec + PCA to recover a sentiment axis and compute SO scores for entire vocabulary) and reports improvements over Turney's PMI-IR baseline, so the core technical claim is supported empirically. However, the summary lacks key experimental details and rigor (evaluation metrics unspecified, no mention of statistical significance or multiple baselines beyond PMI-IR, and no code availability), and some methodological choices (reducing to 2 PCA dimensions, selection of point words, and averaging to form reference vectors) are under-justified. Given these strengths and gaps, the contribution appears promising and reproducible in spirit but has enough missing evidence and potential unsupported assumptions to warrant a cautious score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper makes clear, testable claims and provides empirical comparisons showing improvement over PMI-IR, but the technical support is incomplete: there is no formal theoretical justification for why a PCA-derived 2D sentiment axis yields reliable sentiment orientations and no proofs or bounds are given. The experimental methodology is weakly controlled \u2014 only a single, dated unsupervised baseline (PMI-IR) is used and evaluation appears limited to IMDB/Stanford settings with no diverse modern baselines or ablation studies (e.g., PCA dimensionality, reference-word selection). Given these gaps, the results are promising but some key claims (robustness, data-efficiency, generality) are not fully supported by the evidence presented."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper presents a plausible, practically useful method (Word2Vec + PCA to recover a sentiment axis and compute SO scores for entire vocabulary) and reports improvements over Turney's PMI-IR baseline, so the core technical claim is supported empirically. However, the summary lacks key experimental details and rigor (evaluation metrics unspecified, no mention of statistical significance or multiple baselines beyond PMI-IR, and no code availability), and some methodological choices (reducing to 2 PCA dimensions, selection of point words, and averaging to form reference vectors) are under-justified. Given these strengths and gaps, the contribution appears promising and reproducible in spirit but has enough missing evidence and potential unsupported assumptions to warrant a cautious score."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized and readable: the introduction, method (including the SO(w)=CosDst(Vec_pos,w)-CosDst(Vec_neg,w) formulation), experiments on IMDB and SST, and conclusion are clearly presented and the writing quality is reported as good. Main contributions are stated early and related work coverage is thorough; notation for the core method appears defined. However presentation omissions reduce clarity: evaluation metrics are not specified in the summary and no information about figures/tables or illustrative examples is given, which hampers reproducibility and quick comprehension of results. With those experimental-reporting gaps filled the paper would reach exceptional clarity. | B(4): The paper appears well-organized with a clear flow from motivation to method to experiments and conclusion, and the main contributions (multi-dimensional Word2Vec sentiment axis, data-efficiency, vocabulary-wide SO scores, unsupervised/semi-supervised variants) are stated early. Notation and hyperparameter reporting are indicated as present and consistent enough for reproducibility, which I value as a practical researcher. However the summary does not confirm whether figures/tables or examples effectively illustrate key steps (PCA projection, reference-vector construction, review-level classification), so presentation could be marginally improved in those areas. Overall the writing quality is described as good with no major ambiguity or grammatical issues.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized and readable: the introduction, method (including the SO(w)=CosDst(Vec_pos,w)-CosDst(Vec_neg,w) formulation), experiments on IMDB and SST, and conclusion are clearly presented and the writing quality is reported as good. Main contributions are stated early and related work coverage is thorough; notation for the core method appears defined. However presentation omissions reduce clarity: evaluation metrics are not specified in the summary and no information about figures/tables or illustrative examples is given, which hampers reproducibility and quick comprehension of results. With those experimental-reporting gaps filled the paper would reach exceptional clarity."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper appears well-organized with a clear flow from motivation to method to experiments and conclusion, and the main contributions (multi-dimensional Word2Vec sentiment axis, data-efficiency, vocabulary-wide SO scores, unsupervised/semi-supervised variants) are stated early. Notation and hyperparameter reporting are indicated as present and consistent enough for reproducibility, which I value as a practical researcher. However the summary does not confirm whether figures/tables or examples effectively illustrate key steps (PCA projection, reference-vector construction, review-level classification), so presentation could be marginally improved in those areas. Overall the writing quality is described as good with no major ambiguity or grammatical issues."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "Both reviewers agree the experimental comparison is limited \u2014 the paper only benchmarks against the older PMI-IR baseline and appears to mix datasets (IMDB vs Stanford Phrases), raising fairness and reproducibility concerns. They also note the authors clearly describe methodological differences and cover related work, but fail to include contemporary unsupervised, lexicon-based, embedding, or simple supervised baselines. Given these substantive but not fatal shortcomings, a middle score reflects that the contribution is promising yet under-benchmarked and needs stronger, more comparable evaluations to be fully convincing.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper compares only against a single, older unsupervised baseline (PMI-IR), which is inadequate given many contemporary embedding- and sentiment-induction methods; this is a major omission from the perspective of current state-of-the-art baselines. Comparisons also appear uneven: the proposed method is evaluated on IMDB while the PMI-IR replication is reported on Stanford phrases, raising fairness concerns about dataset/evaluation parity. The manuscript describes methodological differences and argues advantages over PMI-IR, and related work is reportedly thorough, but it fails to acknowledge or benchmark against other relevant modern approaches, so the empirical comparison is insufficient."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper compares its method only against the classical PMI-IR (Turney, 2002) baseline, which is a relevant but fairly old point of comparison; it omits more recent unsupervised/lexicon and sentiment-embedding baselines or simple supervised classifiers that would contextualize gains. Fairness is unclear because evaluation metrics were not specified in the summary and the PMI-IR replication is run on Stanford phrases while the proposed method is trained on IMDB, so conditions may not be strictly comparable. The authors do discuss PMI-IR\u2019s data-sparsity limitation and clearly describe how their vector-space/PCA approach differs, and related work coverage is reported as thorough, but the experimental comparisons are limited in scope so the paper only partially satisfies a practical reviewer\u2019s expectations for comprehensive benchmarking."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the problem and proposed PCA-based method are relevant to top-tier NLP/ML audiences and that the paper is empirically oriented and usable. However, both also note limited empirical comparisons (only PMI-IR baseline) and a lack of formal/theoretical justification and thorough evaluation details. Given these strengths but substantial methodological and evaluation weaknesses, a borderline appropriateness score of 3 is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The topic (unsupervised sentiment orientation from distributional vectors) is squarely within top-tier NLP/ML scope and the paper addresses the right audience by proposing a vector-space/PCA-based method and evaluating on IMDB and the Stanford Sentiment Treebank. However, from a theory-purist perspective the submission appears to lack formal justification or provable properties for the proposed PCA-derived sentiment axis, and it compares only to a single, dated baseline (PMI-IR), which is insufficient for a top venue. While hyperparameters are reported and related work coverage is thorough, the empirical evaluation is limited in baseline diversity and theoretical analysis, making the paper a borderline fit for a top conference."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses a clearly relevant NLP problem\u2014unsupervised sentiment orientation\u2014with a practical, empirically-minded method (Word2Vec + PCA) evaluated on standard datasets (IMDB, Stanford Sentiment Treebank), which suits a top-tier NLP/ML audience. The approach\u2019s strengths (vocabulary-wide SO scores, semi-supervised option, data-efficiency claims) make it usable and of interest to the community. My main reservation is methodological completeness: evaluation metrics aren\u2019t specified and the only baseline is PMI-IR (an older, data-hungry method), which weakens claims of superiority and may require stronger comparative evaluation for a perfect fit. Overall, it\u2019s a good fit but would benefit from clearer/stronger empirical validation and reproducibility details."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper presents a clear, practical method and evaluates on standard datasets but suffers from limited baselines, unspecified evaluation metrics, missing ablation/sensitivity analyses, and incomplete reproducibility (no code, some procedural details absent). Given these substantive but fixable shortcomings, the work is promising and empirically supported to a degree but not yet robust enough for a higher rating, so I assign a score of 3.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The experimental validation is shallow: only a single classical baseline (PMI-IR) is compared, so claims of outperforming prior work lack diverse, state-of-the-art comparisons. While two datasets (IMDB and Stanford Sentiment Treebank) are used, evaluation domains remain limited and no metrics are specified in the summary. Ablation/sensitivity analyses on critical design choices (PCA dimensionality, reference-word selection) appear absent despite hyperparameters being reported. Reproducibility is weak (code not mentioned) and failure modes are not discussed for the proposed method itself."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper provides a clear, practical method and evaluates it on standard datasets (IMDB for vector learning and Stanford Sentiment Treebank for PMI-IR replication) and compares against Turney (2002), which supports the main empirical claim. However, key experimental analyses are missing: evaluation metrics are not specified, there are no reported ablations or sensitivity analyses for choices like PCA dimensionality or point-word selection, and failure modes/limitations of the proposed method itself are not discussed. Reproducibility is partially supported (hyperparameters reported, common datasets used) but code is not provided and some procedural details (exact evaluation protocol/metrics) are absent, so the evidence is adequate but incomplete for strong practical adoption."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper composes established tools (word embeddings, PCA, cosine scoring) into a practical unsupervised pipeline and therefore does not present a fundamentally new theoretical contribution. Given the pragmatic value and clear empirical/engineering usefulness\u2014balanced against the lack of novel theory or strong modern baselines\u2014I assign a moderate originality score of 3 to reflect an incremental but practically valuable contribution.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The method mainly composes existing components\u2014Word2Vec embeddings, cosine distances, and PCA\u2014to extract a \u2018\u2018sentiment axis\u2019\u2019 and then averages reference-word vectors; this is an intuitive but largely unsurprising combination rather than a fundamentally new formulation. The paper contrasts itself primarily with PMI-IR (Turney 2002), an older and data-hungry baseline, and does not present formal theoretical guarantees or novel analytic properties of the proposed axis, which I would expect for higher novelty. Given these facts (simple re-use of established tools, limited set of modern baselines, and no provable properties), the contribution reads as a mostly incremental application of known techniques rather than a genuinely new paradigm."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper proposes a practical unsupervised pipeline (Word2Vec-style vectors + PCA to extract a sentiment axis, averaged reference vectors and cosine-based SO scores) that is a useful and clearly differentiated alternative to PMI-IR and addresses data-sparsity. However, the core components (distributional word vectors, dimensionality reduction to find semantic axes, and cosine scoring) are established tools, so the contribution reads as an incremental but pragmatic combination rather than a fundamentally new method. From a deployability/empirical perspective I value that it produces scores for the full vocabulary and supports semi-supervised variants, but an NLP expert would likely view the novelty as moderate rather than groundbreaking."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper addresses an important, practical problem and offers a simple, reproducible PCA-based method that empirically improves over PMI\u2011IR and is likely useful in low-resource settings. However, Reviewer A correctly notes limited theoretical justification, sparse comparisons to modern baselines, and limited empirical breadth, which constrain broader influence. Given the clear practical utility but modest novelty and evaluation gaps, a moderate impact score is warranted.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper tackles an important practical problem (unsupervised estimation of word sentiment) and proposes a simple, practical vector-space/PCA-based technique that empirically beats the classic PMI\u2011IR baseline on IMDB and Stanford Sentiment data. However, from the provided summary the work lacks theoretical justification for why a PCA-derived axis yields robust sentiment projections, compares only to a single, old baseline (PMI\u2011IR) rather than multiple modern unsupervised and supervised competitors, and provides limited empirical breadth/ablation; these shortcomings substantially limit its likely influence beyond a niche contribution. With stronger theoretical analysis and broader, contemporary baselines the approach could have had greater impact."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles an important, practical problem\u2014producing robust unsupervised sentiment orientations without huge corpora\u2014and proposes a simple, reproducible vector-space + PCA recipe that outperforms the classic PMI-IR baseline on IMDB/Stanford data. From my applied perspective the method\u2019s strengths (data efficiency, full-vocabulary sentiment scores, and an easy semi\u2011supervised variant) make it likely to be adopted in low-resource and production settings. While not a theoretical breakthrough, it provides a widely usable tool that should change practice for unsupervised sentiment induction and enable follow\u2011on work."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces a novel vector-space (Word2Vec-based) approach to measure word sentiment orientations using multi-dimensional vector spaces and PCA-derived sentiment dimension.",
+      "The new unsupervised methodology outperforms the previous unsupervised PMI-IR approach (Turney, 2002).",
+      "The method is more practical and data-efficient, and is robust to the data-sparseness problem that affects PMI-IR.",
+      "The approach computes sentiment orientations for all words in the vocabulary (not only phrases) and supports both unsupervised and semi-supervised variants."
+    ],
+    "methodology": "Build high-dimensional word vectors from the IMDB dataset (use adjectives/adverbs as point words), compute pairwise cosine distances, apply PCA to reduce to 2 dimensions to find a sentiment axis, form positive/negative reference vectors by averaging words on each side of the axis and label polarity by SO(w)=CosDst(Vec_pos,w)-CosDst(Vec_neg,w); classify a review by the mean SO of its words. A PMI-IR replication on Stanford phrases is used as a baseline.",
+    "datasets": [
+      "IMDB movie dataset (Maas et al., 2011)",
+      "Stanford Sentiment Treebank (Socher et al., 2013)"
+    ],
+    "baselines": [
+      "PMI-IR (Turney, 2002)"
+    ],
+    "metrics": [],
+    "limitations": [
+      "PMI-IR (Turney, 2002) requires very large corpora for reliable PMI estimates and suffers from data sparsity; availability of a large corpus is a major constraint (noted as a limitation of PMI-IR)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - sentiment analysis / distributional semantics",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior NLP researcher with a decade of experience in distributional semantics and representation learning; strong publication record on theoretical analyses of embedding methods.",
+      "traits": [
+        "Penalizes papers that introduce methods without formal justification or analysis (subtracts points if no theoretical argument, bound, or provable property is provided).",
+        "Requires at least three diverse, state-of-the-art baselines (subtracts points if \u22642 baselines or if baselines are outdated/weak).",
+        "Penalizes papers that evaluate on a single domain/dataset (subtracts points if empirical validation is limited to one corpus).",
+        "Prefers methods with clearly justified hyperparameter choices and ablation studies (subtracts points if no ablation on critical design choices like PCA dimensionality, reference-word selection)."
+      ],
+      "reviewing_style": "Focuses on conceptual soundness and theoretical justification first; empirical results are secondary and must be accompanied by solid analysis and diverse baselines."
+    },
+    "reviewer_b": {
+      "name": "Practical Empiricist",
+      "background": "Applied NLP scientist working on sentiment analysis and low-resource language applications; extensive experience deploying lightweight unsupervised methods in industry and resource-constrained settings.",
+      "traits": [
+        "Rewards simple, practical unsupervised methods that improve performance or robustness with limited data (adds points for demonstrated small-data gains or data-efficiency claims).",
+        "Gives credit for methods that produce usable artifacts for downstream or production use (adds points if method computes scores for whole vocabulary and supports semi-supervised variants).",
+        "Favors empirical clarity and reproducibility: rewards papers that report clear procedures and use commonly available datasets/tools (adds points if implementation details and datasets are standard like IMDB/Word2Vec).",
+        "Tolerant of limited theoretical analysis if the empirical improvements are clear and the method is easy to adopt (does not penalize lack of formal proof when practical benefits are demonstrated)."
+      ],
+      "reviewing_style": "Values empirical effectiveness, simplicity, and usability; willing to accept less formal justification if the approach is practical, reproducible, and shows clear gains, especially in low-data regimes."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 5,
+    "total_dimensions": 7,
+    "debate_rate": 0.714
+  }
+}

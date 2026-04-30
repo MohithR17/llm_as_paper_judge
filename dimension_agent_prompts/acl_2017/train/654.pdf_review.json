@@ -1,0 +1,39 @@
+{
+  "CLARITY": 3,
+  "ORIGINALITY": 3,
+  "MEANINGFUL_COMPARISON": 5,
+  "SUBSTANCE": 4,
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is generally well-organized (Model \u2192 Experiments \u2192 Analysis \u2192 Related Work) and states its main contributions early (deep highway BiLSTM + constrained decoding). Notation is mostly consistent and equations are provided (Eqns. 1, 2, 17, 18), and figures/tables are referenced (Figure 2, 7; Tables 1\u20133). However, the text contains many duplicated/garbled passages, repeated sentences and citation fragments (e.g., multiple repetitions of the same paragraphs, malformed citation parentheticals), which hurt readability and make some sections hard to follow."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper largely combines known components (treating SRL as BIO tagging per Zhou & Xu 2015; highway connections Srivastava/Zhang, recurrent dropout Gal, orthonormal init, and product-of-experts ensembling Hinton) and adapts an A* constrained decoding strategy similar to Lewis & Steedman (2014). The authors clearly state these distinctions and provide thorough empirical analysis and SOTA gains, but they do not propose a fundamentally new model or formulation\u2014the novelty is an effective integration and careful evaluation of existing techniques rather than a qualitatively new idea."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares to a wide range of appropriate recent baselines (Zhou & Xu 2015; FitzGerald et al. 2015; T\u00e4ckstr\u00f6m et al. 2015; Punyakanok et al. 2008; Marcheggiani et al. 2017, etc.) and reports results on standard benchmarks (CoNLL-2005 and CoNLL-2012) using the official evaluation script. Comparisons appear fair (same data/evaluation, use of published model predictions where available) and the paper includes ablations and analyses (e.g. no-highway/no-dropout, constrained decoding, syntax-constrained decoding with different parsers) that clearly distinguish the contributions. The paper also acknowledges cases where syntax helps or harms and discusses prior methods and global constraints, indicating comprehensive and balanced comparison coverage."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper runs experiments on the two standard benchmarks (CoNLL-2005 and CoNLL-2012) and reports single and ensemble results to support its main claims (Section 3, Tables 1\u20132). It includes targeted ablations (Figure 2: no highway, no RNN-dropout, no orthonormal init), focused analyses of long-range dependencies (Section 4.2, Figure 5), constraint/syntax experiments (Section 4.4, Figure 7), and an error-type/oracle analysis (Table 3), and compares to prior systems (Related Work). Reproducibility is reasonably well addressed (architecture choices, 8-layer BiLSTM, GloVe 100d, Adadelta settings, A* decoding, ensembling procedure) and code is promised, but some low-level training/hyperparameter details and exact model sizes are not fully specified, so the work is solid with minor gaps for exact replication."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "This paper tackles an important, widely-studied problem (span-based SRL) and pushes state-of-the-art substantially (single and ensemble models yield +0.4 to +2.3 F1 and an 83.2/83.4 F1 ensemble on CoNLL-2005/2012, ~10% relative error reduction). Its combination of deep highway BiLSTMs, constrained A* decoding, and detailed analyses (showing strong long-range modeling and where syntax still helps) is likely to change how researchers approach SRL and encourage adoption (authors release code/models). While not overturning NLP as a whole, the results and empirical insights provide a strong, broadly useful advance and open follow-up work on integrating syntax and structured decoding, giving it clear high impact."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 this is squarely within top NLP/ML venue scope: semantic role labeling is a core NLP task and the paper reports state-of-the-art results on standard benchmarks (CoNLL-2005 and CoNLL-2012) using the official evaluation script. The audience is appropriate (NLP/ML researchers interested in sequence models and structured prediction), the formulation (BIO tagging with constrained A* decoding) matches community standards, and the methods/evaluation (deep BiLSTMs with highway connections, recurrent dropout, ensembling, ablations and detailed analyses) follow expected practices. The paper is well positioned relative to prior work (Zhou & Xu, syntax-based SRL, ILP/dynamic programming methods) and discusses where syntax can still help, making it a strong fit for a top venue."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and supported by experiments and ablations on standard benchmarks (CoNLL-2005/2012) with reported F1 improvements, and detailed analyses (e.g. Figure 2 ablations, long-range dependency evaluation). The mathematical formulation (Eqs.1\u20132, A* heuristic in Eq.18) is correct given non\u2011negative penalties (so the heuristic is admissible and A* yields optimal sequences), and the constrained decoding and ensemble methods are described and empirically evaluated against appropriate baselines. Minor issues: they do not report statistical significance, give limited hyperparameter/optimization details, and make some empirical claims (e.g. A* efficiency due to \u2018\u2018peaked\u2019\u2019 distributions) without rigorous quantification, but these do not undermine the main technical conclusions."
+    }
+  }
+}

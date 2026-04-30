@@ -1,0 +1,93 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized and presents the hierarchical SampleRNN method clearly (intro \u2192 method \u2192 experiments \u2192 conclusion) and states main contributions early, as reflected by the detailed description of the tiered RNN+MLP architecture and training with TBPTT. Notation appears consistent and the paper reports hyperparameters, datasets, baselines, and metrics (NLL, human AB tests), indicating effective presentation of experiments; figures/tables and examples are implied to be informative by the thorough experimental coverage. Writing quality is noted as good and related work coverage adequate, though some minor presentation issues (e.g., limited detail in the WaveNet re-implementation comparison) keep it from being exceptional. | B(4): The paper is well organized with a clear flow from problem to hierarchical method to experiments, and the main contributions (the SampleRNN architecture and training approach) are stated early. Notation appears consistent and the methodology description (tiers, conditioning, truncated BPTT) is clear; figures/tables and example evaluations (NLL, human AB tests, datasets) are informative. Writing quality is reported as good and the related work/hyperparameters are adequately covered. Minor presentation issues remain (e.g., caveats about the WaveNet reimplementation and TBPTT trade-offs could be explained a bit more explicitly), so I rate it a 4.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized and presents the hierarchical SampleRNN method clearly (intro \u2192 method \u2192 experiments \u2192 conclusion) and states main contributions early, as reflected by the detailed description of the tiered RNN+MLP architecture and training with TBPTT. Notation appears consistent and the paper reports hyperparameters, datasets, baselines, and metrics (NLL, human AB tests), indicating effective presentation of experiments; figures/tables and examples are implied to be informative by the thorough experimental coverage. Writing quality is noted as good and related work coverage adequate, though some minor presentation issues (e.g., limited detail in the WaveNet re-implementation comparison) keep it from being exceptional."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized with a clear flow from problem to hierarchical method to experiments, and the main contributions (the SampleRNN architecture and training approach) are stated early. Notation appears consistent and the methodology description (tiers, conditioning, truncated BPTT) is clear; figures/tables and example evaluations (NLL, human AB tests, datasets) are informative. Writing quality is reported as good and the related work/hyperparameters are adequately covered. Minor presentation issues remain (e.g., caveats about the WaveNet reimplementation and TBPTT trade-offs could be explained a bit more explicitly), so I rate it a 4."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a clearly new architecture\u2014hierarchical multi-timescale SampleRNN with RNN-based frame-level modules conditioning a sample-level autoregressive MLP and discrete q-way Softmax outputs\u2014which is a distinct approach to raw waveform generation compared to contemporaneous work (e.g., WaveNet). The use of discrete outputs to make end-to-end training with truncated BPTT tractable, plus the explicit multi-tier temporal hierarchy, represents a non-trivial methodological innovation rather than a simple combination of existing pieces. The authors also explicitly differentiate their contributions from prior baselines and study ablations (quantization, AR vs conditionally independent outputs), which would be informative to experts. Overall this is notable novelty, though it builds on the emerging trend of autoregressive raw-audio models rather than introducing an entirely orthogonal paradigm. | B(4): The paper proposes a clearly new architectural perspective for raw audio generation: a hierarchical multi-timescale model where RNN-based frame-level tiers condition a sample-level autoregressive MLP with discrete q-way Softmax outputs. This is distinct from prior work like WaveNet (dilated convolutions) and introduces non-trivial design choices (hierarchical conditioning, TBPTT on subsequences, quantized Softmax outputs) with ablation studies. Given these concrete differences and the end-to-end formulation for sample-level audio, the contribution shows notable novelty though it builds on existing autoregressive modeling ideas rather than being an entirely radical departure.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a clearly new architecture\u2014hierarchical multi-timescale SampleRNN with RNN-based frame-level modules conditioning a sample-level autoregressive MLP and discrete q-way Softmax outputs\u2014which is a distinct approach to raw waveform generation compared to contemporaneous work (e.g., WaveNet). The use of discrete outputs to make end-to-end training with truncated BPTT tractable, plus the explicit multi-tier temporal hierarchy, represents a non-trivial methodological innovation rather than a simple combination of existing pieces. The authors also explicitly differentiate their contributions from prior baselines and study ablations (quantization, AR vs conditionally independent outputs), which would be informative to experts. Overall this is notable novelty, though it builds on the emerging trend of autoregressive raw-audio models rather than introducing an entirely orthogonal paradigm."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clearly new architectural perspective for raw audio generation: a hierarchical multi-timescale model where RNN-based frame-level tiers condition a sample-level autoregressive MLP with discrete q-way Softmax outputs. This is distinct from prior work like WaveNet (dilated convolutions) and introduces non-trivial design choices (hierarchical conditioning, TBPTT on subsequences, quantized Softmax outputs) with ablation studies. Given these concrete differences and the end-to-end formulation for sample-level audio, the contribution shows notable novelty though it builds on existing autoregressive modeling ideas rather than being an entirely radical departure."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper\u2019s main claims are clearly stated and supported by experiments (NLL improvements, human AB preference tests, and ablations on quantization and architecture variants) across multiple datasets and baselines including RNN and a WaveNet re\u2011implementation. The model formulation (hierarchical RNN frame tiers conditioning a sample\u2011level autoregressive MLP with q\u2011way softmax) is internally consistent and trained end\u2011to\u2011end with TBPTT; there are no evident mathematical errors in the described approach. Experimental methodology is largely sound with appropriate baselines and ablations, but the admitted caveat that the WaveNet re\u2011implementation may differ from the original and the absence of reported statistical significance tests are minor weaknesses. Overall the conclusions are justified by the presented results, with only modest concerns about exact baseline parity and statistical rigor. | B(4): The main claims (hierarchical multi-timescale autoregressive modeling with discrete q-way Softmax outputs trained end-to-end with TBPTT) are clearly stated and supported by experiments reporting improved NLL and human preference results across multiple datasets and ablations. The modeling approach (autoregressive factorization with frame-level RNNs conditioning a sample-level MLP) is technically sound and there are no apparent mathematical errors in the summary. The experimental methodology is broadly appropriate (multiple datasets, relevant baselines including RNN and a WaveNet reimplementation, and human AB tests), but the authors note important caveats: the WaveNet reimplementation may differ from the original and some evaluation choices (e.g., lack of reported statistical significance) are not detailed, which are minor limitations. Overall, these do not undermine the core technical claims, so the paper merits a high but not perfect score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and supported by experiments (NLL improvements, human AB preference tests, and ablations on quantization and architecture variants) across multiple datasets and baselines including RNN and a WaveNet re\u2011implementation. The model formulation (hierarchical RNN frame tiers conditioning a sample\u2011level autoregressive MLP with q\u2011way softmax) is internally consistent and trained end\u2011to\u2011end with TBPTT; there are no evident mathematical errors in the described approach. Experimental methodology is largely sound with appropriate baselines and ablations, but the admitted caveat that the WaveNet re\u2011implementation may differ from the original and the absence of reported statistical significance tests are minor weaknesses. Overall the conclusions are justified by the presented results, with only modest concerns about exact baseline parity and statistical rigor."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The main claims (hierarchical multi-timescale autoregressive modeling with discrete q-way Softmax outputs trained end-to-end with TBPTT) are clearly stated and supported by experiments reporting improved NLL and human preference results across multiple datasets and ablations. The modeling approach (autoregressive factorization with frame-level RNNs conditioning a sample-level MLP) is technically sound and there are no apparent mathematical errors in the summary. The experimental methodology is broadly appropriate (multiple datasets, relevant baselines including RNN and a WaveNet reimplementation, and human AB tests), but the authors note important caveats: the WaveNet reimplementation may differ from the original and some evaluation choices (e.g., lack of reported statistical significance) are not detailed, which are minor limitations. Overall, these do not undermine the core technical claims, so the paper merits a high but not perfect score."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes SampleRNN, an end-to-end unconditional generative model for raw audio waveforms that models one sample at a time using a hierarchy of modules operating at different temporal resolutions.",
+      "Uses RNN-based frame-level modules (at slower clock-rates) conditioning a sample-level autoregressive MLP with discrete (q-way Softmax) outputs, enabling tractable training on short subsequences via truncated backpropagation through time (TBPTT).",
+      "Demonstrates that the hierarchical multi-timescale architecture improves NLL and human-preferred sample quality compared to strong baselines and studies variants/ablation (including quantization, autoregressive vs conditionally independent outputs, and hybrid variants)."
+    ],
+    "methodology": "SampleRNN models p(x1..xT) autoregressively using a hierarchy of tiers: higher-tier deep RNNs operate on non-overlapping frames to produce conditioning vectors which are upsampled and fed to a lower-tier sample-level MLP that predicts the next quantized sample via a q-way Softmax; the full model is trained end-to-end with truncated BPTT.",
+    "datasets": [
+      "Blizzard (subset, 20.5 hours)",
+      "Onomatopoeia (\u22483.5 hours)",
+      "Music (32 Beethoven piano sonatas, \u224810 hours)"
+    ],
+    "baselines": [
+      "RNN (baseline)",
+      "WaveNet (re-implementation)",
+      "RNN-GMM",
+      "SampleRNN-GMM"
+    ],
+    "metrics": [
+      "Negative Log-Likelihood (NLL) in bits per audio sample (bits per dimension)",
+      "Human AB preference tests (pairwise preference)",
+      "(In a memory experiment) percentage consistency of speaker identity across segments (reported 83%)"
+    ],
+    "limitations": [
+      "Multi-Softmax variant (predicting whole frames conditionally independently) performs significantly worse and fails to generate convincing samples.",
+      "Real-valued output variants (GMM outputs) produced samples that were nearly random noise despite better NLL in some cases.",
+      "SampleRNN-WaveNet hybrid variant did not meet expectations in preliminary experiments.",
+      "Training uses truncated BPTT with a trade-off: longer subsequences improve performance but increase memory and convergence time (best models trained with subsequence length 512).",
+      "WaveNet re-implementation may differ from the original due to missing hyperparameter details and limited compute, limiting exact comparison."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Audio generation - raw waveform modeling",
+    "writing_quality": "good"
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

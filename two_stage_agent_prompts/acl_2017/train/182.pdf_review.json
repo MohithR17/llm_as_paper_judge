@@ -1,0 +1,72 @@
+{
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "APPROPRIATENESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines existing components (text-CNN, 3D-CNN, openSMILE features) with LSTM-based context modeling and a hierarchical fusion scheme to produce context-sensitive unimodal then multimodal representations. The hierarchical two-stage LSTM and the emphasis on bidirectional/context-aware LSTMs (bc-LSTM) constitute a non-trivial engineering extension over prior fusion approaches (e.g., Poria et al., Rozgic et al.), but do not introduce a fundamentally new modeling paradigm. Given the use of standard datasets (MOSI, MOUD, IEMOCAP) and established baselines, the contribution is a moderate, incremental novelty rather than a highly original breakthrough."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates the proposed contextual LSTM and hierarchical fusion on three standard datasets (MOSI, MOUD, IEMOCAP), compares to sensible baselines and prior state-of-the-art (Poria et al., Rozgic et al.), reports model variants (sc-LSTM, bc-LSTM, h-LSTM) and hierarchical vs non-hierarchical fusion, and includes generalization experiments and an explicit discussion of multiple failure modes. Hyperparameters are reported and related work coverage is adequate. Minor gaps remain (code is not mentioned and evaluation appears to rely on classification accuracy rather than a wider set of metrics or clearly stated per-modality ablations), so the experimental depth is strong but not exhaustive."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s main claims (contextual LSTMs and hierarchical fusion improve utterance-level multimodal sentiment classification) are clearly stated and supported by experiments on MOSI, MOUD and IEMOCAP with comparisons to reasonable baselines (uni\u2011SVM, Poria et al., Rozgic et al.) and reported 5\u201310% gains. There are no complex mathematical derivations to scrutinize, and hyperparameters are reported. Experimental methodology is largely sound (multiple datasets, ablated model variants), but the summary does not mention statistical significance testing or code release, and some failure modes (neutral class, cross\u2011lingual issues) indicate remaining weaknesses. Overall the technical claims are supported though minor methodological reporting gaps prevent a perfect rating."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem\u2014modeling contextual relationships for utterance-level multimodal sentiment\u2014and demonstrates substantial empirical gains (reported 5\u201310% improvements over prior state-of-the-art) on standard datasets (MOSI, MOUD, IEMOCAP). Its hierarchical fusion and bidirectional/context-aware LSTM variants present a clear methodological direction that is likely to change how researchers fuse context and modalities. However, practical limitations (sensitivity to noisy faces/audio, contextual bias, poor cross-lingual generalization, and neutral-class weaknesses) and no mention of released code temper its reach, making the impact strong but not fully transformative."
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "The paper addresses multimodal utterance-level sentiment and emotion recognition using LSTM-based contextual and hierarchical fusion models, which lies squarely within NLP/ML interests. It evaluates on standard datasets (MOSI, MOUD, IEMOCAP), compares to appropriate prior baselines (Poria et al., Rozgic et al.), and reports standard metrics and hyperparameters, matching venue expectations. The work is well positioned for the community, with only minor scope concerns that it is a focused application study within multimodal sentiment analysis rather than a broader theoretical contribution."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to sensible baselines (uni\u2011SVM, Poria et al. 2015 MKL, Rozgic et al. 2012 SVM trees) on standard datasets (MOSI, MOUD, IEMOCAP) using the same metric (accuracy) and evaluates ablations (sc\u2011LSTM, bc\u2011LSTM, hierarchical fusion). Related work coverage is described as adequate and the authors claim clear gains over prior state\u2011of\u2011the\u2011art. However, the summary suggests possible omission of newer deep\u2011learning baselines beyond the cited works and does not indicate explicit acknowledgment when prior methods perform comparably or better, so the comparisons are good but not fully comprehensive."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well organized \u2014 the summary clearly describes methodology, datasets, baselines, evaluation metrics, and stated limitations, indicating a logical intro \u2192 method \u2192 experiments \u2192 conclusion flow. The main contributions are stated early and explicitly (LSTM-based contextual modeling, hierarchical fusion, bc-LSTM benefits). Notation and experimental details seem consistently reported (method description, hyperparameters reported), and experimental comparisons are clearly presented (datasets, baselines, accuracy metrics), while the overall writing quality is described as good. Minor presentation details (e.g., explicit comment on individual figures/tables) are not reported in the summary, hence a small deduction."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "An LSTM-based model that models contextual relationships among utterances improves utterance-level multimodal sentiment classification compared to context-independent baselines.",
+      "A hierarchical fusion framework that first produces context-sensitive unimodal features and then fuses them with a second-level contextual LSTM outperforms a non-hierarchical fusion approach.",
+      "Bidirectional/context-aware LSTM variants (bc-LSTM) that use both preceding and following utterances perform better than single-direction variants (sc-LSTM).",
+      "The proposed method outperforms prior state-of-the-art approaches (e.g., Poria et al., Rozgic et al.) by a significant margin (reported as 5\u201310%) and shows robustness in generalization experiments."
+    ],
+    "methodology": "Extract context-independent unimodal features using text-CNN (text), 3D-CNN (video), and openSMILE (audio), then feed these features into contextual LSTM variants (sc-LSTM, bc-LSTM, h-LSTM) and a hierarchical fusion scheme to obtain context-sensitive unimodal and multimodal utterance-level representations for sentiment/emotion classification.",
+    "datasets": [
+      "MOSI",
+      "MOUD",
+      "IEMOCAP"
+    ],
+    "baselines": [
+      "uni-SVM",
+      "Poria et al. (2015) - multiple kernel learning (MKL) approach",
+      "Rozgic et al. (2012b) - SVM trees for fusion"
+    ],
+    "metrics": [
+      "classification accuracy"
+    ],
+    "limitations": [
+      "Failures when face is hard to recognize or audio is noisy.",
+      "Bias toward surrounding utterances causes errors when sentiment is weak and non-contextual.",
+      "Poor cross-lingual generalization for audio and textual modalities (e.g., MOSI-trained models perform poorly on Spanish MOUD for text/audio).",
+      "Poor performance classifying neutral utterances on IEMOCAP."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Multimodal sentiment analysis (utterance-level sentiment and emotion recognition)",
+    "writing_quality": "good"
+  }
+}

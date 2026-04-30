@@ -1,0 +1,114 @@
+{
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem\u2014modeling polysemy in word representations\u2014by proposing the first probabilistic multi-prototype embedding (Gaussian mixtures) and retaining tractable training via an expected likelihood kernel and max-margin ranking objective. Empirical improvements over single-Gaussian embeddings, word2vec skip-gram, and several multi-prototype baselines across many standard benchmarks (similarity and entailment datasets) suggest the approach will influence how researchers model ambiguity in embeddings. The method opens clear new directions (probabilistic, multimodal lexical representations) and is likely to be built upon, though it stops short of being clearly transformative across all NLP subfields.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "Overall the paper is well organized and the main contributions (Gaussian-mixture word embeddings, expected likelihood kernel energy, and max-margin ranking objective) are stated early and developed through method and experiments. Notation appears consistent and related work coverage is thorough; writing quality is described as adequate. Some presentation gaps remain (e.g., hyperparameters and code availability are not reported, and the summary does not indicate whether figures/tables fully clarify results), so minor clarity/presentation improvements could help reproducibility and interpretation.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This work sits squarely within the scope of top-tier NLP/ML venues: it introduces a probabilistic multi-prototype word representation (Gaussian mixture embeddings) addressing polysemy, a core representation learning problem. The methodology and evaluations match community standards, using a max-margin energy objective, the expected likelihood kernel, and benchmarking against word2vec, single-Gaussian embeddings, and multi-prototype baselines on standard datasets (SimLex, WS-353, SCWS, entailment data, etc.). The paper is targeted to the right audience and is positioned within the literature (compares to Vilnis & McCallum 2014 and multiple multiprototype works), making it a strong fit for a top NLP/ML conference.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines known ideas (multi-prototype/place-based word senses and probabilistic embeddings) with a specific choice of Gaussian mixture representations, an expected likelihood kernel, and a max-margin energy objective. However, closely related prior work (e.g., 'A Probabilistic Model for Learning Multi-Prototype Word Embeddings' and other multi-prototype methods) already address learning multiple embeddings per word, so the central claim of being the first probabilistic multi-meaning embedding is overstated. The use of Gaussian mixtures and an analytically tractable kernel is a non-trivial and useful engineering contribution, but overall the contribution appears incremental rather than a fundamentally new direction, and would likely be unsurprising to experts familiar with the cited prior works.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments are fairly comprehensive in scope (many word-similarity benchmarks, SCWS contextual set, an entailment dataset, comparisons to w2g, word2vec, and several multi-prototype baselines) and demonstrate improved performance as claimed. However, there is no mention of ablation or sensitivity analyses (e.g., effect of number of mixture components, hyperparameter sweeps), hyperparameters and code are not reported (hurting reproducibility), and KL limitations for mixtures are only noted rather than empirically explored. Related work appears to be covered thoroughly (including multi-prototype prior work such as [1],[2]) and some limitations are discussed, but the lack of detailed ablations and reproducibility information prevents a higher score.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported by appropriate evidence: a principled Gaussian-mixture representation, an analytically tractable expected likelihood kernel objective (closed-form via component-wise EL), and empirical comparisons across many standard word-similarity and entailment datasets against strong baselines (w2g, word2vec, multi-prototype methods). The mathematical approach described (mixture of Gaussians with expected likelihood kernel and a max-margin ranking objective) is technically sound and the paper acknowledges limitations such as the lack of a closed-form KL for mixtures. Minor methodological gaps remain in the provided summary \u2014 specifically absence of reported hyperparameters, training details, and mention of statistical significance testing \u2014 which prevent fully ruling out experimental confounds but do not undermine the core technical contributions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and recent baselines including word2vec skip-gram, the single-Gaussian embedding of Vilnis & McCallum (w2g), and several multi-prototype methods (Huang et al., Tian et al., Chen et al.), and evaluates on standard benchmarks (SimLex, WS, MEN, SCWS, Baroni et al. entailment, etc.) using established metrics. Comparisons appear fair (same datasets and metrics) and the paper discusses analytical/scalability differences (expected likelihood kernel, max-margin objective) and known limitations (e.g., KL for mixtures). It does not appear to omit the most relevant multi-prototype/probabilistic prior work identified (two 2014 multi-prototype papers are in scope), though the summary does not explicitly state whether any prior methods sometimes outperform the proposed model, so minor gaps remain in acknowledging comparable/better prior performance.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes the first probabilistic (to their knowledge) word embedding that can capture multiple meanings per word using a Gaussian mixture model.",
+      "Uses an expected likelihood kernel energy function and a max-margin energy-based ranking objective to retain analytic tractability and scalability when training Gaussian mixture embeddings.",
+      "Demonstrates superior performance of the Gaussian mixture word embeddings (w2gm) over single-Gaussian embeddings (w2g), word2vec skip-gram, and some multi-prototype baselines on benchmark word similarity and entailment datasets."
+    ],
+    "methodology": "Each word is represented as a mixture of Gaussians; parameters (component means, covariances, and mixture weights) are learned with a max-margin energy-based ranking objective inspired by skip-gram, using the expected likelihood kernel (inner product between distributions) as the similarity/energy function, which admits closed-form evaluation for Gaussian mixtures.",
+    "datasets": [
+      "SimLex",
+      "WordSim-353 (WS)",
+      "WS-S (similarity)",
+      "WS-R (relatedness)",
+      "MEN",
+      "MC (Miller and Charles, 1991)",
+      "RG (Rubenstein and Goodenough, 1965)",
+      "YP (Yang and Powers, 2006)",
+      "MTurk (287, 771)",
+      "RW (Rare Words)",
+      "SCWS (Stanford Contextual Word Similarities)",
+      "Baroni et al. (2012) word entailment dataset",
+      "Wikipedia"
+    ],
+    "baselines": [
+      "word2vec skip-gram (sg)",
+      "Gaussian embedding (w2g) by Vilnis and McCallum (2014)",
+      "Multiprototype embeddings by Huang et al. (2012)",
+      "Multiprototype methods by Tian et al.",
+      "Methods by Chen et al."
+    ],
+    "metrics": [
+      "Spearman correlation",
+      "Average Precision (AP)",
+      "F1 score",
+      "Expected likelihood kernel (energy)",
+      "Maximum cosine similarity",
+      "Minimum Euclidean distance",
+      "KL divergence (used for entailment scoring)"
+    ],
+    "limitations": [
+      "Single-Gaussian (unimodal) embeddings cannot capture multiple distinct meanings and can have overly diffuse variances for polysemous words (stated limitation of prior work).",
+      "KL divergence does not have a closed form for Gaussian mixtures (limitation for using KL as energy between mixtures).",
+      "Gaussian embeddings can exhibit overly large variances for polysemous words, reducing informativeness (stated limitation of w2g)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - word embeddings / representation learning",
+    "writing_quality": "adequate"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 2,
+    "paper_novelty_mean": 0.7417,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

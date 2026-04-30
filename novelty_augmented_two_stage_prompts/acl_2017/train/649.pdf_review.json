@@ -1,0 +1,103 @@
+{
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "The summary indicates the paper is well-structured (clear methodology: train ADEM, embeddings, PCA, experiments showing correlation with humans) and main contributions are stated early (formulating evaluation as learning, presenting ADEM). Notation appears consistent (embeddings, PCA, models named) and figures/tables seem effective given reported correlation metrics and baselines. Writing quality is described as good and related work/hyperparameters are thoroughly covered, though some presentation issues remain (e.g., dataset naming and code availability are not mentioned) preventing an exceptional rating.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important, practical problem\u2014automatic evaluation of dialogue responses\u2014by reframing it as a learning task and introducing ADEM, which reportedly correlates much better with human judgments than standard word-overlap metrics (BLEU/METEOR/ROUGE). Demonstrating generalization to unseen dialogue models and using a new human-scored dataset suggests the approach could change how researchers evaluate dialogue systems and be adopted as a more reliable metric. This opens significant new research directions (learning-based evaluators, better datasets) and is likely to be built upon widely, though it stops short of being immediately transformative across NLP as a whole.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within the scope of top-tier NLP/ML venues: it addresses automatic evaluation for dialogue, a core NLP task, and proposes a learned evaluator (ADEM) trained on human scores. The formulation as a learning problem, use of large Twitter data and a novel human-scored dataset, comparison to standard baselines (BLEU/METEOR/ROUGE) and reporting of Pearson correlations and system-level generalization are methods and evaluation practices expected at this level. The paper targets the right audience (dialogue and evaluation researchers) and is positioned with thorough related work coverage and reported hyperparameters, making it a strong fit for the venue.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable and concrete novelty by formulating automatic dialogue evaluation as a supervised learning problem (ADEM) trained on a new dataset of human response scores and demonstrating strong correlation with human judgements and generalization to unseen dialogue models\u2014claims not addressed by prior unsupervised metrics (e.g., \"How NOT To Evaluate...\" [2016]). While related work such as adversarial evaluators (e.g., \"Adversarial Evaluation of Dialogue Models\" [2017]) explores learned evaluators, ADEM\u2019s supervised scoring formulation, empirical dataset, and demonstrated system-level/generalization results represent a clear, non-trivial extension rather than a mere reapplication of existing techniques. Given the overlap with existing learned-evaluator ideas but the substantive new dataset, evaluation methodology, and empirical findings, the contribution is notably novel though not a radical departure from prior art.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares ADEM to standard unsupervised metrics (BLEU, METEOR, ROUGE) and multiple learned/retrieval baselines (TF-IDF, Dual Encoder, HRED, VHRED, and an ADEM variant), and evaluates against human scores using Pearson correlation on a shared dataset, which supports fair comparisons. The authors acknowledge known limitations of word-overlap metrics and take steps (e.g., subsampling) to mitigate biases, and the summary notes thorough related-work coverage. However, closely related learned evaluation approaches (e.g., adversarial evaluators) are not explicitly listed among the experimental baselines in the provided summary, suggesting a minor omission of the most directly comparable recent methods.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported by experimental evidence: ADEM is trained on human-scored responses using VHRED embeddings and shows substantially higher Pearson correlations with human judgements than BLEU/METEOR/ROUGE, with comparisons against reasonable model baselines (DE, HRED, VHRED). There are no complex mathematical derivations to vet and the training/embedding choices and bias-mitigation steps (PCA, subsampling for length) indicate attention to methodological detail. However, the summary does not mention statistical significance testing, code release for reproducibility, or potential remaining biases beyond length, leaving minor concerns about experimental completeness and replicability. Overall the technical approach is sound with only minor methodological gaps.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are solid: ADEM is trained on a human-scored dataset and evaluated against multiple baselines (BLEU/METEOR/ROUGE, TF-IDF, DE, HRED, VHRED) with utterance- and system-level Pearson correlations and shown to generalize to unseen models. The authors identify and mitigate a key failure mode (response length bias via subsampling) and report hyperparameters, but code and the new human-scored dataset name/availability are not mentioned which limits reproducibility. Ablation/sensitivity analyses appear limited to dimensionality reduction and length-bias mitigation rather than broader ablations (e.g., impact of different embedding choices beyond tweet2vec), and comparison to recent learned/adversarial evaluation methods (e.g., Adversarial Evaluation of Dialogue Models) could be stronger. Related work coverage is reported as thorough and limitations of word-overlap metrics are discussed, supporting a near-comprehensive evaluation overall.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Formulates automatic dialogue evaluation as a learning problem.",
+      "Presents ADEM, an evaluation model that learns to predict human-like scores for dialogue responses using a dataset of human response scores.",
+      "Shows that ADEM\u2019s predictions correlate significantly, and much higher than word-overlap metrics (e.g., BLEU), with human judgements at both utterance and system-level.",
+      "Demonstrates that ADEM can generalize to evaluating dialogue models unseen during training."
+    ],
+    "methodology": "Train an evaluation model (ADEM) to predict human scores for candidate responses given context, using embeddings (pretrained with VHRED) and a new dataset of human response scores; employ PCA to reduce embedding dimensionality and techniques (e.g., subsampling by response length) to mitigate length bias.",
+    "datasets": [
+      "Twitter Corpus (Ritter et al., 2011)",
+      "a new dataset of human response scores (unnamed)"
+    ],
+    "baselines": [
+      "BLEU",
+      "METEOR",
+      "ROUGE",
+      "TF-IDF retrieval-based model",
+      "Dual Encoder (DE)",
+      "HRED",
+      "VHRED",
+      "ADEM with tweet2vec embeddings (ADEM (T2V))"
+    ],
+    "metrics": [
+      "Pearson correlation (between model predictions and human judgements)",
+      "BLEU",
+      "METEOR",
+      "ROUGE"
+    ],
+    "limitations": [
+      "Word-overlap metrics (BLEU/METEOR/ROUGE) are biased and correlate poorly with human judgements for dialogue.",
+      "ADEM can exploit response length to predict scores unless corrected; authors apply subsampling to mitigate this bias."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - dialogue response evaluation",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 3,
+    "paper_novelty_mean": 0.6273,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON",
+      "SUBSTANCE"
+    ],
+    "total_dims": 7
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "SOUNDNESS_CORRECTNESS": 3,
+  "ORIGINALITY": 3,
+  "CLARITY": 2,
+  "SUBSTANCE": 3,
+  "IMPACT": 3,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper presents a clear architecture (BLSTM reads left and right contexts, equations (3)-(7)) and experimental evidence on standard benchmarks, but several technical gaps weaken correctness. The optimization objective is only described qualitatively as maximizing cosine similarity between outLSTMEmbed and emb(si) (Eq. 5) without a precise loss function, training algorithm, learning rate or regularization details. Some notational/shape inconsistencies (e.g. Wo stated as R2m\u00d7m in Eq. 4 which conflicts with the concatenation ol \u2295 or \u2208 R2m) and the very short training regime (one epoch in Section 6.2) raise concerns about reproducibility and whether reported results fully support the claims. Finally, no statistical significance testing or error bars are reported to support claims of improvement."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The core idea\u2014using a bidirectional LSTM to embed sentential context and predict target embeddings\u2014is strongly inspired by prior work (the paper explicitly cites Melamud et al., 2016 / context2vec and RNNLMs), and the joint word-and-sense variant (LSTMEmbedSW) is a relatively straightforward extension (summing word and sense embeddings then projecting, Eq. 6). The combination of BLSTMs with sense-annotated corpora and training to match pretrained sense embeddings is a useful application, but the methodological novelty over existing context2vec/SW2V/AutoExtend approaches appears incremental rather than fundamentally new."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper contains many duplicated and fragmented sentences and formatting issues (multiple repeated paragraphs and references), which hinder a smooth read and make some points ambiguous. Key details are described (model architecture, Eqs. 3\u20139, and experimental setup), but inconsistencies in notation (e.g. the shape of Wo) and missing low-level training details reduce clarity. Figures and tables are referenced (Figures 1\u20134, Tables 3\u20136) but are not visible in the provided text, and several sections repeat material, lowering presentation quality."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experimental evaluation covers many standard datasets (WS353, RG65, MEN, SimLex, SimVerb3500, analogy tasks) and compares multiple sense-aware baselines and corpora (SemCor, SEW, BabelWiki), and studies effects of pretrained embeddings (Section 6.5). However, important ablations and sensitivity analyses are limited: there is little discussion of hyperparameter choices beyond window size, no ablation isolating LSTM vs. input embeddings, training details (optimizer, epochs beyond the single epoch mentioned) are sparse, and failure modes/limitations are not fully discussed, which limits depth and reproducibility."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses an important problem\u2014learning joint word and sense embeddings that incorporate context\u2014which is relevant to the NLP community and could inform follow-up work. Reported results show the approach is competitive on several benchmarks, but gains are modest, the method is incremental relative to strong prior work, and experimental/design shortcomings reduce confidence that this will substantially change current practice. Thus it has moderate potential impact but is unlikely to be transformative without stronger empirical and methodological contributions."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The topic\u2014neural embeddings, sense representations, and LSTM-based context modelling\u2014is squarely within the scope of top-tier NLP/ML venues. The paper uses standard datasets, baselines, and evaluation metrics expected in the community (word similarity, analogy, SemEval tasks), and positions itself relative to relevant prior work (context2vec, SW2V, AutoExtend, SensEmbed)."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against several appropriate and recent baselines for sense embeddings (SW2V, AutoExtend, SensEmbed) and evaluates on common benchmarks using Spearman correlation and analogy metrics, and states that representations were trained on the same sense-annotated corpus for fair comparison (Section 6.2). However, some important related methods (e.g. context2vec/context-based LSTM approaches) are discussed but not always included in the empirical baselines, dimensionality and training regime differences across compared methods are present (50-dim LSTMEmbed vs 300\u2013400-dim baselines), and no statistical tests are reported to confirm significance of differences."
+    }
+  }
+}

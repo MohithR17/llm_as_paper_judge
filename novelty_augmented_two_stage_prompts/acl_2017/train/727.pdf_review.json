@@ -1,0 +1,94 @@
+{
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "MEANINGFUL_COMPARISON": 3,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 4,
+  "SUBSTANCE": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "This work addresses an important practical problem\u2014automatic political framing on Twitter\u2014by demonstrating that combining lexical and behavioral/network features in weakly supervised PSL models yields a large empirical gain (21.52-point average F1 improvement) over a lexical baseline. The collection and annotation of a sizable congressional tweet corpus and the proposal of Twitter-specific frames make the contribution immediately useful to researchers studying political discourse, and the success of collective classification here is likely to influence future work integrating network signals. Limitations (need for weak supervision signals, missing code/hyperparameter details) constrain immediate reproducibility but do not substantially diminish the paper\u2019s strong impact on the subfield and adjacent research directions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper applies existing weakly supervised collective-classification machinery (PSL / hinge-loss MRFs) to political framing on Twitter, which is a sensible but incremental methodological extension given prior work on relational/weakly supervised tweet classification (e.g., stance MRF approaches). Its main novel contributions appear to be the new Congressional tweet dataset, the creation of three Twitter-specific frames, and empirical evidence about annotation difficulty (Cohen\u2019s Kappa = 73.4%). Overall this is a moderate novelty contribution that combines known methods with new data and task-specific framing rather than introducing a fundamentally new method or paradigm.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper compares its global PSL/HL-MRF models against a lexical (unigrams-only) baseline and reports a substantial F1 gain, but it omits comparisons to closely related weakly-supervised or relational baselines (e.g., prior MRF/collective/relational bootstrapping work on Twitter stance and weak supervision). The evaluation appears fair against the lexical baseline on the same congressional tweet data and using the same metrics, and the paper analyzes gains from combining lexical and network features; however, it does not acknowledge or directly compare to the most relevant competing approaches (such as the 2016 weakly supervised relational bootstrapping work) nor include stronger structured baselines. Overall, comparisons are present but missing important, closely related baselines and explicit discussion of when prior methods perform comparably.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (weakly supervised PSL models combining lexical and network features, dataset collection, and new Twitter-specific frames). Writing quality is reported as good and related work coverage adequate, with clear reporting of dataset sizes and annotator agreement (Cohen\u2019s Kappa = 73.4%). Presentation has minor gaps: hyperparameters are not reported and it\u2019s unclear from the summary whether figures/tables and formal notation are fully and consistently defined, so a small amount of additional detail would improve reproducibility and clarity.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "The paper addresses a clearly NLP/ML-relevant problem \u2014 automated framing detection in political tweets \u2014 and presents probabilistic collective classification models (PSL / hinge-loss MRF) that combine lexical and network/behavioral features, which is appropriate for a top-tier venue. The methodology (weak supervision, collective inference, use of language and social features) and evaluation (unsupervised F1, inter-annotator agreement) match expectations for the community. Minor scope concerns include the domain-specific framing adaptations (Twitter-specific frames, requirement of weak supervision seeds) and limited annotated subset details, but overall the work is well targeted to NLP/ML researchers interested in social media and structured prediction.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments demonstrate substantive gains (reported +21.52 average unsupervised F1) on a large collected tweet corpus and an annotated subset, and the paper situates itself relative to prior weakly-supervised relational work. However, critical analysis elements are missing: no hyperparameter details or code are reported, ablation/sensitivity studies are not described, and evaluation appears focused on a single averaged metric with a relatively small annotated subset (40 politicians). Related work coverage is described as adequate and some limitations are acknowledged, but reproducibility and deeper error analysis are insufficient to merit a higher score.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states clear main claims and provides experimental evidence (a reported 21.52 point average unsupervised F1 gain over a lexical baseline) on a sizable Twitter corpus, which supports the core contribution of combining lexical and network features via PSL/hinge-loss MRFs. However, methodological details needed to fully assess technical soundness are missing in the summary: hyperparameters are not reported, code is not mentioned, and only a single lexical baseline is described \u2014 there is no mention of statistical significance testing or additional competitive baselines. The use of weak supervision (issue-related unigrams, adapted unigrams, and author party) is reasonable but constitutes an unsupported assumption about available supervision; overall the work is promising but some experimental and reproducibility gaps reduce confidence in the claims.",
+      "survey_injected": false,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Presented weakly supervised probabilistic collective classification models (PSL / hinge-loss MRF) that combine lexical features and Twitter behavioral/network features to predict issue frames in political tweets.",
+      "By combining lexical and network-based behavioral features, their global models increase the average unsupervised F1 score by 21.52 points over a lexical baseline.",
+      "Collected and annotated a dataset of Congressional tweets (184,914 tweets collected; annotated subset from 40 politicians) and introduced three Twitter-specific frames (Factual, Promotion, Personal Sympathy and Support) replacing Boydstun's unused Frame 15."
+    ],
+    "methodology": "Designed weakly supervised PSL models compiled into hinge-loss Markov random fields that use language features (adapted unigrams, max-sim word2vec matching, top bigrams/trigrams and party slogans) and Twitter behavioral features (temporal co-occurrence, retweets, follows) to infer FRAME(T,F) labels for tweets.",
+    "datasets": [
+      "Collected 184,914 recent tweets of U.S. Congress members",
+      "Annotated tweet subset from 40 politicians (10 Republicans and 10 Democrats from both House and Senate)"
+    ],
+    "baselines": [
+      "Lexical baseline (unigrams-only / lexical model)"
+    ],
+    "metrics": [
+      "Average unsupervised F1 score",
+      "Cohen's Kappa (inter-annotator agreement)"
+    ],
+    "limitations": [
+      "Frame classification for tweets is difficult (annotator Cohen's Kappa = 73.4%)",
+      "Boydstun's Frame 15 (Other) was never used in annotations and was dropped (necessitating creation of Twitter-specific frames)",
+      "Approach requires weak supervision in the form of issue-related unigrams, frame-adapted unigrams, and political party of tweet authors"
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - political framing / collective classification on Twitter",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 2,
+    "paper_novelty_mean": 0.5933,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON",
+      "SUBSTANCE"
+    ],
+    "total_dims": 7
+  }
+}

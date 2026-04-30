@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "CLARITY": 3,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses a clearly NLP-centered problem (lexical substitution and sense inventory construction) and proposes a novel multi-view clustering method tuned for substitutability, which is directly relevant to top NLP venues. It uses standard datasets and evaluation metrics expected at such venues (CoInCo, PPDB, AddCos, B-Cubed F-score, GAP) and compares against appropriate baselines (WordNet, TWSI, prior PPDB clustering work). The problem formulation, experimental setup, and positioning against prior work (Cocos & Callison-Burch, Apidianaki, Pavlick et al.) align with the expectations and audience of a top-tier NLP/ML conference."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014making sense inventories fit human substitutability judgments and improving lexical substitution\u2014by proposing a substitutability metric (B-Cubed F-Score) and a novel multi-view clustering tailored to substitutability (Sections 2\u20133). It demonstrates measurable gains (improved Oracle and Best-Fit GAP, higher substitutability than WordNet/TWSI) and greater coverage than WordNet, and shows the clusters can be used as an effective filter over existing lexsub models (Sections 6 and 5.4). These contributions are likely to change how researchers build and evaluate sense inventories for downstream tasks and open new work on task-optimized sense resources and WSD methods; they also have broader applicability to paraphrase resources, MT and semantic representation (introduction and conclusion)."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares to appropriate baselines (WordNet, TWSI, PPDBClus / Cocos & Callison-Burch 2016) and uses recent, relevant ranking models (Apidianaki 2016 Syn.VSM and AddCos (Melamud et al., 2015)). Comparisons appear fair: evaluations use the same CoInCo test set, the same PPDB candidate sets, and standard metrics (B-Cubed F-score for substitutability and GAP for lexical substitution). The authors acknowledge prior strengths (e.g., TWSI outperforming on nouns) and analyze differences (correlation between B-Cubed and Oracle GAP, WSD failures, per\u2013part-of-speech weaknesses), and they cite and discuss the main competing approaches throughout (e.g., Cocos & Callison-Burch, Pavlick et al., Apidianaki)."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is organized in a standard intro\u2192method\u2192experiments\u2192results structure and most contributions (multi-view clustering for substitutability, a substitutability metric, and sense-filtering for lexsub) are presented early and revisited in experiments. However presentation suffers from repeated/duplicated paragraphs and LaTeX/artifact noise (e.g. repeated sentences, line numbers, and the trailing \u201cLaTeX with hyperref package\u201d), which disrupts readability. Notation is mostly defined (Ct, Et, XS, XP, XW) but some symbols (FB3_\u03b2) and the equation formatting are cramped and could be clearer. Figures/tables and the concrete example (Table 4) are informative, but cross-references to missing visuals (Table 1, Table 5) and occasional typos (\u201cabeit\u201d) reduce polish and clarity."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a novel combination: a substitutability-focused sense-inventory evaluation (B-Cubed F-Score against lexsub annotations) and a multi-view clustering method that explicitly optimizes paraphrase senses for substitutability (Section 2 and 3). While it leverages existing components (AddCos for context fit, PPDB scores, WordNet, and NMF/silhouette for k selection), using these views together to create sense clusters tailored to improve lexical substitution and demonstrating gains over prior automatic clustering (e.g. Cocos & Callison-Burch 2016) is a clear, non-trivial extension. Thus the contribution is notably novel though largely built from known techniques combined in a new, task-specific way."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims (a substitutability metric based on B-Cubed F-score and a multi-view paraphrase clustering that improves lexsub rankings) are clearly stated and supported by experiments: they define subst(C,L)=Avg_t FB3(Et), describe multi-view features (Sections 3.1.1\u20133.1.3) and evaluate on a held-out CoInCo test set (327 targets) showing Oracle and Best\u2011Fit GAP improvements (Section 6). Mathematical content is minimal and correct (cluster/metric definitions); the experimental methodology is largely sound (reasonable baselines Syn.VSM/AddCos, PPDB threshold tuned on training, k selected by Silhouette, GAP used as metric, oracle and realistic WSD experiments). Minor issues: no statistical significance tests are reported, the simple WSD heuristic may bias Best\u2011Fit results (authors acknowledge this), and some claims (e.g. coverage > WordNet) are asserted without numeric detail in the excerpt. These are minor and do not undermine the main technical conclusions."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are substantial: they evaluate on a held-out CoInCo subset (327 targets, 4061 train / 2091 test sentences), tune a PPDB paraphrase cutoff on train, try k=2..10 with Silhouette selection, test seven view combinations (per-view ablation) and measure both substitutability (B-Cubed F) and downstream impact (unfiltered, Oracle, Best-Fit GAP) against baselines (WordNet, TWSI, PPDBClus) using two ranking models. They also report per-POS behavior and note noun weaknesses and WSD failure modes. However, key reproduction details for the multi-view NMF (objective, weighting, optimization, and view construction specifics) are omitted from the main text (relegated to supplemental), and analysis of WSD errors and statistical significance is limited, leaving some important sensitivity and reproducibility aspects underexplored."
+    }
+  }
+}

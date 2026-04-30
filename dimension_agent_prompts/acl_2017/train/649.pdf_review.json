@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "ORIGINALITY": 4,
+  "CLARITY": 3,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper addresses automatic evaluation of dialogue, a core NLP problem with clear ML modeling (ADEM, VHRED, LSTMs) and empirical validation. It formulates evaluation as a learning problem and trains on a new dataset of human response scores, compares against standard word-overlap metrics (BLEU/METEOR) and prior work (Liu et al., 2016), and reports correlations with human judgements at utterance and system levels. The methods (neural encoders, PCA, subsampling, held-out contexts, early stopping) and experimental setup are consistent with top-tier NLP/ML standards, and the paper is well positioned within the dialogue and evaluation literature cited throughout (Serban et al., Kannan et al., Lowe et al.)."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles a central bottleneck for dialogue research\u2014automatic evaluation\u2014given that existing metrics like BLEU correlate poorly with human judgements (citing Liu et al., 2016). It proposes ADEM, a learned evaluator that \"correlates significantly, and at a level much higher than word-overlap metrics such as BLEU\" and can \"generalize to evaluating dialogue models unseen during training,\" and contributes a new dataset of human response scores for training. These contributions directly enable faster, more reliable model development and open new directions (learned evaluators, adversarial/censored representations), so the work is likely to be widely adopted and to strongly influence the field."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper clearly states its main claim (ADEM learns to predict human-like scores and correlates much better than word-overlap metrics) and describes a reasonable experimental setup (pretraining with VHRED, PCA to 50 dimensions, subsampling to control length bias, train/val/test split with no context overlap). However, in the provided text there are no quantitative results, statistical significance tests, or detailed architectural/loss specifications for ADEM, and no math derivations to verify; the claim of generalization to unseen dialogue models is asserted but unsupported by shown evidence. Thus the approach is plausible and the methodology has sensible controls, but key evidential details are missing from the excerpt, so some concerns remain about completeness of the experimental support."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper reframes automatic dialogue evaluation as a supervised learning problem and introduces ADEM \u2014 an evaluation model trained to predict human scores using a new dataset (\"we formulate automatic dialogue evaluation as a learning problem... We present an evaluation model (ADEM)\"). It clearly contrasts this approach with prior word-overlap metrics (BLEU, METEOR) and MT-focused evaluation work, and reports substantially higher correlation with human judgements. The technical solution combines existing components (VHRED embeddings, PCA, supervised scoring) rather than inventing novel architectures, so the contribution is a notable and clearly-differentiated advance rather than a highly novel methodological breakthrough."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper communicates core ideas and includes organized sections (e.g., RNN/LSTM background, BLEU discussion, experiments), and the main contribution (ADEM) is described; notation such as ht = f(Whhht\u22121 + Wihxt) is clear. However the excerpt suffers from major presentation problems: many sentences and paragraphs are duplicated (e.g. repeated lines about the neural dialogue research community and BLEU), section headings/numbering are inconsistent (multiple \"1 Experimental Procedure\" and repeated experiment headings), and there are formatting artifacts (LaTeX mention, stray tokens) that disrupt flow. Figures/tables are referenced but not shown here (e.g. Figure 1, Table 2), limiting their effectiveness, and overall the repetitions and formatting issues make some sections hard to follow."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper provides a solid experimental evaluation: it trains ADEM and compares its correlations to word-overlap metrics (BLEU etc.) across multiple response sources (TF\u2013IDF, Dual Encoder, HRED, human) and reports utterance- and system-level correlations (references to Table 2), demonstrates generalization to unseen dialogue models, and documents many training choices (BPE, layer\u2011norm, VHRED pretraining, PCA to n=50, KL annealing, Adam, dropout rate). It also explicitly addresses a major limitation (length bias) and uses subsampling to mitigate it, and cites extensive related work. However, ablation/sensitivity analysis is limited (only a few notes on embedding size/PCA) and important reproduction details (full dataset collection statistics, some model/hyperparameter values and training regimes) are not fully specified, leaving minor gaps for exact replication."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares ADEM against appropriate and recent baselines (word-overlap metrics such as BLEU/METEOR/ROUGE, retrieval TF-IDF, Dual Encoder (Lowe et al.), HRED/VHRED, and human responses) as described in \"Following (Liu et al., 2016), we use the following 4 sources of candidate responses\" and elsewhere. Comparisons appear fair (same Twitter corpus, no context overlap in splits, and use of correlation metrics) and the authors also evaluate alternative embedding baselines (\"ADEM (T2V)\" and \"VHRED\" dot-product) and explicitly discuss when prior metrics perform poorly (citing Liu et al., 2016 and noting lower correlations than Galley et al., 2015). The paper cites and discusses a broad set of relevant competing approaches and analyzes differences (e.g. failure modes of word-overlap metrics and length-bias handling), supporting comprehensive and fair comparison."
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early, describing Edward\u2019s design, inference abstraction, and integration with TensorFlow. Notation and methodology are presented clearly and consistently, and figures/tables/examples (e.g., HMC speedups, comparisons to Stan/PyMC3/handwritten TensorFlow, MNIST/Covertype results) effectively support the claims. Writing quality is good with adequate related-work coverage and reported hyperparameters, though there are minor presentation issues preventing it from being exceptional."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable and differentiated idea: a Turing-complete probabilistic programming language that treats inference as a first-class, composable entity and tightly integrates with computational-graph frameworks (TensorFlow). Representing random variables as graph-linked objects and exposing an Inference abstraction to flexibly compose MAP, VI, MCMC, GAN-style methods and model architectures (deep nets, RNNs, stochastic control flow) goes beyond existing PPLs like Stan/PyMC3. While building on known techniques (computational graphs, variational/MCMC methods), the unified design and demonstrated runtime parity with handwritten TensorFlow implementations constitute a clear, non-trivial advance that would inform experts in the field."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s primary technical claims are generally supported: the design (random-variable objects on TensorFlow graphs and an Inference abstraction) plausibly enables composition of inference methods and models, and experiments (HMC on Covertype, MNIST variational results) demonstrate substantial computational speedups and parity with handwritten TensorFlow. Mathematical content is implementation/algorithmic rather than proof-driven, and no incorrect derivations are indicated in the summary. Concerns are limited: experimental validation is somewhat narrow (two datasets) and the summary does not report statistical significance testing, so the strong claim of \u201cno runtime overhead\u201d would benefit from broader evidence; overall these are minor and do not overturn the conclusions."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Edward is a Turing-complete probabilistic programming language that provides compositional representations for random variables and inference.",
+      "By treating inference as a first-class citizen and integrating with computational-graph frameworks (TensorFlow), Edward enables flexible composition of many inference methods (e.g., MAP, variational inference, MCMC, GAN-based methods) and model architectures (including deep nets, RNNs, stochastic control flow).",
+      "Edward achieves high computational efficiency by leveraging computational graphs and GPUs, yielding large speedups (e.g., HMC on Covertype) and no runtime overhead compared to handwritten TensorFlow implementations.",
+      "Edward supports scalable inference features such as data subsampling (stochastic optimization), stochastic control flow, and composing multiple inference programs (e.g., variational EM)."
+    ],
+    "methodology": "Design and implement the Edward PPL by representing random variables as objects associated with tensors on a computational graph and exposing an Inference abstraction that composes various inference algorithms as graph-based optimization procedures implemented in TensorFlow.",
+    "datasets": [
+      "binarized MNIST",
+      "Covertype"
+    ],
+    "baselines": [
+      "Stan (PyStan)",
+      "PyMC3",
+      "handwritten TensorFlow"
+    ],
+    "metrics": [
+      "held-out log likelihood (lower bound)",
+      "runtime (seconds) / speedup for HMC"
+    ],
+    "limitations": [
+      "Open challenge to better facilitate programs with complex control flow and recursion; while representable, enabling flexible inference strategies for such programs is unresolved.",
+      "Open question how to expand Edward\u2019s design to dynamic computational graph frameworks while retaining its flexibility and performance."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Probabilistic programming and deep learning (probabilistic modeling and inference)",
+    "writing_quality": "good"
+  }
+}

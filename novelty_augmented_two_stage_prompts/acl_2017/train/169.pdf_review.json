@@ -1,0 +1,99 @@
+{
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 3,
+  "APPROPRIATENESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important and practical problem\u2014fine-grained, per-error-type evaluation of GEC systems\u2014by providing a dataset-independent, rule-based classifier and a transparent edit-extraction pipeline that can be applied to existing system outputs (CoNLL-2014, FCE). Its deterministic, linguistic-markup-driven approach and planned code release make the results likely to be adopted for detailed analysis and benchmarking, and the high human-judged accuracy (\u226595% Good/Acceptable on sampled edits) supports practical utility. While not paradigm-shifting, the work meaningfully improves diagnostic evaluation for GEC, enabling new analyses (detection vs. correction, per-type performance) that can influence future system development and evaluation practices.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a clear two-step pipeline (edit extraction then rule-based classification) and states its main contributions early (automatic annotation, dataset-independent rule set, tool release). The notation and methodological descriptions appear consistent and transparent (separation of alignment from classification), and figures/tables/examples (e.g., comparisons to prior edit extraction and M2 scorer) are informative. A minor presentation weakness is the small-scale manual evaluation (200 edits) which is reported but limits clarity about evaluation robustness; otherwise the writing quality is reported as good with little ambiguity.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are generally supported: a clear two-step rule-based pipeline is described, compared against relevant baselines (including Felice et al. 2016 and M2), and applied to CoNLL-2014/FCE-test with a manual check reporting \u226595% acceptable labels. However, the manual evaluation is small-scale (200 edits) and no statistical tests or hyperparameter details are reported, and the method depends on potentially error-prone automatic preprocessing (POS/lemmas/parses), which the authors acknowledge. These are minor issues that do not negate the core technical contribution but limit the strength and generality of some claims.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents solid experiments on CoNLL-2014 and FCE-test, compares against relevant baselines (Levenshtein, maxent classifiers, M2 scorer) and evaluates detection vs. correction and edit-extraction variants, supporting the main claims. However, sensitivity/ablation analyses are limited (no hyperparameter reporting and only a small-scale manual evaluation of 200 edits), so robustness to annotation noise or parser/tagger errors is not fully explored. Related work appears adequately covered (including Felice et al. 2016 and prior GEC work), and limitations (need for automatic markup, small manual eval) are explicitly discussed. Reproducibility is good given the deterministic rule-based design and code release, which offsets some missing experimental sensitivity analyses.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The work provides a useful, deterministic rule-based pipeline and a clear separation of linguistically-enhanced edit extraction from error-type classification, which is a pragmatic and moderately novel engineering contribution compared to prior ML classifiers (Swanson & Yamangil; Xue & Hwa) and the alignment-based extraction of Felice et al. (2016). However, the core components (linguistically-enhanced alignment, rule-based or classifier-based edit typing) and the problem formulation (automatic GEC error annotation) are already present in closely related prior work, so the contribution is best viewed as an incremental but non-trivial extension rather than a fundamentally new idea. The dataset-independence and deterministic claims and the detailed per-error-type analyses add useful differentiation but are not sufficiently transformative to merit a higher novelty rating.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "This paper addresses a core NLP subarea (Grammatical Error Correction) and proposes a practical, dataset-independent tool for automated error-type annotation and per-type evaluation, which is highly relevant to top NLP venues. The methodology (linguistically-enhanced alignment + rule-based classifier using POS/lemma/dependency features), evaluation on CoNLL-2014 and FCE, and comparisons to prior alignment and classification baselines match community standards. Minor concerns are the small-scale manual validation (200 edits) and dependency on automatic preprocessing, but these do not substantially reduce its relevance to the venue's audience.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to appropriate prior methods (Levenshtein-based extraction, maximum-entropy classifiers, Felice et al. 2016\u2019s linguistically-enhanced alignment, and the M2 scorer) and evaluates on the same datasets (CoNLL-2014, FCE-test) using standard metrics, so comparisons appear fair. It acknowledges limitations (small-scale manual evaluation) and separates and analyzes differences between extraction and classification components. The work cites and discusses the most relevant competing approaches (Swanson & Yamangil 2012, Xue & Hwa 2014, Felice et al. 2016), though the summary does not indicate extensive discussion of cases where prior methods outperform the proposed system, so a minor omission in comparative analysis remains.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces a method to automatically annotate unannotated grammatical error correction (GEC) system output with error-type information, enabling detailed per-error-type evaluation.",
+      "Proposes a dataset-independent, rule-based error-type classifier that assigns error types using only automatically obtained markup (POS, lemma, stem, dependency parses) and edit operations (insert/delete/replace).",
+      "Applies the tool to CoNLL-2014 system outputs to produce detailed error-type analyses (including detection vs. correction) and reports that human experts judged predicted error categories as Good or Acceptable in at least 95% of cases.",
+      "Provides and will release an annotation tool that separates edit extraction (using a linguistically-enhanced alignment) from error-type classification, enabling transparent, deterministic labeling and evaluation."
+    ],
+    "methodology": "Two-step pipeline: (1) extract edits between original and corrected sentences using a linguistically-enhanced alignment algorithm (Felice et al., 2016); (2) classify edits with a rule-based framework that uses automatic POS tags, insertion/deletion/substitution info, lemmatization/stemming/dependency parses and auxiliary resources (Hunspell) to assign one of 55 error types.",
+    "datasets": [
+      "CoNLL-2014 shared task system outputs",
+      "FCE-test"
+    ],
+    "baselines": [
+      "Levenshtein-distance based edit extraction (Swanson and Yamangil, 2012)",
+      "Maximum entropy classifiers for edit classification (Swanson and Yamangil, 2012; Xue and Hwa, 2014)",
+      "Linguistically-enhanced alignment with merging rules (Felice et al., 2016)",
+      "M2 scorer (used for comparison)"
+    ],
+    "metrics": [
+      "F-score (F0.5)",
+      "precision",
+      "recall",
+      "detection vs. correction (edit overlap)"
+    ],
+    "limitations": [
+      "Evaluation of predicted error categories relied on a small-scale manual evaluation (200 edits rated by 5 researchers).",
+      "The method requires automatic markup prerequisites for every token (POS tagging, lemmatization, stemming, dependency parsing) to operate."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - Grammatical Error Correction",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 4,
+    "paper_novelty_mean": 0.2462,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

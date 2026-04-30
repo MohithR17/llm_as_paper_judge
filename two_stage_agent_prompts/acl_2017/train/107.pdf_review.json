@@ -1,0 +1,73 @@
+{
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines known cross-lingual strategies (annotation projection and embedding mapping) and contributes practical refinements: a frequency-based sentence selection heuristic for projection-labeled data and representation projection that maps target embeddings into English to reuse an English NER. These are meaningful, non-trivial engineering and integration advances (including novel co-decoding schemes and simple neural architectures) but do not introduce a fundamentally new paradigm beyond prior projection and embedding-mapping work. Overall this reads as an incremental but useful advancement rather than a highly original breakthrough."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are supported by experiments on CoNLL and in-house test sets and by comparisons to appropriate baselines (T\u00e4ckstr\u00f6m et al., 2012; Tsai et al., 2016), with hyperparameters reported. Mathematical content is standard (linear embedding mappings) and there are no obvious derivation errors in the summary; the methodology\u2014annotation projection with selection heuristics, representation projection, and co-decoding\u2014is coherent and empirically validated. However, the summary does not report statistical significance testing or deeper analysis of the selection heuristic and the linear-mapping assumption, which are potential gaps that do not fatally undermine the empirical claims. Overall, results and conclusions appear technically sound with minor missing analyses."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses cross-lingual NER, a core NLP problem that is squarely within top-tier NLP/ML venues. It proposes weakly supervised annotation- and representation-projection methods, introduces neural architectures and co-decoding, and evaluates against established baselines (T\u00e4ckstr\u00f6m et al., Tsai et al.) on CoNLL and sizable in-house test sets. The methods, experimental setup (F1/Precision/Recall), and datasets used match community expectations, and the claim of enabling new languages without target-language annotation is of clear interest to the venue audience. Positioning and related work coverage appear appropriate for the research community."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents solid and multi-faceted experiments: evaluation on CoNLL and several in-house languages, comparison to prior cross-lingual baselines, and metrics (F1/precision/recall) showing the combined systems outperform prior work. Limitations are explicitly discussed (noisy projection data; omission of gazetteers/char-level features) and hyperparameters are reported. However, ablation/sensitivity analyses are not clearly described in the summary, and reproducibility is hindered by use of non-public in-house annotated test sets and no mention of released code. Overall the evaluation is strong but has minor gaps around ablation detail and public reproducibility."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to relevant prior cross-lingual NER systems (T\u00e4ckstr\u00f6m et al., 2012; Tsai et al., 2016) and reports results on standard CoNLL test sets using the same metrics (F1/Precision/Recall), which suggests fair experimental conditions. The authors analyze differences between annotation projection and representation projection, introduce co-decoding, and show combined systems outperform the cited baselines. However, only two prior methods are directly compared and the summary does not indicate explicit acknowledgement when prior methods perform comparably on any subset, so there are minor omissions in breadth and in reporting comparative nuances."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "Based on the summary, the paper is well-organized (clear progression from methods\u2014annotation and representation projection\u2014to experiments and conclusions) and its main contributions are stated early (two projection approaches, two NN architectures, and co-decoding). Notation appears consistent and methodological details (e.g., selection heuristic, embedding mapping, hyperparameters) are reported, and results/tables are informative given the CoNLL and in-house dataset comparisons. Writing quality is described as good overall, with only minor presentation issues remaining (e.g., some implementation/selection-detail descriptions could be slightly clearer)."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014building NER for new languages with no target annotation\u2014and demonstrates clear gains: the combined systems outperform prior cross-lingual methods (T\u00e4ckstr\u00f6m et al., 2012; Tsai et al., 2016) on CoNLL data and come closer to supervised performance. Its two complementary, weakly supervised strategies (annotation projection with a sentence-quality selection heuristic and representation projection that maps monolingual embeddings into English) plus co-decoding make it readily applicable to adding new languages without human annotation. These properties make the approach likely to be adopted and extended by researchers and practitioners. However, noisy projection data and the lack of joint multilingual representations (and omission of char/gazetteer features) limit its potential to be fully transformative across all cross-lingual transfer work."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes two weakly supervised cross-lingual NER approaches: (1) annotation projection with a heuristic data selection scheme to pick high-quality projection-labeled target-language sentences, and (2) representation projection that maps target-language word embeddings into English so a single English NER system can be applied without retraining.",
+      "Introduces two neural architectures (NN1 and NN2) using only word embeddings and two co-decoding schemes to combine the annotation-projection and representation-projection outputs.",
+      "Shows that the combined systems (co-decoding of AP and NN1) outperform previous cross-lingual NER approaches (Ta\u0308ckstro\u0308m et al., 2012; Tsai et al., 2016) on CoNLL test data and come closer to supervised performance.",
+      "The approaches require no human annotation in the target language and allow adding new languages by mapping their embeddings into English."
+    ],
+    "methodology": "Create weakly labeled target-language NER data via annotation projection on comparable corpora with a frequency-based sentence quality metric and heuristic selection; separately, train monolingual embeddings and learn linear mappings to project target embeddings into English and decode with an English neural NER (NN1/NN2); finally combine the two projection-based outputs using two co-decoding schemes.",
+    "datasets": [
+      "In-house human-annotated NER data (Japanese, Korean, German, Portuguese; >50 entity types, test sizes 30K\u201345K tokens)",
+      "CoNLL-02/03 development/test data (Spanish, Dutch, German; 4 entity types)",
+      "CoNLL English training data (~200K tokens)",
+      "Projection-labeled data for target languages (Spanish: 2.26M tokens; Dutch: 3.02M tokens; German: 1.17M tokens)"
+    ],
+    "baselines": [
+      "Ta\u0308ckstro\u0308m et al. (2012)",
+      "Tsai et al. (2016)"
+    ],
+    "metrics": [
+      "F1",
+      "Precision",
+      "Recall"
+    ],
+    "limitations": [
+      "Projection-labeled (annotation-projection) data can be noisy and requires a selection heuristic to obtain good-quality training sentences.",
+      "The neural models do not employ common features such as gazetteers or character-level representations (these are not used because they may not transfer across languages).",
+      "The approach does not specifically create inter-lingual representations; it maps each language into English rather than learning joint multilingual embeddings."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - cross-lingual named entity recognition",
+    "writing_quality": "good"
+  }
+}

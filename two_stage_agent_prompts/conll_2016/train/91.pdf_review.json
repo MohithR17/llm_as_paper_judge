@@ -1,0 +1,76 @@
+{
+  "IMPACT": 4,
+  "REPLICABILITY": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014compressing large LSTM-based NMT models\u2014by extending magnitude-based pruning to a state-of-the-art attention-based English\u2013German system and showing that >200M-parameter models can be pruned 40% with little loss and 80% with retraining to recover or surpass original performance. Its empirical finding that class-blind pruning outperforms other allocation schemes and the detailed analysis of redundancy across LSTM subgroups and rare-word embeddings provide actionable insights for researchers and engineers. While it stops short of exploiting sparsity for runtime gains or comparing to Hessian-based methods, the results are likely to influence further work on sparse NMT, model compression, and efficient deployment."
+    },
+    "REPLICABILITY": {
+      "score": 4,
+      "justification": "Most experimental details are present: hyperparameters and model configurations are reported, datasets are public (WMT'14 En\u2013De and newstest2014), and evaluation metrics (perplexity, BLEU) are stated. However, the summary does not confirm that the data preprocessing pipeline is clearly described and code is not mentioned, so exact implementation and preprocessing choices may be missing. Given these minor gaps, the work appears mostly reproducible but not fully turnkey from the paper alone."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses model compression for neural machine translation, which is squarely within the scope of top NLP/ML venues and of clear interest to their audiences (applies magnitude-based pruning to a state-of-the-art attention-based English\u2013German LSTM NMT model). It uses standard datasets (WMT'14 En\u2013De), accepted evaluation metrics (BLEU, perplexity), and compares pruning schemes while providing a detailed analysis of weight redundancy across LSTM subcomponents. The work is positioned appropriately for the community and discusses relevant limitations and prior work, making it a strong fit for a top-tier conference."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper applies an existing magnitude-based pruning approach (Han et al. 2015b) to LSTM-based, attention NMT and compares three allocation schemes (class-blind, class-uniform, class-distribution), so the core method is an adaptation rather than a new algorithm. Its novelty comes from empirical findings\u2014class-blind pruning outperforming alternatives, demonstrating heavy pruning (40%\u201380%) with retraining that recovers or improves BLEU, and an analysis of redundancy across LSTM subcomponents and embeddings. These contributions are useful and informative to experts but represent an incremental, empirical extension of prior work rather than a fundamentally new idea."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and follows a clear flow from motivation through methods (three pruning schemes and retraining with masks) to experiments (WMT'14 En\u2013De, newstest2014) and conclusion, with its main contributions stated early. Notation and experimental details appear consistent and complete (hyperparameters reported; evaluation via perplexity and BLEU), and the authors explicitly state limitations. Writing quality is described as good and related work coverage is thorough, so clarity is high overall though a few minor presentation details (e.g., explicit mention of figures/tables in the summary) are not evident."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are substantial: three pruning schemes were compared, retraining was evaluated (recovering and even surpassing original performance at 80% sparsity), and a detailed analysis of redundancy across LSTM subcomponents and embeddings was presented using WMT'14 En\u2013De with BLEU and perplexity metrics. Ablation/sensitivity was provided via the three pruning allocations and retraining vs. no-retrain comparisons. However, the work omits an iterative pruning+retraining pipeline used in related work, does not compare to Hessian-based methods, and does not exploit or evaluate runtime/training speed on sparse models; code is not mentioned which limits reproducibility despite reported hyperparameters. These are important but relatively minor gaps, so the paper is solid with small shortcomings."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper evaluates its pruning schemes on a state-of-the-art Luong et al. (2015a) English\u2013German NMT model, cites and situates itself relative to Han et al. (2015b), and reports results on the same WMT'14 data using BLEU and perplexity while analyzing redundancy patterns\u2014so comparisons are generally fair and well-analyzed. It explicitly acknowledges not implementing the iterative pruning+retraining pipeline of Han et al. (limiting direct comparability) and omits empirical comparisons to Hessian-based methods (Optimal Brain Damage/Surgeon), which are noted as limitations. These omissions are minor, so overall the comparisons are good but not fully comprehensive."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and supported by experiments on a large WMT'14 En\u2013De dataset using standard metrics (perplexity, BLEU) and a reasonable baseline (Luong et al. 2015a). There are no mathematical derivations to check, and the pruning methodology (magnitude-based pruning under three allocation schemes, single-step retraining with masks) is technically sound and justified by results showing 40% pruning with little loss and recovery/surpass at 80% after retraining. Minor methodological issues remain (no iterative prune+retrain pipeline as in prior work, no statistical significance testing or multiple random seeds, and embedding collapse for rare words noted at high sparsity), but these do not invalidate the main conclusions."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Extended magnitude-based weight pruning to LSTM-based NMT and applied it to a state-of-the-art attention-based English\u2013German model.",
+      "Compared three pruning schemes (class-blind, class-uniform, class-distribution) and found class-blind pruning to outperform the other two.",
+      "Demonstrated that a >200M-parameter NMT model can be pruned by 40% with very little performance loss, and with retraining an 80%-pruned model can recover and even surpass the original performance.",
+      "Analyzed the distribution of redundancy in LSTM NMT models, showing which weight subgroups (e.g., input h\u0302, gates, layer-wise recurrent vs feedforward inputs, embeddings for rare words) are more or less dispensable."
+    ],
+    "methodology": "Magnitude-based pruning (remove weights with smallest absolute value) applied under three allocation schemes (class-blind, class-uniform, class-distribution) to a deep multi-layer LSTM attention-based NMT model, followed by retraining with mask matrices to preserve sparsity and adjusted SGD hyperparameters.",
+    "datasets": [
+      "WMT'14 English\u2013German (4.5M sentence pairs)",
+      "newstest2014 (test set, 2737 sentences)"
+    ],
+    "baselines": [
+      "Luong et al. (2015a) attention-based English\u2013German NMT model (used as baseline/trained model)",
+      "Han et al. (2015b) magnitude-based pruning approach (prior method referenced)"
+    ],
+    "metrics": [
+      "perplexity",
+      "BLEU"
+    ],
+    "limitations": [
+      "Did not implement iterative pruning+retraining pipeline used by Han et al. (2015b) (not applied here) and notes this may yield further gains.",
+      "Did not exploit sparsity for runtime/training speed (suggested as future work).",
+      "Did not perform comparative study against Hessian-based methods (Optimal Brain Damage / Optimal Brain Surgeon) and notes magnitude-based pruning may be less principled.",
+      "At 80% pruning rate, some uncommon words had all embedding parameters deleted (100 source words, 1194 target words), resulting in zero embeddings for those words."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - Neural Machine Translation (model compression via pruning)",
+    "writing_quality": "good"
+  }
+}

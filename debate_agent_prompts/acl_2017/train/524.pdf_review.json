@@ -1,0 +1,181 @@
+{
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 3,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "APPROPRIATENESS": 4,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper runs a reasonable set of comparative experiments across multiple datasets and appropriate metrics (EDM/coverage) to support its main claims, and it explicitly discusses important failure modes such as unpacking ambiguity and limitations of the statistical ranking model. However, key reproducibility elements are missing (no code mentioned, hyperparameters not reported, and no seeds), and there are few detailed ablations or sensitivity analyses (e.g., impact of ranking preferences, unpacking heuristics, or resource limits) that would strengthen causal attribution. Related work appears adequately covered and negative results are acknowledged, but the experimental documentation gaps prevent a higher score. | B(4): The paper runs a broad set of experiments across multiple datasets (alchemy45, ws13r, semcor, wsj00ab) and evaluates sensible metrics (EDM F1, coverage) for a variety of baselines (ERG, bridging, csaw, hybrid-tb, hybrid-ww), which gives strong empirical support for its main claims. However, important reproducibility details and sensitivity analyses are missing (no hyperparameters reported, code not mentioned), and the statistical ranking model and bridging rules are underconstrained due to lack of curated bridged treebanks; the unpacking/ambiguity failure mode also limits practical coverage. Overall the evaluation is solid and practically informative but has notable gaps in ablation/sensitivity and reproducibility that prevent it from being fully comprehensive.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper runs a reasonable set of comparative experiments across multiple datasets and appropriate metrics (EDM/coverage) to support its main claims, and it explicitly discusses important failure modes such as unpacking ambiguity and limitations of the statistical ranking model. However, key reproducibility elements are missing (no code mentioned, hyperparameters not reported, and no seeds), and there are few detailed ablations or sensitivity analyses (e.g., impact of ranking preferences, unpacking heuristics, or resource limits) that would strengthen causal attribution. Related work appears adequately covered and negative results are acknowledged, but the experimental documentation gaps prevent a higher score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper runs a broad set of experiments across multiple datasets (alchemy45, ws13r, semcor, wsj00ab) and evaluates sensible metrics (EDM F1, coverage) for a variety of baselines (ERG, bridging, csaw, hybrid-tb, hybrid-ww), which gives strong empirical support for its main claims. However, important reproducibility details and sensitivity analyses are missing (no hyperparameters reported, code not mentioned), and the statistical ranking model and bridging rules are underconstrained due to lack of curated bridged treebanks; the unpacking/ambiguity failure mode also limits practical coverage. Overall the evaluation is solid and practically informative but has notable gaps in ablation/sensitivity and reproducibility that prevent it from being fully comprehensive."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper does not appear to introduce fundamentally new parsing algorithms but rather conducts a systematic empirical comparison of several existing robust parsing techniques (bridging, PCFG approximation/csaw, hybrid methods) for HPSG/ERG. Its value lies in a careful, multi-dataset evaluation using MRS-based partial matching (EDM) and in highlighting practical issues (unpacking ambiguity, lack of bridged treebanks), which is useful but constitutes an incremental contribution. The authors clearly differentiate their empirical findings from prior work, but the techniques themselves are non-novel extensions or combinations rather than new methods, so the contribution would moderately inform an expert rather than surprise them. | B(3): The paper performs a thorough empirical comparison of several existing robust parsing strategies (bridging, PCFG approximation/csaw, and hybrids) for HPSG/ERG rather than introducing a fundamentally new algorithmic idea. Framing\u2014using MRS-based EDM and multiple real datasets to quantify coverage and EDM F1 improvements\u2014is useful and clarifies trade-offs (e.g., formal bridging guarantees vs. practical unpacking failures), but this is largely an empirical systems contribution that assembles and evaluates known techniques. As such it is an incremental yet valuable contribution that would inform practitioners and researchers, but would not surprise an expert expecting comparative evaluations in this line of work.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper does not appear to introduce fundamentally new parsing algorithms but rather conducts a systematic empirical comparison of several existing robust parsing techniques (bridging, PCFG approximation/csaw, hybrid methods) for HPSG/ERG. Its value lies in a careful, multi-dataset evaluation using MRS-based partial matching (EDM) and in highlighting practical issues (unpacking ambiguity, lack of bridged treebanks), which is useful but constitutes an incremental contribution. The authors clearly differentiate their empirical findings from prior work, but the techniques themselves are non-novel extensions or combinations rather than new methods, so the contribution would moderately inform an expert rather than surprise them."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper performs a thorough empirical comparison of several existing robust parsing strategies (bridging, PCFG approximation/csaw, and hybrids) for HPSG/ERG rather than introducing a fundamentally new algorithmic idea. Framing\u2014using MRS-based EDM and multiple real datasets to quantify coverage and EDM F1 improvements\u2014is useful and clarifies trade-offs (e.g., formal bridging guarantees vs. practical unpacking failures), but this is largely an empirical systems contribution that assembles and evaluates known techniques. As such it is an incremental yet valuable contribution that would inform practitioners and researchers, but would not surprise an expert expecting comparative evaluations in this line of work."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): This paper tackles an important practical problem\u2014improving coverage of HPSG parsing for the ERG\u2014and provides a thorough empirical comparison (bridging, PCFG approximation/csaw, hybrids) across multiple datasets (alchemy45, ws13r, semcor, wsj00ab) using MRS-based EDM F1, showing substantial coverage gains (75\u2013100%) and simultaneous EDM F1 improvements. From a methodological and applied perspective the results should change how researchers and practitioners approach robust HPSG deployment and evaluation, and the careful evaluation exposes key practical issues (unpacking-induced combinatorial ambiguity, lack of bridged treebank preferences) that point to concrete follow-up work. However, practical limitations (parser failures, missing hyperparameter/code release) and dependence on implementation details mean the contribution is strong but not fully transformative until those reproducibility and engineering gaps are addressed. | B(4): This paper addresses a central practical problem for the HPSG/ERG community\u2014robust coverage for broad-coverage grammar parsing\u2014and does so by systematically comparing multiple approaches (bridging, PCFG csaw, hybrids) across realistic datasets (alchemy45, ws13r, semcor, wsj00ab) using MRS-based EDM F1. The empirical finding that coverage gaps can be reduced by 75\u2013100% while improving EDM F1 is likely to change practitioners' choice of techniques and priorities. The clear articulation of practical barriers (unpacking combinatorial ambiguity, lack of bridged treebanks limiting statistical preferences) highlights important research directions to make formal guarantees usable in practice. Overall the work has strong practical significance for grammar engineering and will be built upon, though it is not a paradigm shift for NLP at large.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper tackles an important practical problem\u2014improving coverage of HPSG parsing for the ERG\u2014and provides a thorough empirical comparison (bridging, PCFG approximation/csaw, hybrids) across multiple datasets (alchemy45, ws13r, semcor, wsj00ab) using MRS-based EDM F1, showing substantial coverage gains (75\u2013100%) and simultaneous EDM F1 improvements. From a methodological and applied perspective the results should change how researchers and practitioners approach robust HPSG deployment and evaluation, and the careful evaluation exposes key practical issues (unpacking-induced combinatorial ambiguity, lack of bridged treebank preferences) that point to concrete follow-up work. However, practical limitations (parser failures, missing hyperparameter/code release) and dependence on implementation details mean the contribution is strong but not fully transformative until those reproducibility and engineering gaps are addressed."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses a central practical problem for the HPSG/ERG community\u2014robust coverage for broad-coverage grammar parsing\u2014and does so by systematically comparing multiple approaches (bridging, PCFG csaw, hybrids) across realistic datasets (alchemy45, ws13r, semcor, wsj00ab) using MRS-based EDM F1. The empirical finding that coverage gaps can be reduced by 75\u2013100% while improving EDM F1 is likely to change practitioners' choice of techniques and priorities. The clear articulation of practical barriers (unpacking combinatorial ambiguity, lack of bridged treebanks limiting statistical preferences) highlights important research directions to make formal guarantees usable in practice. Overall the work has strong practical significance for grammar engineering and will be built upon, though it is not a paradigm shift for NLP at large."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper clearly states its main claims and supports them with experiments comparing multiple robust parsing approaches using EDM F1 and coverage on several datasets (alchemy45, ws13r, semcor, wsj00ab), and it acknowledges practical limitations (unpacking/ACE failures and lack of bridged treebanks). However, important reproducibility and methodological details are missing: hyperparameters and code are not reported, and the statistical treatment of comparisons is not described, which weakens confidence in some empirical claims. These are minor but material gaps that do not overturn the experimental findings but do limit replicability and the strength of some conclusions. | B(4): Overall the paper provides empirical evidence supporting its main claims\u2014coverage improvements and simultaneous EDM F1 gains\u2014by comparing a reasonable set of baselines (ERG, bridging, csaw, hybrid variants) on multiple datasets (alchemy45, ws13r, semcor, wsj00ab). There are no formal mathematical proofs to check, and the authors candidly report practical limitations (unpacking/ambiguity causing ACE failures and lack of bridged-treebank preferences), but the summary does not mention reporting of hyperparameters, code release, or statistical significance testing, which are gaps in experimental completeness. These are minor issues that do not appear to overturn the primary experimental findings, so the paper is technically solid though it would benefit from fuller experimental reproducibility details and significance analyses.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims and supports them with experiments comparing multiple robust parsing approaches using EDM F1 and coverage on several datasets (alchemy45, ws13r, semcor, wsj00ab), and it acknowledges practical limitations (unpacking/ACE failures and lack of bridged treebanks). However, important reproducibility and methodological details are missing: hyperparameters and code are not reported, and the statistical treatment of comparisons is not described, which weakens confidence in some empirical claims. These are minor but material gaps that do not overturn the experimental findings but do limit replicability and the strength of some conclusions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper provides empirical evidence supporting its main claims\u2014coverage improvements and simultaneous EDM F1 gains\u2014by comparing a reasonable set of baselines (ERG, bridging, csaw, hybrid variants) on multiple datasets (alchemy45, ws13r, semcor, wsj00ab). There are no formal mathematical proofs to check, and the authors candidly report practical limitations (unpacking/ambiguity causing ACE failures and lack of bridged-treebank preferences), but the summary does not mention reporting of hyperparameters, code release, or statistical significance testing, which are gaps in experimental completeness. These are minor issues that do not appear to overturn the primary experimental findings, so the paper is technically solid though it would benefit from fuller experimental reproducibility details and significance analyses."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): This paper addresses a clearly relevant NLP problem (robust parsing for the ERG/HPSG) and uses community-appropriate evaluation (EDM F1, coverage) across multiple datasets, so the topic and audience align well with a top NLP venue. From a methodology/reproducibility standpoint there are gaps (no code release mentioned, hyperparameters not reported, and practical unpacking failures that limit empirical coverage) that prevent it from being a perfect fit without additional experimental detail. Overall the empirical setup and comparisons are appropriate, but I recommend stronger reproducibility artifacts and more complete reporting to reach a top-tier acceptance standard. | B(4): This paper addresses a core NLP topic\u2014robust HPSG parsing for the ERG\u2014using multiple concrete techniques (bridging, PCFG approximation/csaw, hybrids) and appropriate evaluation (EDM F1 on alchemy45, ws13r, semcor, wsj00ab), which makes it well suited to a top NLP venue. The methodology and metrics align with community standards, and the practical limitations (unpacking-induced parser failures, lack of bridged treebanks, no reported hyperparameters) are acknowledged but represent minor gaps rather than misalignment with the venue. I would welcome stronger reproducibility (code/hyperparameters) and clearer handling of the bridging ranker limitations, but these do not undermine topical fit.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper addresses a clearly relevant NLP problem (robust parsing for the ERG/HPSG) and uses community-appropriate evaluation (EDM F1, coverage) across multiple datasets, so the topic and audience align well with a top NLP venue. From a methodology/reproducibility standpoint there are gaps (no code release mentioned, hyperparameters not reported, and practical unpacking failures that limit empirical coverage) that prevent it from being a perfect fit without additional experimental detail. Overall the empirical setup and comparisons are appropriate, but I recommend stronger reproducibility artifacts and more complete reporting to reach a top-tier acceptance standard."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses a core NLP topic\u2014robust HPSG parsing for the ERG\u2014using multiple concrete techniques (bridging, PCFG approximation/csaw, hybrids) and appropriate evaluation (EDM F1 on alchemy45, ws13r, semcor, wsj00ab), which makes it well suited to a top NLP venue. The methodology and metrics align with community standards, and the practical limitations (unpacking-induced parser failures, lack of bridged treebanks, no reported hyperparameters) are acknowledged but represent minor gaps rather than misalignment with the venue. I would welcome stronger reproducibility (code/hyperparameters) and clearer handling of the bridging ranker limitations, but these do not undermine topical fit."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early: a comparative study of robust HPSG parsing methods with concrete claims about coverage and EDM F1 improvements. Notation and evaluation (EDM F1, coverage) are presented consistently and the examples/tables appear informative for comparing methods across the four datasets (alchemy45, ws13r, semcor, wsj00ab). Writing quality is good and related work is adequately covered, but reproducibility details are lacking (no code release mentioned and hyperparameters/optimization settings are not reported), which weakens clarity for replication despite the clear exposition. | B(4): Overall the paper is well organized and communicates its goals and experimental design clearly: the intro, methods (bridging, PCFG approximation/csaw, hybrids), datasets (alchemy45, ws13r, semcor, wsj00ab), and EDM-based evaluation flow logically into the results and conclusions. Main contributions and limitations (e.g. unpacking/combinatorial ambiguity, lack of bridged treebank preferences) are stated early and transparently. Notation and terminology around HPSG/MRS/EDM appear consistent, and the reported tables of baselines and metrics make the comparisons easy to follow; however, omission of hyperparameter details and code availability slightly weakens reproducibility and is a minor presentation shortcoming. As a clarity-focused assessment, the paper reads well with only small gaps that could be fixed without rewriting major sections.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early: a comparative study of robust HPSG parsing methods with concrete claims about coverage and EDM F1 improvements. Notation and evaluation (EDM F1, coverage) are presented consistently and the examples/tables appear informative for comparing methods across the four datasets (alchemy45, ws13r, semcor, wsj00ab). Writing quality is good and related work is adequately covered, but reproducibility details are lacking (no code release mentioned and hyperparameters/optimization settings are not reported), which weakens clarity for replication despite the clear exposition."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and communicates its goals and experimental design clearly: the intro, methods (bridging, PCFG approximation/csaw, hybrids), datasets (alchemy45, ws13r, semcor, wsj00ab), and EDM-based evaluation flow logically into the results and conclusions. Main contributions and limitations (e.g. unpacking/combinatorial ambiguity, lack of bridged treebank preferences) are stated early and transparently. Notation and terminology around HPSG/MRS/EDM appear consistent, and the reported tables of baselines and metrics make the comparisons easy to follow; however, omission of hyperparameter details and code availability slightly weakens reproducibility and is a minor presentation shortcoming. As a clarity-focused assessment, the paper reads well with only small gaps that could be fixed without rewriting major sections."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper evaluates multiple appropriate baselines (ERG baseline, bridging, PCFG approximation/csaw, hybrid variants) across several relevant datasets (alchemy45, ws13r, semcor, wsj00ab) using a consistent metric (EDM F1) and explicitly reports coverage effects, so comparisons are broadly fair. However, important reproducibility details are missing (no code release, hyperparameters/seeds not reported) and the statistical ranking model for bridging lacks learned preferences\u2014both limit confidence that methods were tuned and compared under identical conditions. The authors do acknowledge when prior methods have comparable behavior and discuss practical limitations (unpacking/ACE failures and grammar-version issues), but I\u2019d expect clearer reporting of optimization details and released artifacts to reach a fully comprehensive comparison. | B(4): The paper evaluates multiple relevant robust-parsing strategies (bridging, PCFG approximation/csaw, and hybrids) against an ERG baseline across several datasets using a common, task-appropriate metric (EDM/EDM F1), which constitutes a strong and largely fair experimental comparison. It also candidly acknowledges limitations where prior techniques (e.g., bridging) cause practical failures (unpacking/ACE limits) and that ranking lacks bridged-treebank preferences. Given adequate related-work coverage and multi-dataset evaluation but missing details such as hyperparameter reporting and code release, the comparisons are good with only minor omissions\u2014hence a score of 4.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper evaluates multiple appropriate baselines (ERG baseline, bridging, PCFG approximation/csaw, hybrid variants) across several relevant datasets (alchemy45, ws13r, semcor, wsj00ab) using a consistent metric (EDM F1) and explicitly reports coverage effects, so comparisons are broadly fair. However, important reproducibility details are missing (no code release, hyperparameters/seeds not reported) and the statistical ranking model for bridging lacks learned preferences\u2014both limit confidence that methods were tuned and compared under identical conditions. The authors do acknowledge when prior methods have comparable behavior and discuss practical limitations (unpacking/ACE failures and grammar-version issues), but I\u2019d expect clearer reporting of optimization details and released artifacts to reach a fully comprehensive comparison."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper evaluates multiple relevant robust-parsing strategies (bridging, PCFG approximation/csaw, and hybrids) against an ERG baseline across several datasets using a common, task-appropriate metric (EDM/EDM F1), which constitutes a strong and largely fair experimental comparison. It also candidly acknowledges limitations where prior techniques (e.g., bridging) cause practical failures (unpacking/ACE limits) and that ranking lacks bridged-treebank preferences. Given adequate related-work coverage and multi-dataset evaluation but missing details such as hyperparameter reporting and code release, the comparisons are good with only minor omissions\u2014hence a score of 4."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "The paper explores several techniques for enhancing coverage when parsing with HPSG grammars and compares their performance using appropriate evaluation methods.",
+      "Depending on the dataset, baseline coverage gaps can be reduced by between 75% and 100% using the evaluated robust parsing methods.",
+      "The evaluated methods can simultaneously improve EDM F1 scores while increasing coverage.",
+      "Bridging guarantees that any input is analyzable (formally), though practical unpacking and disambiguation issues limit actual coverage."
+    ],
+    "methodology": "Compare multiple robust parsing approaches (e.g., bridging, PCFG approximation/csaw, hybrid methods) for HPSG by evaluating them on several datasets using MRS-based partial matching (EDM) and by measuring coverage and EDM F1 improvements.",
+    "datasets": [
+      "alchemy45",
+      "ws13r",
+      "semcor",
+      "wsj00ab"
+    ],
+    "baselines": [
+      "ERG baseline (with increased resource limits)",
+      "Bridging",
+      "csaw (PCFG approximation)",
+      "hybrid-tb",
+      "hybrid-ww"
+    ],
+    "metrics": [
+      "Elementary Dependency Matching (EDM)",
+      "EDM F1"
+    ],
+    "limitations": [
+      "Statistical ranking model contains no preferences regarding bridging rules due to minimal curated bridged treebanks.",
+      "The unpacking problem from the combinatorial ambiguity induced by bridging caused the parser (ACE 0.9.24) to fail on a significant number of inputs, limiting actual coverage.",
+      "Evaluations involving out-of-date vs. trunk grammar versions can produce differences even for a perfect parser."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - robust parsing for HPSG (English Resource Grammar)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Methodology Specialist",
+      "background": "Senior ML engineer with 10+ years building and evaluating parsing and structured-prediction systems; experienced in experimental reproducibility, evaluation metric design, and software engineering for NLP. Worked on multiple large-scale parsing benchmarks and productionized grammar-based systems.",
+      "traits": [
+        "insists on clear descriptions of datasets, splits, and pre-processing so experiments can be replicated",
+        "checks that baselines and ablations are implemented fairly and that hyperparameters/optimization details are reported",
+        "looks for appropriate statistical analysis (confidence intervals, significance testing) and sensitivity analyses across conditions",
+        "values release of code, seed values, and precise evaluation scripts; notices implementation-specific shortcuts that could affect results"
+      ],
+      "reviewing_style": "Focuses on experimental rigor and reproducibility, identifying gaps in evaluation methodology and proposing concrete checks or additional experiments to strengthen empirical claims."
+    },
+    "reviewer_b": {
+      "name": "Domain and Impact Specialist",
+      "background": "Senior research scientist in computational linguistics with a long track record in grammar formalisms (HPSG, CCG) and broad knowledge of robust parsing literature and semantic representations (MRS). Advises and evaluates work for conferences and grant panels on grammar engineering and robust NLP.",
+      "traits": [
+        "assesses novelty relative to prior work and whether the paper advances practice or understanding in robust grammar parsing",
+        "evaluates whether chosen evaluation metrics and datasets capture real-world relevance and downstream impact",
+        "attends to theoretical claims (e.g., formal guarantees like bridging) and their practical limitations; highlights important missing comparisons to key prior methods",
+        "values clear articulation of trade-offs (coverage vs. precision, formal guarantees vs. practical disambiguation) and applicability to resource development"
+      ],
+      "reviewing_style": "Judges the paper by its contribution to the field and practical significance, emphasizing novelty, connections to prior work, and whether results change how the community should approach robust HPSG parsing."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  }
+}

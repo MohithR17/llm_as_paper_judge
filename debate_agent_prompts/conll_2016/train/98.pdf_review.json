@@ -1,0 +1,191 @@
+{
+  "SUBSTANCE": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "IMPACT": 3,
+  "REPLICABILITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 4,
+  "ORIGINALITY": 3,
+  "_details": {
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The experiments cover a useful cross-lingual comparison across 32 UD treebanks and compare delexicalized transfer (MST, Malt) to a minimally supervised unsupervised parser, and they explicitly report a sensible leave-one-out multi-source protocol \u2014 so the core claims are tested. However, important reproducibility and sensitivity analyses are missing: hyperparameters, random seeds, training/validation splits, and the choice/robustness of the 10,000-token cap and manually defined priors are not reported or ablated. Related work appears well covered and some limitations are discussed, but the paper lacks ablations, significance testing, and released code/configs that would allow replication and stronger causal claims about the priors\u2019 effect. | B(3): The experiments compare delexicalized multi-source transfer and a minimally supervised unsupervised parser across 32 UD v1.2 treebanks and against prior reported baselines, which provides a useful cross-lingual benchmark. However, key reproducibility details (hyperparameters, code) are missing, and there are no ablation or sensitivity analyses (e.g., effect of the 10k-token cap, choices of priors, or per-language source selection) to diagnose why methods differ by language family. The paper does fairly discuss limitations and situates itself relative to prior work, but the experimental depth is adequate rather than comprehensive for the claims about minimal supervision benefits on low-resource/non-Indo-European languages.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experiments cover a useful cross-lingual comparison across 32 UD treebanks and compare delexicalized transfer (MST, Malt) to a minimally supervised unsupervised parser, and they explicitly report a sensible leave-one-out multi-source protocol \u2014 so the core claims are tested. However, important reproducibility and sensitivity analyses are missing: hyperparameters, random seeds, training/validation splits, and the choice/robustness of the 10,000-token cap and manually defined priors are not reported or ablated. Related work appears well covered and some limitations are discussed, but the paper lacks ablations, significance testing, and released code/configs that would allow replication and stronger causal claims about the priors\u2019 effect."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The experiments compare delexicalized multi-source transfer and a minimally supervised unsupervised parser across 32 UD v1.2 treebanks and against prior reported baselines, which provides a useful cross-lingual benchmark. However, key reproducibility details (hyperparameters, code) are missing, and there are no ablation or sensitivity analyses (e.g., effect of the 10k-token cap, choices of priors, or per-language source selection) to diagnose why methods differ by language family. The paper does fairly discuss limitations and situates itself relative to prior work, but the experimental depth is adequate rather than comprehensive for the claims about minimal supervision benefits on low-resource/non-Indo-European languages."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper presents clear empirical claims and supports them with a multi-source leave-one-out evaluation across 32 UD v1.2 treebanks showing delexicalized transfer outperforms the minimally supervised parser on average while the latter helps some non\u2011Indo\u2011European languages. However, important reproducibility details are missing (no code, hyperparameters, random seeds, or statistical significance testing) and the choice to truncate training sources to 10,000 tokens could confound comparisons without ablations. The mathematical content appears limited and there are no obvious derivation errors, but the experimental methodology lacks some controls and reporting needed to fully validate the claims. Overall the results are plausible but additional implementation details, significance testing, and ablation on training-size choices are required to solidly support the conclusions. | B(3): The paper presents clear, testable claims and reports experiments across 32 UD v1.2 treebanks comparing delexicalized transfer (MST, Malt) and a minimally supervised unsupervised parser with external priors, so the core claims are supported by empirical evidence. However, several methodological details are missing or under-specified for full technical verification: hyperparameters are not reported, code availability is not mentioned, and no statistical significance testing is reported. There are also unanswered questions about how the manual attach/stop priors were chosen and whether the 10,000-token-per-language truncation systematically biases transfer results, representing logical gaps that limit confidence in some conclusions.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents clear empirical claims and supports them with a multi-source leave-one-out evaluation across 32 UD v1.2 treebanks showing delexicalized transfer outperforms the minimally supervised parser on average while the latter helps some non\u2011Indo\u2011European languages. However, important reproducibility details are missing (no code, hyperparameters, random seeds, or statistical significance testing) and the choice to truncate training sources to 10,000 tokens could confound comparisons without ablations. The mathematical content appears limited and there are no obvious derivation errors, but the experimental methodology lacks some controls and reporting needed to fully validate the claims. Overall the results are plausible but additional implementation details, significance testing, and ablation on training-size choices are required to solidly support the conclusions."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper presents clear, testable claims and reports experiments across 32 UD v1.2 treebanks comparing delexicalized transfer (MST, Malt) and a minimally supervised unsupervised parser with external priors, so the core claims are supported by empirical evidence. However, several methodological details are missing or under-specified for full technical verification: hyperparameters are not reported, code availability is not mentioned, and no statistical significance testing is reported. There are also unanswered questions about how the manual attach/stop priors were chosen and whether the 10,000-token-per-language truncation systematically biases transfer results, representing logical gaps that limit confidence in some conclusions."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): This paper addresses a relevant problem\u2014cross-lingual dependency parsing for low-resource languages\u2014and provides empirical evidence (32 UD v1.2 treebanks) that UD annotation unification improves delexicalized transfer and that a minimally supervised unsupervised parser with simple attach/stop priors helps many non-Indo-European languages. The findings are useful for practitioners choosing between delexicalized transfer and lightweight supervision, but they are incremental rather than field-changing: results mainly refine best-practices and highlight trade-offs rather than introducing a fundamentally new approach. The work is likely to influence subsequent comparative studies and practical parser selection, but it does not by itself open broad new research directions. | B(3): The paper tackles an important practical problem\u2014cross-lingual and minimally supervised dependency parsing for low-resource languages\u2014and provides concrete empirical comparisons using UD v1.2 across 32 treebanks. Its finding that UD unification improves delexicalized transfer and that MST delexicalized parsers outperform on average, while minimally supervised priors benefit many non\u2011Indo-European languages, will be useful to researchers choosing transfer strategies. However, the contribution is incremental rather than transformative: results are limited to UD v1.2, constrained training sizes, and the minimally supervised approach yields slightly lower average scores than delexicalized transfer. Overall this work is a solid, practically relevant contribution that will inform follow\u2011on empirical work but is unlikely to radically change the field on its own.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "This paper addresses a relevant problem\u2014cross-lingual dependency parsing for low-resource languages\u2014and provides empirical evidence (32 UD v1.2 treebanks) that UD annotation unification improves delexicalized transfer and that a minimally supervised unsupervised parser with simple attach/stop priors helps many non-Indo-European languages. The findings are useful for practitioners choosing between delexicalized transfer and lightweight supervision, but they are incremental rather than field-changing: results mainly refine best-practices and highlight trade-offs rather than introducing a fundamentally new approach. The work is likely to influence subsequent comparative studies and practical parser selection, but it does not by itself open broad new research directions."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014cross-lingual and minimally supervised dependency parsing for low-resource languages\u2014and provides concrete empirical comparisons using UD v1.2 across 32 treebanks. Its finding that UD unification improves delexicalized transfer and that MST delexicalized parsers outperform on average, while minimally supervised priors benefit many non\u2011Indo-European languages, will be useful to researchers choosing transfer strategies. However, the contribution is incremental rather than transformative: results are limited to UD v1.2, constrained training sizes, and the minimally supervised approach yields slightly lower average scores than delexicalized transfer. Overall this work is a solid, practically relevant contribution that will inform follow\u2011on empirical work but is unlikely to radically change the field on its own."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): From the summary I can reproduce high-level design: they use publicly available UD v1.2 (32 treebanks), perform multi-source leave-one-out transfer, delexicalize corpora and cap sources at 10,000 tokens, and report averaged attachment/accuracy\u2014so the core data and metric choices are clear. However, critical experimental details are missing: hyperparameters and model configurations are not reported, code availability is not mentioned, and the preprocessing pipeline (beyond \u2018delexicalize\u2019 and token cap) and training procedures lack specifics needed to replicate optimizations and exact training runs. Given those absent details, the paper is only partially reproducible without contacting authors or obtaining code. | B(3): From a replicability perspective the paper gives some key ingredients (UD v1.2 as the data source, delexicalization procedure and the 10,000-token-per-language cap, and that average attachment score / averaged accuracy were used), but several crucial experimental details are missing: hyperparameters and model configurations are not reported, code is not provided or referenced, and the exact preprocessing and priors (values/formats for the manual attach/stop priors) are underspecified. Given that the datasets are public and the high-level methodology is clear, a competent researcher could partially reimplement the study, but important implementation/training specifics needed for exact replication are absent.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "From the summary I can reproduce high-level design: they use publicly available UD v1.2 (32 treebanks), perform multi-source leave-one-out transfer, delexicalize corpora and cap sources at 10,000 tokens, and report averaged attachment/accuracy\u2014so the core data and metric choices are clear. However, critical experimental details are missing: hyperparameters and model configurations are not reported, code availability is not mentioned, and the preprocessing pipeline (beyond \u2018delexicalize\u2019 and token cap) and training procedures lack specifics needed to replicate optimizations and exact training runs. Given those absent details, the paper is only partially reproducible without contacting authors or obtaining code."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "From a replicability perspective the paper gives some key ingredients (UD v1.2 as the data source, delexicalization procedure and the 10,000-token-per-language cap, and that average attachment score / averaged accuracy were used), but several crucial experimental details are missing: hyperparameters and model configurations are not reported, code is not provided or referenced, and the exact preprocessing and priors (values/formats for the manual attach/stop priors) are underspecified. Given that the datasets are public and the high-level methodology is clear, a competent researcher could partially reimplement the study, but important implementation/training specifics needed for exact replication are absent."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper evaluates appropriate and relevant baselines (delexicalized MST and Malt, and prior reported results from McDonald et al. 2011 and Rosa 2015) on the same UD v1.2 corpora and uses standard attachment metrics, which supports largely fair comparisons. It explicitly acknowledges when delexicalized transfer outperforms the minimally supervised method and analyzes language-family differences (Indo-European vs non-Indo-European). However, important reproducibility details that affect fairness\u2014such as hyperparameters, random seeds, and whether the 10k-token-per-source truncation matches prior setups\u2014are not reported, and code is not mentioned; these omissions prevent fully convincing parity with competing methods. | B(4): The paper compares against appropriate and recent baselines (delexicalized MST and Malt parsers) and references prior reported results (McDonald et al. 2011; Rosa 2015), using the same UD v1.2 collection and standard attachment metrics for multi-source leave-one-out transfer. Comparisons appear broadly fair, but some experimental details that affect reproducibility and fairness (no hyperparameter reporting, code not mentioned, and explicit 10,000-token-per-language cap) are missing and could influence performance vs. prior work. The manuscript acknowledges when prior methods are competitive and analyzes differences between delexicalized transfer and the minimally supervised approach, and it discusses relevant competing approaches thoroughly, so only minor omissions prevent a top score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper evaluates appropriate and relevant baselines (delexicalized MST and Malt, and prior reported results from McDonald et al. 2011 and Rosa 2015) on the same UD v1.2 corpora and uses standard attachment metrics, which supports largely fair comparisons. It explicitly acknowledges when delexicalized transfer outperforms the minimally supervised method and analyzes language-family differences (Indo-European vs non-Indo-European). However, important reproducibility details that affect fairness\u2014such as hyperparameters, random seeds, and whether the 10k-token-per-source truncation matches prior setups\u2014are not reported, and code is not mentioned; these omissions prevent fully convincing parity with competing methods."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against appropriate and recent baselines (delexicalized MST and Malt parsers) and references prior reported results (McDonald et al. 2011; Rosa 2015), using the same UD v1.2 collection and standard attachment metrics for multi-source leave-one-out transfer. Comparisons appear broadly fair, but some experimental details that affect reproducibility and fairness (no hyperparameter reporting, code not mentioned, and explicit 10,000-token-per-language cap) are missing and could influence performance vs. prior work. The manuscript acknowledges when prior methods are competitive and analyzes differences between delexicalized transfer and the minimally supervised approach, and it discusses relevant competing approaches thoroughly, so only minor omissions prevent a top score."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Based on the summary, the paper is well organized (clear method and experiments sections) and the main contributions are stated early (comparison of delexicalized transfer and minimally supervised parsing, and incorporation of manual priors). The writing quality is described as adequate and related work coverage is thorough, supporting readability. However, some presentation details that affect reproducibility and clarity (e.g., hyperparameters not reported, code availability not mentioned, and no information about notation consistency or effectiveness of figures/tables in the summary) appear missing or unclear, so minor presentation improvements are warranted. | B(4): The paper is generally well organized and follows a clear intro \u2192 methods \u2192 experiments \u2192 conclusion flow, and the main contributions (comparison of delexicalized transfer and minimally supervised UDP with priors, and the UD v1.2 benefits) are stated early. Notation appears consistent and related work coverage is thorough, making the methodological exposition understandable; figures/tables and examples are adequate for the comparisons reported. Minor presentation issues remain\u2014hyperparameters are not reported and it is not stated whether code is available\u2014which would aid reproducibility and clarity for readers trying to replicate the experiments.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Based on the summary, the paper is well organized (clear method and experiments sections) and the main contributions are stated early (comparison of delexicalized transfer and minimally supervised parsing, and incorporation of manual priors). The writing quality is described as adequate and related work coverage is thorough, supporting readability. However, some presentation details that affect reproducibility and clarity (e.g., hyperparameters not reported, code availability not mentioned, and no information about notation consistency or effectiveness of figures/tables in the summary) appear missing or unclear, so minor presentation improvements are warranted."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is generally well organized and follows a clear intro \u2192 methods \u2192 experiments \u2192 conclusion flow, and the main contributions (comparison of delexicalized transfer and minimally supervised UDP with priors, and the UD v1.2 benefits) are stated early. Notation appears consistent and related work coverage is thorough, making the methodological exposition understandable; figures/tables and examples are adequate for the comparisons reported. Minor presentation issues remain\u2014hyperparameters are not reported and it is not stated whether code is available\u2014which would aid reproducibility and clarity for readers trying to replicate the experiments."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): This paper studies cross-lingual dependency parsing on Universal Dependencies (v1.2) and compares delexicalized transfer and minimally supervised unsupervised parsers across 32 treebanks, which squarely targets the audience of a top NLP conference. The experimental setup (multi-source leave-one-out transfer, MST/Malt baselines, and averaged attachment scores) matches community evaluation standards, but the summary indicates missing reproducibility artifacts (no code, hyperparameters, or seeds reported) and a constrained training-token cap that should be justified. Given strong topical relevance and appropriate baselines but notable reproducibility omissions, the work is a good fit with minor concerns. | B(4): This paper addresses a core NLP research problem (cross-lingual dependency parsing and low-supervision methods) that is squarely in scope for top NLP/ML venues, using standard UD treebanks and commonly accepted metrics (UAS/averaged attachment score). The multi-source delexicalized transfer vs. minimally supervised unsupervised parser comparison speaks directly to the parsing and multilingual-transfer community and would interest both researchers and practitioners working on low-resource languages. Minor concerns for a top venue include reliance on the older UD v1.2 release, the arbitrary 10k-token-per-language training cap, and missing details such as code and hyperparameters, but these do not undermine the paper\u2019s relevance to the venue.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper studies cross-lingual dependency parsing on Universal Dependencies (v1.2) and compares delexicalized transfer and minimally supervised unsupervised parsers across 32 treebanks, which squarely targets the audience of a top NLP conference. The experimental setup (multi-source leave-one-out transfer, MST/Malt baselines, and averaged attachment scores) matches community evaluation standards, but the summary indicates missing reproducibility artifacts (no code, hyperparameters, or seeds reported) and a constrained training-token cap that should be justified. Given strong topical relevance and appropriate baselines but notable reproducibility omissions, the work is a good fit with minor concerns."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses a core NLP research problem (cross-lingual dependency parsing and low-supervision methods) that is squarely in scope for top NLP/ML venues, using standard UD treebanks and commonly accepted metrics (UAS/averaged attachment score). The multi-source delexicalized transfer vs. minimally supervised unsupervised parser comparison speaks directly to the parsing and multilingual-transfer community and would interest both researchers and practitioners working on low-resource languages. Minor concerns for a top venue include reliance on the older UD v1.2 release, the arbitrary 10k-token-per-language training cap, and missing details such as code and hyperparameters, but these do not undermine the paper\u2019s relevance to the venue."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): This paper presents a moderate, incremental contribution: it applies existing delexicalized transfer techniques (MST, Malt) and an established unsupervised dependency parser to the Unified UD v1.2 treebanks and demonstrates that UD unification improves delexicalized transfer performance. The manual inclusion of simple attach/stop priors into the unsupervised parser is a useful engineering insight but is a modest extension of prior minimally supervised approaches rather than a fundamentally new method. The authors do clearly position their work against McDonald et al. (2011) and Rosa (2015), so differentiation is adequate, but the techniques and problem framing remain largely within well-studied lines of cross-lingual transfer and unsupervised parsing and would be expected by an expert in the field. | B(3): From my perspective as a cross-lingual parsing strategist, the paper delivers a useful empirical comparison and a practical twist (manually defined attach/stop priors for an unsupervised parser) but does not introduce a transformative new methodology. The problem\u2014delexicalized transfer and minimally supervised/unsupervised parsing\u2014is well-studied; the work mainly evaluates these approaches on UD v1.2 and shows that UD unification improves transfer and that MST delexicalized transfer is stronger on average. The incorporation of simple external priors into the unsupervised parser is a non-trivial but modest extension rather than a fundamentally new technique, so the contribution reads as incremental rather than highly novel.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "This paper presents a moderate, incremental contribution: it applies existing delexicalized transfer techniques (MST, Malt) and an established unsupervised dependency parser to the Unified UD v1.2 treebanks and demonstrates that UD unification improves delexicalized transfer performance. The manual inclusion of simple attach/stop priors into the unsupervised parser is a useful engineering insight but is a modest extension of prior minimally supervised approaches rather than a fundamentally new method. The authors do clearly position their work against McDonald et al. (2011) and Rosa (2015), so differentiation is adequate, but the techniques and problem framing remain largely within well-studied lines of cross-lingual transfer and unsupervised parsing and would be expected by an expert in the field."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "From my perspective as a cross-lingual parsing strategist, the paper delivers a useful empirical comparison and a practical twist (manually defined attach/stop priors for an unsupervised parser) but does not introduce a transformative new methodology. The problem\u2014delexicalized transfer and minimally supervised/unsupervised parsing\u2014is well-studied; the work mainly evaluates these approaches on UD v1.2 and shows that UD unification improves transfer and that MST delexicalized transfer is stronger on average. The incorporation of simple external priors into the unsupervised parser is a non-trivial but modest extension rather than a fundamentally new technique, so the contribution reads as incremental rather than highly novel."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Comparison of delexicalized transfer parsers and a minimally supervised (unsupervised + external priors) dependency parser on Universal Dependencies treebanks.",
+      "Universal Dependencies (v1.2) unification improves delexicalized parser transfer performance compared to previous annotation styles (higher averaged attachment scores).",
+      "The MST delexicalized transfer parser is better on average, while the minimally supervised parser performs better on many non-Indo-European (low-resourced) languages.",
+      "Manually defined external attach and stop priors can be incorporated into an unsupervised dependency parser to provide minimal supervision and improve performance for some languages."
+    ],
+    "methodology": "They delexicalize UD v1.2 treebanks and perform multi-source leave-one-out transfer by concatenating up to 10,000 tokens per source language to train delexicalized Malt and MST parsers; they also run an unsupervised dependency parser (UDP) with manually assigned external priors for attach/stop probabilities and compare results across 32 languages.",
+    "datasets": [
+      "Universal Dependencies treebank collection v1.2 (32 dependency treebanks)"
+    ],
+    "baselines": [
+      "Delexicalized transfer parsers (MST parser, Malt parser)",
+      "Previous reported results by McDonald et al. (2011) and Rosa (2015)"
+    ],
+    "metrics": [
+      "Average attachment score",
+      "Averaged accuracy"
+    ],
+    "limitations": [
+      "The minimally supervised parser has an average attachment score slightly lower than the delexicalized transfer parser.",
+      "Unsupervised dependency parsing methods (without such priors) have results that are not competitive with projection and delexicalized methods (stated decline in research progress).",
+      "Training data for delexicalized transfer was limited to first 10,000 tokens per language to reduce size/time (explicit design choice)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - dependency parsing / cross-lingual transfer",
+    "writing_quality": "adequate"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Reproducible Empiricist",
+      "background": "Senior ML engineer with 10+ years building and evaluating parsing systems and production NLP pipelines; extensive experience with experimental design, statistical analysis, and releasing reproducible code and datasets.",
+      "traits": [
+        "insists on clear experimental protocols (data splits, preprocessing, hyperparameters) and reproducible artifacts",
+        "looks for appropriate baselines, ablation studies, and significance testing when claims of improvement are made",
+        "checks for potential confounders (e.g., training data size caps, language family leakage, annotation normalization) and robustness across settings",
+        "values clarity about implementation details (parameter settings, random seeds, evaluation scripts) that would allow replication"
+      ],
+      "reviewing_style": "Evaluates papers by verifying that the experimental design supports the claims, asking for missing controls/ablations, and recommending concrete steps to improve reproducibility and validity."
+    },
+    "reviewer_b": {
+      "name": "Cross-lingual Parsing Strategist",
+      "background": "Senior NLP researcher focused on multilingual parsing, typology-aware models, and low-resource language technologies; tracks the Universal Dependencies ecosystem and cross-lingual transfer advances in academia and applied settings.",
+      "traits": [
+        "assesses novelty and significance relative to prior work on delexicalized transfer, unsupervised parsing, and UD standardization",
+        "attends to real-world impact for low-resource and non-Indo-European languages and whether proposed methods are practical for field use",
+        "notices whether linguistic typology and annotation choices are adequately considered when interpreting results across diverse languages",
+        "values clear discussion of limitations, broader applicability, and connections to ongoing UD development and community datasets"
+      ],
+      "reviewing_style": "Judges contributions by their novelty, relevance to the multilingual parsing community, and potential to influence future research or resource development, while asking for clearer framing when needed."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 8,
+    "debate_rate": 0.0
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "APPROPRIATENESS": 4,
+  "MEANINGFUL_COMPARISON": 2,
+  "IMPACT": 3,
+  "REPLICABILITY": 3,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "CLARITY": 4,
+  "SUBSTANCE": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "This paper addresses multilingual correspondence/cognate discovery with a clear MDL-based modelling and algorithmic contribution (EM-like alignment with shortest-path/Dijkstra) that fits the interests of top NLP/ML venues. The experimental focus on Slavic languages using Swadesh lists and information-theoretic evaluation (description length, sDL) is appropriate for a computational-linguistics audience, though the limited datasets, lack of baselines, and reported computational constraints are minor scope concerns that reduce its competitiveness as a flagship submission. Overall the topic, methods, and positioning are well-aligned with top conferences, but stronger empirical evaluation would be needed for a perfect fit."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 2,
+      "justification": "The summary indicates no baselines were compared (\"Baselines compared: none mentioned\") despite using MDL/sDL and mentioning NCD as metrics, so there are no empirical comparisons to established cognate-detection or multilingual alignment methods. While related work coverage is described as adequate, the paper therefore fails to provide fair, quantitative comparisons or acknowledge when prior methods perform comparably, making the experimental comparison setup inadequate."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper presents a principled MDL-based framework and an efficient EM-like alignment algorithm (shortest-path/Dijkstra) for discovering string-to-string correspondences across multiple languages, demonstrated on Slavic data (Swadesh lists for 13 languages), which could meaningfully inform work on cognate discovery and multilingual alignment. However, practical limitations\u2014scalability and memory/runtime bottlenecks (current implementation handles up to five languages on a 4GB single-core machine), dependence on complete-entry datasets, and the absence of baseline comparisons or code\u2014limit immediate broad uptake, so the impact is moderate rather than transformative."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "Partially reproducible: the methodology is described (MDL objective, EM-like iterative alignment with Dijkstra and rule merging) and the datasets are named (Swadesh lists from Wiktionary; a Slavic cognates set), and a basic preprocessing choice is given (only entries with words for all languages). However, no hyperparameters or training/configuration details are reported, code is not mentioned, and many implementation/runtime choices (e.g., merging criteria, initialization, exact objective weighting beyond \u03b1) are unspecified. Evaluation metrics are named (description length, sDL, NCD) but procedural details for computing them are not fully provided, so reimplementation would require nontrivial assumptions."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a clearly new MDL-based framing for discovering multilingual string-to-string correspondence rules and optimizes an interpretable description-length objective (L(M)+L(D|M)), which is not a routine application of existing methods. It also presents a non-trivial algorithmic contribution: an EM-like iterative alignment procedure using a shortest-path/Dijkstra formulation to learn rules across any subset of languages, and adds a practical user-control mechanism (data over-weighting \u03b1) to surface near-significant correspondences. While related work coverage is reported as adequate and there are computational/scale limitations and no baselines reported, the methodological combination and algorithmic design represent notable novelty rather than a mere recombination of known techniques."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The main claims (an MDL-based rule model and an EM-like alignment algorithm using shortest-path/Dijkstra) are clearly stated and supported by experiments on 13 Slavic languages, so the approach appears plausible and partially validated. However, the experimental methodology is weak: no baselines or statistical tests are reported, hyperparameters and code are not provided, and the dataset filtering (entries with all languages only) and use of subjective data over-weighting limit reproducibility and objectivity. Computational bottlenecks and the admitted need for sufficient data further weaken the generality of the claims, so while technically promising the paper lacks some necessary evidence and controls."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and the main contributions are stated early; the methodology is described clearly (MDL objective L(M)+L(D|M), \u03b1-weighting, EM-like alignment with Dijkstra and rule merging) and experiments and limitations are presented coherently. Notation and writing quality are good and related work coverage is adequate, making the technical exposition easy to follow. Minor presentation issues remain: hyperparameters are not reported and code availability is not mentioned, which reduces clarity around experimental reproducibility."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper demonstrates the MDL method on realistic Swadesh lists for 13 Slavic languages and a cognate set for 4 languages, giving some quantitative (description-length) and qualitative evidence, but no baselines are compared and quantitative evaluation against ground truth is limited. Sensitivity analyses and ablations are lacking: hyperparameters are not reported and the only control (data over-weighting \u03b1) is described but not systematically explored. Related work coverage is described as adequate and limitations (memory/runtime, data requirements, subjective over-weighting) are explicitly discussed. However, reproducibility is weak (no code mentioned, implementation/hyperparameter details omitted), so the experimental evaluation is adequate but missing important analyses and comparisons."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Presents an MDL-based method to automatically discover statistically important correspondences between words in multiple languages.",
+      "Provides an efficient algorithm (EM-like iterative alignment with shortest-path/Dijkstra alignment) for learning correspondence rules as string-to-string associations across any subset of languages.",
+      "Demonstrates the method on Slavic languages, showing it discovers non-trivial associations and supports quantitative (description-length) and qualitative analysis of language similarity.",
+      "Allows user control over level of detail via data over-weighting (\u03b1) to include near-significant correspondences when data are insufficient."
+    ],
+    "methodology": "Model correspondences as sets of deterministic string-to-string rules and optimize an MDL objective (L(M)+L(D|M), optionally weighted by \u03b1) via an EM-like process: align data (expectation) using a shortest-path formulation solved by Dijkstra, and improve the model by merging compatible rules (maximization).",
+    "datasets": [
+      "Swadesh lists for 13 modern Slavic languages (from Wiktionary)",
+      "Slavic cognates set containing internationalisms and pan-Slavic words for Czech, Polish, Russian, and Bulgarian"
+    ],
+    "baselines": [],
+    "metrics": [
+      "Description Length (MDL)",
+      "shared Description Length (sDL)",
+      "NCD (mentioned)"
+    ],
+    "limitations": [
+      "Computational bottlenecks in memory and runtime; current implementation processes up to five languages on a 4GB RAM, 2.5GHz single-core machine within a few hours.",
+      "Requires sufficient data; under-resourced or very rich languages and higher numbers of languages may lack statistical evidence to discover desired rules.",
+      "Data over-weighting (to include near-significant correspondences) moves results away from objective MDL and introduces subjective judgments.",
+      "Experiments use only entries that contain words for all languages in question (no gaps)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "Computational linguistics - multilingual correspondence/cognate discovery (MDL-based)",
+    "writing_quality": "good"
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "SUBSTANCE": 3,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "_details": {
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper provides a reasonable set of comparisons (single-word anchors, ITM, Utopian, Hu et al.) across multiple metrics (classification, ARI, VI, coherence, significance) on 20NEWS and Amazon, which supports the main claims at a surface level. However, important empirical details are missing: no hyperparameters or seeds are reported, runtime/memory measurements for the interactive claim are not provided, and there are insufficient ablations isolating components (e.g., how multiword facet construction or pseudoword aggregation choices affect results). Related work appears adequately covered and some limitations are noted (metadata dependence), but reproducibility and sensitivity analyses are weak, so the experimental evidence is adequate but incomplete. | B(3): The experiments cover multiple datasets (20NEWS and Amazon), compare against reasonable baselines (single-word anchors, ITM, Utopian, Hu et al.), and report a broad set of metrics (classification, ARI, VI, coherence, significance), which supports the central claims about improved topic quality and interactivity. However, the paper appears to omit key reproducibility details (no code mentioned, hyperparameters not reported) and does not clearly present thorough ablations or sensitivity analyses quantifying dependence on anchor-facet choice\u2014only a qualitative note that metadata was used as a high-water mark. Related work coverage is described as adequate and limitations are acknowledged, but the lack of systematic robustness checks and exact experimental settings leaves the empirical evidence incomplete for deployment-focused evaluation that I prioritize as a Domain & Impact Scholar.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides a reasonable set of comparisons (single-word anchors, ITM, Utopian, Hu et al.) across multiple metrics (classification, ARI, VI, coherence, significance) on 20NEWS and Amazon, which supports the main claims at a surface level. However, important empirical details are missing: no hyperparameters or seeds are reported, runtime/memory measurements for the interactive claim are not provided, and there are insufficient ablations isolating components (e.g., how multiword facet construction or pseudoword aggregation choices affect results). Related work appears adequately covered and some limitations are noted (metadata dependence), but reproducibility and sensitivity analyses are weak, so the experimental evidence is adequate but incomplete."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The experiments cover multiple datasets (20NEWS and Amazon), compare against reasonable baselines (single-word anchors, ITM, Utopian, Hu et al.), and report a broad set of metrics (classification, ARI, VI, coherence, significance), which supports the central claims about improved topic quality and interactivity. However, the paper appears to omit key reproducibility details (no code mentioned, hyperparameters not reported) and does not clearly present thorough ablations or sensitivity analyses quantifying dependence on anchor-facet choice\u2014only a qualitative note that metadata was used as a high-water mark. Related work coverage is described as adequate and limitations are acknowledged, but the lack of systematic robustness checks and exact experimental settings leaves the empirical evidence incomplete for deployment-focused evaluation that I prioritize as a Domain & Impact Scholar."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper presents a concrete and useful extension of the anchor-word algorithm\u2014constructing multiword anchor facets as pseudowords and augmenting the cooccurrence matrix\u2014which is a non-trivial engineering and methodological contribution but builds directly on well-established anchor methods and prior work on knowledge-incorporated topic models. The runtime and single-pass Q construction claims (orders-of-magnitude speedup and precomputation) are valuable practical observations but not fundamentally new theoretical breakthroughs relative to existing anchor and knowledge-guided topic-modeling literature (e.g., prior methods for incorporating constraints/prior knowledge). Overall, this reads as a solid, incremental advance that would meaningfully inform practitioners and experts but is not a highly original paradigm shift. | B(4): The paper presents a clear and non-trivial extension of anchor-word methods by introducing multiword anchor facets (pseudowords) and the mechanism to augment the cooccurrence matrix Q with synthetic rows \u2014 a concrete algorithmic innovation that is not present in standard single-word anchor algorithms. The focus on interactive suitability (single-pass Q construction and orders-of-magnitude speed claims) and the demonstrated ability to inject multiword prior knowledge distinguish it from prior knowledge-incorporation work (e.g., 2015 methods) and slow probabilistic interactive models like ITM/Utopian. That said, the contribution builds directly on the established anchor-word framework rather than proposing a wholly new class of models, so while it would be informative and useful to practitioners it is not a radical departure from existing methods.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents a concrete and useful extension of the anchor-word algorithm\u2014constructing multiword anchor facets as pseudowords and augmenting the cooccurrence matrix\u2014which is a non-trivial engineering and methodological contribution but builds directly on well-established anchor methods and prior work on knowledge-incorporated topic models. The runtime and single-pass Q construction claims (orders-of-magnitude speedup and precomputation) are valuable practical observations but not fundamentally new theoretical breakthroughs relative to existing anchor and knowledge-guided topic-modeling literature (e.g., prior methods for incorporating constraints/prior knowledge). Overall, this reads as a solid, incremental advance that would meaningfully inform practitioners and experts but is not a highly original paradigm shift."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a clear and non-trivial extension of anchor-word methods by introducing multiword anchor facets (pseudowords) and the mechanism to augment the cooccurrence matrix Q with synthetic rows \u2014 a concrete algorithmic innovation that is not present in standard single-word anchor algorithms. The focus on interactive suitability (single-pass Q construction and orders-of-magnitude speed claims) and the demonstrated ability to inject multiword prior knowledge distinguish it from prior knowledge-incorporation work (e.g., 2015 methods) and slow probabilistic interactive models like ITM/Utopian. That said, the contribution builds directly on the established anchor-word framework rather than proposing a wholly new class of models, so while it would be informative and useful to practitioners it is not a radical departure from existing methods."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against key interactive-topic baselines (ITM, Utopian) and the single-word anchor algorithm, and evaluates across multiple relevant metrics (classification, clustering, coherence), which is strong. However, important details for fair reproduction\u2014hyperparameters, seeds, runtime/memory numbers and code\u2014are not reported, and comparisons omit some strong non-interactive baselines (e.g., LDA/modern neural topic methods or other knowledge-guided inference work) that would contextualize absolute performance. The authors do acknowledge limitations (dependency on good anchor facets and metadata) and include a prior-method (Hu et al.) comparison, so overall the empirical comparison is good but missing a few key controls and reproducibility details. | B(4): The paper compares against appropriate interactive and anchor-based baselines (single-word anchor algorithm/Gram\u2013Schmidt anchors, ITM, Utopian, Hu et al.) on shared datasets (20NEWS, Amazon) using multiple metrics (classification, ARI, VI, coherence, significance), and runtime/interactive feasibility is reported. Comparisons appear fair in scope, and the authors acknowledge when interactive baselines are slower; they also analyze differences between multiword facets and single-word anchors. However, some important related constrained/knowledge-guided topic approaches (e.g., broader 2015 work on incorporating priors into topic models and other guidance frameworks) are not clearly integrated into empirical comparisons, and hyperparameter/reporting details are sparse, so the evaluation is strong but not fully comprehensive.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against key interactive-topic baselines (ITM, Utopian) and the single-word anchor algorithm, and evaluates across multiple relevant metrics (classification, clustering, coherence), which is strong. However, important details for fair reproduction\u2014hyperparameters, seeds, runtime/memory numbers and code\u2014are not reported, and comparisons omit some strong non-interactive baselines (e.g., LDA/modern neural topic methods or other knowledge-guided inference work) that would contextualize absolute performance. The authors do acknowledge limitations (dependency on good anchor facets and metadata) and include a prior-method (Hu et al.) comparison, so overall the empirical comparison is good but missing a few key controls and reproducibility details."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against appropriate interactive and anchor-based baselines (single-word anchor algorithm/Gram\u2013Schmidt anchors, ITM, Utopian, Hu et al.) on shared datasets (20NEWS, Amazon) using multiple metrics (classification, ARI, VI, coherence, significance), and runtime/interactive feasibility is reported. Comparisons appear fair in scope, and the authors acknowledge when interactive baselines are slower; they also analyze differences between multiword facets and single-word anchors. However, some important related constrained/knowledge-guided topic approaches (e.g., broader 2015 work on incorporating priors into topic models and other guidance frameworks) are not clearly integrated into empirical comparisons, and hyperparameter/reporting details are sparse, so the evaluation is strong but not fully comprehensive."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized and follows a clear intro\u2192method\u2192experiments\u2192conclusion flow, and the main contributions (tandem anchors / pseudowords and interactive use claims) are stated early. Notation is generally consistent and the examples and evaluation metrics are informative, helping the reader understand the Q\u2192S augmentation and reconstruction procedure. Figures/tables appear effective in communicating empirical comparisons (classification, ARI, coherence) against single-word anchors and interactive baselines. Minor presentation gaps remain \u2014 e.g., lack of reported hyperparameters and code availability are not presentation issues per se but reduce reproducibility and make some experimental choices harder to follow \u2014 so the paper is very good but not exceptional. | B(4): The paper is well organized with a clear intro\u2192method\u2192experiments\u2192conclusion flow and its main contributions (tandem anchors/pseudowords) are stated early. Notation for the Q\u2192S transformation and per-word convex reconstruction is presented coherently, and figures/tables and examples (20NEWS, Amazon) support the narrative. Writing quality is good with adequate related-work coverage, though a few presentation choices (e.g., no hyperparameter reporting, some discussion of facet selection sensitivity could be clearer) prevent an exceptional rating.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized and follows a clear intro\u2192method\u2192experiments\u2192conclusion flow, and the main contributions (tandem anchors / pseudowords and interactive use claims) are stated early. Notation is generally consistent and the examples and evaluation metrics are informative, helping the reader understand the Q\u2192S augmentation and reconstruction procedure. Figures/tables appear effective in communicating empirical comparisons (classification, ARI, coherence) against single-word anchors and interactive baselines. Minor presentation gaps remain \u2014 e.g., lack of reported hyperparameters and code availability are not presentation issues per se but reduce reproducibility and make some experimental choices harder to follow \u2014 so the paper is very good but not exceptional."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized with a clear intro\u2192method\u2192experiments\u2192conclusion flow and its main contributions (tandem anchors/pseudowords) are stated early. Notation for the Q\u2192S transformation and per-word convex reconstruction is presented coherently, and figures/tables and examples (20NEWS, Amazon) support the narrative. Writing quality is good with adequate related-work coverage, though a few presentation choices (e.g., no hyperparameter reporting, some discussion of facet selection sensitivity could be clearer) prevent an exceptional rating."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): This paper is largely within scope for a top NLP/ML venue: it addresses interactive topic modeling, proposes a method (multiword anchor facets/pseudowords) that extends anchor-word algorithms, and evaluates on standard datasets (20NEWS) with appropriate metrics (classification, ARI, VI, coherence). From an experimental-methodology perspective it would benefit from more reproducibility detail (code availability, hyperparameters, seeds) and stronger runtime/memory measurements to substantiate the interactivity claim versus ITM/Utopian, which are noted but not fully quantified. Overall the audience, problem framing, and evaluation style match venue expectations, but missing implementation/hyperparameter/runtime details constitute a minor concern for top-tier acceptance. | B(5): This paper sits squarely within the NLP/ML interactive topic-modeling community: it proposes a concrete algorithmic extension (multiword/tandem anchors) to the anchor-word method and evaluates on standard corpora (20NEWS, Amazon) with relevant metrics (classification accuracy, ARI, VI, topic coherence). The claimed advantages\u2014better topic quality and interactive-speed suitability compared to single-word anchors and slower interactive baselines\u2014address practitioner needs for interpretable, fast human-in-the-loop topic tools, and the paper discusses limitations (dependence on anchor facets) and related work appropriately. Given the methodological contribution, relevant baselines, and evaluation aligning with community standards, this is a strong fit for a top-tier NLP/ML venue.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper is largely within scope for a top NLP/ML venue: it addresses interactive topic modeling, proposes a method (multiword anchor facets/pseudowords) that extends anchor-word algorithms, and evaluates on standard datasets (20NEWS) with appropriate metrics (classification, ARI, VI, coherence). From an experimental-methodology perspective it would benefit from more reproducibility detail (code availability, hyperparameters, seeds) and stronger runtime/memory measurements to substantiate the interactivity claim versus ITM/Utopian, which are noted but not fully quantified. Overall the audience, problem framing, and evaluation style match venue expectations, but missing implementation/hyperparameter/runtime details constitute a minor concern for top-tier acceptance."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper sits squarely within the NLP/ML interactive topic-modeling community: it proposes a concrete algorithmic extension (multiword/tandem anchors) to the anchor-word method and evaluates on standard corpora (20NEWS, Amazon) with relevant metrics (classification accuracy, ARI, VI, topic coherence). The claimed advantages\u2014better topic quality and interactive-speed suitability compared to single-word anchors and slower interactive baselines\u2014address practitioner needs for interpretable, fast human-in-the-loop topic tools, and the paper discusses limitations (dependence on anchor facets) and related work appropriately. Given the methodological contribution, relevant baselines, and evaluation aligning with community standards, this is a strong fit for a top-tier NLP/ML venue."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper states clear claims and presents experiments (classification, clustering, coherence) showing Tandem Anchors outperform single-word anchors and some interactive baselines, but the experimental methodology lacks crucial details for reproducibility (no code, missing hyperparameters, seeds, and runtime/memory measurements to substantiate interactivity claims). The mathematical formulation (pseudoword aggregation and KL-based reconstructions) appears plausible, but the summary provides no proofs or ablations isolating the effect of multiword facet construction choices or sensitivity to facet quality. Several important controls are missing: stronger modern neural baselines, statistical significance testing across seeds/datasets, and exact preprocessing, so some conclusions about robustness and interactive feasibility are not fully supported. | B(4): The paper states clear claims and supports them with comparative experiments (classification accuracy, ARI, VI, coherence, significance) against sensible baselines (single-word anchors, ITM, Utopian, Hu et al.). The core algorithmic approach (combining multiword anchor co\u2011occurrence profiles into pseudowords and solving convex reconstructions) is plausible and appears mathematically consistent given the described Bayes rule recovery, though the summary does not indicate formal proofs or detailed derivations. Experimental methodology is generally sound but missing details: hyperparameters and code are not reported, and no mention of statistical significance testing; claims about user intuitiveness and reliance on metadata as a \"high\u2011water mark\" are acknowledged as limitations but not empirically validated. Overall the results support the main technical claims, with minor methodological gaps that do not overturn the conclusions.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper states clear claims and presents experiments (classification, clustering, coherence) showing Tandem Anchors outperform single-word anchors and some interactive baselines, but the experimental methodology lacks crucial details for reproducibility (no code, missing hyperparameters, seeds, and runtime/memory measurements to substantiate interactivity claims). The mathematical formulation (pseudoword aggregation and KL-based reconstructions) appears plausible, but the summary provides no proofs or ablations isolating the effect of multiword facet construction choices or sensitivity to facet quality. Several important controls are missing: stronger modern neural baselines, statistical significance testing across seeds/datasets, and exact preprocessing, so some conclusions about robustness and interactive feasibility are not fully supported."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper states clear claims and supports them with comparative experiments (classification accuracy, ARI, VI, coherence, significance) against sensible baselines (single-word anchors, ITM, Utopian, Hu et al.). The core algorithmic approach (combining multiword anchor co\u2011occurrence profiles into pseudowords and solving convex reconstructions) is plausible and appears mathematically consistent given the described Bayes rule recovery, though the summary does not indicate formal proofs or detailed derivations. Experimental methodology is generally sound but missing details: hyperparameters and code are not reported, and no mention of statistical significance testing; claims about user intuitiveness and reliance on metadata as a \"high\u2011water mark\" are acknowledged as limitations but not empirically validated. Overall the results support the main technical claims, with minor methodological gaps that do not overturn the conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): This paper tackles an important practical problem\u2014making anchor-based interactive topic modeling more intuitive and accurate by introducing multiword anchor facets\u2014and demonstrates improvements over single-word anchors on standard metrics (classification accuracy, ARI, coherence) on 20NEWS and Amazon reviews. From my methodological perspective, the approach is promising and could change how practitioners design interactive topic interfaces, but the impact is moderate because key reproducibility details (code, hyperparameters) are not reported, evaluations are limited to a small set of datasets, and the method relies on well-chosen facets/metadata that may not always be available. With stronger ablations, runtime/memory measurements, and broader validation the work could become widely adopted, but as presented it is a useful incremental advance rather than a field-transforming contribution. | B(4): This paper tackles an important practical problem for interactive topic modeling\u2014making anchors more intuitive and enabling easy injection of prior knowledge\u2014by introducing multiword anchor facets (pseudowords) that reportedly yield higher-quality topics and remain fast enough for interactive use. The empirical gains on classification/clustering metrics and claimed speed advantage over interactive baselines suggest practitioners could adopt this as a usable alternative to single-word anchors, and it directly addresses usability gaps in anchor-based workflows. While not obviously transformative (it builds on anchor-word algorithms rather than replacing the paradigm) it opens productive research directions around multiword priors, user-facing facet selection, and applicability across domains; adoption may be limited where metadata to construct facets is unavailable or where further engineering (code, hyperparameter guidance) is needed.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "This paper tackles an important practical problem\u2014making anchor-based interactive topic modeling more intuitive and accurate by introducing multiword anchor facets\u2014and demonstrates improvements over single-word anchors on standard metrics (classification accuracy, ARI, coherence) on 20NEWS and Amazon reviews. From my methodological perspective, the approach is promising and could change how practitioners design interactive topic interfaces, but the impact is moderate because key reproducibility details (code, hyperparameters) are not reported, evaluations are limited to a small set of datasets, and the method relies on well-chosen facets/metadata that may not always be available. With stronger ablations, runtime/memory measurements, and broader validation the work could become widely adopted, but as presented it is a useful incremental advance rather than a field-transforming contribution."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles an important practical problem for interactive topic modeling\u2014making anchors more intuitive and enabling easy injection of prior knowledge\u2014by introducing multiword anchor facets (pseudowords) that reportedly yield higher-quality topics and remain fast enough for interactive use. The empirical gains on classification/clustering metrics and claimed speed advantage over interactive baselines suggest practitioners could adopt this as a usable alternative to single-word anchors, and it directly addresses usability gaps in anchor-based workflows. While not obviously transformative (it builds on anchor-word algorithms rather than replacing the paradigm) it opens productive research directions around multiword priors, user-facing facet selection, and applicability across domains; adoption may be limited where metadata to construct facets is unavailable or where further engineering (code, hyperparameter guidance) is needed."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introducing Tandem Anchors: using multiword anchor facets (pseudowords) to extend the anchor-word algorithm for topic modeling.",
+      "Tandem anchors yield higher-quality topics for interactive topic modeling than single-word anchors (better classification accuracy and clustering metrics) while remaining fast enough for interactive use.",
+      "Tandem anchors make anchor-based topic models more intuitive for users and allow injection of prior knowledge via multiword facets."
+    ],
+    "methodology": "Construct multiword anchor facets and combine their co-occurrence profiles into synthetic pseudowords to augment the original word co-occurrence matrix (Q\u2192S); then solve per-word convex reconstruction problems (KL divergence) using these multiword anchors and recover topic-word distributions via Bayes' rule.",
+    "datasets": [
+      "20 Newsgroups (20NEWS)",
+      "Amazon product reviews (used as illustrative/example data)"
+    ],
+    "baselines": [
+      "single-word anchor algorithm (Gram-Schmidt anchors)",
+      "Interactive Topic Model (ITM)",
+      "Utopian",
+      "Hu et al. (2014) as a comparison"
+    ],
+    "metrics": [
+      "classification accuracy",
+      "adjusted Rand index",
+      "variation of information",
+      "topic coherence (Newman et al., 2010)",
+      "topic significance metrics (AlSumait et al., 2009)",
+      "confusion matrix-based clustering metrics"
+    ],
+    "limitations": [
+      "Method performance can depend on well-chosen anchor facets; authors note they used metadata (titles) as a high-water mark which may not always be available.",
+      "Anchor algorithm limitation: single-word anchors can be unintuitive (motivating multiword anchors).",
+      "Interactive model baselines (e.g., ITM, Utopian) are too slow for interactive use compared to tandem anchors (i.e., runtime/scale limitation of existing interactive methods)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - interactive topic modeling / topic models",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Experimental Methodologist",
+      "background": "Senior ML engineer with a decade of experience building and evaluating topic models and scalable NLP systems in both academia and industry. Has led reproducibility efforts and benchmark suites for unsupervised and interactive learning methods.",
+      "traits": [
+        "notices missing or weak baselines and values comprehensive comparisons (including strong classical and recent neural baselines)",
+        "requires clear implementation details, hyperparameters, and runtime/memory measurements to assess interactive feasibility",
+        "looks for rigorous ablations that isolate the contribution of each component (e.g., how multiword facets are constructed, effect of pseudoword aggregation choices)",
+        "values statistical rigor: multiple seeds, confidence intervals or significance tests, and dataset splits that prevent leakage",
+        "checks reproducibility: availability of code/data, precise pre-processing, and instructions to replicate results"
+      ],
+      "reviewing_style": "Focused on empirical rigor and reproducibility; asks for specific experiments, ablations, and measurements that validate claims about effectiveness and interactivity."
+    },
+    "reviewer_b": {
+      "name": "Domain & Impact Scholar",
+      "background": "Associate professor tracking research trends in interactive and interpretable NLP, with extensive publications on human-in-the-loop topic modeling and user-facing text analytic tools. Advises interdisciplinary teams deploying topic models for social science and enterprise use.",
+      "traits": [
+        "evaluates novelty relative to prior interactive topic modeling and anchor-word literature and looks for clear positioning against related work",
+        "values contributions that improve interpretability and practical usability for end users, including mechanisms to inject prior knowledge",
+        "notices whether evaluation metrics align with real-world goals (e.g., human interpretability, guidance quality) beyond purely automatic scores",
+        "assesses broader impact: potential to influence practitioner workflows, limitations for certain domains, and possible misuses or ethical considerations"
+      ],
+      "reviewing_style": "Judges the paper by its conceptual novelty, relevance to the interactive-topic-modeling community, and potential for real-world adoption; seeks evidence that improvements translate to better user experiences or capabilities."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 2,
+    "paper_novelty_mean": 0.4,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

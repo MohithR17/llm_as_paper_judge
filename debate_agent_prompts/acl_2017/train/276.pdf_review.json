@@ -1,0 +1,183 @@
+{
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the main contribution early \u2014 a multitask LM objective for bidirectional sequence labeling \u2014 which makes the narrative easy to follow. Notation appears consistent and the writing quality is adequate; figures/tables and examples are informative enough to support the claims across the eight benchmarks. Minor presentation issues remain: hyperparameters are not reported in the summary (affecting reproducibility) and some implementation/training-efficiency caveats are only briefly discussed, which could be expanded for clarity. | B(4): The paper is generally well-organized and presents its main contributions early (introducing the auxiliary language-modeling objective for bidirectional sequence labeling) with a clear method->experiments->conclusion flow. Notation and definitions appear consistent and the writing is adequate, but a few presentation gaps remain (e.g., hyperparameters are not reported and the description of the LM output/efficiency trade-offs could be tightened). Figures/tables and examples are described as informative overall, though some experimental details (training efficiency, softmax alternatives) are discussed only briefly, which may hinder reproducibility for readers.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the main contribution early \u2014 a multitask LM objective for bidirectional sequence labeling \u2014 which makes the narrative easy to follow. Notation appears consistent and the writing quality is adequate; figures/tables and examples are informative enough to support the claims across the eight benchmarks. Minor presentation issues remain: hyperparameters are not reported in the summary (affecting reproducibility) and some implementation/training-efficiency caveats are only briefly discussed, which could be expanded for clarity."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is generally well-organized and presents its main contributions early (introducing the auxiliary language-modeling objective for bidirectional sequence labeling) with a clear method->experiments->conclusion flow. Notation and definitions appear consistent and the writing is adequate, but a few presentation gaps remain (e.g., hyperparameters are not reported and the description of the LM output/efficiency trade-offs could be tightened). Figures/tables and examples are described as informative overall, though some experimental details (training efficiency, softmax alternatives) are discussed only briefly, which may hinder reproducibility for readers."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper clearly states its main claim (augmenting bidirectional LSTM sequence labeling with a secondary language modeling objective yields consistent gains) and provides empirical evidence across eight diverse benchmarks, with code released, which supports reproducibility in principle. However, important experimental details are missing in the summary: hyperparameter settings, random seeds, and statistical significance testing are not reported, and it is unclear whether baselines were tuned to the same extent as the proposed model. There are no mathematical derivations needed beyond the objective formulation, so correctness there is not an issue, but the lack of ablations and rigorous controls (e.g., seed variability, effect sizes) weakens confidence that the reported gains are robust. Overall the work is promising and likely correct, but the experimental methodology needs stronger reporting and analyses to fully support the claims. | B(4): The paper's main empirical claim\u2014that adding a token-level language modeling auxiliary objective improves bidirectional sequence labeling across eight benchmarks\u2014is supported by experiments showing consistent gains without extra data; baselines include relevant prior architectures (Rei et al., Huang et al.). There are no mathematical derivations to verify and none seem required for the proposed multitask objective, but the paper omits hyperparameter detail and does not report statistical significance or uncertainty, which weakens confidence in small improvements (notably for POS tasks). No obvious logical errors are present, though practical concerns (training efficiency, softmax scaling) are acknowledged but not empirically addressed. Overall the technical evidence is solid but minor methodological/reporting gaps prevent a flawless rating.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its main claim (augmenting bidirectional LSTM sequence labeling with a secondary language modeling objective yields consistent gains) and provides empirical evidence across eight diverse benchmarks, with code released, which supports reproducibility in principle. However, important experimental details are missing in the summary: hyperparameter settings, random seeds, and statistical significance testing are not reported, and it is unclear whether baselines were tuned to the same extent as the proposed model. There are no mathematical derivations needed beyond the objective formulation, so correctness there is not an issue, but the lack of ablations and rigorous controls (e.g., seed variability, effect sizes) weakens confidence that the reported gains are robust. Overall the work is promising and likely correct, but the experimental methodology needs stronger reporting and analyses to fully support the claims."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main empirical claim\u2014that adding a token-level language modeling auxiliary objective improves bidirectional sequence labeling across eight benchmarks\u2014is supported by experiments showing consistent gains without extra data; baselines include relevant prior architectures (Rei et al., Huang et al.). There are no mathematical derivations to verify and none seem required for the proposed multitask objective, but the paper omits hyperparameter detail and does not report statistical significance or uncertainty, which weakens confidence in small improvements (notably for POS tasks). No obvious logical errors are present, though practical concerns (training efficiency, softmax scaling) are acknowledged but not empirically addressed. Overall the technical evidence is solid but minor methodological/reporting gaps prevent a flawless rating."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): This paper addresses an important, practical problem\u2014improving sequence labeling via a lightweight auxiliary language-modeling objective\u2014and demonstrates consistent gains across eight diverse benchmarks (NER, chunking, POS, error detection) without extra data, which will influence practitioner choices for model training. The approach is broadly applicable (integrates with bidirectional LSTM+CRF and char-LSTM features) and the availability of code facilitates adoption and reproduction. Gains are sometimes small on already-strong baselines and there are noted efficiency limitations (softmax LM output), so the work is impactful and likely widely built upon but not transformative. | B(4): The paper targets an important, practical problem\u2014improving sequence labeling via a lightweight semi\u2011supervised auxiliary objective\u2014and demonstrates consistent improvements across eight diverse benchmarks (NER, chunking, POS, error detection) without requiring extra data. Its approach is broadly applicable to common architectures (bidirectional LSTM+CRF, char\u2011LSTM) and comes with released code, making adoption by researchers and practitioners likely. While gains are sometimes modest (especially on near\u2011saturated POS tasks) and there are efficiency/softmax limitations, the work meaningfully shifts practice toward token\u2011level language modeling as a general auxiliary loss and opens clear follow\u2011up directions for scaling and optimization.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper addresses an important, practical problem\u2014improving sequence labeling via a lightweight auxiliary language-modeling objective\u2014and demonstrates consistent gains across eight diverse benchmarks (NER, chunking, POS, error detection) without extra data, which will influence practitioner choices for model training. The approach is broadly applicable (integrates with bidirectional LSTM+CRF and char-LSTM features) and the availability of code facilitates adoption and reproduction. Gains are sometimes small on already-strong baselines and there are noted efficiency limitations (softmax LM output), so the work is impactful and likely widely built upon but not transformative."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper targets an important, practical problem\u2014improving sequence labeling via a lightweight semi\u2011supervised auxiliary objective\u2014and demonstrates consistent improvements across eight diverse benchmarks (NER, chunking, POS, error detection) without requiring extra data. Its approach is broadly applicable to common architectures (bidirectional LSTM+CRF, char\u2011LSTM) and comes with released code, making adoption by researchers and practitioners likely. While gains are sometimes modest (especially on near\u2011saturated POS tasks) and there are efficiency/softmax limitations, the work meaningfully shifts practice toward token\u2011level language modeling as a general auxiliary loss and opens clear follow\u2011up directions for scaling and optimization."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper evaluates the proposed LM-augmented multitask objective across a broad set of eight benchmarks and integrates with CRF and char-LSTM components, which supports the main empirical claim. However, the summary lacks mention of crucial ablations and sensitivity analyses (e.g., isolating the LM objective from architectural changes, seed variability and statistical significance) and hyperparameters are not reported, limiting reproducibility and confidence in the effect sizes. Positive points: limitations are discussed and code is available, but important experimental controls and tuning details are missing, so the evidence is adequate but incomplete. | B(4): The paper evaluates the proposed joint language-modeling objective across a diverse set of eight benchmarks (error detection, NER, chunking, POS) and shows consistent gains without extra data, which supports the main claims. Related work coverage is reported as adequate and limitations (e.g., small POS gains, softmax/training efficiency) are acknowledged. However, the summary does not indicate detailed ablations or sensitivity analyses (e.g., effect of weighting the auxiliary loss, architectural variants) and reproducibility is hindered by missing hyperparameter reporting despite available code, so a minor gap remains.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper evaluates the proposed LM-augmented multitask objective across a broad set of eight benchmarks and integrates with CRF and char-LSTM components, which supports the main empirical claim. However, the summary lacks mention of crucial ablations and sensitivity analyses (e.g., isolating the LM objective from architectural changes, seed variability and statistical significance) and hyperparameters are not reported, limiting reproducibility and confidence in the effect sizes. Positive points: limitations are discussed and code is available, but important experimental controls and tuning details are missing, so the evidence is adequate but incomplete."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper evaluates the proposed joint language-modeling objective across a diverse set of eight benchmarks (error detection, NER, chunking, POS) and shows consistent gains without extra data, which supports the main claims. Related work coverage is reported as adequate and limitations (e.g., small POS gains, softmax/training efficiency) are acknowledged. However, the summary does not indicate detailed ablations or sensitivity analyses (e.g., effect of weighting the auxiliary loss, architectural variants) and reproducibility is hindered by missing hyperparameter reporting despite available code, so a minor gap remains."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "[Consensus avg=5] A(5): This paper addresses a core NLP/ML topic\u2014improving sequence labeling via a semi\u2011supervised multitask LM objective\u2014and evaluates it across eight diverse benchmarks (NER, POS, chunking, error detection) which aligns well with top\u2011tier conference scope. The method is compatible with standard architectures (bidirectional LSTM, CRF, char\u2011LSTM), compares to appropriate baselines, and provides code, making it relevant and useful to the venue\u2019s audience. My only minor concern is limited reporting of hyperparameter tuning details (which affects reproducibility), but that does not diminish the paper\u2019s clear fit and relevance to the community. | B(5): This paper addresses a core NLP/ML problem\u2014improving sequence labeling via a semi\u2011supervised multitask objective\u2014that clearly lies within top conference scope. The method (joint LM and sequence labeling training) is well matched to the audience, evaluated across eight diverse benchmarks (NER, POS, chunking, error detection) with competitive baselines and public code, and does not rely on extra data, which increases practical relevance. Overall the formulation, experimental breadth, and positioning make it an excellent fit for a top-tier NLP/ML venue.",
+      "reviewer_a": {
+        "score": 5,
+        "justification": "This paper addresses a core NLP/ML topic\u2014improving sequence labeling via a semi\u2011supervised multitask LM objective\u2014and evaluates it across eight diverse benchmarks (NER, POS, chunking, error detection) which aligns well with top\u2011tier conference scope. The method is compatible with standard architectures (bidirectional LSTM, CRF, char\u2011LSTM), compares to appropriate baselines, and provides code, making it relevant and useful to the venue\u2019s audience. My only minor concern is limited reporting of hyperparameter tuning details (which affects reproducibility), but that does not diminish the paper\u2019s clear fit and relevance to the community."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper addresses a core NLP/ML problem\u2014improving sequence labeling via a semi\u2011supervised multitask objective\u2014that clearly lies within top conference scope. The method (joint LM and sequence labeling training) is well matched to the audience, evaluated across eight diverse benchmarks (NER, POS, chunking, error detection) with competitive baselines and public code, and does not rely on extra data, which increases practical relevance. Overall the formulation, experimental breadth, and positioning make it an excellent fit for a top-tier NLP/ML venue."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against appropriate and recent neural sequence-labeling baselines (Rei et al. 2016, Huang et al. 2015, Collobert et al. 2011) across multiple standard datasets and uses standard metrics, and it acknowledges when gains are small for strong baselines. However, key experimental-control details that affect fairness/reproducibility (hyperparameter tuning, seed variability, and training budgets) are not reported in the summary, and there is limited evidence of rigorous ablations isolating each component\u2019s contribution. Overall the comparisons are good and relevant but fall short of fully convincing rigor for reproducibility and isolation of effects. | B(4): The paper compares to appropriate and recent neural sequence-labeling baselines (Rei et al. 2016; Huang et al. 2015; earlier work such as Collobert et al.), and evaluates across a broad set of eight standard benchmarks (PTB, GENIA, CoNLL variants, CHEMDNER, JNLPBA, FCE) using standard metrics. Comparisons appear fair in using the same datasets and metrics and the paper openly acknowledges when gains are small or comparable to strong baselines; code is available which aids reproducibility. Minor weaknesses are absence of reported hyperparameter details and limited deeper analysis of when the auxiliary LM helps versus when it does not, so I cannot mark the comparisons as fully comprehensive.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against appropriate and recent neural sequence-labeling baselines (Rei et al. 2016, Huang et al. 2015, Collobert et al. 2011) across multiple standard datasets and uses standard metrics, and it acknowledges when gains are small for strong baselines. However, key experimental-control details that affect fairness/reproducibility (hyperparameter tuning, seed variability, and training budgets) are not reported in the summary, and there is limited evidence of rigorous ablations isolating each component\u2019s contribution. Overall the comparisons are good and relevant but fall short of fully convincing rigor for reproducibility and isolation of effects."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares to appropriate and recent neural sequence-labeling baselines (Rei et al. 2016; Huang et al. 2015; earlier work such as Collobert et al.), and evaluates across a broad set of eight standard benchmarks (PTB, GENIA, CoNLL variants, CHEMDNER, JNLPBA, FCE) using standard metrics. Comparisons appear fair in using the same datasets and metrics and the paper openly acknowledges when gains are small or comparable to strong baselines; code is available which aids reproducibility. Minor weaknesses are absence of reported hyperparameter details and limited deeper analysis of when the auxiliary LM helps versus when it does not, so I cannot mark the comparisons as fully comprehensive."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): From the provided summary, the paper presents a moderate novelty: it applies a secondary language-modeling objective as an auxiliary task for bidirectional LSTM sequence labeling and shows consistent gains across many benchmarks. This is a sensible and practical extension (including integration with CRF and char-LSTMs) but not a radical new formulation \u2014 it largely combines well-known components (LM auxiliary loss, BiLSTM-CRF architectures) rather than introducing a fundamentally new method. The contribution would be of interest to practitioners for its empirical utility, but to an expert it reads as an incremental, non-trivial engineering and evaluation effort rather than a highly original idea. | B(3): The paper proposes a reasonably straightforward but useful idea\u2014adding a per-token language modeling objective to bidirectional sequence-labeling models (including LSTM+CRF and character LSTMs)\u2014which appears to be a non-trivial, practical extension of existing architectures. The problem (sequence labeling) is well-studied, and the approach largely combines known components (LM auxiliary loss, BiLSTM-CRF, char features) rather than introducing a fundamentally new paradigm. The authors do clearly differentiate their contribution from prior sequence-labeling work and demonstrate consistent gains across diverse benchmarks, but the conceptual novelty is incremental rather than groundbreaking, so I rate it moderate (3).",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "From the provided summary, the paper presents a moderate novelty: it applies a secondary language-modeling objective as an auxiliary task for bidirectional LSTM sequence labeling and shows consistent gains across many benchmarks. This is a sensible and practical extension (including integration with CRF and char-LSTMs) but not a radical new formulation \u2014 it largely combines well-known components (LM auxiliary loss, BiLSTM-CRF architectures) rather than introducing a fundamentally new method. The contribution would be of interest to practitioners for its empirical utility, but to an expert it reads as an incremental, non-trivial engineering and evaluation effort rather than a highly original idea."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper proposes a reasonably straightforward but useful idea\u2014adding a per-token language modeling objective to bidirectional sequence-labeling models (including LSTM+CRF and character LSTMs)\u2014which appears to be a non-trivial, practical extension of existing architectures. The problem (sequence labeling) is well-studied, and the approach largely combines known components (LM auxiliary loss, BiLSTM-CRF, char features) rather than introducing a fundamentally new paradigm. The authors do clearly differentiate their contribution from prior sequence-labeling work and demonstrate consistent gains across diverse benchmarks, but the conceptual novelty is incremental rather than groundbreaking, so I rate it moderate (3)."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a sequence labeling framework augmented with a secondary language modeling objective that predicts surrounding words for every word.",
+      "The language modeling objective can be integrated with bidirectional sequence labeling architectures (including LSTM+CRF) and character-level components.",
+      "The proposed objective provides consistent performance improvements across eight benchmarks covering error detection, named entity recognition, chunking and POS-tagging without requiring additional annotated or unannotated data.",
+      "The method yields consistent (though sometimes small) gains even when baseline performance is already strong."
+    ],
+    "methodology": "Augment a bidirectional LSTM sequence labeling model (with optional CRF output and character-level LSTM features) with a secondary language modeling training objective that trains the model to predict surrounding words for each token, jointly optimising both tasks.",
+    "datasets": [
+      "Penn Treebank POS-tag corpus (PTB)",
+      "GENIA POS-tag subset",
+      "CoNLL-2014 (converted to error detection)",
+      "FCE (First Certificate in English) training set",
+      "CHEMDNER (BioCreative IV Chemical and Drug corpus)",
+      "JNLPBA corpus",
+      "CoNLL-03 (mentioned)"
+    ],
+    "baselines": [
+      "Rei et al. (2016) neural sequence labeling architecture",
+      "Huang et al. (2015) similar architecture",
+      "Prior neural sequence labeling work (e.g., Collobert et al., 2011)"
+    ],
+    "metrics": [
+      "entity-level F1",
+      "accuracy",
+      "categorical cross-entropy (training loss)"
+    ],
+    "limitations": [
+      "Improvements on POS-tagging are small because baseline performance is already close to the upper bound.",
+      "Current implementation uses a basic softmax for the language modeling output, and training efficiency could be improved (e.g., via NCE or hierarchical softmax)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - sequence labeling; semi-supervised/multitask learning",
+    "writing_quality": "adequate"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Methodology-Focused Engineer",
+      "background": "Senior ML engineer with a PhD in NLP and 8+ years building and evaluating sequence labeling systems in both research and production settings. Extensive experience running large-scale experiments, reproducing reported results, and designing rigorous ablation studies.",
+      "traits": [
+        "insists on clear experimental protocols (train/dev/test splits, hyperparameter tuning, seed variability) and reproducibility (code/seed/data details)",
+        "prioritizes thorough ablation studies to isolate contributions of each component (LM objective, CRF, char-LSTM, bidirectionality)",
+        "evaluates statistical significance and effect sizes rather than only reporting mean improvements",
+        "checks that baselines are properly tuned and comparable (same architecture, capacity, and training budget)",
+        "looks for implementation details that affect real-world applicability (training time, memory, inference speed, and stability across runs)"
+      ],
+      "reviewing_style": "I focus on experimental rigor and reproducibility: I will accept a claim if the paper provides clear, well-controlled experiments, ablations, and sufficient details to reproduce the results."
+    },
+    "reviewer_b": {
+      "name": "Domain-Impact Researcher",
+      "background": "Associate professor in NLP with a track record of work on semi-supervised learning, multitask models, and sequence labeling; active in reviewing and shaping community benchmarks and research directions.",
+      "traits": [
+        "evaluates novelty relative to prior semi-supervised and multitask objectives and how the idea advances the field",
+        "assesses practical impact across tasks and datasets, including whether gains are meaningful for downstream applications",
+        "values clear connections to related work (e.g., language model pretraining, auxiliary LM losses, multi-task supervision) and theoretical or intuitive explanations for why the method helps",
+        "notices scalability and generality: whether the approach requires extra data, is architecture-agnostic, and how it interacts with modern pretrained representations"
+      ],
+      "reviewing_style": "I judge papers by their contribution to the research landscape and potential impact: I look for clear novelty, well-motivated ideas, and evidence that the approach meaningfully shifts what practitioners or researchers can do."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  }
+}

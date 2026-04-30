@@ -1,0 +1,39 @@
+{
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "CLARITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important, widely-studied problem (sentence-level sentiment classification) and proposes a practical way to inject linguistic knowledge (sentiment lexicons, negation and intensity effects) into sequence models via regularizers (Sections 4\u20134.6). It demonstrates empirical gains (LR-Bi-LSTM outperforms Bi-LSTM; ablation shows NSR and SR are key, Tables 4\u20135) while avoiding expensive phrase-level annotation required by tree models (Discussion, Sec. 1/4.6). This approach is likely to shift how practitioners incorporate lexicons/negation modeling into neural sequence models and to inspire follow-up work, though it is an incremental rather than transformative advance."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within top NLP/ML conference scope: it proposes linguistically motivated regularizers for LSTM/Bi-LSTM applied to sentence-level sentiment classification and compares to standard baselines (RNN/RNTN, Tree-LSTM, CNN) on canonical datasets (MR, SST). The problem formulation, use of sentiment lexicons and negation/intensity modeling, ablation studies and quantitative analyses match methods and evaluation standards expected at venues like ACL/EMNLP/ICLR. The paper is clearly positioned in the sentiment-analysis and neural-NLP literature (cites Socher, Tai et al., etc.) and targets the right audience."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is generally organized into standard sections (related work, method, experiments) and presents clear components (NSR, SR, IR) with tables showing ablation results (Tables 4\u20135). However the excerpt contains many duplicated/repeated sentences and bibliographic fragments, inconsistent/possibly missing equation references (e.g. Eq.11 referenced but not present) and some undefined notation (Txj in Eqs.12\u201313), which disrupt readability. Figures/tables are useful and examples (Figure 2 description) are informative, but formatting and editorial issues (repetition, LaTeX artifacts, occasional awkward phrasing) make several parts hard to follow and warrant careful proofreading."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper lists and (apparently) compares to a broad set of appropriate and recent baselines (RNN/RNTN, Tree-LSTM, CNN variants, LSTM/Bi-LSTM, DAN, and a neural lexicon model Teng et al. 2016) in Section \"2 Overall Comparison\" and evaluates on standard MR and SST datasets. It provides fair-looking ablation and subset analyses (Tables 4 and 5) and substantive analysis of linguistic effects (intensity matrices, discussion of negation/IR). However, the provided excerpt does not explicitly show baseline numbers or detailed protocol parity (training/evaluation conditions), nor does it clearly acknowledge cases where prior work matches or outperforms the proposed model, so while comparisons are good they have minor omissions in reporting and discussion."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper applies linguistically motivated auxiliary regularizers (NSR, SR, NR, IR) on LSTM/Bi-LSTM outputs\u2014e.g. class-specific shifting distributions and word-specific transformation matrices\u2014to encode lexicon, negation and intensity effects. While the particular formulation (DKL margins, min over directions, learned shift/transform parameters) is a useful and non-trivial engineering contribution, closely related ideas (lexicon-guided scoring / weighted sums (Teng et al. 2016), negator-specific transforms (Zhu et al. 2014), and sentiment parsers modeling negation/intensifiers (Dong et al. 2015)) are cited in the paper, so the work is an incremental combination/regularization of known techniques rather than a fundamentally new paradigm."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper includes focused experimental analyses supporting its claims: ablation studies in Table 4 and targeted subset experiments on negation/intensifier examples in Table 5, plus detailed intensity-shift analysis shown in Figure 2. Related work is discussed broadly (multiple citations to tree models, lexicons, negation/intensifier work), and limitations such as not modeling modification scope are explicitly acknowledged (Sec. 4.6). However, some reproduction and sensitivity details are missing (e.g., concrete hyperparameter settings for the margin M, training/optimization details and exact lexicon construction), so while the empirical evaluation is solid, a few practical details and broader robustness analyses are lacking."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper\u2019s main empirical claims are supported by experiments and sensible ablations (see Tables 4\u20135 and subset analyses showing gains from the linguistic regularizers). However there are technical issues in the math: Eq.6 purporting to be a symmetric KL is written incorrectly (terms/signs do not match the standard symmetric KL), and Eq.7 adds a shifting vector to a probability distribution without normalization (inconsistent with later use of softmax in Eqs.12\u201313). Methodology is generally sound (reasonable baselines and ablations) but lacks reported statistical significance tests, and some modeling assumptions (e.g. sharing Bi-LSTM parameters, mitigation of negation scope by bidirectionality) are stated without rigorous justification. These problems raise concerns but do not completely invalidate the experimental findings."
+    }
+  }
+}

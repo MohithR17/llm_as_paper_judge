@@ -1,0 +1,186 @@
+{
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "IMPACT": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The pRNN introduces a clearly new architectural perspective\u2014modeling sentential history as a set of candidate phrases formed via an RNN pyramid and combined with a learned attention module before being integrated into the sequential RNN (the P, A, S decomposition). The idea of inducing phrase-like representations without supervised syntactic data and using a soft-selection mechanism to inform next-word prediction differs non-trivially from standard LSTMs, encoder\u2013decoder RNNs, and phrase-based SMT. From a purist standpoint the contribution is noteworthy, though the summary suggests a lack of theoretical justification and isolated ablations that would be needed to fully validate why this design yields the reported gains, so I do not rate it the topmost novelty. | B(4): The paper proposes a distinct architectural idea\u2014representing sentential history as a forest of candidate phrases via an RNN pyramid and using soft attention to combine phrase representations\u2014which is not a standard formulation in LM/MT. It clearly differentiates from prior sequence models (LSTM, RNNsearch, genCNN) by explicitly modeling phrasal hypotheses without requiring supervised syntax or alignments. The technique is a non-trivial extension of attention and recurrent modeling and would likely inform experts looking for structured, resource-light alternatives to syntax-aware models. Given these elements and the reported empirical gains, the contribution is notably novel though not a radical paradigm shift.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The pRNN introduces a clearly new architectural perspective\u2014modeling sentential history as a set of candidate phrases formed via an RNN pyramid and combined with a learned attention module before being integrated into the sequential RNN (the P, A, S decomposition). The idea of inducing phrase-like representations without supervised syntactic data and using a soft-selection mechanism to inform next-word prediction differs non-trivially from standard LSTMs, encoder\u2013decoder RNNs, and phrase-based SMT. From a purist standpoint the contribution is noteworthy, though the summary suggests a lack of theoretical justification and isolated ablations that would be needed to fully validate why this design yields the reported gains, so I do not rate it the topmost novelty."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a distinct architectural idea\u2014representing sentential history as a forest of candidate phrases via an RNN pyramid and using soft attention to combine phrase representations\u2014which is not a standard formulation in LM/MT. It clearly differentiates from prior sequence models (LSTM, RNNsearch, genCNN) by explicitly modeling phrasal hypotheses without requiring supervised syntax or alignments. The technique is a non-trivial extension of attention and recurrent modeling and would likely inform experts looking for structured, resource-light alternatives to syntax-aware models. Given these elements and the reported empirical gains, the contribution is notably novel though not a radical paradigm shift."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is overall well organized and presents the method in a logical sequence (intro \u2192 description of the three subnetworks P/A/S \u2192 experiments \u2192 conclusion), and the main contributions (pRNN architecture and claimed perplexity/MT gains) are stated early. Notation and method decomposition are generally clear\u2014describing phrasal, attention, and sequential parts helps comprehension\u2014and hyperparameters and datasets are reported which aids reproducibility. Figures/tables/examples appear to be effective and related work coverage is adequate, though the presentation leaves some open clarity around the quality/role of the induced phrase forest (the limitation is noted but not further explained) and no code release is mentioned, which would help readers verify results. From a theoretical-purist perspective I would have liked slightly more explicit linkage between components and ablation descriptions in the text to avoid ambiguity, but the writing quality is otherwise good. | B(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early \u2014 the pRNN architecture and empirical gains on PTB/FBIS and MT are clear. Notation and subnetworks (P, A, S) are consistently defined and hyperparameters are reported, and figures/tables/examples appear effective for the described experiments. Writing quality and related-work coverage are adequate, though a few explanations (e.g., how the induced phrase forest quality compares to supervised parsers) are left as open questions and some sections could be tightened for greater clarity.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is overall well organized and presents the method in a logical sequence (intro \u2192 description of the three subnetworks P/A/S \u2192 experiments \u2192 conclusion), and the main contributions (pRNN architecture and claimed perplexity/MT gains) are stated early. Notation and method decomposition are generally clear\u2014describing phrasal, attention, and sequential parts helps comprehension\u2014and hyperparameters and datasets are reported which aids reproducibility. Figures/tables/examples appear to be effective and related work coverage is adequate, though the presentation leaves some open clarity around the quality/role of the induced phrase forest (the limitation is noted but not further explained) and no code release is mentioned, which would help readers verify results. From a theoretical-purist perspective I would have liked slightly more explicit linkage between components and ablation descriptions in the text to avoid ambiguity, but the writing quality is otherwise good."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early \u2014 the pRNN architecture and empirical gains on PTB/FBIS and MT are clear. Notation and subnetworks (P, A, S) are consistently defined and hyperparameters are reported, and figures/tables/examples appear effective for the described experiments. Writing quality and related-work coverage are adequate, though a few explanations (e.g., how the induced phrase forest quality compares to supervised parsers) are left as open questions and some sections could be tightened for greater clarity."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the empirical claims are clear and supported by multi-dataset results, but they also note important missing analyses (ablation studies, comparisons to recent strong architectures), lack of code, and absent significance testing. These gaps weaken confidence that the gains stem from the proposed inductive bias rather than implementation or hyperparameter choices, so a moderate soundness score is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents clear empirical claims (large PPL gains on PTB/FBIS and MT improvements) and describes a concrete architecture (P, A, S subnetworks), but it lacks theoretical analysis explaining why the pRNN structure should reduce perplexity or improve optimization. Important ablations isolating the RNN pyramid, the attention weighting, and the integration into S are not reported in the summary, and comparisons omit recent strong architectures (e.g. Transformer variants), raising the possibility that gains come from implementation/hyperparameter choices rather than the proposed inductive bias. Reproducibility is weakened because code is not provided and statistical significance testing is not mentioned, so while results are promising they are not yet fully validated."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper states clear empirical claims and provides strong multi-dataset experimental evidence: >10-point PPL gains on PTB/FBIS and BLEU improvements over Moses and RNNsearch across multiple NIST test sets, which supports the main claims. Mathematical content appears limited to model descriptions (P/A/S subnetworks) with no formal proofs, but nothing in the summary suggests incorrect derivations; this is acceptable given the empirical focus. Methodology is broadly sound\u2014strong baselines and multiple eval sets\u2014but the summary lacks mention of statistical significance testing and leaves the quality of the induced phrase forests unquantified, representing minor gaps in support. Overall the results appear convincing, with only modest missing analyses that do not overturn the main conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper is a strong fit for core NLP/ML venues, tackling language modeling and MT with large, consistent empirical gains on standard datasets and baselines. Reviewer A\u2019s concerns about missing ablations, theoretical motivation, and reproducibility are important but do not undermine the paper\u2019s topical appropriateness; they are methodological issues to address during revision rather than reasons to reject fit. Therefore I rate appropriateness at the top of the scale while noting those caveats should be resolved.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper addresses core NLP/ML conference topics \u2014 language modeling and machine translation \u2014 and reports large empirical gains on standard datasets (PTB, FBIS, LDC/NIST MT sets) against reasonable baselines (LSTM, RNNsearch, Moses). From my theoretical-purist perspective it is mostly targeted at the right audience but I have reservations: the manuscript makes very large empirical claims without accompanying theoretical justification for why the pRNN representation or attention should reduce perplexity, and the summary does not indicate crucial ablations isolating the RNN pyramid, attention weighting, and integration into S nor release of code to ensure reproducibility. These issues suggest a good fit but with important methodological gaps that should be addressed for a top-tier acceptance."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP/ML venue: it tackles core language modeling and MT problems and reports large, consistent empirical gains (over 10 PPL improvement on PTB/FBIS and BLEU improvements over Moses and RNNsearch) which is precisely the kind of empirical impact I value. The methodology (pRNN with an RNN pyramid + attention + sequential component) is appropriate and evaluated with standard datasets (PTB, FBIS, LDC/NIST MT sets) and baselines (LSTM, RNNsearch, PBSMT) using accepted metrics (PPL, NIST BLEU). It also targets the right audience by improving core modeling without relying on external linguistic resources, and is positioned correctly within the community focused on scalable neural architectures for LM and MT."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the experimental coverage is strong across multiple datasets and baselines, but both also highlight the absence of ablation/sensitivity analyses and limited reproducibility (code and some experimental details missing). Because these omissions prevent clear attribution of gains and hinder replication despite broad empirical evaluation, I rate the substance as adequate but incomplete, meriting a 3.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper evaluates pRNN across multiple datasets (PTB, FBIS, large LDC corpora) and MT test sets and compares to several baselines (LSTM, RNNsearch, PBSMT), so empirical breadth is reasonable. However, I see no evidence of ablation studies isolating the RNN pyramid, attention weighting, or integration into S, nor any sensitivity/significance analyses, which is crucial given the large claimed gains. Reproducibility is weak: code is not mentioned and although hyperparameters are reported, key details about the phrase-forest quality and model selection are left as open questions. Given the mix of solid dataset coverage but missing controlled analyses and reproducibility, the study is adequate but incomplete."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The experimental suite is strong: language-modeling gains are reported on both PTB and FBIS and MT is evaluated across multiple NIST test sets against strong baselines (LSTM, RNNsearch, Moses), which supports the main claims. However, the summary does not mention ablation studies or sensitivity analyses of the three subnetworks/attention mechanism, which is important to attribute where the gains come from. Related work coverage is described as adequate, and hyperparameters are reported, but code is not mentioned and discussion of limitations is minimal (only an open question about forest quality), so reproducibility and failure-mode analysis are somewhat underexplored."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper compares pRNN to a reasonable and relevant set of baselines on standard datasets using appropriate metrics, and that empirical coverage spans LM and MT settings. Reviewer A correctly points out missing ablations isolating key components, lack of comparisons to more recent architectures, and limited reproducibility details, while Reviewer B finds the experimental coverage otherwise thorough. Given these trade-offs, a slightly positive but cautious score reflects solid comparisons overall but incomplete isolation and modern-baseline coverage.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper evaluates pRNN against a reasonable set of classical and neural baselines (LSTM, RNNsearch/Encoder-Decoder, genCNN, PBSMT/Moses, RNN, FFNN-LM, KN5) on standard corpora and metrics (PTB perplexity, NIST BLEU), so core comparisons are present and appear to use the same data/metrics. However, the summary gives no evidence of crucial ablations isolating the RNN pyramid, attention weighting, or the integration into S, nor of comparisons to more recent strong sequence models (e.g., Transformer-style architectures) \u2014 omissions my purist reading treats as important. It is also unclear whether the paper acknowledges cases where prior methods match or beat pRNN, or whether training/experimental conditions (seeds, code) are provided to ensure reproducibility, so I judge the comparisons as incomplete though not entirely inadequate."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper evaluates pRNN against a broad set of strong and relevant baselines (LSTM, RNNsearch/Encoder-Decoder, PBSMT/Moses, genCNN, RNN, FFNN-LM, and n-gram/KN5) on standard datasets (PTB, FBIS, and multiple NIST MT test sets) using appropriate metrics (perplexity and BLEU). Comparisons appear fair (same corpora and metrics reported, hyperparameters given), and the paper acknowledges limitations and where prior methods might still be competitive. From an empirical standpoint the experimental coverage is comprehensive and addresses both LM and MT settings, so I find the comparisons thorough and well-justified."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper delivers substantial and consistent empirical gains across language modeling and MT, making it practically impactful and likely to influence practitioners. However, shared concerns about limited theoretical justification, insufficient ablation/isolation of components, and unclear reproducibility prevent a higher, fully transformative rating\u2014hence a strong but not perfect score of 4.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014improving language modeling and MT\u2014demonstrating large empirical gains (over 10-point perplexity drops on PTB/FBIS and MT improvements versus Moses and RNNsearch) which could attract attention. However, from a theoretical-purist standpoint the work provides no formal justification for why the pRNN architecture should yield these gains, key components (RNN pyramid, attention, integration into S) appear not to be isolated in rigorous ablations, and reproducibility is weak (code not mentioned), limiting confidence and immediate uptake. Thus the contribution is a useful empirical advance that opens directions for phrase-based recurrent models, but without stronger analysis and reproducibility it is unlikely to be immediately field-changing."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles the central problems of language modeling and machine translation and reports large, consistent empirical gains (over 10-point perplexity reduction on PTB and FBIS, and BLEU improvements over both PBSMT/Moses and strong RNNsearch baselines) which would change practitioner choices. The method is practically appealing because it encodes phrasal structure without requiring human syntactic annotations or external alignments and is evaluated across both LM and MT benchmarks (multiple NIST test sets), indicating broad applicability. While the empirical improvements are substantial and likely to spur follow-up work, uncertainty about reproducibility/code and the degree of theoretical novelty prevent me from rating it fully transformative."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Phrasal Recurrent Neural Network (pRNN) outperforms state-of-the-art LSTM language models, achieving over 10 points improvement in perplexity on Penn Treebank (PTB) and FBIS English data.",
+      "pRNN improves machine translation performance, outperforming both phrase-based statistical machine translation (PBSMT / Moses) and a strong sequence-to-sequence baseline (RNNsearch / Encoder-Decoder).",
+      "pRNN models sentential history as a set of candidate phrases represented by a RNN pyramid and uses a soft attention mechanism to selectively combine candidate phrase representations when predicting the next word.",
+      "pRNN does not require human-labeled syntactic data or external resources (e.g., word alignments) to construct phrase structures."
+    ],
+    "methodology": "pRNN consists of three subnetworks\u2014phrasal part P that constructs fix-length vector representations for candidate phrases using an RNN pyramid, attention part A that computes a probability distribution over candidate phrase representations and produces a weighted sum, and sequential part S that incorporates this weighted phrase summary into the recurrent update (ht = S(ht-1, xt, p\u0302t)).",
+    "datasets": [
+      "Penn Treebank (PTB)",
+      "FBIS English dataset",
+      "LDC corpora (1.25M sentence pairs training data for Chinese-English MT)",
+      "NIST 2002 (MT02) - development",
+      "NIST 2003 (MT03) - test",
+      "NIST 2004 (MT04) - test",
+      "NIST 2005 (MT05) - test",
+      "NIST 2006 (MT06) - test",
+      "NIST 2008 (MT08) - test"
+    ],
+    "baselines": [
+      "LSTM (baseline)",
+      "RNNsearch / Encoder-Decoder",
+      "PBSMT (Moses / phrase-based SMT)",
+      "genCNN",
+      "RNN",
+      "FFNN-LM",
+      "5-gram, KN5"
+    ],
+    "metrics": [
+      "Perplexity (PPL)",
+      "Case-insensitive 4-gram NIST BLEU (via mteval v11.pl)"
+    ],
+    "limitations": [
+      "Unclear how the quality of the forest (phrase structures) generated by pRNN compares to supervised parsers trained on human-labeled data; the paper poses this as an open question."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - language modeling and machine translation",
+    "writing_quality": "adequate"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theoretical Purist",
+      "background": "Senior researcher in computational linguistics and theoretical machine learning with a track record of work on model expressivity and provable guarantees.",
+      "traits": [
+        "Penalises papers that present large empirical claims without accompanying theoretical analysis or formal justification of representational/optimization properties (e.g., no proof or plausibility argument about why pRNN should reduce perplexity).",
+        "Demands thorough ablation studies: will deduct points if key components (here: RNN pyramid, attention weighting, integration into S) are not isolated and tested individually with quantitative effect sizes and significance testing.",
+        "Requires comparisons to strong, diverse baselines (including recent architectures such as Transformer/RNNsearch variants) and will downscore if the claimed SOTA improvements could be due to missing or weak baselines.",
+        "Values reproducibility: will penalise if training details, hyperparameters, model sizes, random seeds, and code are not provided to enable replication."
+      ],
+      "reviewing_style": "I prioritize formal understanding and careful empirical controls; I reward mechanistic explanations and penalize large claims unsupported by analysis or rigorous ablations."
+    },
+    "reviewer_b": {
+      "name": "Applied Empiricist",
+      "background": "Experienced NLP practitioner and senior conference reviewer focused on large-scale empirical evaluation and practical improvements in language modeling and machine translation.",
+      "traits": [
+        "Rewards papers that achieve substantial empirical gains on standard benchmarks (e.g., >5\u201310 point improvements in perplexity on PTB) and will score higher when gains are consistent across datasets (PTB and FBIS here).",
+        "Favors papers that improve downstream application performance (BLEU gains in MT) and outperform both statistical and strong neural baselines (Moses, RNNsearch), even if theoretical motivation is limited.",
+        "Values methodological novelty that reduces reliance on external linguistic resources (e.g., no syntactic labels/alignments) and will give credit for architectures that encode useful structure implicitly.",
+        "Prefers thorough multi-task or multi-domain evaluation; will boost score if the method is tested in both LM and MT settings and shows consistent improvements."
+      ],
+      "reviewing_style": "I focus on empirical impact and practical novelty: if a method yields large, consistent improvements on standard tasks without extra resources, I'm inclined to accept even when theory is light."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 5,
+    "total_dimensions": 7,
+    "debate_rate": 0.714
+  }
+}

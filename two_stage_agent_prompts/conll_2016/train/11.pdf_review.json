@@ -1,0 +1,81 @@
+{
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 4,
+  "REPLICABILITY": 3,
+  "MEANINGFUL_COMPARISON": 5,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "IMPACT": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "The summary indicates the paper is well organized (clear description of classifier design, datasets, baselines, and evaluation) and states its main contributions early (model, 89% F1 and integration into Dcoref). Notation and methodological details appear consistent (two SVMs, feature representations, hyperparameters reported) and limitations are explicitly discussed (small WCR dataset, upstream linking errors). There is no mention of figures/tables in the summary, so presentation seems strong overall but may have minor gaps in illustrational support."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This is squarely within the scope of a top NLP/ML venue: it addresses coreference resolution using standard datasets (OntoNotes/CoNLL) and metrics (CoNLL F1, MUC, B3, CEAF\u03c64), compares to strong baselines (Dcoref, Durrett & Klein, Clark & Manning), and demonstrates measurable gains including integration into Dcoref. The task formulation (main-concept resolution in Wikipedia) and methodology (per-mention classifiers with Wikipedia/Freebase features) target the right audience and use expected evaluation standards. The only minor concern is the small size of the WCR dataset, but that does not undermine the paper\u2019s clear relevance and positioning within the coreference research community."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper addresses a specific subtask (main concept resolution in Wikipedia) and achieves large empirical gains (89% F1, +13 absolute over the best baseline) and improvements when added as a sieve to Dcoref (+4 CoNLL F1), which shows a useful, well-differentiated contribution. However, the methodological novelty is limited: the approach uses two linear-kernel SVMs and feature engineering that exploits Wikipedia markup and Freebase links rather than a fundamentally new algorithmic paradigm. Given the reliance on established classifiers and feature-based comparisons (and a small WCR dataset), the work reads as an incremental but solid advance rather than a highly novel methodological breakthrough."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are strong in comparing to multiple state-of-the-art baselines and in showing both standalone (89% F1 on WCR) and system-integration gains (4-point CoNLL F1 improvement when added to Dcoref). However, the primary evaluation relies on a small WCR/WCR3 dataset (30 documents, ~60k tokens), and the summary does not mention ablation or sensitivity analyses for the feature sets or classifiers. Related work coverage is reported as adequate and several limitations (dataset size, upstream linking errors, precision/recall tradeoffs, domain-adaptation issues) are discussed; hyperparameters are reported but code is not mentioned, which limits full reproducibility."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "Hyperparameters and model family are reported (two linear-kernel SVMs and hyperparameters marked as reported), and evaluation metrics/procedures are precisely stated (CoNLL scorer v8.01, MUC/B3/CEAF\u03c64). However, the data-preprocessing pipeline and exact feature extraction from Wikipedia markup and Freebase are only summarized, and it is unclear whether the WCR/WCR3 dataset is publicly available. Code is not mentioned, so full reimplementation would require filling in implementation and preprocessing details absent from the summary."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares to appropriate, recent state-of-the-art baselines (Dcoref; Durrett & Klein 2013/2014; Martschat & Strube 2015; Clark & Manning 2015) and evaluates on the same standard datasets/metrics (WCR/WCR3 and OntoNotes CoNLL 2012, CoNLL average F1 plus MUC/B3/CEAF\u03c64). Comparisons appear fair and under the same evaluation conditions, the authors analyze where gains arise (e.g., precision improvements when integrating into Dcoref) and explicitly acknowledge dataset/domain limitations and when prior systems perform poorly on WCR, and related work coverage is reported as adequate."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The main claims are clearly stated and supported by experiments (89% F1 on WCR, +13 F1 over the best baseline; +4 CoNLL F1 when added to Dcoref) and the paper compares to appropriate baselines and reports standard metrics. However, the primary evaluation dataset is very small (WCR: 30 documents, ~60k tokens), there is no mention of statistical significance testing, and upstream linking errors and reliance on a high-precision sieve suggest limited generalizability. Given these methodological limitations and potential unsupported broader claims beyond the WCR domain, the technical evidence is plausible but not fully convincing."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important applied coreference problem and demonstrates substantial empirical gains (89% F1 on the WCR task, an absolute +13 F1 over the best baseline). Incorporating the classifier as a high-precision sieve into Dcoref yields a meaningful 4 percentage-point absolute CoNLL F1 improvement, indicating the approach (leveraging Wikipedia markup and Freebase links) could change how practitioners integrate KB signals into CR pipelines. However, the small size of the WCR dataset (~30 documents, ~60k tokens) and reliance on upstream linking accuracy limit how broadly and immediately transformative the results will be."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A classifier that accurately identifies all mentions co-referent to the main concept in a Wikipedia article was developed.",
+      "By exploiting Wikipedia markup and links to external KBs such as Freebase, their model outperforms state-of-the-art baselines for this task.",
+      "The model achieves 89% F1 on the task, an absolute gain of 13 F1 points over the best baseline.",
+      "Incorporating their classifier as a high-precision sieve into the Stanford deterministic rule-based system (Dcoref) yields a 4 percentage-point absolute improvement in CoNLL F1 on the full coreference task."
+    ],
+    "methodology": "Two linear-kernel SVM classifiers (one for pronominal mentions and one for non-pronominal mentions) were trained using features extracted from Wikipedia markup and Freebase by comparing per-mention representations to a main-concept representation.",
+    "datasets": [
+      "WCR3 (referred to also as WCR)",
+      "OntoNotes (CoNLL 2012 test set)"
+    ],
+    "baselines": [
+      "Dcoref (Lee et al., 2013)",
+      "Durrett and Klein (2013)",
+      "Durrett and Klein (2014)",
+      "Cort (Martschat and Strube, 2015)",
+      "Scoref (Clark and Manning, 2015)"
+    ],
+    "metrics": [
+      "CoNLL average F1 (CoNLL scorer v8.01)",
+      "MUC",
+      "B3",
+      "CEAF\u03c64"
+    ],
+    "limitations": [
+      "The WCR/WCR3 dataset is relatively small (30 documents, ~60k tokens), limiting scale of experiments.",
+      "Inaccuracies in upstream linking can cause cascading errors in pipelines, which prior work addresses by favoring high-precision at the cost of low recall.",
+      "The overall gains reported from integrating the classifier into Dcoref show a larger improvement in precision than in recall.",
+      "State-of-the-art CR systems trained on newswire (OntoNotes) perform dramatically worse on the WCR dataset, indicating domain-adaptation challenges."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - coreference resolution (Wikipedia main concept resolution)",
+    "writing_quality": "good"
+  }
+}

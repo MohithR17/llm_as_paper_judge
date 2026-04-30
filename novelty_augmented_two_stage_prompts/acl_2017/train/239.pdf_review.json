@@ -1,0 +1,117 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses a core NLP/ML topic\u2014word embedding evaluation\u2014and proposes a reframing (data efficiency and simple supervised tasks) that is directly relevant to the community. The methodology compares multiple pretrained embeddings across a broad set of established datasets (similarity, analogy, sentence, POS, sentiment, WordNet) using both linear and non-linear supervised models and varied training sizes, with standard metrics and reported hyperparameters and code, matching the methods and evaluation standards expected at top venues. The audience (NLP/ML researchers concerned with representation evaluation) and positioning (critique of cosine-based benchmarks and demonstration of task-dependent rankings) are appropriate for a top conference.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014how to evaluate word embeddings\u2014by highlighting overlooked dimensions (data efficiency and extraction with linear vs non-linear models) and systematically testing across 15 diverse datasets with varied models and training sizes. Its findings (that cosine/unsupervised metrics can miss usable information, that ranking depends on task, model type and data size, and there is no universally best embedding) are likely to change how researchers design evaluations and choose embeddings in applied settings. By providing code and thorough experiments, it opens clear follow-up research directions on evaluation methodology and embedding design, and its conclusions will likely be adopted widely by practitioners. Broader implications are moderate: most relevant within NLP embedding evaluation but also influential for downstream task evaluation practices.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper frames evaluation around data efficiency and simple supervised tasks and empirically explores rank stability across training sizes and model families, which provides a useful and somewhat new perspective compared to classic unsupervised cosine-based benchmarks. However, the general problem of evaluating embeddings and critiques of analogy/similarity evaluations have been studied (e.g. prior surveys of evaluation methods and work challenging analogy tasks), so the formulation is largely a development of existing ideas rather than a wholly new problem. The extensive empirical protocol (many embeddings, supervised models, and training-size sweeps) and the reported empirical observations (e.g. ordering tendencies and GloVe100 behavior early vs. late) differentiate it from prior work, but the techniques are incremental rather than a non-trivial methodological breakthrough. Overall this is a moderate, incremental contribution that would inform practitioners but is unlikely to surprise experts familiar with the evaluation literature (e.g. related works [2],[3]).",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized and the main contributions are stated early (focus on data efficiency and supervised tasks), with a clear methodology comparing many embeddings across 15 datasets and a comprehensive set of baselines. Notation and experimental reporting appear adequately specified (hyperparameters reported, code available), and related work coverage is described as adequate. Writing quality is noted as good, suggesting only minor presentation issues rather than major clarity problems.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares a wide and appropriate set of baselines (cosine, 3COSADD/3COSMUL, and multiple supervised models including RF, SVR, SVM, CNN, k-NN, logistic regression) across 15 diverse datasets using consistent metrics and varying training sizes, which supports fair comparisons. It explicitly includes and discusses unsupervised evaluation methods and analogy baselines and acknowledges limitations where prior methods perform similarly or miss nonlinear-encoded information (matching critiques like \u201cThe (too Many) Problems of Analogical Reasoning with Word Vectors\u201d and prior evaluation surveys). Related work coverage is reported as adequate and the paper analyzes how embeddings differ by task, model type, and data efficiency, so comparisons are comprehensive and well-analyzed.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly articulated and supported by a broad experimental setup comparing many pretrained embeddings across 15 datasets with both linear and non-linear models and varying training sizes, which directly addresses data efficiency and supervised vs unsupervised evaluations. There are no mathematical derivations to check and the experiments include appropriate baselines (cosine, 3COSADD/3COSMUL) and a variety of learners (LR, SVM RBF, RF, CNN, NN), but the summary does not mention statistical significance testing or detailed controls for hyperparameter selection beyond reporting them, leaving a minor methodological gap. The argument that different embeddings encode information in ways exploitable by different model classes is supported by the mixed-model results, so conclusions are generally justified though some claims about universality would benefit from additional statistical analysis. Overall the work appears technically sound with only minor issues that do not undermine the main conclusions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are broad and well-structured: multiple pretrained embeddings, 15 diverse datasets, a range of linear and non-linear models, and explicit variation of training set size to measure data efficiency \u2014 giving solid empirical support to the claims. The paper includes sensitivity-style analysis (varying data size), reports hyperparameters, provides code, and acknowledges specific limitations (e.g., heavy cost of the analogy regression NN and task-dependent rankings), which aids reproducibility and transparency. Related work coverage is described as adequate and the paper clearly engages with prior evaluation critiques (cf. prior surveys of embedding evaluation [2] and critiques of analogy tasks [3]). Missing, however, are explicit ablation studies isolating the contribution of individual methodological choices (beyond dataset-size variation), so while thorough overall, a few targeted sensitivity/ablation analyses would strengthen causal claims.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Evaluation of word embeddings should emphasize data efficiency and simple supervised tasks rather than only unsupervised cosine-based benchmarks.",
+      "Different embeddings differ along overlooked dimensions: how easily information can be extracted with linear vs non-linear models and how quickly they enable learning from limited data (data efficiency).",
+      "Information about tasks like similarity and analogy is often non-linearly encoded, so cosine/unsupervised evaluations can miss usable information.",
+      "There is no universally best embedding; embedding rankings are task-dependent and can change with training data size and model type."
+    ],
+    "methodology": "Compare multiple pretrained word embeddings across 15 datasets (Similarity, Analogy, Sentence, Single word) using a suite of linear and non-linear supervised models while varying training set size to measure data efficiency and rank stability; include constant baselines (cosine, 3COSADD, 3COSMUL) and a regression neural network for analogy.",
+    "datasets": [
+      "SimLex999",
+      "MEN",
+      "WordSimilarity353",
+      "Rare Words",
+      "WordRep (4 categories)",
+      "Stanford Sentiment Treebank",
+      "News20 (3 binary datasets)",
+      "POS tagging (verb)",
+      "POS tagging (noun)",
+      "POS tagging (adjective)",
+      "word sentiment",
+      "word color association",
+      "WordNet synset membership (2 datasets)"
+    ],
+    "baselines": [
+      "cosine similarity",
+      "3COSADD",
+      "3COSMUL",
+      "Random Forest",
+      "Support Vector Regression (SVR) with RBF kernel",
+      "Regression neural network (analogy)",
+      "Logistic Regression",
+      "Support Vector Machine (SVM) with RBF kernel",
+      "Convolutional Neural Network (CNN)",
+      "Naive Bayes",
+      "k-Nearest Neighbor"
+    ],
+    "metrics": [
+      "accuracy",
+      "mean rank",
+      "mean absolute change of ranking",
+      "cosine similarity"
+    ],
+    "limitations": [
+      "Regression neural network for analogy is very computationally intensive (stated).",
+      "Embeddings orderings are very task dependent and none is consistently more data efficient than others (stated as a limitation to universal evaluation)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - word embeddings evaluation",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 3,
+    "paper_novelty_mean": 0.1893,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON",
+      "SUBSTANCE"
+    ],
+    "total_dims": 7
+  }
+}

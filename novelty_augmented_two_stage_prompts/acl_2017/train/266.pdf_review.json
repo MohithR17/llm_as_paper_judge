@@ -1,0 +1,100 @@
+{
+  "IMPACT": 3,
+  "ORIGINALITY": 3,
+  "APPROPRIATENESS": 4,
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses a practical problem\u2014improving sentiment classification via task-specific data and subjectivity-filtered corpora\u2014which is valuable for NLP practitioners, especially for under-resourced languages. Its empirical claims (subjectivity as an indicator, concatenating generic and task-specific embeddings, and extracting subjective portions of generic corpora) provide actionable techniques that could influence embedding training choices. However, the contribution appears incremental rather than transformative, applying known embedding and classification models (Skip-gram, DAN) to a particular data-selection strategy, so its broader impact beyond sentiment tasks is uncertain without further validation.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper proposes a moderately novel application \u2014 using corpus subjectivity to select task-relevant data for training word embeddings and concatenating task-specific and generic vectors \u2014 which is a useful refinement rather than a radically new paradigm. The problem (improving sentiment classification representations) is well-studied and the techniques build on existing embedding training and classifier pipelines rather than introducing fundamentally new algorithms. Prior relevant work (CRF-based sentiment/opinion extraction and domain adaptation in sentiment tasks) addresses similar goals from different methodological angles but does not appear to directly preempt the specific subjectivity-filtering approach, so the contribution is incremental but clearly differentiated. Overall this would inform experts but is not a highly original breakthrough.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "This paper sits squarely within the scope of top NLP/ML venues: it addresses sentiment analysis and representation learning (Skip-gram w/ negative sampling) and evaluates with standard metrics (Accuracy, Macro F1) on relevant datasets (Wikipedia, Europarl, Amazon, Rotten Tomatoes, OpeNER). The methodology and evaluation (comparing task-specific vs. generic embeddings, DAS classifier) match the community\u2019s expected standards, and the audience (NLP/ML researchers interested in embeddings and low-resource sentiment tasks) is appropriate. The contribution appears incremental and focused on empirical guidance (subjectivity-based filtering, concatenation of embeddings), so while well positioned, it may raise minor concerns about novelty for a top-tier venue.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is overall well organized and follows a logical flow from motivation through methodology and experiments (intro -> method -> experiments -> conclusion), with main contributions stated early (claims about subjectivity as an indicator and concatenation of vectors). Notation appears consistent and hyperparameters are reported; figures/tables are implied effective by the experimental comparisons across multiple datasets and baselines. Writing quality is described as good and related work coverage thorough, so only minor presentation issues are suggested rather than major problems.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper runs experiments across multiple generic and task-specific corpora, compares concatenated vs single embeddings, and evaluates on several sentiment datasets with accuracy and Macro F1, which provides solid empirical support for the main claims. It reports hyperparameters and discusses negative results (updating vectors hurt with small labeled sets) and clear limitations (need to test polarity filtering and broader tasks), and related work coverage is described as thorough, situating the work relative to prior task-specific and feature-focused approaches (e.g., CRF-based sentiment/aspect work). However, ablation and sensitivity analyses appear limited (e.g., no polarity-based filtering experiments and code availability is not mentioned), leaving some reproducibility and scope questions unresolved.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares its proposed task-specific vs. generic and concatenated embedding representations against sensible baselines (embeddings trained on generic corpora and a single representation trained on combined data) using the same datasets and standard metrics (accuracy, macro F1), and explicitly reports limitations (e.g., small labeled sets and effects of updating vectors). It acknowledges when updating embeddings hurts performance and analyzes subjectivity-based filtering vs. alternatives. However, important baseline classes appear missing or not discussed in the summary\u2014e.g., stronger supervised or recent embedding/adaptation approaches (or other task-adaptation strategies)\u2014so comparisons are good but not fully comprehensive.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported by experimental comparisons (training SGNS embeddings on generic/task corpora, concatenation, and evaluation with a Deep Averaging Network across multiple datasets). There are no mathematical derivations to check, and hyperparameters are reported, but the summary does not mention statistical significance testing or additional strong baselines (e.g., fine-tuning embeddings or more sophisticated classifiers), which weakens experimental rigor. The authors acknowledge limitations (small labeled sets, inability to update vectors), so some generalization claims (e.g., applicability to under-resourced languages) are somewhat under-supported by the provided evidence. Overall the methodology is reasonable and results plausible, with only minor issues that do not overturn the main conclusions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Subjectivity of a corpus is a viable indicator of its usefulness for training word embeddings for sentiment analysis.",
+      "Concatenating vectors trained on generic and task-specific datasets outperforms using a single representation trained on both datasets.",
+      "Subjective portions extracted from generic corpora can approximate task-specific data and improve sentiment classification.",
+      "The proposed techniques can improve sentiment classification for under-resourced languages even with little task-specific data."
+    ],
+    "methodology": "Quantify subjectivity in corpora, train Skip-gram with Negative Sampling word embeddings on generic and task-specific corpora (and concatenations thereof), and evaluate by averaging embeddings per example and classifying sentiment with a Deep Averaging Network.",
+    "datasets": [
+      "Wikipedia",
+      "English Europarl (v7)",
+      "MultiUN (English-Spanish English side)",
+      "Amazon Movie Corpus",
+      "Rotten Tomatoes (RT) dataset",
+      "OpeNER (hotel subcorpus)"
+    ],
+    "baselines": [
+      "Embeddings trained on generic corpora (e.g., Wikipedia)",
+      "Single representation trained on combined generic and task-specific data"
+    ],
+    "metrics": [
+      "Accuracy",
+      "Macro F1"
+    ],
+    "limitations": [
+      "Small labeled training sets (especially OpeNER) prevent effective updating of word vectors during classifier training, and updating hurt performance in experiments.",
+      "Datasets did not permit training on labeled phrases in some cases.",
+      "Future work needed to test using polarity (rather than subjectivity) for filtering and to assess applicability to tasks beyond sentiment analysis."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - sentiment analysis",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 4,
+    "paper_novelty_mean": 0.9571,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

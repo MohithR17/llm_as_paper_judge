@@ -1,0 +1,39 @@
+{
+  "IMPACT": 4,
+  "CLARITY": 3,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "MEANINGFUL_COMPARISON": 5,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014fast, accurate sequence labeling at scale\u2014by introducing iterated dilated CNNs that retain token-level resolution while aggregating long context. It demonstrates comparable or better F1 on standard NER benchmarks (e.g., CoNLL/OntoNotes results reported) while delivering large runtime gains (claimed ~8x speedup versus Bi-LSTM-CRF and ~14x with independent classification), which would influence practitioner choices. Being (to their claim) the first use of dilated convolutions for sequence labeling and showing clear advantages for document-level inference opens useful follow-on work applying efficient convolutional architectures across NLP. The contribution is therefore strong and likely to be widely adopted, though not fully transformative to theory."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper has a reasonable high-level organization (background \u2192 model \u2192 experiments) and states its main idea (ID\u2011CNNs for sequence labeling) early, but presentation is marred by formatting and editing problems that make some sections hard to follow. Equations and notation are sometimes unclear or inconsistent (e.g., (3)\u2013(6) show missing symbols and unclear dilation notation like D(1)1 vs D(0)1), and the text contains many verbatim repetitions (e.g., the paragraph beginning \u201cThe massively parallel computation facilitated by GPU hardware...\u201d appears multiple times). Figures/tables and references to them are unevenly presented (Table 7 is useful but the numbers/formatting are messy, and Figure 1 is referenced but not shown in the excerpt). Overall the exposition conveys the core ideas but needs careful proofreading and tightening of notation/figures to be fully clear."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses sequence labeling (NER) with a novel neural architecture (ID-CNN) which is squarely within top NLP/ML conference scope. It evaluates on standard benchmarks (CoNLL-2003, OntoNotes 5.0), uses accepted baselines (Bi-LSTM, Bi-LSTM-CRF, CNNs), and reports segment-level micro-averaged F1 with proper validation/hyperparameter selection. The work is positioned against relevant literature (LSTMs, CRFs, dilated convolutions from Yu & Koltun, contemporaneous Conv/NMT work) and emphasizes both accuracy and practical speed\u2014topics of clear interest to the venue audience."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The model formulation and the dilated-convolution definitions and network architecture are technically sound and correctly described (Equations 3\u20138 and the block/iteration design). The experimental setup uses standard datasets (CoNLL-2003, OntoNotes), reasonable baselines (Bi-LSTM, Bi-LSTM-CRF, non-dilated CNNs) and reports mean\u00b1std for some results, but important experimental details are missing (timing/hardware and exact protocol for the claimed 8x/14x speedups and limited statistical testing). Some central claims are not consistently supported by the presented numbers: on OntoNotes the table (Table 7) shows the Bi-LSTM-CRF outperforming the ID-CNN, contradicting the blanket claim that ID-CNNs are more accurate than Bi-LSTM-CRFs. Overall the methods are plausible and mostly correct, but key claims about superior accuracy and runtime speedups lack full supporting evidence in the provided text."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against strong and recent baselines (Bi-LSTM, Bi-LSTM-CRF, Lample et al., Chiu & Nichols, Collobert et al., Durrett & Klein, Ratinov & Roth) and reports results alongside literature numbers (Tables for CoNLL and OntoNotes). Comparisons use standard data splits and metrics (CoNLL-2003 and OntoNotes with BILOU conversion and segment-level F1) and include careful ablations versus non-dilated CNNs (4- and 5-layer), noshare/1-loss, and document-level variants. The authors explicitly acknowledge when prior methods (e.g., Bi-LSTM-CRF) perform better and analyze causes (entity length, effect of wider context), and they justify omitted comparisons (deeper CNNs/stacked LSTMs) while evaluating speed and receptive-field trade-offs. Overall the baselines, fairness, ablations, citations and discussion of differences are thorough and appropriate."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates on two standard NER datasets (CoNLL-2003 and OntoNotes 5.0) and compares against strong baselines (Bi-LSTM, Bi-LSTM-CRF, 4-/5-layer CNNs), including document-level variants, and reports F1 results (e.g. Table 7). Ablations/sensitivity analyses are present (dilated vs non-dilated CNNs, 4- vs 5-layer, parameter sharing vs noshare, 1-loss vs multi-loss, sentence vs document models) and they note regularizer effects (expectation-linear dropout). Related work coverage is thorough. Limitations and some failure cases are discussed (greedy model lagging behind CRF for long entities; Bi-LSTM-CRF performance drop with added document context), and reproducibility is partially addressed (data splits, BILOU conversion, grid search and Appendix reference), but exact training/hyperparameter/runtime details and some empirical timing numbers are not shown in the provided excerpt, leaving minor gaps."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper adapts dilated convolutions (prior work: Yu & Koltun 2016; van den Oord et al. 2016) to sequence labeling and proposes a distinct architectural/training combination \u2014 stacked dilated-conv blocks applied iteratively with parameter sharing and intermediate-block losses (see Model Architecture Eqns. 6\u20138 and the iterated block description). The problem (NER/sequence labeling) is well-studied, but the application of dilated convolutions plus the iterated/shared-block design for efficient, large-context token-level prediction is a notable, non-trivial extension that is clearly differentiated from prior work (the paper explicitly contrasts with Yu & Koltun and concurrent conv-based MT/speech work). Hence the contribution is a significant, if not ground\u2011breaking, novel method for this task."
+    }
+  }
+}

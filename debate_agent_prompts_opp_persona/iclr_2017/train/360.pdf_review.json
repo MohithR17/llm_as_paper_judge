@@ -1,0 +1,113 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the main contributions early (introducing S3G and its IRL-like reward learning procedure). Notation and methodological description appear consistent and well defined for the presented algorithm, and figures/tables (MuJoCo task descriptions and comparisons to \u03c0RL, reward regression, and oracle) effectively communicate results. Writing quality is generally good with adequate related work coverage and reported hyperparameters; only minor presentation polish would be useful for certain method details and figure captions. | B(4): The paper is generally well organized and the main contributions (S3G algorithm and its benefits) are stated early and followed by a clear method and experiments section. Notation and methodological steps (entropy-regularized RL, IRL-like reward learning, alternating updates) are described coherently, and figures/tables ( MuJoCo task results, comparisons to \u03c0RL, reward-regression, and oracle) appear informative. A few minor presentation issues remain\u2014some experimental details are deferred to appendices and a couple of sections could be tightened for flow\u2014but overall the writing is good and readable for an applied RL audience.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the main contributions early (introducing S3G and its IRL-like reward learning procedure). Notation and methodological description appear consistent and well defined for the presented algorithm, and figures/tables (MuJoCo task descriptions and comparisons to \u03c0RL, reward regression, and oracle) effectively communicate results. Writing quality is generally good with adequate related work coverage and reported hyperparameters; only minor presentation polish would be useful for certain method details and figure captions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is generally well organized and the main contributions (S3G algorithm and its benefits) are stated early and followed by a clear method and experiments section. Notation and methodological steps (entropy-regularized RL, IRL-like reward learning, alternating updates) are described coherently, and figures/tables ( MuJoCo task results, comparisons to \u03c0RL, reward-regression, and oracle) appear informative. A few minor presentation issues remain\u2014some experimental details are deferred to appendices and a couple of sections could be tightened for flow\u2014but overall the writing is good and readable for an applied RL audience."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper clearly formulates semi-supervised RL and delivers a practical, well-executed algorithm that yields empirical gains, but largely composes existing techniques (max-entropy IRL, importance sampling, guided policy search) rather than introducing fundamentally new theory. Given its solid empirical contribution and useful formalization but primarily incremental novelty, a moderate originality score is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper proposes a clearly articulated semi-supervised RL formulation and a practical algorithm (S3G) that couples max-entropy/IRL-style reward learning with policy optimization in unlabeled MDPs \u2014 a useful and concrete instantiation not seen in prior work. However, the core components (entropy-regularized RL, maximum-entropy IRL with importance sampling, and MDGPS policy optimization) are existing techniques combined in a relatively straightforward way, so the contribution feels incremental rather than a fundamentally new paradigm. The authors do differentiate their approach from supervised reward regression and standard RL baselines and demonstrate empirical gains, but an expert would view this as a notable engineering and empirical advance rather than a highly original theoretical breakthrough."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clearly new practical approach to a relatively underexplored problem\u2014semi-supervised RL\u2014by formalizing S3G and operationalizing it via an IRL-like reward learning objective (maximum-entropy with importance sampling) coupled with policy optimization in unlabeled MDPs (using MDGPS). The method is a non-trivial combination of existing tools (max-ent IRL, importance sampling, guided policy search) applied to a novel semi-supervised setup and is differentiated from prior work (and from simple supervised reward regression baselines) in both formulation and empirical behavior (including cases outperforming an oracle due to shaping). From my applied-RL perspective this is a notable and informative contribution, though it mainly composes known techniques rather than introducing wholly new theoretical machinery."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the algorithm (S3G) is coherent and empirically supported across multiple tasks with appropriate baselines, but they also note weaknesses: missing theoretical guarantees for the IRL/importance-sampling steps and limited statistical reporting (seed counts/confidence intervals). These shortcomings are important but do not fundamentally invalidate the empirical contributions, so a score slightly below perfect is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents a coherent algorithm (S3G) and provides empirical evidence across several MuJoCo tasks showing improvements over supervised reward regression and RL-only baselines, which supports the main empirical claims. However, there are no accompanying theoretical guarantees or proofs about consistency, convergence, or sample complexity for the IRL/importance-sampling procedure, which is a substantive omission given the reliance on a learned reward. The experimental methodology uses reasonable baselines (including an oracle), but the summary does not report multiple seeds, confidence intervals, or rigorous statistical tests\u2014limiting confidence in the robustness of the results. Finally, the authors acknowledge the key assumption about labeled/unlabeled MDP distributions, but other potential gaps (e.g., importance-sampling variance and limits under domain shift) are not theoretically addressed, so the conclusions are plausible but not fully supported."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims and supports them with a sensible algorithm (S3G) and experiments across multiple MuJoCo tasks, comparing to appropriate baselines (\u03c0RL, reward regression, oracle). The mathematical framing (maximum-entropy/IRL with importance sampling) appears consistent with established methods and no obvious derivation errors are indicated in the summary, and reproducibility details (code, hyperparameters, sample complexity) are provided. Minor concerns remain about statistical rigor (explicit seed counts / significance tests not mentioned) and the reliance on the assumption that labeled and unlabeled MDPs are sampled from the same distribution, but these do not undermine the main empirical conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce the first practical algorithm for semi-supervised reinforcement learning, called Semi-Supervised Skill Generalization (S3G).",
+      "S3G leverages unlabeled experience to learn a reward function (via an IRL-like procedure) and a more general policy, improving generalization beyond policies trained only on labeled MDPs.",
+      "S3G outperforms a supervised reward-regression baseline and the standard RL policy in multiple simulated control tasks, and in some cases yields better performance than an oracle due to beneficial reward shaping."
+    ],
+    "methodology": "Train an entropy-regularized RL policy in labeled MDPs, collect its rollouts as demonstrations, then iteratively learn a parametric reward (via a maximum-entropy/IRL objective using importance sampling) and optimize a policy in unlabeled MDPs (using MDGPS), alternating reward and policy updates.",
+    "datasets": [
+      "MuJoCo simulated tasks: obstacle navigation (obstacle height variant)",
+      "2-link reacher (mass variant)",
+      "2-link reacher with vision (target position variant)",
+      "half-cheetah jump (wall height variant)"
+    ],
+    "baselines": [
+      "RL policy trained only on labeled MDPs (\u03c0RL)",
+      "Policy trained in unlabeled MDPs using a reward function fitted by supervised regression (reward regression)",
+      "Oracle policy with access to true reward in all scenarios"
+    ],
+    "metrics": [
+      "Success rate (task completion)",
+      "Sample complexity (reported in Appendix B)"
+    ],
+    "limitations": [
+      "Assumes labeled and unlabeled MDPs are sampled from the same underlying distribution (i.e., not large, systematic domain shift).",
+      "Relies on having at least some labeled MDPs and sufficient prior experience from them to infer rewards for unlabeled settings."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Reinforcement Learning - semi-supervised RL / robotic control",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Professor of machine learning with a focus on reinforcement learning theory and formal guarantees (PhD in CS, 12+ years of RL research).",
+      "traits": [
+        "Penalizes papers that present primarily empirical algorithms without clear theoretical guarantees (e.g., no proof of convergence, sample complexity, or stat. consistency).",
+        "Demands rigorous ablation studies and statistical significance reporting; deducts points when results lack multiple seeds, confidence intervals, or thorough sensitivity analysis.",
+        "Skeptical of results demonstrated only in simulated environments; requires either real-robot validation or strong justification that simulation suites cover realistic variability.",
+        "Prefers methods with clear, analyzable components (e.g., principled objective optimization) and will view heuristic/engineering-heavy approaches as incremental."
+      ],
+      "reviewing_style": "I focus on the soundness and generality of the proposed method: if a paper lacks theoretical grounding or robust empirical validation, I score it down and request precise analyses or proofs."
+    },
+    "reviewer_b": {
+      "name": "Practical RL Enthusiast",
+      "background": "Senior research scientist in robotics and applied reinforcement learning with multiple deployed control systems and empirical RL papers (10+ years industry/academia).",
+      "traits": [
+        "Rewards novel, practical problem formulations and algorithms that demonstrably improve real-world generalization or sample efficiency, even if theoretical guarantees are limited.",
+        "Values comprehensive empirical comparisons and is generous if the method shows consistent gains over strong baselines across tasks and seeds; will upweight novel empirical phenomena (e.g., outperforming an oracle via shaping).",
+        "Accepts simulation-only validation when experiments are diverse and well-motivated; expects multiple baselines and sensible ablations but is less strict about formal proofs.",
+        "Penalizes papers that omit clear implementation details or reproducibility information (hyperparameters, training curves, number of seeds) which impede adoption."
+      ],
+      "reviewing_style": "I prioritize practical impact and convincing empirical evidence: if an algorithm meaningfully improves generalization in realistic control tasks and is reproducible, I rate it favorably despite limited theoretical analysis."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 2,
+    "total_dimensions": 3,
+    "debate_rate": 0.667
+  }
+}

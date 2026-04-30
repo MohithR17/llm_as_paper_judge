@@ -1,0 +1,44 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "CLARITY": 3,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "REPLICABILITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses broad-coverage semantic parsing (UCCA) and proposes a novel transition-based parser (BSP) plus conversion-based baselines, which squarely fits the core topics of top NLP venues (semantic parsing, structured prediction). The audience is clearly the NLP/semantic-parsing community, with explicit comparisons to SDP, AMR, and SemEval-style work and use of UCCA-annotated corpora for in-domain and out-of-domain evaluation. The problem formulation (supporting multiple parents, non-terminals, discontinuities) and methods (conversion protocols, transition system extensions, structured-perceptron training) follow standards expected at top conferences, and the paper is well positioned within related work (cites relevant parsers and evaluation practices)."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important gap\u2014parsing Broad-coverage Semantic Structures (BSS) that require multiple parents, non-terminal nodes and discontinuous units\u2014which no existing grounded parser supported (\u2018\u2018to our knowledge, no existing parser...\u2019\u2019). It both provides practical approaches (lossy conversion to trees and a novel transition-based BSP that adds remote and discontinuity transitions) and demonstrates viability on UCCA corpora with nearly 70% labeled F-score, suggesting concrete paths for improvement. Because UCCA is cross-linguistically applicable and the authors plan to release converters/parsers, this is likely to be built on by others and to open new work on semantic parsing and downstream applications (e.g., machine translation and summarization) rather than being purely niche."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper claims (and provides) the first concrete techniques for parsing Broad-Coverage Semantic Structures (BSS)/UCCA, using two complementary strategies: lossy conversion to dependency and discontinuous constituency formalisms and a direct transition-based parser (BSP) that explicitly supports multiple parents, non-terminal nodes and discontinuous units. The BSP introduces novel transitions for remote edges (LEFTREMOTEX/RIGHT-REMOTEX) and a new real-valued \"ratio\" feature to regularize node creation, which are non-trivial extensions of existing transition-based frameworks (SHIFT/REDUCE/NODE/SWAP). While the approach builds on well-established transition-based parsing work (e.g., stack LSTMs, SWAP, NODE, perceptron training), adapting and combining these to handle the full set of BSS properties is a notable and clearly differentiated contribution rather than a purely incremental reuse."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper has a clear overall organization (intro describing the three required structural properties, followed by conversion and BSP methods, features/training and experiments) and states the main contributions early (conversion protocols and a novel transition-based parser). However, the provided text contains many duplicated and corrupted passages (e.g., repeated paragraphs about related work and citations, fragmented reference strings like \u201c(Banarescu et al., 2015), or avoid...\u201d), which reduces readability. Notation is mostly consistent (e.g., transition names, h*(\u00b7) reference), but some symbols/functions are referenced without immediate definition in the excerpt and several novel transitions (LEFTREMOTEX/RIGHT-REMOTEX) are introduced with little in-text explanation. Figures and examples (Figure 1) are informative, but formatting artifacts (line numbers, repeated lines, stray \u201cTeX\u201d) and grammatical/repetition issues require cleanup for a smoother read."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates both conversion-based and a novel transition-based parser on UCCA corpora, reporting in-domain and out-of-domain results (highest \u223c70% labeled F) and computing upper bounds for conversion methods, which supports the main claims. It includes some controlled comparisons/ablations (e.g., training BSP with and without remote-edge transitions, and adjustments like doubled SWAP updates), and gives detailed feature templates and training settings to aid reproduction. Related work coverage is broad and fair, and limitations are acknowledged (lossiness of conversions, implicit units deferred to future work). However, systematic sensitivity analyses or more extensive ablations of feature/hyperparameter choices and full experimental breakdowns/statistical tests are not shown in the provided text, leaving minor gaps in analysis and reproducibility."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares its BSP model against sensible and recent baselines (conversion-based pipelines using MaltParser, the stack-LSTM parser of Dyer et al., and related discontinuous/tree parsers) and reports labeled F-score with upper bounds computed via round-trip conversion (see Sections 3 and 4 and training/evaluation discussion). Comparisons are largely fair \u2014 same UCCA data, same metric (F-score), and they evaluate in- and out-of-domain \u2014 and the paper explains methodological differences (novel LEFT/RIGHT-REMOTEX transitions, SWAP/NODE usage) and adaptation of prior features. A notable omission is that they did not run existing dependency DAG parsers (unable to obtain code), which the paper explicitly acknowledges, so while coverage is good there is a minor missing baseline."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "Partially reproducible: the paper gives several concrete implementation/training details (e.g. parser actions, extensive feature templates, and training hyperparameters: \u201cWe train BSP for 16 iterations, using MINUPDATE = 5 and IMPORTANCE = 2\u201d, doubled SWAP updates), and names the evaluated data (English UCCA-annotated corpora) and metric (\u201clabeled F-score\u201d). However, important pieces are missing in the provided text: the full conversion protocols and h*(\u00b7) head-word definition (Section 3) are only referenced, the preprocessing/tokenization and dataset splits are not described, exact evaluation procedure (which edges counted, primary vs. remote scoring) is not fully specified, and code is not included (only promised upon publication). These gaps mean a reimplementation would be possible but would require non-trivial guesswork or contacting the authors."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper states its main claims (conversion-based pipelines and a novel transition-based parser BSP for UCCA/BSS) and provides empirical evidence, reporting \u2018nearly 70% labeled F-score\u2019 and concrete experimental setup (conversion upper bounds, baselines using MaltParser and a stack-LSTM parser, and BSP training details) which supports the claims. There are no formal mathematical proofs to verify, and the algorithmic descriptions and training procedures (e.g., structured perceptron with MINUPDATE, SWAP handling, remote-edge transitions) appear correct and consistent. The experimental methodology is largely sound (appropriate baselines, upper-bound computations), but it omits some potentially relevant baselines (dependency DAG parsers were not run due to unavailable code) and reports no statistical significance testing. Overall the conclusions follow from the presented results, with only minor methodological omissions that do not undermine the main technical claims."
+    }
+  }
+}

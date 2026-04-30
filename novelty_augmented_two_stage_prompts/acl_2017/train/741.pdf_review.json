@@ -1,0 +1,100 @@
+{
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "_details": {
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against five established graph-clustering baselines (CW, MCL, MaxMax, ECO, CPM) on the same gold standards (WordNet, BabelNet, RuThes, YARN) using precision/recall/F-score, which is appropriate and appears fair. The methodology differences (meta-clustering WSI and neighbor disambiguation) are clearly described and related work coverage is reported as thorough, so relevant competing graph-based WSI approaches (e.g., UoY, hierarchical random graphs) are likely discussed. The manuscript does not explicitly report that any prior method performs comparably or better in some settings in the provided summary, so minor omissions remain in acknowledging comparable baselines or broader recent synset-induction work, preventing a top score.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a clear logical flow from introduction through methodology to experiments and conclusion, and the main contributions (WATSET method and meta-clustering pipeline) are stated early. Notation and methodology are presented consistently (word sense induction, neighbor disambiguation, sense-aware graph then hard clustering), and related work coverage is thorough. Writing quality is good and experiments compare to appropriate baselines on multiple datasets with precision/recall/F-score metrics, though minor presentation issues remain (e.g., code availability not mentioned and some methodological details might benefit from additional illustrative figures or examples).",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses a core NLP problem (automatic synset induction / lexical semantics) using graph-based methods and word embeddings, which is squarely within scope of top NLP/ML venues. It targets the right audience by comparing to established graph clustering baselines (CW, MCL, MaxMax, ECO, CPM) and evaluates on standard resources (WordNet, BabelNet, RuThes, YARN) with common metrics (precision, recall, F-score). The problem formulation (meta-clustering pipeline with sense induction and disambiguation) and the evaluation protocol meet expectations for venue standards. Positioning and related work coverage are reported as thorough, supporting strong relevance to the community.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and supported by empirical evidence: WATSET is evaluated against five reasonable graph-clustering baselines (CW, MCL, MaxMax, ECO, CPM) on four gold-standard datasets (WordNet, BabelNet, RuThes, YARN) and reported to outperform them by F-score. There are no formal mathematical proofs in the summary, but the algorithmic pipeline is described coherently and appears implementable; this is acceptable for an applied method. The experimental methodology is broadly sound (appropriate baselines and multiple datasets), though the summary does not mention statistical significance testing or released code, and the approach admits dependence on input dictionary coverage (a stated limitation). Overall the evidence supports the conclusions, with only minor gaps in experimental reporting and reproducibility.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents solid experimental comparisons against five state-of-the-art graph clustering baselines on four gold standards (English and Russian) and reports precision/recall/F-score, which supports the main claims. It also documents hyperparameters and discusses limitations (dependence on synonymy dictionary coverage), and situates itself relative to prior graph-based WSI work (e.g., UoY graphs, hierarchical/random-graph WSI). However, the summary does not mention systematic ablation or sensitivity analyses (e.g., impact of embedding weighting vs. unweighted graph, or parameter sensitivity) nor public code release, so reproducibility and depth of analysis are somewhat limited. Overall the experiments are strong and comprehensive but miss a few important analyses that would make the evaluation exhaustive.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important problem\u2014automatic synset induction for lexical resources\u2014by proposing WATSET, a novel meta-clustering pipeline that combines word sense induction and neighbor disambiguation and demonstrates empirical gains over five state-of-the-art graph clustering methods on four gold standards in English and Russian. Because it improves synset quality across languages and integrates distributional similarity (word embeddings) with graph methods, the approach is likely to influence subsequent work on resource construction and sense-aware graph processing and to be adopted or extended in related NLP tasks. Limitations tied to input dictionary coverage temper transformative potential, but the clear empirical improvement and cross-lingual validation suggest strong practical impact and new research directions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines established graph-based word sense induction/disambiguation techniques (ego-network clustering, neighbour disambiguation) with a global hard clustering step to produce synsets, which is an incremental but coherent pipeline-style contribution rather than a fundamentally new paradigm. Prior work (e.g., UoY graphs of unambiguous vertices 2010; hierarchical random graphs 2010; collocation-based graph WSI 2008) already explores graph-based WSI/WSD and related clustering strategies, so the core techniques are not novel. The reported observations (e.g., applicability without a background corpus and the effect of removing high-triangle nodes) provide useful empirical insights, but do not by themselves constitute a major methodological advance over existing graph-based approaches. Overall, the work is a moderate, well-differentiated engineering contribution rather than a breakthrough in methodology.",
+      "survey_injected": true,
+      "novelty_injected": true
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes WATSET, a new graph-based method to automatically induce synsets from ambiguous synonymy dictionaries enhanced with word embeddings.",
+      "Introduces a meta-clustering pipeline that performs word sense induction and neighbor disambiguation to transform an ambiguous synonym graph into a sense-aware graph and then applies hard clustering to produce synsets.",
+      "Reports that WATSET outperforms five state-of-the-art graph clustering methods (CW, MCL, MaxMax, ECO, CPM) in terms of F-score on four gold standard datasets for English and Russian."
+    ],
+    "methodology": "Build a weighted graph of synonyms from dictionaries (optionally weighted by word embedding similarity), induce word senses by clustering each word's ego-network, disambiguate neighbours to create a disambiguated sense graph, and run a global hard clustering on that sense graph to produce synsets.",
+    "datasets": [
+      "WordNet",
+      "BabelNet",
+      "RuThes",
+      "YARN"
+    ],
+    "baselines": [
+      "Chinese Whispers (CW)",
+      "Markov Clustering (MCL)",
+      "MaxMax",
+      "ECO clustering",
+      "Clique Percolation Method (CPM)"
+    ],
+    "metrics": [
+      "precision",
+      "recall",
+      "F-score"
+    ],
+    "limitations": [
+      "Dependence on completeness/sparseness of the input synonymy dictionary; missing bridges in the input graph can lead to smaller-than-desired synsets.",
+      "Cross-resource performance (recall/precision) is limited by coverage differences between gold standards and input dictionaries."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - lexical semantics / synset induction",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 4,
+    "paper_novelty_mean": 0.1357,
+    "augmented_dims": [
+      "MEANINGFUL_COMPARISON",
+      "SUBSTANCE",
+      "ORIGINALITY"
+    ],
+    "total_dims": 7
+  }
+}

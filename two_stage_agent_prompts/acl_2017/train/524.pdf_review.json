@@ -1,0 +1,75 @@
+{
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses robust parsing for the English Resource Grammar (ERG), a core NLP parsing/semantics topic that is squarely within top NLP/ML conference scope. It evaluates multiple methods (bridging, PCFG approximation csaw, hybrid approaches, supertagging/resource adjustments) using standard empirical practices and metrics (EDM F1/precision/recall) across multiple datasets (alchemy45, ws13r, semcor, wsj00ab), which fits the expectations of the venue\u2019s audience. The problem formulation, evaluation standards, and explicit analysis of limitations (coverage gaps, ambiguity from bridging, resource limits) position the work appropriately for the NLP research community."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and supported by experiments across multiple datasets using an appropriate semantic metric (EDM) and a reasonable baseline (ERG), with hyperparameters reported and known limitations acknowledged (e.g., ~10% unparseable, ambiguity from bridging, ranking-model deficiencies). Mathematical content is not indicated as problematic, and the methodology compares multiple concrete methods (bridging, csaw, hybrid, supertagging/resource limits). Minor technical concerns remain: bridging-induced ambiguity and unpacking failure reduced actual coverage, and the ranking model\u2019s lack of bridged-training data weakens disambiguation; also no mention of statistical significance testing. These issues are noted by the authors and do not appear to undermine the main experimental conclusions."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized and presents a clear intro\u2192methods\u2192experiments\u2192conclusion structure, explicitly stating its main contributions early (comparison of robust HPSG parsing methods and defined evaluation via EDM). Evaluation methodology and metrics are clearly defined (EDM, F1/precision/recall), and the writing quality is reported as good. The summary does not report details about figures/tables or explicitly about notation definitions, so there appear to be minor presentation gaps preventing an exceptional score."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper assembles and implements several known robustness techniques for HPSG (bridging, supertagging/resource-limit adjustments) and a PCFG approximation called csaw, and provides a systematic empirical comparison on the ERG using EDM-based partial MRS matching. While the application to ERG and the thorough evaluation (including allowances for grammar-version differences) is useful and informative, the core methods appear to be combinations and engineering adaptations of existing approaches rather than a clearly novel algorithmic invention. Given the adequate related-work coverage and the pragmatic hybrid evaluation, the contribution reads as a moderate, incremental advance rather than a highly original breakthrough."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "This paper tackles the important practical problem of improving coverage for HPSG parsing and implements a broad set of concrete techniques (bridging, PCFG approximation/csaw, hybrids, supertagging/resource adjustments) with evaluation via EDM, which is appropriate for partial MRS matching. Empirically it shows substantial gains\u2014reducing baseline coverage gaps by 75\u2013100% on some datasets while improving EDM F1\u2014so the results are likely to change how researchers and practitioners approach robust HPSG parsing and evaluation. Significant limitations remain (bridging-induced ambiguity and unpacking failures, lack of bridged treebanks hurting statistical ranking, and roughly 10% of sentences still unparseable), so the work is highly impactful within the subfield but not fully transformative across NLP."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper implements and compares multiple robust parsing methods (bridging, PCFG approximation csaw, hybrids, supertagging/resource limits) across several datasets (alchemy45, ws13r, semcor, wsj00ab) and evaluates semantic output with EDM metrics, which provides solid experimental coverage supporting the claims. It reports hyperparameters and analyzes strengths/weaknesses and failure modes (e.g. ambiguity from bridging, unpacking issues, resource limits, grammar-version mismatches), but the summary does not describe explicit ablation or sensitivity studies of the individual components. Related work coverage is described as adequate and limitations/negative results are discussed, though reproducibility is weakened by the absence of mentioned shared code despite hyperparameter reporting."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper implements and evaluates multiple robust-parsing techniques (bridging, PCFG approximation csaw, hybrid approaches, supertagging/resource-limit adjustments) against a clear ERG baseline across the same datasets (alchemy45, ws13r, semcor, wsj00ab) using EDM F1/precision/recall and even accounts for grammar-version differences, so comparisons are appropriate and fair. It analyzes strengths and weaknesses (e.g. bridging ambiguity, unpacking failures, ranking-model limitations) and reports limitations transparently. Related work coverage is described as adequate and relevant approaches are discussed. One minor gap is that the summary does not clearly state whether the paper acknowledges cases where prior methods match or outperform the proposed techniques, so comparisons are not fully comprehensive in that respect."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "The paper explores several techniques for enhancing coverage when parsing with HPSG grammars and compares their performance.",
+      "It defines and uses appropriate evaluation methods for robust HPSG parsing, including partial MRS matching via the Elementary Dependency Matching (EDM) metric and specific allowances for grammar-version differences.",
+      "Depending on the dataset, the proposed techniques can reduce baseline coverage gaps by between 75% and 100% while simultaneously improving EDM F1 scores.",
+      "The paper implements and compares specific methods (e.g. bridging, a PCFG approximation called csaw, hybrid approaches, supertagging/resource-limit adjustments) and analyzes their strengths and weaknesses."
+    ],
+    "methodology": "Implement multiple robust parsing methods for the English Resource Grammar (ERG) \u2014 including bridging, PCFG approximation (csaw), hybrid approaches, and resource/supertagging strategies \u2014 and compare them on several datasets by evaluating semantic output with EDM (partial MRS matching) and analyzing coverage and EDM F1/precision/recall.",
+    "datasets": [
+      "alchemy45",
+      "ws13r",
+      "semcor",
+      "wsj00ab"
+    ],
+    "baselines": [
+      "ERG (baseline: ERG with 8GB RAM and unlimited time per item)"
+    ],
+    "metrics": [
+      "Elementary Dependency Matching (EDM)",
+      "EDM F1",
+      "EDM precision",
+      "EDM recall"
+    ],
+    "limitations": [
+      "About 10% of sentences are unparseable by the ERG; roughly half of those failures are due to resource limits and half due to linguistic coverage gaps.",
+      "Comparing system results to gold standards prepared with different grammar versions can introduce differences even for a perfect parser.",
+      "Bridging introduces a large amount of ambiguity; unpacking this ambiguity is challenging and the ACE parser used could not solve the unpacking problem for a significant number of inputs, reducing actual coverage.",
+      "The statistical ranking model lacks preferences regarding bridging rules because of minimal curated treebanks of bridged analyses, degrading disambiguation performance.",
+      "The robust semantic readout can rarely fail (e.g. producing a cyclic structure); one such failure occurred in the experiments."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - robust parsing for HPSG / English Resource Grammar",
+    "writing_quality": "good"
+  }
+}

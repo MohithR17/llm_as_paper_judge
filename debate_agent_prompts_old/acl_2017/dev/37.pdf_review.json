@@ -1,0 +1,166 @@
+{
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper\u2019s main claims are clearly stated and supported by empirical evidence: SMN\u2019s architecture and per-utterance two-channel matching are described and the model is evaluated against a wide range of proper baselines on two corpora with standard metrics (including human evaluation), with most improvements reported as statistically significant. There are no reported mathematical derivations to check, and the experimental methodology appears sound (strong baselines, multiple metrics, significance testing), though one key metric (R10@5 on Douban) was not significant. Minor concerns remain\u2014response candidate retrieval used a heuristic tf-idf expansion (which could affect end-to-end applicability) and the attention variant showed only marginal gains\u2014so I mark the paper technically strong but not flawless. | B(4): The paper's main claims are clearly stated and are supported by extensive empirical evidence: SMN is evaluated against a wide set of strong baselines on two datasets (Ubuntu and Douban) using multiple metrics (Rn@k, MAP, MRR, P@1) and a human side-by-side comparison where SMN outperforms VHRED. The architecture and methods (word-word and sequence-sequence matrices, CNN per utterance, RNN aggregation) are technically plausible and experimentally validated; mathematical derivations are not central and none are required. Minor issues remain\u2014candidate retrieval was performed with a heuristic tf-idf expansion (which the authors acknowledge) and one reported result (R10@5 on Douban) was not statistically significant, and the attention variant yields only marginal gains\u2014these do not undermine the main conclusions.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and supported by empirical evidence: SMN\u2019s architecture and per-utterance two-channel matching are described and the model is evaluated against a wide range of proper baselines on two corpora with standard metrics (including human evaluation), with most improvements reported as statistically significant. There are no reported mathematical derivations to check, and the experimental methodology appears sound (strong baselines, multiple metrics, significance testing), though one key metric (R10@5 on Douban) was not significant. Minor concerns remain\u2014response candidate retrieval used a heuristic tf-idf expansion (which could affect end-to-end applicability) and the attention variant showed only marginal gains\u2014so I mark the paper technically strong but not flawless."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and are supported by extensive empirical evidence: SMN is evaluated against a wide set of strong baselines on two datasets (Ubuntu and Douban) using multiple metrics (Rn@k, MAP, MRR, P@1) and a human side-by-side comparison where SMN outperforms VHRED. The architecture and methods (word-word and sequence-sequence matrices, CNN per utterance, RNN aggregation) are technically plausible and experimentally validated; mathematical derivations are not central and none are required. Minor issues remain\u2014candidate retrieval was performed with a heuristic tf-idf expansion (which the authors acknowledge) and one reported result (R10@5 on Douban) was not statistically significant, and the attention variant yields only marginal gains\u2014these do not undermine the main conclusions."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a notable new architecture (SMN) that departs from prior multi-turn approaches by applying a \u2018matching first\u2019 strategy: per-utterance two-channel matching (word-word M1 and GRU-based sequence-sequence M2) followed by CNN feature extraction and sequential accumulation with an RNN. This design clearly differentiates itself from simple concatenation/reformulation baselines and from existing matching models, and represents a non-trivial combination/extension of similarity-matrix and sequence-aggregation techniques. Given the empirical gains over a wide set of multi-turn baselines (including MV-LSTM, Match-LSTM and attentive models) the contribution would likely inform experts, though it builds on several known components rather than introducing an entirely new paradigm. | B(4): The paper presents a notable novel architecture (SMN) that departs from prior multi-turn approaches by performing per-utterance two-channel matching (word-word M1 and GRU-based sequence-sequence M2), extracting features with CNNs and then sequentially accumulating them with an RNN\u2014extending single-turn interaction/matching ideas (e.g., MV-LSTM, Match-LSTM) to the multi-turn setting in a non-trivial way. The formulation (matching-first per utterance then chronological aggregation) is clearly differentiated from prior concatenation or heuristic reformulation baselines and is validated empirically on Ubuntu and Douban corpora. While multi-turn response selection is a well-studied problem, the specific combination of multi-channel interaction matrices plus CNN per-utterance and RNN accumulation represents a substantive and informative contribution rather than a mere minor tweak.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a notable new architecture (SMN) that departs from prior multi-turn approaches by applying a \u2018matching first\u2019 strategy: per-utterance two-channel matching (word-word M1 and GRU-based sequence-sequence M2) followed by CNN feature extraction and sequential accumulation with an RNN. This design clearly differentiates itself from simple concatenation/reformulation baselines and from existing matching models, and represents a non-trivial combination/extension of similarity-matrix and sequence-aggregation techniques. Given the empirical gains over a wide set of multi-turn baselines (including MV-LSTM, Match-LSTM and attentive models) the contribution would likely inform experts, though it builds on several known components rather than introducing an entirely new paradigm."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable novel architecture (SMN) that departs from prior multi-turn approaches by performing per-utterance two-channel matching (word-word M1 and GRU-based sequence-sequence M2), extracting features with CNNs and then sequentially accumulating them with an RNN\u2014extending single-turn interaction/matching ideas (e.g., MV-LSTM, Match-LSTM) to the multi-turn setting in a non-trivial way. The formulation (matching-first per utterance then chronological aggregation) is clearly differentiated from prior concatenation or heuristic reformulation baselines and is validated empirically on Ubuntu and Douban corpora. While multi-turn response selection is a well-studied problem, the specific combination of multi-channel interaction matrices plus CNN per-utterance and RNN accumulation represents a substantive and informative contribution rather than a mere minor tweak."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper addresses an important problem\u2014multi-turn response selection\u2014and introduces a clearly different \u201cmatching-first\u201d architecture (per-utterance word-word and sequence-sequence matrices + CNN features accumulated by an RNN) that outperforms a wide range of strong baselines on two corpora and even wins a human side-by-side against a state-of-the-art generative model (VHRED). By validating per-utterance multi-granularity matching and sequential accumulation, the work is likely to change how researchers design retrieval-based dialogue models and to be built upon in follow-up work. It is not clearly transformative beyond the retrieval-chatbot subfield (some practical limitations noted, e.g., heuristic candidate retrieval and modest gains from attention), so I rate it as a strong-impact contribution rather than field-changing. | B(4): The paper addresses an important practical problem\u2014multi-turn response selection for retrieval-based chatbots\u2014and proposes a clear new architecture (SMN) that operationalizes a \u201cmatching first\u201d strategy with multi-granularity (word-word and sequence-sequence) matching and sequential aggregation. Empirically SMN significantly outperforms a broad set of strong baselines on two real-world datasets (Ubuntu and Douban) and even wins a human side-by-side comparison against a state-of-the-art generative model (VHRED), indicating results that could change how systems are built. The approach is likely to be adopted and extended (e.g., alternative matching channels, aggregation methods, or integration with better retrieval), though some limitations (heuristic candidate retrieval, modest gains from attention, one non-significant metric) temper its transformative potential.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper addresses an important problem\u2014multi-turn response selection\u2014and introduces a clearly different \u201cmatching-first\u201d architecture (per-utterance word-word and sequence-sequence matrices + CNN features accumulated by an RNN) that outperforms a wide range of strong baselines on two corpora and even wins a human side-by-side against a state-of-the-art generative model (VHRED). By validating per-utterance multi-granularity matching and sequential accumulation, the work is likely to change how researchers design retrieval-based dialogue models and to be built upon in follow-up work. It is not clearly transformative beyond the retrieval-chatbot subfield (some practical limitations noted, e.g., heuristic candidate retrieval and modest gains from attention), so I rate it as a strong-impact contribution rather than field-changing."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper addresses an important practical problem\u2014multi-turn response selection for retrieval-based chatbots\u2014and proposes a clear new architecture (SMN) that operationalizes a \u201cmatching first\u201d strategy with multi-granularity (word-word and sequence-sequence) matching and sequential aggregation. Empirically SMN significantly outperforms a broad set of strong baselines on two real-world datasets (Ubuntu and Douban) and even wins a human side-by-side comparison against a state-of-the-art generative model (VHRED), indicating results that could change how systems are built. The approach is likely to be adopted and extended (e.g., alternative matching channels, aggregation methods, or integration with better retrieval), though some limitations (heuristic candidate retrieval, modest gains from attention, one non-significant metric) temper its transformative potential."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (the SMN architecture and two-channel per-utterance matching). Notation appears consistent and hyperparameters are reported, and experimental tables/metrics (datasets, Rn@k, MAP/MRR/P@1, human evaluation) are presented clearly. Writing quality is good overall, though there are minor presentation issues\u2014for example the role/benefit of the attention variant is not clearly explained despite being evaluated, and one non-significant result is only briefly discussed. | B(4): The paper is well organized (introduction \u2192 method \u2192 experiments \u2192 conclusion) and states the main contributions early (the SMN architecture and two-channel matching strategy). Notation appears consistent and hyperparameters are reported; the experimental presentation is informative (detailed metrics across datasets, human side-by-side counts, and discussion of a non-significant result). Writing quality is described as good, with only minor presentation issues in discussing the attention variant\u2019s unclear efficacy and the heuristic candidate retrieval, which could use slightly clearer explanation.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (the SMN architecture and two-channel per-utterance matching). Notation appears consistent and hyperparameters are reported, and experimental tables/metrics (datasets, Rn@k, MAP/MRR/P@1, human evaluation) are presented clearly. Writing quality is good overall, though there are minor presentation issues\u2014for example the role/benefit of the attention variant is not clearly explained despite being evaluated, and one non-significant result is only briefly discussed."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (introduction \u2192 method \u2192 experiments \u2192 conclusion) and states the main contributions early (the SMN architecture and two-channel matching strategy). Notation appears consistent and hyperparameters are reported; the experimental presentation is informative (detailed metrics across datasets, human side-by-side counts, and discussion of a non-significant result). Writing quality is described as good, with only minor presentation issues in discussing the attention variant\u2019s unclear efficacy and the heuristic candidate retrieval, which could use slightly clearer explanation."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "[Consensus avg=5] A(5): This is squarely within the scope of a top NLP/ML venue: it tackles multi-turn response selection for retrieval-based chatbots and proposes a new architecture (SMN) evaluated on standard corpora (Ubuntu and Douban). The methods and evaluations match community expectations (GRU/CNN/RNN/attention components, comparisons to strong baselines such as MV-LSTM, Match-LSTM and VHRED, and standard metrics like Rn@k, MAP, MRR). The paper is addressed to the right audience and is well positioned within the dialogue/retrieval-NLP research community (adequate related work coverage); noted limitations (heuristic candidate retrieval, modest attention gains) are scope details rather than misalignment with the venue. | B(5): The paper addresses multi-turn response selection in retrieval-based chatbots, a core problem in NLP/ML, and proposes a novel architecture (SMN) that is directly relevant to the community. It evaluates on standard datasets (Ubuntu, Douban), compares to a comprehensive set of strong baselines (including MV-LSTM, Match-LSTM, VHRED), and uses standard metrics (Rn@k, MAP, MRR, P@1) plus human evaluation. The problem formulation, methodology (per-utterance matching matrices, CNN+RNN aggregation), and reported limitations fit the expectations and standards for a top-tier NLP/ML venue, and the paper is positioned within the relevant research literature.",
+      "reviewer_a": {
+        "score": 5,
+        "justification": "This is squarely within the scope of a top NLP/ML venue: it tackles multi-turn response selection for retrieval-based chatbots and proposes a new architecture (SMN) evaluated on standard corpora (Ubuntu and Douban). The methods and evaluations match community expectations (GRU/CNN/RNN/attention components, comparisons to strong baselines such as MV-LSTM, Match-LSTM and VHRED, and standard metrics like Rn@k, MAP, MRR). The paper is addressed to the right audience and is well positioned within the dialogue/retrieval-NLP research community (adequate related work coverage); noted limitations (heuristic candidate retrieval, modest attention gains) are scope details rather than misalignment with the venue."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper addresses multi-turn response selection in retrieval-based chatbots, a core problem in NLP/ML, and proposes a novel architecture (SMN) that is directly relevant to the community. It evaluates on standard datasets (Ubuntu, Douban), compares to a comprehensive set of strong baselines (including MV-LSTM, Match-LSTM, VHRED), and uses standard metrics (Rn@k, MAP, MRR, P@1) plus human evaluation. The problem formulation, methodology (per-utterance matching matrices, CNN+RNN aggregation), and reported limitations fit the expectations and standards for a top-tier NLP/ML venue, and the paper is positioned within the relevant research literature."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The experiments are broadly comprehensive: SMN is evaluated against many strong baselines (including VHRED) on two datasets with multiple metrics and a human side-by-side evaluation, which supports the main claims. Ablation/sensitivity analysis is partial\u2014variants of the aggregation (SMNlast/static/dynamic) are studied and attention limitations are discussed, but the summary does not report finer-grained ablations (e.g., removing M1 or M2 channels or CNN vs alternatives). Related work coverage is described as adequate, and several limitations are acknowledged (dataset label multiplicity, heuristic retrieval, one non-significant result); hyperparameters are reported, though code availability is not mentioned which slightly weakens reproducibility. Overall this is solid work with minor gaps in ablations and full reproducibility details. | B(4): The experiments are strong: evaluation on two diverse corpora (Ubuntu and Douban), comparisons to a wide range of single- and multi-turn baselines, multiple automatic metrics (R@k, MAP, MRR, P@1) and a human side-by-side evaluation versus VHRED. The paper provides some ablation-style analysis via SMN variants (last/static/dynamic) and notes when attention offers limited gains, but the summary does not report finer-grained ablations (e.g., removing M1 or M2 or CNN/RNN components) or extensive sensitivity analyses. Related work coverage is described as adequate and several limitations are explicitly discussed (metric ceiling on Douban, heuristic candidate retrieval, one non-significant result). Hyperparameters are reported, but code is not mentioned, so reproducibility is mostly supported but not fully ensured.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The experiments are broadly comprehensive: SMN is evaluated against many strong baselines (including VHRED) on two datasets with multiple metrics and a human side-by-side evaluation, which supports the main claims. Ablation/sensitivity analysis is partial\u2014variants of the aggregation (SMNlast/static/dynamic) are studied and attention limitations are discussed, but the summary does not report finer-grained ablations (e.g., removing M1 or M2 channels or CNN vs alternatives). Related work coverage is described as adequate, and several limitations are acknowledged (dataset label multiplicity, heuristic retrieval, one non-significant result); hyperparameters are reported, though code availability is not mentioned which slightly weakens reproducibility. Overall this is solid work with minor gaps in ablations and full reproducibility details."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The experiments are strong: evaluation on two diverse corpora (Ubuntu and Douban), comparisons to a wide range of single- and multi-turn baselines, multiple automatic metrics (R@k, MAP, MRR, P@1) and a human side-by-side evaluation versus VHRED. The paper provides some ablation-style analysis via SMN variants (last/static/dynamic) and notes when attention offers limited gains, but the summary does not report finer-grained ablations (e.g., removing M1 or M2 or CNN/RNN components) or extensive sensitivity analyses. Related work coverage is described as adequate and several limitations are explicitly discussed (metric ceiling on Douban, heuristic candidate retrieval, one non-significant result). Hyperparameters are reported, but code is not mentioned, so reproducibility is mostly supported but not fully ensured."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "[Consensus avg=5] A(5): The paper compares against a wide set of strong and recent baselines (TF-IDF, RNN/CNN/LSTM/BiLSTM, Multi-View (Zhou et al. 2016), DL2R, MV-LSTM, Match-LSTM, Attentive-LSTM, and the VHRED generation model) which is comprehensive. Comparisons are performed on the same datasets (Ubuntu and Douban) using standard metrics (Rn@k, MAP, MRR, P@1), hyperparameters are reported, and the authors note statistical significance issues and other evaluation limitations, indicating fair and transparent evaluation. The paper explicitly acknowledges when variants perform only slightly better (SMNdynamic vs SMNstatic/SMNlast), reports human win/lose/tie counts versus VHRED, and analyzes the differences and the \u2018\u2018matching first\u2019\u2019 strategy, showing clear analysis of how it differs from baselines. | B(5): The paper compares against a wide range of appropriate and recent baselines (single-turn and multi-turn models such as MV-LSTM, Match-LSTM, Multi-View, DL2R, and the generation model VHRED) on the same datasets (Ubuntu and Douban) using standard metrics (Rn@k, MAP, MRR, P@1). Comparisons appear fair and conducted under the same evaluation conditions, and the authors explicitly note when a result is not statistically significant and when variants perform only marginally better (e.g., SMNdynamic vs. SMNstatic/SMNlast). Related work coverage is described as adequate and the paper acknowledges limitations (candidate retrieval heuristic and attention efficacy), indicating honest and comprehensive comparisons.",
+      "reviewer_a": {
+        "score": 5,
+        "justification": "The paper compares against a wide set of strong and recent baselines (TF-IDF, RNN/CNN/LSTM/BiLSTM, Multi-View (Zhou et al. 2016), DL2R, MV-LSTM, Match-LSTM, Attentive-LSTM, and the VHRED generation model) which is comprehensive. Comparisons are performed on the same datasets (Ubuntu and Douban) using standard metrics (Rn@k, MAP, MRR, P@1), hyperparameters are reported, and the authors note statistical significance issues and other evaluation limitations, indicating fair and transparent evaluation. The paper explicitly acknowledges when variants perform only slightly better (SMNdynamic vs SMNstatic/SMNlast), reports human win/lose/tie counts versus VHRED, and analyzes the differences and the \u2018\u2018matching first\u2019\u2019 strategy, showing clear analysis of how it differs from baselines."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper compares against a wide range of appropriate and recent baselines (single-turn and multi-turn models such as MV-LSTM, Match-LSTM, Multi-View, DL2R, and the generation model VHRED) on the same datasets (Ubuntu and Douban) using standard metrics (Rn@k, MAP, MRR, P@1). Comparisons appear fair and conducted under the same evaluation conditions, and the authors explicitly note when a result is not statistically significant and when variants perform only marginally better (e.g., SMNdynamic vs. SMNstatic/SMNlast). Related work coverage is described as adequate and the paper acknowledges limitations (candidate retrieval heuristic and attention efficacy), indicating honest and comprehensive comparisons."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a Sequential Matching Network (SMN) architecture that matches a response with each utterance in a multi-turn context on multiple levels of granularity and then accumulates the per-utterance matching information sequentially to produce a final matching score.",
+      "Introduces a two-channel per-utterance matching: a word-word similarity matrix (M1) and a sequence-sequence similarity matrix (M2) (the latter built from GRU hidden states), followed by CNN-based feature extraction to produce matching vectors that are aggregated by an RNN.",
+      "Demonstrates that SMN significantly outperforms a variety of baselines (including single-turn and multi-turn models) on two datasets (Ubuntu Corpus and a published Chinese Douban Conversation Corpus) across multiple metrics, validating the \"matching first\" strategy over simple concatenation or heuristic reformulation.",
+      "Shows in a human side-by-side evaluation that a retrieval system using SMN can outperform a state-of-the-art generation model (VHRED) on the Douban corpus (SMN wins 238, loses 207, ties 555)."
+    ],
+    "methodology": "For each utterance-response pair SMN constructs a word-word similarity matrix (M1) from embeddings and a sequence-sequence similarity matrix (M2) from GRU hidden states, applies a CNN over these multi-channel matrices to produce a matching vector per utterance, then accumulates these vectors in chronological order with an RNN and computes the final matching score (with variants for last-state, static linear combination, or attention-based combination).",
+    "datasets": [
+      "Ubuntu Corpus",
+      "Douban Conversation Corpus"
+    ],
+    "baselines": [
+      "TF-IDF",
+      "RNN",
+      "CNN",
+      "LSTM",
+      "BiLSTM",
+      "Multi-View (Zhou et al., 2016)",
+      "DL2R (Yan et al., 2016)",
+      "MV-LSTM (Wan et al., 2016)",
+      "Match-LSTM (Wang and Jiang, 2015)",
+      "Attentive-LSTM (Tan et al., 2015)",
+      "Multi-Channel",
+      "Multi-Channelexp",
+      "VHRED (generation model, Serban et al., 2016b)"
+    ],
+    "metrics": [
+      "Recall at position k in n candidates (Rn@k) (e.g., R2@1, R10@1, R10@2, R10@5)",
+      "MAP",
+      "MRR",
+      "P@1"
+    ],
+    "limitations": [
+      "Rn@k scores are low on the Douban corpus because there can be multiple correct candidates for a context (e.g., if there are 3 correct responses, the maximum R10@1 is 0.33).",
+      "SMNdynamic (attention) is only slightly better than SMNstatic and SMNlast; the paper notes the attention mechanism's efficacy is not obvious, possibly because GRU can already accumulate useful signals.",
+      "Response candidate retrieval in their system is performed with a heuristic method (tf-idf keyword expansion) and is not the focus of the paper.",
+      "One evaluation result (R10@5 on Douban Corpus) was not statistically significant (exception to otherwise significant improvements)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - multi-turn response selection in retrieval-based chatbots",
+    "writing_quality": "good"
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  }
+}

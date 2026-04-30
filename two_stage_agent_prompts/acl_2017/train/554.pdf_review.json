@@ -1,0 +1,82 @@
+{
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important problem of introducing scalable Bayesian learning to RNNs for language modeling by applying SG-MCMC (notably pSGLD) and demonstrates empirical gains over strong stochastic-optimization baselines (RMSprop and dropout) across multiple datasets (WP, PTB, Flickr, and several classification corpora). Showing that posterior sampling and test-time model averaging improve performance \u2014 and that combining pSGLD with dropout further helps \u2014 is likely to change practitioner choices around regularization and uncertainty treatment for RNNs. While the reported testing-time cost and the need for approximations limit immediate widespread adoption, the approach opens clear directions for efficient approximate model averaging and broader Bayesian RNN applications beyond the specific NLP tasks evaluated."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes. The paper addresses Bayesian learning for recurrent neural networks in language modeling using scalable SG-MCMC (pSGLD), which is squarely within top-tier ML/NLP venues' interests. It targets the right audience (NLP/ML researchers), uses appropriate problem formulation and methods (posterior sampling, model averaging) and evaluates on standard benchmarks (PTB, War and Peace, Flickr datasets) with expected metrics, and is positioned with thorough related work coverage. The focus on scalability and practical tradeoffs (combining with dropout, testing-time averaging costs) further aligns it with venue priorities."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The summary indicates a clear, logical organization (methodology, datasets, experiments and stated limitations are presented) and that the main contributions are stated early (scaling SG-MCMC/pSGLD for RNNs and combining with dropout). Writing quality is reported as good, with thorough related work and hyperparameters reported, which supports consistent notation and clear presentation. Figures/tables and examples appear effective given the variety of datasets and metrics reported, and minor presentation issues (e.g., testing-time cost discussed as a limitation) are acknowledged, so overall the paper is well-written with only minor presentation issues."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates pSGLD-based Bayesian RNNs across a wide range of datasets (WP, PTB, Flickr8k/30k, TREC, MR, SUBJ, CR, MPQA) and metrics (BLEU, METEOR, ROUGE-L, CIDEr-D, classification error), and compares against sensible baselines (RMSprop variants and dropout), with hyperparameters reported. It also examines combining sampling with dropout and discusses theoretical guarantees and practical limitations (test-time averaging cost, injected-noise insufficiency). However, the summary does not indicate extensive ablation or sensitivity analyses beyond the dropout combination, nor mentions released code, so some reproducibility and deeper analysis questions remain."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper applies existing stochastic-gradient MCMC (notably pSGLD) to scale Bayesian learning for recurrent neural networks in language modeling, which is a useful and non-trivial application but not a fundamentally new algorithmic idea. The task formulation (language modeling/RNNs) is well-studied, and the paper distinguishes its contributions (preconditioned SGLD for RNNs, combining sampling with dropout, and test-time model averaging) from prior optimization and dropout baselines. Overall the work is an incremental but meaningful extension that would inform practitioners and specialists, rather than a highly novel theoretical advance."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and supported by empirical evidence across multiple datasets (WP, PTB, Flickr8k/30k, several classification sets) and reasonable baselines (RMSprop variants and dropout). The theoretical claim that SG-MCMC has bounded finite-time estimation errors and asymptotic unbiasedness under decreasing stepsizes matches existing SG-MCMC results and is plausible. Experimental methodology appears sound in terms of baselines and metrics, though the summary does not mention statistical significance testing and acknowledges practical limits (testing-time cost, noise insufficiency), which are minor concerns. Overall the paper is technically solid with only modest gaps in reported statistical analysis and runtime tradeoffs."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and recent baselines (RMSprop, RMSprop+Dropout, RMSprop+Gal\u2019s Dropout and pSGLD) across multiple datasets (WP, PTB, Flickr8k/30k, TREC, MR, SUBJ, CR, MPQA) and relevant metrics (BLEU, METEOR, ROUGE-L, CIDEr-D, classification error). Comparisons appear fair (same data and evaluation metrics) and the paper analyzes differences (posterior sampling with pSGLD, preconditioning, and model averaging versus stochastic optimization and dropout). The summary does not indicate whether the authors explicitly acknowledge cases where prior methods perform comparably or better, a minor omission despite thorough related-work coverage."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes scaling up Bayesian learning of recurrent neural networks (RNNs) for language modeling using stochastic gradient MCMC (SG-MCMC), particularly preconditioned SGLD (pSGLD).",
+      "Applying SG-MCMC to RNNs allows imposing model uncertainty on recurrent weights, improving regularization and yielding better empirical performance than stochastic optimization (e.g., RMSprop) and dropout in the reported tasks.",
+      "Combining pSGLD (posterior sampling) with dropout further improves performance, and different samples capture different aspects of inputs enabling model averaging at test time.",
+      "SG-MCMC methods have bounded finite-time estimation errors, which guarantees asymptotic unbiasedness of the sample-based estimators under appropriate decreasing stepsizes."
+    ],
+    "methodology": "Use stochastic gradient MCMC (notably pSGLD) to collect posterior samples of RNN weights via minibatch stochastic gradients and injected noise (with preconditioning), then perform model averaging over collected samples at test time; optionally combine sampling with dropout to increase injected noise and mixture modeling.",
+    "datasets": [
+      "War and Peace (WP) (character-level)",
+      "Penn Treebank (PTB) (word-level)",
+      "Flickr8k",
+      "Flickr30k",
+      "TREC",
+      "MR",
+      "SUBJ",
+      "CR",
+      "MPQA"
+    ],
+    "baselines": [
+      "RMSprop",
+      "RMSprop + Dropout",
+      "RMSprop + Gal's Dropout",
+      "pSGLD (as method compared against RMSprop variants)"
+    ],
+    "metrics": [
+      "BLEU (including BLEU-4)",
+      "METEOR",
+      "ROUGE-L",
+      "CIDEr-D",
+      "classification error"
+    ],
+    "limitations": [
+      "Testing-time model averaging is costly; improving testing efficiency (e.g., learning a single network to approximate model averaging) is left as future work.",
+      "Noise injected by SGLD alone may be insufficient in practice, motivating combining SGLD with dropout.",
+      "A more rigorous usage of the predictive uncertainty information is left as future work."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - Bayesian learning for recurrent neural networks / language modeling",
+    "writing_quality": "good"
+  }
+}

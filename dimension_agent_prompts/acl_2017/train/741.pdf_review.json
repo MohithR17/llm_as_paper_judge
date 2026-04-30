@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 3,
+  "SUBSTANCE": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper addresses an NLP/ML topic of clear interest to top venues: automatic induction of synsets and word sense induction using graph methods and word embeddings. The approach (WATSET) combines graph-based WSI, disambiguation, and global clustering and is evaluated against standard lexical resources (WordNet, BabelNet) and two Russian datasets (RuThes, YARN) using precision/recall/F-score, and compared to established baselines (CW, MCL, MaxMax, ECO, CPM). The problem formulation, methodology, and empirical evaluation follow norms expected at major NLP/ML conferences, and the paper is positioned within the computational semantics/lexical resources community."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical problem\u2014automatic induction of synsets for languages lacking WordNet\u2014by introducing WATSET, a meta-clustering approach that (unlike prior WSI work) disambiguates neighbours to build a global sense-aware graph and then induces synsets. It reports superior F-score versus five state-of-the-art graph clustering methods on four gold standards for English and Russian, demonstrating clear empirical impact. The method is simple, broadly applicable (uses embeddings and common synonym dictionaries), and suggests concrete extensions (using distributional models to densify sparse dictionaries), making it likely to be adopted and to open further work on resource induction for under-resourced languages."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper clearly states and operationalizes its main claim (inducing synsets via WATSET) and describes the algorithmic pipeline in detail (Sections 3.2\u20133.5) and evaluation setup (Section 4); it reports comparisons to five state-of-the-art clustering methods across English and Russian datasets (Section 5). There are no formal mathematical derivations (none needed for this applied method), and the experimental methodology is largely sound (multiple datasets, standard precision/recall/F-score metrics), but the excerpt lacks any statistical significance testing and notes potential confounds: reliance on combined input dictionaries and own implementations of MaxMax/ECO (Section 5 and Discussion, Section 6) which could affect baseline comparability. Overall the results as presented support the conclusions, with minor methodological gaps (no significance tests, dependence on dictionary completeness) that do not fundamentally undermine the main claims."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable new pipeline (WATSET) that combines existing components in a novel meta-clustering way: induce word senses from ego-networks, disambiguate neighbours (Sec. 3.4) and then perform global clustering on the disambiguated sense graph (Sec. 3.5). While it reuses known techniques (graph clustering, ego-network WSI, word embeddings for edge weighting, Sec. 3.2\u20133.3), the neighbour-disambiguation step and the use of a disambiguated graph to turn hard clustering into effective fuzzy synset induction is a non-trivial and clearly-differentiated contribution compared to prior WSI/graph methods (the authors explicitly contrast this with V\u00e9ronis, Biemann, Hope & Keller and cite ECO as an exception). Thus the novelty is notable but built on existing building blocks rather than being a wholly new theoretical paradigm."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares WATSET to five relevant state-of-the-art graph clustering/WSI methods (Chinese Whispers, MCL, MaxMax, ECO, CPM) across four gold-standard datasets for English and Russian and uses consistent evaluation metrics (precision/recall/F-score computed from induced synset pairs) (Sections 4\u20135). It reports implementation details (using available implementations for CW/MCL/CPM and own implementations for MaxMax and ECO) and applies the same evaluation protocol (e.g., filtering large clusters), but reliance on re-implementations is a minor fairness concern. The authors acknowledge dataset-dependent score differences and limitations of input dictionaries (Section 6) and cite the most relevant competing work (e.g., Dorow & Widdows, Hope & Keller, Gon\u00e7alo Oliveira & Gomes), though direct comparison to large mapping resources like BabelNet is only discussed qualitatively. Overall comparisons are good with minor omissions/possible implementation variability."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is mostly well-organized and follows a logical flow (clear sectioning into method steps 3.2\u20133.5, Evaluation, Results, Discussion) and the five-step pipeline and graph notation (G=(V,E), G\u2032, senses(u), ctx(s)) are useful for understanding the approach; the illustrative example for \u201cbank\u201d is also helpful. However, presentation quality is marred by many duplicated and garbled passages, formatting artifacts and typos (e.g. repeated paragraphs, LaTeX remnants, and the malformed expression \u201cn(n\u22121)2\u201d), and some material (figures/tables) is only referenced but not shown in the provided text. Overall clarity is adequate but several sections need cleaning and proofreading to remove repetition and fix notation/formatting issues."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are fairly comprehensive: they evaluate on multiple gold standards across two languages (WordNet/BabelNet for English; RuThes/YARN for Russian), compare to five strong baselines (CW, MCL, MaxMax, ECO, CPM), and report precision/recall/F-score (Sections 4\u20135). The paper discusses limitations (gold-standard differences, input-dictionary sparseness) and explores alternative design choices (different edge weightings, WSI algorithms and global clustering modes such as WATSET[MCL,CWtop]). However, systematic ablation/sensitivity analyses and many reproduction details are missing (no parameters for MCL/CW, neighborhood size or exact construction of ctx(s), aggregation for context vectors), limiting exact reproducibility and deeper analysis of component contributions."
+    }
+  }
+}

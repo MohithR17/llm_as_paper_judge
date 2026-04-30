@@ -1,0 +1,181 @@
+{
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "SUBSTANCE": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized and easy to follow (intro \u2192 method \u2192 experiments \u2192 conclusion) and the main contributions are stated early and repeatedly (MinIE design, modes, and ClausIE integration). Writing quality is good and related work coverage thorough; figures/tables/examples appear informative given the reported metrics and examples. Minor presentation issues hurt reproducibility and formal clarity: hyperparameters are not reported, and the paper would benefit from an explicit formal problem statement/notation and clearer isolation of each minimization mode in the presentation. | B(4): The paper is well organized with a clear flow from motivation through method (integration on top of ClausIE and the implicit extractor) to experiments and conclusion, and the main contributions (minimized annotated extractions, configurable minimization modes, and an implementation with code) are stated early. Notation and definitions for the minimization modes and annotation types are consistently presented, and figures/tables (metrics like factual and attribution precision, \u00b5/\u03c3 word counts) effectively communicate results. Writing quality is generally good and related work is thorough, though the paper omits some implementation details (e.g., hyperparameter settings) which slightly weakens reproducibility and could be made more explicit.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized and easy to follow (intro \u2192 method \u2192 experiments \u2192 conclusion) and the main contributions are stated early and repeatedly (MinIE design, modes, and ClausIE integration). Writing quality is good and related work coverage thorough; figures/tables/examples appear informative given the reported metrics and examples. Minor presentation issues hurt reproducibility and formal clarity: hyperparameters are not reported, and the paper would benefit from an explicit formal problem statement/notation and clearer isolation of each minimization mode in the presentation."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized with a clear flow from motivation through method (integration on top of ClausIE and the implicit extractor) to experiments and conclusion, and the main contributions (minimized annotated extractions, configurable minimization modes, and an implementation with code) are stated early. Notation and definitions for the minimization modes and annotation types are consistently presented, and figures/tables (metrics like factual and attribution precision, \u00b5/\u03c3 word counts) effectively communicate results. Writing quality is generally good and related work is thorough, though the paper omits some implementation details (e.g., hyperparameter settings) which slightly weakens reproducibility and could be made more explicit."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper is well within the venue scope, provides a practical systems contribution to Open IE, evaluates on standard datasets against strong baselines, and releases code and useful annotations. While Reviewer A notes some theoretical/formalization and component-ablation limitations, these are methodological refinements rather than reasons to reject; the clear empirical gains, reproducibility, and practical value justify a top-tier acceptance score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This work addresses a core NLP problem (Open IE) and evaluates against standard baselines/datasets, so it is broadly within scope for a top NLP venue. From my perspective as a theory-minded reviewer, the paper lacks a formal problem definition and theoretical justification for the minimization operations, and it relies on a single upstream integration (ClausIE) without ablations isolating major components; these shortcomings reduce its methodological rigor. Nonetheless the empirical comparisons, new annotated outputs (polarity/modality/attribution), and code release make it a good fit overall, with only minor scope concerns about formal framing and component-level evaluation."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper cleanly targets the NLP community (Open Information Extraction) and provides a practical, well-scoped systems contribution that fits top-tier venues: it augments existing OIE pipelines (ClausIE) with configurable minimization modes, implements annotations for polarity/modality/attribution, and ships code. Evaluation uses standard datasets (NYT, Wiki), compares against strong baselines (ClausIE, OLLIE, Stanford OIE), and reports precision/recall and compactness metrics\u2014matching the empirical and reproducibility expectations I value as an applied systems reviewer. The work is well positioned for the venue given its measurable improvements, practical integration, and thorough related work coverage."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper clearly states its claims and provides empirical evidence of improved, more concise extractions with released code, but note methodological gaps such as limited ablations, reliance on a single upstream OIE, small evaluation samples, and missing statistical tests. These shortcomings are important but do not undermine the main empirical findings, so a score slightly above the median is appropriate to reflect solid contributions with room for stronger validation.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its main claims and provides empirical comparisons to ClausIE, OLLIE and Stanford OIE showing competitive precision/recall and shorter extractions, so claims are partially supported. However, as a theory-oriented reviewer I see missing ablations isolating MinIE\u2019s separate components (e.g., implicit extraction, each minimization mode) and no evaluation of MinIE applied atop multiple upstream OIE systems\u2014relying mainly on ClausIE\u2014so it\u2019s unclear which gains come from which module. There are no reported statistical tests, limited evaluation samples (200-sentence subsets) and no formal definitions or guarantees for the minimization operations, leaving logical gaps about correctness and generality. Overall the methodology is promising but lacks the rigorous isolations and broader validations I require, so I rate it a 3."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and largely supported by experiments comparing MinIE (built on ClausIE plus implicit extractor) to strong baselines (OLLIE, Stanford OIE) on NYT and Wiki samples, showing improved precision and shorter extractions while offering configurable minimization modes. There are no mathematical derivations to check, and the system design, datasets, and multiple metrics are appropriate, but the paper omits details like hyperparameter reporting and statistical significance testing and acknowledges error sources (parsing, NER, collocations) that could affect results. From an applied-systems perspective the work is reproducible (code released) and technically sound, with only minor methodological gaps that do not overturn the main conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree MinIE provides a practical and useful extension to existing OIE systems by formalizing minimization and adding structured annotations and configurable modes, rather than proposing a radically new theory. Given the non-trivial engineering contributions, empirical validation, and clear utility to practitioners\u2014despite reliance on an existing upstream extractor and limited formal novelty\u2014the work merits a rating above average for originality.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "MinIE offers a concrete and useful extension to OIE by formalizing minimization and annotating polarity, modality, attribution and quantities, and by providing multiple minimization modes. However, the core problem (producing compact, factual OIE extractions) is well-studied and the approach appears primarily an engineering-layer augmentation built on top of ClausIE (with an added implicit extractor), rather than a fundamentally new formulation or theory. The paper distinguishes itself from prior systems (ClausIE, OLLIE, Stanford OIE) and introduces non-trivial rewrite/annotation heuristics, but reliance on a single upstream system and the lack of a clearly novel formalism mean the contribution is best characterized as moderate novelty rather than highly original."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "MinIE introduces a notable and practically useful new perspective for OIE \u2014 explicit minimization of extractions with structured annotations for polarity, modality, attribution and quantities \u2014 and provides configurable modes that trade off aggressiveness. The approach is implemented as an add-on to existing OIE systems (ClausIE) and combines implicit extraction and rewrite rules, which is a non-trivial engineering advance rather than a purely theoretical innovation. While built on well-studied OIE foundations (ClausIE/OLLIE/Stanford OIE), the clear differentiation, empirical evaluation showing shorter, annotated extractions, and configurable modes would be informative to practitioners and thus represents substantive novelty."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper makes a useful, practical contribution\u2014producing minimized, annotated OIE extractions, demonstrating empirical gains on standard corpora, and releasing code that will aid adoption. The lower score concern about limited theoretical novelty, reliance on a single upstream system, and missing isolated ablations is valid, but these limitations do not outweigh the clear systems impact and immediate utility to practitioners, so a slightly above-moderate score is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles a clear and useful problem\u2014producing minimized, annotated OIE extractions\u2014and offers practical contributions (annotation of polarity/modality/attribution, multiple minimization modes, and code release) that could influence applied OIE work. However, from the provided summary it leans empirical/engineering: it builds atop a single upstream system (ClausIE) without formal problem definition or guarantees and lacks reported isolated ablations for major components, limiting theoretical impact. Thus it is a moderate contribution likely to be adopted in practice but unlikely to substantially change theoretical perspectives or open major new research directions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "MinIE addresses an important, practical problem in OIE by producing minimized, annotated extractions and offering configurable minimization modes that trade off aggressiveness, which is directly useful for downstream applications. It demonstrably improves precision/recall and extraction compactness on standard corpora (NYT, Wiki) while integrating on top of existing systems (ClausIE) and releasing code, making it likely to be adopted and extended in applied pipelines. Limitations such as dependency-parsing and NER error propagation are acknowledged, but these do not undercut the paper\u2019s clear systems contribution and immediate utility to practitioners and researchers."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "Both reviewers agree the comparisons are fair, use standard datasets and metrics, and include useful analyses and released code supporting reproducibility. Reviewer A\u2019s concerns about limited upstream pipeline coverage and some reporting gaps are minor, not undermining the overall validity of the empirical comparison, so I give the paper the top score for MEANINGFUL_COMPARISON.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares MinIE to multiple established OIE systems (ClausIE, OLLIE, Stanford OIE) on the same NYT and Wiki samples and reports the same metrics (precision/recall, extraction length), so comparisons are broadly fair and appropriate. The authors present analyses of how MinIE\u2019s rewrites and minimization modes affect outputs and provide thorough related-work discussion. However, I penalize for not demonstrating evaluations across a wider variety of upstream OIE pipelines (MinIE is implemented on ClausIE only) and for limited disclosure where prior systems might match or exceed MinIE in specific settings; these are minor but relevant omissions."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper evaluates MinIE against multiple established OIE systems (ClausIE, OLLIE, Stanford OIE) on standard datasets (NYT, Wiki) using appropriate metrics (precision, recall, extraction length) and releases code, which supports reproducibility. Comparisons appear fair (same data and evaluation criteria) and the authors explicitly report when prior methods are competitive, analyze differences (minimization modes and rewrites), and provide thorough related-work coverage. From an applied-systems perspective this is a comprehensive and practical empirical comparison with only minor reporting gaps (e.g., hyperparameter details)."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper delivers solid empirical evaluation, discusses failure modes, and releases code, but lacks some experimental details (hyperparameters) and sensitivity/component analyses. Reviewer A\u2019s critique about limited ablations and reliance on a single upstream is valid, while Reviewer B rightly notes broader dataset comparisons and configurable modes that demonstrate practical trade-offs. Given the strong empirical contribution tempered by missing ablation/sensitivity analyses and some reproducibility gaps, a score of 4 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides reasonable empirical comparisons against multiple OIE baselines and discusses limitations and failure modes, with code released, but it falls short on critical analysis from my perspective: most experiments are built on a single upstream system (ClausIE) rather than demonstrating robustness across different OIE engines, there are no isolated ablations that quantify the contribution of each rewrite/annotation component, and important reproduction details (hyperparameters) are not reported. Related work is well-covered and negative results are acknowledged, but the experimental suite is missing the sensitivity and component-level analyses I would expect for a methodmaking formal claims about correctness and minimization trade-offs."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper provides solid empirical evidence: comparisons to ClausIE, OLLIE, and Stanford OIE on multiple datasets (including a large NYT-10k sample) with precision/recall and concise-length metrics, and offers configurable minimization modes (Safe/Frequency/Collocations/Aggressive) that demonstrate trade-offs. It also discusses failure modes (parsing, NER, collocations) and releases code, aiding reproducibility. Missing hyperparameter details and limited discussion of sensitivity to core upstream components (e.g., parser variants) are minor gaps that prevent a top score, but overall the experimental treatment is thorough and pragmatic."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "MinIE produces minimized, annotated open information extraction (OIE) extractions by removing overly-specific parts and representing polarity, modality, attribution, and quantities as annotations.",
+      "MinIE can be integrated on top of existing OIE systems and is implemented on top of ClausIE, augmenting ClausIE extractions with implicit extractions and rewrites to basic and minimized extractions.",
+      "MinIE provides multiple minimization modes (Safe, Frequency, Collocations, Aggressive) that trade off aggressiveness of minimization, and achieves competitive or higher precision and recall than several prior OIE systems while producing shorter extractions."
+    ],
+    "methodology": "MinIE runs ClausIE plus an implicit extractor to get input extractions, enriches relations with constituent information, rewrites extractions to remove polarity, modality, attribution, and quantities (recording these as annotations), and applies configurable minimization modes (MinIE-S/F/C/A) to produce minimized, annotated triples.",
+    "datasets": [
+      "NYT-10k (random sample of 10,000 sentences from the New York Times Annotated Corpus)",
+      "NYT (random sample of 200 sentences from the New York Times Annotated Corpus)",
+      "Wiki (random sample of 200 sentences from Wikipedia)"
+    ],
+    "baselines": [
+      "ClausIE",
+      "OLLIE",
+      "Stanford OIE"
+    ],
+    "metrics": [
+      "recall (total number of extractions)",
+      "factual precision",
+      "attribution precision",
+      "mean word count per extraction (\u00b5)",
+      "standard deviation of word count (\u03c3)",
+      "number of nonredundant extractions"
+    ],
+    "limitations": [
+      "Errors in dependency parsing propagate to MinIE and are a main source of errors.",
+      "Dropping adjectives can break valid collocations (e.g., 'assistant director') when collocations are not present in the dictionary.",
+      "Named-entity recognition errors can cause incorrect extractions (e.g., partial or missing entity recognition)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - Open Information Extraction",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Tenured NLP researcher with a track record in formal semantics and representation learning; regularly reviews for ACL/EMNLP and edits for a computational semantics venue.",
+      "traits": [
+        "penalises papers that are largely engineering/empirical without a clear formal problem definition or theoretical justification (deducts points if no formal definition or guarantees are provided)",
+        "requires clear ablation studies isolating each claimed contribution (deducts points if any major component lacks an isolated ablation)",
+        "penalises reliance on a single upstream system for evaluation (deducts points if no evaluation across multiple base OIE systems)",
+        "skeptical of subjective annotations or heuristics without inter-annotator agreement (deducts points if annotation quality metrics like agreement are missing)"
+      ],
+      "reviewing_style": "Focuses on conceptual clarity and isolating contributions; will downgrade empirical/engineering papers that lack formal framing, rigorous ablations, or convincing evaluation across varied conditions."
+    },
+    "reviewer_b": {
+      "name": "Applied Systems Champion",
+      "background": "Industrial research scientist specializing in information extraction and applied NLP systems; frequently reviews for EMNLP/ACL and values practical impact, reproducibility, and usable tools.",
+      "traits": [
+        "rewards papers that provide a working system and integration on top of existing pipelines (adds points if code or clear implementation details are provided)",
+        "gives credit for pragmatic improvements that increase precision/recall and reduce output verbosity when shown in experiments (adds points when empirical gains are demonstrated on standard benchmarks)",
+        "rewards clear, configurable trade-offs (adds points if modes/options with measured effects are provided)",
+        "values metrics and comparisons against prior strong baselines (adds points if multiple baselines and standard datasets are used) "
+      ],
+      "reviewing_style": "Pragmatic and results-oriented: prioritizes systems that materially improve usability/accuracy and are reproducible, even if the contributions are engineering-focused rather than deeply theoretical."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

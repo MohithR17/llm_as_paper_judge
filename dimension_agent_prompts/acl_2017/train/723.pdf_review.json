@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "CLARITY": 3,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This is squarely an NLP/ML paper: it proposes MORSE, a semantically driven morpheme segmenter that leverages word representations (Mikolov et al., Pennington et al.) and morphosyntactic vector regularities, compares against Morfessor and published state-of-the-art, and evaluates on multiple languages (English, Turkish, Finnish). The work includes appropriate problem formulation, experimental methodology and metrics (precision/recall/F1), and introduces a new dataset addressing compositionality (SD17), all of which target the NLP research community. The paper is well positioned relative to prior literature (Morfessor, LLSM, CRF/AG approaches) and discusses limitations and applicability, making it a strong fit for a top-tier NLP/ML venue."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall the paper follows a logical organization (intro \u2192 method \u2192 experiments \u2192 discussion) and uses clear motivating examples (e.g. the \u201csing\u201d vs. \u201cjump-ing\u201d example) which aid understanding. However presentation is marred by numerous formatting and editing issues: duplicated/repeated sentences and citation fragments, LaTeX/artifact leftovers, and misspellings (e.g. \u201cMofessor\u201d), which disrupt reading. The notation and equations in the inference section are presented inconsistently (broken inline symbols, many hyperparameter names introduced without clear formatting), and figures/tables are frequently referenced but not shown in the provided text, reducing clarity in several places."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses a core NLP preprocessing task (morpheme segmentation) and proposes a novel, semantically-aware method (MORSE) that uses vocabulary-wide word-representation difference vectors to filter orthographic rules, which directly tackles over-segmentation (e.g., distinguishing \"sing\" vs \"jump-ing\"). Empirically it reports meaningful gains over the widely-used Morfessor (e.g., +6% F1 on English, +7% on Turkish and much larger gains on the compositional SD17 set) and provides a new dataset (SD17 and canonical forms) that corrects weaknesses in existing benchmarks. The approach and resources are likely to be adopted and to stimulate follow-up work (better inference, non-concatenative morphology, lemmatization), though limitations (greedy inference, concatenative focus) prevent a fully transformative rating."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper applies a clearly articulated and novel combination of orthographic rule induction with vocabulary-wide semantic validation using word-embedding difference vectors (e.g., \"we are the first to evaluate the morphological relationship via the difference vector...\" and \"the first to consider vocabulary-wide syntactico-semantic information\"). Morpheme segmentation itself is a well-studied problem, but the move from local cosine-based checks to global consistency of difference vectors and using that to invalidate orthographically plausible but non-morphological rules is a non-trivial and well-differentiated extension over prior work (e.g., Morfessor, Narasimhan et al.). The introduction of a compositionality-focused dataset and explicit discussion of how semantic cues reduce over-segmentation further supports notable novelty rather than a minor incremental change."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are solid: the authors evaluate on multiple languages (English, Turkish, Finnish), compare to Morfessor and published SOTA, introduce a new semantically-driven dataset (SD17), test a 100-word compositionality set, and report hyperparameter sensitivity and tuning-set size effects (e.g. performance stabilizes at ~300 gold segmentations). Related work is thoroughly cited and failure modes are discussed (greedy inference propagation, limitation to concatenative morphology). However, the paper lacks explicit ablation of core components (e.g. removing semantic scores or separating local vs vocabulary-wide semantic signals) and omits some reproduction-critical details (exact hyperparameter values, embedding/corpus training specifics and thresholds), which prevents full confidence in replicability."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and recent baselines (Morfessor, Morfessor S+W/S+W+L, Linguistica, LLSM/Narasimhan et al. 2015 and other semantic approaches) and reports results on standard Morpho Challenge data and a new SD17 set (Sections 4\u20135, Tables 3,5,7). Comparisons are generally fair (same test sets; MORSE is tuned on MC training and evaluated on dev, and SD17 experiments use 5-fold CV), although tuning differences and occasional switches between boundary- and morpheme-level evaluation (canonical SD17) introduce minor inconsistencies. The paper acknowledges when prior methods outperform MORSE (Finnish, Sec. 5.1) and analyzes why semantic cues help or fail (over-segmentation, dataset compositionality, Sec. 4.4 and 6), and it cites and discusses the most relevant competing approaches. These strengths with small methodological/ evaluation caveats support a score of 4."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's central claim\u2014that adding vocabulary-wide semantic constraints (via word-vector difference consistency) reduces over-segmentation and improves morpheme segmentation\u2014is stated and supported by experiments (reported +6% F1 on English, +7% on Turkish, and +24% on the semantically-driven SD17 set) and comparisons to Morfessor and published results. The mathematical formulation given (rule scoring and constrained optimization) is plausible but lacks full formal detail (definitions of the score functions, threshold setting and statistical significance tests are missing). Experimental methodology is broadly sound (multiple languages, baseline comparisons, 5-fold CV on SD17) but omits significance testing and leaves open sensitivity to embedding noise, polysemy, and the large candidate-rule space; the authors do acknowledge limitations (greedy inference, concatenative morphology). Overall the results justify the paper's conclusions modulo these minor methodological and exposition gaps."
+    }
+  }
+}

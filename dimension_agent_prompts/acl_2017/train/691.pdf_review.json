@@ -1,0 +1,39 @@
+{
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "CLARITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "MEANINGFUL_COMPARISON": 5,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses a well-known and meaningful problem (PP attachment) and targets a broader issue\u2014lexical ambiguity in embeddings\u2014by grounding token representations in WordNet and learning context-sensitive distributions (\u00a72, \u00a73). It reports a substantial empirical gain (+5.4% absolute; 34.4% relative error reduction) on a realistic dataset, showing that ontology-grounded, jointly trained token embeddings outperform both standard and retrofitted type embeddings. The approach is likely to change how researchers incorporate lexical resources into neural models and can be applied to other syntax/semantics tasks (discussion and related work), so it opens useful follow-on directions, though reliance on WordNet limits universality."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within top-tier NLP/ML venue scope: it proposes a WordNet-grounded, context-sensitive token embedding (OntoLSTM-PP) and applies it to a core syntactic disambiguation task (PP attachment). The methods (bi-LSTMs, attention-style weighting over synset embeddings initialized via AutoExtend, joint training) and evaluations (comparison to strong baselines including retrofitted GloVe, use of the Belinkov et al. dataset, reported 5.4% absolute / 34.4% relative error reduction) follow community standards. The paper situates itself against relevant prior work (Rothe & Sch\u00fctze, Faruqui et al., Belinkov et al.) and demonstrates utility by improving parser features, so it targets the right audience and is well positioned for an NLP/ML conference."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments compare OntoLSTM-PP against strong baselines (LSTM-PP with GloVe, GloVe retrofitted, and Belinkov et al.\u2019s HPCD), use a realistic dataset with train/test splits (33,359 / 1,951), initialize synset embeddings with AutoExtend on 100\u2011d GloVe, and evaluate integration with an RBG parser\u2014supporting the main claim of improved PP attachment (5.4% absolute). However, the excerpt contains no explicit ablation or sensitivity analysis (e.g., effect of sense-decay \u03bbw, number/depth of hypernyms) despite mentioning parameter tuning, and failure cases or broader limitations are only briefly alluded to (embedding drift) rather than analyzed. Related work coverage is thorough, and reproducibility is reasonably supported (dataset, initialization, implementation in Keras and mention of provided layers), but some important experimental analyses are missing, so the work is strong but with minor gaps."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a distinct method\u2014grounding token embeddings in WordNet synsets (including hypernyms) and computing context-sensitive token representations as a learned distribution over concept embeddings (using attention) and jointly training these with a downstream PP-attachment model (e.g., \u00a72, \u00a73, Conclusion). The authors explicitly differentiate from prior work (e.g., Rothe & Sch\u00fctze 2015, Jauhar et al. 2015, Faruqui et al. 2015) and claim their approach yields token-level, context-dependent distributions rather than fixed multi-prototype or retrofitted type vectors. While PP attachment itself is a well-studied task and several components build on existing ideas, the specific combination (WordNet grounding + context-sensitive synset distributions + joint training for PP attachment) is a non-trivial, clearly differentiated contribution that would be of interest to experts."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper has an overall logical structure (sections for grounding, problem definition, model, experiments, conclusion) and clearly describes the model equations (e.g., Eq. 5 for scoring candidates) and dataset splits, so the main flow is present. However, presentation is hampered by extensive repetition (the \"Other work not necessarily related...\" paragraph appears many times), several typos/LaTeX artifacts (\"the the\", \"initilized\", repeated parenthetical citations), and missing inline figures/tables (Figure 3 and Table 1/2 are referenced but not shown here), which make some sections hard to follow. Notation is mostly defined where used, but occasional unexplained references (e.g., Eq. 4 mentioned without context in this excerpt) reduce clarity and suggest copy-paste issues that need cleanup."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states clear main claims (WordNet-grounded context-sensitive token embeddings improve PP attachment) and describes a plausible model and dataset (Belinkov et al. 2014; bi-LSTM + MLPattach, synset initializations via AutoExtend). It compares against reasonable baselines (GloVe, retrofitted GloVe, prior best HPCD) and reports a concrete improvement (5.4% absolute, 34.4% relative error reduction). However, key supporting details are missing in the provided text: the actual result tables and statistical significance tests are not shown, Eq.4 (the attention/sense-weighting formula) is omitted, and there is a small inconsistency in the description of the attention context (described as the previous hidden state but then set to lstm_in(ti-1)). These gaps leave some methodological and reproducibility questions open, so the technical claims are plausible but not fully verifiable from the excerpt."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against appropriate and recent baselines for PP attachment (LSTM-PP with GloVe, LSTM-PP with GloVe retrofitted using Faruqui et al. (2015), and the best standalone system \u201cHPCD (full)\u201d from Belinkov et al. (2014)) and uses the same Belinkov et al. (2014) dataset (\u00a73.1, \u00a73.2, and experimental descriptions). It discusses implementation/evaluation differences (e.g. parser version differences) and reports integrated parser experiments and oracle/baseline comparisons, indicating fair, same-data evaluations. The paper cites and contrasts the most relevant competing approaches (Rothe & Sch\u00fctze 2015, Belanger & Kakade 2015, Vilnis & McCallum 2014, Jauhar/Neelakantan et al., Faruqui et al., Resnik, etc.) and provides both quantitative and qualitative analyses of how its method differs and improves over baselines (claims of 5.4% absolute / 34.4% relative error reduction and mention of detailed analysis)."
+    }
+  }
+}

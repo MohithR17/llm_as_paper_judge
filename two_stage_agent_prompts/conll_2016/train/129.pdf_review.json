@@ -1,0 +1,81 @@
+{
+  "REPLICABILITY": 3,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SUBSTANCE": 3,
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "Important components are missing: hyperparameters and training details are explicitly reported as not provided, and preprocessing steps are not clearly described. The datasets (LDC, TED transcriptions, WMT mixes, SMS/tweet/Facebook dev/test) are named but only loosely specified, and code is not mentioned. Evaluation metrics and procedures are specified (BLEU with bootstrap resampling), so results can be compared, but several implementation details needed for full replication are absent."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper applies a semi-supervised convolutional neural network specifically to bilingual sentence-pair selection for SMT when only tiny in-domain sets (as few as 100 sentences) are available, which is a novel application compared to prior LM-based selection methods. The approach (training CNNs on in-domain positives and random general-domain negatives, optionally using pretrained embeddings, and scoring source/target separately then summing) is a clear methodological departure from n-gram/RNNLM selection baselines and is presented as outperforming them. However, the core components (CNN classifiers, semi-supervised labeling, and data selection) are existing techniques combined in a new way rather than a fundamentally new learning paradigm, so the contribution is notable but not revolutionary."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized with a logical flow (introduction, detailed method, datasets, baselines, experiments, conclusions) and its main contributions are stated clearly early (semi-supervised CNN selection for tiny in-domain data, sentence-pair scoring strategy). Notation and writing quality are described as good and related work coverage is thorough, supporting clear communication of ideas. Minor presentation issues reduce clarity for reproduction: hyperparameters are not reported and code availability is not mentioned, and presentation elements (e.g., figures/tables) are not described in the summary, which prevents full assessment of their effectiveness."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments cover a range of datasets (LDC, TED, WMT) and realistic test sets (SMS, tweets, Facebook) and compare against reasonable strong baselines (ngram, rnnlm, combined LM), reporting BLEU gains up to 3.1, which supports the main claims. However, important reproducibility details are missing (no hyperparameters reported, code not mentioned), and some methodological gaps remain (no experiments on large target-only corpora and no online/dynamic adaptation). Ablation/sensitivity analysis is limited\u2014while the source+target scoring choice is evaluated, broader hyperparameter and robustness studies are absent. Related work is reported thorough and several limitations/future directions are explicitly discussed."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This work addresses machine-translation domain adaptation using semi-supervised CNNs, which is squarely within the scope of top NLP (and relevant ML) venues. The paper targets the right audience by focusing on practical MT adaptation scenarios and compares against strong, standard baselines (ngram, rnnlm, comblm) on established datasets (LDC, TED, WMT) using BLEU and bootstrap significance testing. The problem formulation and evaluation protocols match community expectations for NLP/MT papers, and the contribution is well positioned for the venue\u2019s research community."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical problem\u2014domain adaptation for MT when only a tiny amount of in\u2011domain bilingual data is available\u2014and reports substantial gains (up to 3.1 BLEU over strong n\u2011gram/RNN LM baselines), which suggests clear practical value. Its claim that the semi\u2011supervised CNN can work with as few as 100 sentences and was validated across diverse corpora (TED, WMT mixes, social media) makes the approach likely to be adopted by practitioners needing fast or fine\u2011grained adaptation. The work also opens meaningful research directions (semi\u2011supervised/deep methods for data selection, separate source/target scoring, online adaptation extensions). However, omissions such as lack of experiments on large target\u2011only corpora and no online dynamic adaptation limit its potential to be fully transformative, hence a strong-impact (4) rating."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are supported by controlled experiments across multiple datasets against appropriate baselines (ngram, rnnlm, combined LM) with BLEU improvements reported (up to 3.1) and bootstrap significance testing, and the method is shown to work with very small in-domain sets (down to ~100 sentences). The proposed methodology (semi-supervised CNN with optional pretrained embeddings, scoring source and target separately and summing) is technically plausible and evaluated empirically; there are no mathematical derivations required for the contribution. Minor technical concerns remain\u2014hyperparameters are not reported and code is not provided, and some evaluation scenarios (e.g., large target-only corpora) are left to future work\u2014but these do not appear to invalidate the main experimental conclusions."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against reasonable and state-of-the-art language-model-based baselines (3-gram LM, RNNLM, combined LM) and evaluates with BLEU and significance testing on the same datasets, indicating fair comparisons. The authors clearly analyze differences (e.g., source+target scoring for sentence-pair selection) and the related-work coverage is described as thorough. Minor omissions remain: the summary does not mention comparisons to some other common data-selection approaches (e.g., explicit cross-entropy-difference or other bilingual selection methods) and hyperparameters are not reported, hence not fully comprehensive."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes using a semi-supervised convolutional neural network (CNN) to select in-domain bilingual training data for statistical machine translation when only a tiny amount of in-domain data is available.",
+      "The semi-supervised CNN selection method outperforms state-of-the-art language-model-based data selection methods significantly and can improve BLEU up to 3.1 over strong baselines.",
+      "The method can work with very small in-domain training sets (as few as 100 sentences), enabling fine-grained or fast adaptation.",
+      "For sentence-pair selection the model classifies source and target separately and selects pairs based on the sum of source and target in-domain scores, which yields the best performance."
+    ],
+    "methodology": "Train a semi-supervised CNN classifier using available in-domain bilingual sentences as positive samples and randomly sampled general-domain sentences as negatives (optionally using pretrained word embeddings from large unlabeled data); apply the CNN to score all general-domain sentence pairs (scoring source and target separately), select top-scoring pairs (based on sum of source+target scores) and use them to train an adapted SMT system.",
+    "datasets": [
+      "LDC (various publicly available corpora)",
+      "Transcriptions of TED talks",
+      "WMT datasets (mixture of Europarl, web crawl, news-commentary, UN proceedings, etc.)",
+      "Dev/test: short messages (sms) from LDC",
+      "Dev/test: tweets",
+      "Dev/test: Facebook post"
+    ],
+    "baselines": [
+      "ngram (3-gram LM with Witten-Bell smoothing)",
+      "rnnlm (recurrent neural network LM, RNNLM Toolkit)",
+      "comblm (combined LM using ngram & rnnlm, equal weight)"
+    ],
+    "metrics": [
+      "BLEU",
+      "bootstrap resampling significance test"
+    ],
+    "limitations": [
+      "Authors state that domain adaptation with only a tiny amount of in-domain data is a hard problem.",
+      "The paper did not apply the method to selecting data from large target-language-only corpora (e.g., Gigaword) \u2014 this is listed as future work.",
+      "Online dynamic adaptation using source sentences of the test set is not implemented in the current work and is listed as future work.",
+      "The authors did not consider or exploit explicit domain metadata of the training data in their experiments."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "Machine Translation - domain adaptation / data selection using semi-supervised CNNs",
+    "writing_quality": "good"
+  }
+}

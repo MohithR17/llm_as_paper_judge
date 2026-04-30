@@ -1,0 +1,69 @@
+{
+  "MEANINGFUL_COMPARISON": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "SUBSTANCE": 3,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "_details": {
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against a directly relevant prior interactive-learning baseline (Wang et al., 2016) and clearly explains how its definition-based approach differs (e.g., transplanting derivations, conservative rule induction). However, the summary indicates comparisons are limited to that prior work (no additional baselines) and does not report details that would confirm full experimental fairness (same metrics/conditions) or explicit acknowledgements when prior methods perform comparably. Overall the comparisons are good but not fully comprehensive."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses interactive semantic parsing and natural language interfaces to a programming language\u2014core topics for top NLP/ML venues\u2014and directly builds on prior interactive learning work (Wang et al., 2016). The methodology (SEMPRE-based core language, log-linear model over derivations, online AdaGrad, conservative alignment-based rule induction) and evaluation on the Voxelurn interactive logs with comparisons to prior baselines are the kinds of methods and empirical evaluation expected at such conferences. While code and hyperparameter details are not mentioned in the summary, that does not affect topical fit: the paper is well positioned for the NLP/ML community studying semantic parsing and interactive learning."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states clear main claims and provides experimental evidence (Voxelurn logs, 240 complex structures, 74.7% usage, and a comparison to prior interactive weak denotational supervision). The technical approach (log-linear model with AdaGrad, conservative alignment-based chart extension) is plausible and correctly described, but there are missing methodological details (no hyperparameters, no code, no statistical tests) and some reliance on heuristic conditions (e.g., transplanting only for single-utterance bodies, conservative unmatched-token thresholds) that are not fully justified analytically. Overall the results support the core claims within the evaluated setting, but omissions in experimental reporting and limited formal analysis leave some concerns about generality and reproducibility."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments provide useful real-world evidence (Voxelurn: 240 complex structures; the naturalized language accounted for 74.7% of the final 10K utterances) and compare to the prior interactive-denotation baseline (Wang et al., 2016), but are not fully comprehensive. There are no reported ablation or sensitivity analyses for the alignment/chart-extension heuristics or model thresholds, and hyperparameters and code are not provided, limiting reproducibility. Related work coverage is described as adequate and several limitations and failure modes are explicitly discussed (e.g., chart-extension only for single-utterance bodies, conservative rule induction)."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and the main contributions are stated early, with a clear methodology (core language seed, interactive definitions, log-linear model, online AdaGrad) and experiments (Voxelurn results: 240 complex structures; 74.7% use of the naturalized language). Notation and presentation are generally consistent and the writing quality is good, with adequate related work coverage. Minor presentation gaps remain \u2014 e.g., hyperparameters and code availability are not reported, and some algorithmic conditions (when chart-extension and conservative induction are applied) could be spelled out more explicitly."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem\u2014scaling natural language control of a core programming language to complex action spaces where prior candidate-selection interactive supervision fails\u2014and provides a concrete mechanism (user-provided definitions) to do so. Its use of alignments to transplant derivations and conservatively induce grammar rules demonstrably improves generalization, and the Voxelurn results (240 complex structures; 74.7% of final 10K utterances using the naturalized language) show practical viability that should change how researchers think about interactive language acquisition for programming tasks. By enabling incremental community-driven \u2018\u2018naturalization\u2019\u2019 and reuse of higher-level concepts, the work opens new directions likely to be built on, although current limitations (e.g., chart-extension only for single-utterance paraphrases) constrain immediate generality."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a concrete new mechanism\u2014interactive definitions (a head utterance paired with a body of known utterances) plus alignment-based transplantation of derivations to extend the parsing chart\u2014which is a notable methodological departure from prior interactive, candidate-selection/weak-denotational supervision (Wang et al., 2016). Seeding a core programming language and incrementally \"naturalizing\" it via user definitions to scale to large/complex action spaces (demonstrated in Voxelurn: 240 complex structures and 74.7% usage in the last 10K utterances) is a clear, non-trivial extension rather than a simple combination of known techniques. The paper clearly differentiates its contributions (definitions + conservative chart extension) and would likely inform experts, though the overall problem (interactive semantic parsing) is well-studied."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Allowing users to provide interactive definitions (head utterance paired with a body of known utterances) enables scaling natural language control of a core programming language to complex action spaces that prior candidate-selection interactive supervision could not handle.",
+      "Leveraging alignments between definition heads and bodies lets the system transplant derivations to extend the parsing chart (e.g., infer that 'up' corresponds to 'top'), improving generalization while inducing rules conservatively to maintain precision.",
+      "Seeding with a core programming language and incrementally naturalizing it via user definitions enables a community of users to teach a single system a diverse language; in Voxelurn this produced 240 complex voxel structures and led to the naturalized language being used in 74.7% of the final 10K utterances.",
+      "Definitions are a critical addition compared to prior interactive language learning with weak denotational supervision (Wang et al., 2016), enabling both paraphrasing and construction of higher-level concepts that can be reused in other definitions."
+    ],
+    "methodology": "Seed a system (implemented in SEMPRE) with a core programming language and learn interactively from user-provided definitions (head utterance \u2192 body of known utterances); induce grammar rules from definitions and conservatively extend the parsing chart via alignment heuristics to transplant derivations and improve generalization, using a log-linear model over derivations and online AdaGrad for parameter updates.",
+    "datasets": [
+      "Voxelurn (voxel world; interactive builder logs)"
+    ],
+    "baselines": [
+      "Interactive language learning with weak denotational supervision (Wang et al., 2016)"
+    ],
+    "metrics": [
+      "number of complex voxel structures built",
+      "percentage of utterances using the naturalized language (reported: 74.7% of last 10K utterances)"
+    ],
+    "limitations": [
+      "Interactive candidate-selection supervision is infeasible for large/complex action spaces (e.g., >50 candidates).",
+      "Chart-extension via alignment only applied when the definition body is a single utterance (paraphrases); not applied for multi-utterance concept-building definitions.",
+      "Low-precision induced rules significantly degrade user experience, so alignment-based rule induction is performed conservatively (only when 1 or 2 tokens are unmatched).",
+      "The method as described can fail to generalize enough without the alignment-based transplanting of derivations."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - semantic parsing / natural language interfaces to programming languages (interactive learning)",
+    "writing_quality": "good"
+  }
+}

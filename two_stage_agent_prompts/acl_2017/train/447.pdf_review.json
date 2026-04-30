@@ -1,0 +1,76 @@
+{
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 4,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses an NLP/ML-relevant topic\u2014improving text categorization with RST-style discourse and neural recursive architectures\u2014and thus lies squarely within top-tier venue scope. The formulation (recursive neural network over discourse dependency trees, EDU BiLSTM encodings, attention, and an unlabeled variant) and the range of datasets (large-scale Zhang et al. corpus plus multiple established benchmarks) match the methods and evaluation standards expected at such venues. Comparisons to appropriate baselines (HAN, prior discourse-weighted models, etc.) and reporting of hyperparameters further indicate proper positioning for the community. The noted limitation (sensitivity to size/quality of the RST treebank) is acknowledged but does not undermine venue relevance."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper presents a moderately novel application: a recursive neural network over RST-derived discourse dependency trees with EDU BiLSTMs and a learned attention mechanism, plus an UNLABELED variant and relation-specific composition matrices. These elements automate and replace previously hand-designed discourse-weighting schemes (e.g., Bhatia et al., Hogenboom et al.), which is a non-trivial engineering and modeling contribution. However, the overall approach is an incremental combination and extension of existing ideas (RST discourse parsing, recursive composition, attention, and hierarchical models) rather than a fundamentally new problem formulation or paradigm shift."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Experiments are broad and include multiple diverse datasets (large Zhang et al. set, MFC, Congressional debates, movie reviews, legislative bills) and comparisons to many relevant baselines, which supports the main claims. Ablation/sensitivity analysis is present (an UNLABELED variant and a reported degradation when the RST treebank is reduced to 25%), and related work coverage is described as thorough. Limitations are explicitly discussed and hyperparameters are reported, but code is not mentioned so exact reproducibility may be incomplete\u2014hence a solid but not flawless rating."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem\u2014improving text categorization by incorporating discourse structure\u2014and demonstrates that RST parses (from DPLP) combined with a recursive neural network and novel attention improve performance across multiple datasets (e.g., the large Zhang et al. corpus, MFC, congressional debates, movie reviews, legislative bills). The proposed unlabeled variant and relation-specific composition matrices automate prior hand-designed weighting schemes and open practical research directions for discourse-aware neural models. The reported sensitivity to the size/quality of the RST treebank (performance drops if the treebank is reduced to 25%) tempers immediate broad applicability but does not negate the method\u2019s strong potential impact."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and follows a clear logical flow from motivation through method (recursive NN on RST trees with BiLSTM EDUs and attention) to experiments across multiple datasets and a concise conclusion. The main contributions are stated early, related work is covered thoroughly, and practical details (hyperparameters, datasets, baselines, and a stated limitation about RST treebank size) are clearly reported. Notation appears consistent and definitions are provided alongside methods; figures/tables and examples are reported as effective and informative. Overall the writing quality is good, with only minor presentation issues remaining that prevent it from being exemplary."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported by empirical evidence: the model is evaluated against appropriate baselines (HAN and several discourse-aware systems) on multiple datasets including a very large corpus and smaller, realistic corpora, and the authors acknowledge sensitivity to the size/quality of the RST treebank. There are no indicated mathematical derivations or proofs to check beyond standard neural architectures and attention mechanisms, and nothing in the summary suggests technical errors in the model formulation. The experimental methodology is generally sound (diverse datasets, relevant baselines), but the summary does not mention statistical significance testing and the approach depends on an automatically parsed RST (DPLP) trained on a limited treebank, which is an important caveat. Overall the conclusions are justified by the presented results, with the noted minor concerns about parser dependence and reporting of statistical tests."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against a broad set of appropriate and recent baselines (e.g., Yang et al. 2016 hierarchical attention networks, Bhatia et al. 2015, Hogenboom et al. 2015, Yogatama & Smith 2014, Card et al. 2016, Yessenalina et al. 2010) across multiple standard datasets. Comparisons use the same evaluation metrics (accuracy / average accuracy) and reported hyperparameters, and the paper explicitly acknowledges when prior methods can match or outperform it (the RST-treebank-size sensitivity note). The manuscript also analyzes how its relation-specific composition matrices and learned attention differ from prior hand-designed weighting schemes and reports thorough related-work coverage."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Discourse structure as defined by Rhetorical Structure Theory (RST) and provided by an existing parser (DPLP) benefits text categorization.",
+      "A recursive neural network built on a discourse dependency tree, with EDU representations from a bidirectional LSTM and a novel attention mechanism, can compute document representations that focus on salient content for categorization.",
+      "An UNLABELED variant that uses only tree structure and learned attention (without relation labels) reduces parameters and still leverages discourse bias.",
+      "The proposed relation-specific composition matrices and attention mechanism automate weighting schemes previously hand-designed in discourse-informed models."
+    ],
+    "methodology": "Build a recursive neural network over discourse dependency trees (derived from RST parses by DPLP), represent each EDU with a bidirectional LSTM over word embeddings, and compose node representations using relation-specific matrices and an attention weight (sigmoid-based) to produce a document vector for classification via softmax.",
+    "datasets": [
+      "Preprocessed dataset from Zhang et al. (2015) (650,000 train / 50,000 test)",
+      "Media Frames Corpus (MFC; Card et al., 2015) \u2014 ~4,200 news articles about immigration",
+      "Congressional floor debates corpus (Thomas et al., 2006; split by Yessenalina et al., 2010)",
+      "Movie review corpus (Pang and Lee, 2004) \u2014 1,000 positive and 1,000 negative reviews",
+      "Legislative bills corpus (Yano et al., 2012) \u2014 51,762 bills",
+      "RST Discourse Treebank (Carlson et al., 2001) (used to train DPLP)"
+    ],
+    "baselines": [
+      "Hierarchical attention networks (Yang et al., 2016)",
+      "Bhatia et al. (2015) discourse-weighted models (hand-crafted weighting)",
+      "Hogenboom et al. (2015) manual weighting and lexicon-based models",
+      "Yogatama and Smith (2014) structured regularization methods",
+      "Card et al. (2016) logistic regression with unigrams, bigrams and Bamman-style personas",
+      "Yessenalina et al. (2010) latent-variable informativeness model"
+    ],
+    "metrics": [
+      "Accuracy",
+      "Average accuracy across 10-fold cross validation"
+    ],
+    "limitations": [
+      "If the RST discourse treebank were reduced to 25% of its size, the proposed method would underperform the discourse-ignorant model of Yang et al. (2016), indicating sensitivity to the size/quality of discourse training data."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - text categorization using discourse structure / discourse-informed neural models",
+    "writing_quality": "good"
+  }
+}

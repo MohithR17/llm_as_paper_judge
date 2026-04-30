@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 3,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "CLARITY": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within top NLP/ML scope: it proposes an end-to-end RL approach for KB-driven dialogue (Soft-KB posterior to replace symbolic queries, Sec.3\u20134) and develops neural belief trackers and a GRU-based policy trained with REINFORCE (Sec.4.2, 4.4, App. D). Evaluation uses realistic setups expected at these venues (simulated/real-user experiments on movie KB splits, Sec.6.2\u20136.3) and it is positioned against relevant prior work (Wen et al., Williams & Zweig, Wu et al., etc.), making it highly relevant to the target audience."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper runs a set of controlled experiments comparing variants (No-KB, Hard-KB, Soft-KB) across multiple KB sizes and agent configurations (hand-crafted vs neural trackers and policies), which provides useful ablation-style comparisons (Sections 4, 6.1\u20136.3). Related work is reviewed thoroughly with many citations. However, the provided text lacks complete experimental results and some reproducibility details (e.g. a TODO in Appendix E, limited training/runtime/seed reporting), and discussion of sensitivity analyses is limited beyond the basic variants; limitations are only briefly noted. Overall the experimental effort is adequate but missing some important details and analyses to fully support all claims."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses a clear, important problem\u2014making KB-backed dialogue agents fully differentiable so LU and policy can be trained end-to-end\u2014by replacing symbolic queries with a probabilistic \"Soft-KB\" posterior (Section 3 and Eqs. 1\u20133) and integrating this into learning (Section 4, REINFORCE updates Eqs. 20\u201322). The approach directly enables joint training of belief trackers and policies (including a fully neural E2E agent) and is demonstrated to improve task success and reward in simulation and user experiments (Section 6). This is likely to influence subsequent work on KB\u2013dialogue integration and personalization, opening significant follow-on research directions even if it is not wholly transformative across all NLP."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The core mathematical derivation for the Soft-KB posterior (Eq.3) is presented and the Appendix A derivation and normalization check appear sound given the stated assumptions. However the model relies on a strong independence assumption across columns (Sec.3.2) and forbids new entities/relations at test time, which limits applicability. The sampling formulation for returned results (Eq.20 / \u00b5(I)) is ambiguously written and its probabilistic normalization is not clearly justified, and experimental methodology omits statistical testing and leaves some tuning/details underspecified (Appendix E has a TODO), making the empirical support incomplete. Overall the technical components are plausible but some derivations/experimental details are unclear or insufficiently supported."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a Soft-KB lookup \u2014 a probabilistic, differentiable posterior over KB entities (Sec.3 and abstract claim of \u201creplacing symbolic queries with an induced \u2018soft\u2019 posterior\u201d) to enable end-to-end training of LU and policy, which is clearly contrasted with prior Hard-KB approaches (e.g. Wen et al. 2016b mentioned throughout). It further integrates the KB posterior into the reinforcement learning objective (Appendix D, eqs.20\u201322) and demonstrates a fully neural E2E agent (Sec.4/6.1), which is a non-trivial extension of existing belief-tracking+RL systems and would be of clear interest to experts. While it builds on known components (GRUs, REINFORCE, entropy-based policies), the soft retrieval and its use within RL constitute a notable, well-differentiated contribution rather than a purely incremental combination."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper evaluates several internal baselines (No-KB, Hard-KB, Soft-KB, rule/RL/E2E agents) and tests them under the same simulator and Movies-KB splits, so its internal comparisons are fair (Sections 4, 6.1\u20136.3). It also discusses and cites relevant prior work (e.g. Wen et al. 2016b, Williams & Zweig 2016, Wu et al. 2015) and explains conceptual differences (Hard-KB vs Soft-KB, end-to-end differentiability). However, it does not report direct empirical comparisons to recent external baselines or prior systems on the same tasks/datasets (it even states single-turn KB-QA work is \"not directly comparable\"), so important external baselines and competitive results are missing."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall the paper is organized in a standard intro\u2192method\u2192experiments structure and the core methods (probabilistic Soft\u2011KB lookup, belief trackers, policy) are explained with equations and derivations (e.g., Sec. 3.2\u20133.3 and Appendix A). However presentation quality is weakened by many duplicated/repeated sentences and paragraphs (multiple repeated intro paragraphs and phrases), LaTeX/artifact noise (e.g. \u201c[TODO:add details]\u201d, broken line repeats), and some missing/unclear figure references (Figure 1 mentioned but not shown in the excerpt). Notation is generally defined (Section 3.2) and mostly consistent, but the above editorial issues and occasional grammatical glitches make parts of the paper harder to follow."
+    }
+  }
+}

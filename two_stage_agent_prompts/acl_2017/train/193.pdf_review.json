@@ -1,0 +1,74 @@
+{
+  "ORIGINALITY": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents the first parser explicitly targeting UCCA and introduces a novel transition set (including NODE and SWAP) that supports the full conjunction of UCCA structural properties: reentrancy, discontinuity, and non-terminal nodes. While it builds on established elements (transition-based parsing, dynamic oracles, and BiLSTM feature extraction), the specific combination and the ability to produce full UCCA graphs represent a meaningful methodological advance over existing baselines that require lossy conversions to bilexical structures. The clear differentiation from prior work and empirical gains in-domain and out-of-domain would be informative to experts, though some components (e.g., BiLSTMs, transition-based framework) are known techniques rather than entirely new inventions."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This work is squarely within the scope of top NLP/ML venues: it tackles semantic parsing (UCCA) with a novel transition-based DAG parser supporting reentrancy, discontinuity and non-terminal nodes \u2014 properties important to the semantic parsing community. The methodology (transition set with NODE and SWAP, dynamic oracles, BiLSTM feature extractor) and evaluation (labeled P/R/F on established UCCA corpora, comparisons to strong baselines like DAGParser, TurboParser, and Stack LSTM) match the methods and standards expected at such venues. The paper is aimed at the right audience, is positioned within relevant prior work, and uses appropriate datasets and metrics for a top-tier NLP/ML conference."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s main claims are clearly stated and appear supported by experimental evidence: TUPA is a transition-based parser (with novel NODE and SWAP transitions, dynamic oracles) combined with BiLSTM features, and is reported to outperform multiple strong baselines on both Wiki and 20K Leagues in- and out-of-domain evaluations, with separate metrics for primary and remote edges. Mathematical content is minimal and where relevant (transition set, oracle) the approach is coherent. The experimental methodology is generally sound (appropriate baselines, datasets, reporting of hyperparameters and separate remote-edge evaluation), but the summary does not mention statistical significance testing and some UCCA phenomena (inter-sentence, linkage, implicit nodes) were explicitly excluded from training, which are minor limitations. Overall the technical claims are well supported though a couple of experimental details are lacking."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The summary indicates a clear organization (intro, methodology, experiments, conclusion) and that the main contributions are stated early (presentation of TUPA and its novel transition set). Writing quality is described as good and related work coverage as thorough, and limitations and evaluation metrics are explicitly discussed. The only minor presentation uncertainties are that the summary does not specify whether notation, figures/tables/examples are consistently defined or fully effective, suggesting small presentation improvements may be possible."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against a broad set of strong and relevant baselines (DAGParser, TurboParser, UPARSE, MaltParser, and the Stack LSTM parser of Dyer et al. 2015) and reports standard labeled precision/recall/F1 for primary and remote edges. Comparisons are made on the same UCCA Wiki and 20K Leagues datasets and use consistent evaluation metrics, and the authors explicitly discuss limitations of conversion-based baselines (information loss and upper bounds). Related work coverage is described as thorough and the paper notes when prior representations/methods cannot model the full set of UCCA properties, supporting that the experimental comparisons are comprehensive and fair."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Presenting TUPA as the first parser that handles the full set of UCCA structural properties (reentrancy, discontinuity, non-terminal nodes) addresses a clear gap in semantic parsing and therefore tackles an important problem. By coupling a transition-based DAG parser with neural classifiers and a BiLSTM feature extractor and demonstrating superior in-domain and out-of-domain performance versus strong baselines (e.g., DAGParser, TurboParser, Stack LSTM), the work is likely to change how researchers approach parsing of graph-structured semantic representations. The approach opens new research directions for neural transition systems that support remote edges and discontinuities and is likely to be built upon by others. Some practical limitations (excluded inter-sentence relations, linkage/implicit nodes and information loss in bilexical conversions) moderate its reach but do not negate its broader significance."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are strong and broadly appropriate: evaluation in-domain and out-of-domain on two UCCA corpora, comparison to multiple strong baselines, and dedicated metrics for primary vs. remote edges support the main claims. Ablation/sensitivity analyses are not clearly reported in the summary \u2014 although multiple classifier variants are compared, systematic ablations or robustness studies are not explicitly mentioned. Related work coverage is described as thorough, and several limitations/failure modes are discussed (conversion-induced upper bounds, excluded linkage/implicit/inter-sentence phenomena). Reproducibility is partially addressed (hyperparameters reported) but code availability is not stated, leaving a minor gap for full reproducibility."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "We present TUPA, the first parser for UCCA (Universal Conceptual Cognitive Annotation).",
+      "TUPA is a transition-based, grammarless parser that supports multiple parents (reentrancy), discontinuous units, and non-terminal nodes, i.e., the full set of UCCA structural properties.",
+      "Coupled with a neural classifier and BiLSTM feature extractor, TUPA accurately predicts UCCA graphs and outperforms a variety of strong baselines in both in-domain and out-of-domain settings."
+    ],
+    "methodology": "A transition-based parser using a novel transition set (including NODE and SWAP) trained with dynamic oracles; classifiers range from sparse perceptron to feedforward NN and a BiLSTM-based classifier that provides dense token representations concatenated with parser-state features.",
+    "datasets": [
+      "UCCA Wikipedia corpus (Wiki)",
+      "UCCA Twenty Thousand Leagues Under the Sea English\u2013French parallel corpus (20K Leagues)"
+    ],
+    "baselines": [
+      "DAGParser",
+      "TurboParser",
+      "UPARSE",
+      "MaltParser",
+      "Stack LSTM parser (Dyer et al., 2015)"
+    ],
+    "metrics": [
+      "Labeled precision",
+      "Labeled recall",
+      "Labeled F-score (reported separately for primary and remote edges)"
+    ],
+    "limitations": [
+      "No existing parser prior to this work supports the full conjunction of UCCA properties (reentrancy, discontinuity, non-terminal nodes).",
+      "Conversion to bilexical graphs/trees removes non-terminal nodes and imposes an upper bound on achievable scores due to information loss.",
+      "Training data excludes inter-sentence relations (0.18% of edges), linkage nodes/edges and implicit nodes, i.e., these phenomena are not modeled in the experiments.",
+      "Performance on remote edges (reentrancy) is emphasized as pivotal and challenging."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Semantic parsing (UCCA) / transition-based DAG parsing",
+    "writing_quality": "good"
+  }
+}

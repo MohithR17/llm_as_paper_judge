@@ -1,0 +1,178 @@
+{
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "APPROPRIATENESS": 4,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 4,
+  "_details": {
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper evaluates on multiple benchmarks (CELEX, Wiktionary, SIGMORPHON2016) and compares to a wide set of strong baselines, which supports the main claims about competitive and low-resource performance. However, key reproducibility details are missing (no hyperparameters or code reported) and the method crucially depends on externally learned alignments yet I see no sensitivity analysis or ablation isolating the contribution of the precomputed aligner versus the decoder. The authors do discuss the monotonicity limitation and link performance to alignment quality, but there are no reported variance estimates or experiments probing robustness to alignment errors, so experimental depth is adequate but important analyses are absent. | B(4): Experiments span multiple standard datasets (CELEX, Wiktionary, SIGMORPHON2016) and compare to strong baselines including neural and weighted-FST approaches, supporting the central claims and particularly the low-resource advantage. However, the paper lacks reported hyperparameters and no ablation or sensitivity analyses are described to quantify dependence on the precomputed aligner or model choices. Related work is reported thorough, and limitations (monotonic alignment assumption, alignment-quality dependence) are explicitly discussed, but reproducibility details (code, training settings) are missing, preventing a top score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper evaluates on multiple benchmarks (CELEX, Wiktionary, SIGMORPHON2016) and compares to a wide set of strong baselines, which supports the main claims about competitive and low-resource performance. However, key reproducibility details are missing (no hyperparameters or code reported) and the method crucially depends on externally learned alignments yet I see no sensitivity analysis or ablation isolating the contribution of the precomputed aligner versus the decoder. The authors do discuss the monotonicity limitation and link performance to alignment quality, but there are no reported variance estimates or experiments probing robustness to alignment errors, so experimental depth is adequate but important analyses are absent."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Experiments span multiple standard datasets (CELEX, Wiktionary, SIGMORPHON2016) and compare to strong baselines including neural and weighted-FST approaches, supporting the central claims and particularly the low-resource advantage. However, the paper lacks reported hyperparameters and no ablation or sensitivity analyses are described to quantify dependence on the precomputed aligner or model choices. Related work is reported thorough, and limitations (monotonic alignment assumption, alignment-quality dependence) are explicitly discussed, but reproducibility details (code, training settings) are missing, preventing a top score."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper makes clear, testable claims and evaluates on multiple standard datasets against strong baselines (MED, global attention, weighted FSTs), which supports its empirical claims to some degree. However, key reproducibility details are missing (no code, no hyperparameter or seed reporting) and there is heavy reliance on externally learned alignments whose quality and tuning are not analysed, raising concerns about whether gains stem from the model or the aligner. Also I see no mention of statistical significance or variance across runs, and the approach assumes near-monotonicity which is only discussed qualitatively. These methodological gaps mean the conclusions are plausible but not fully substantiated as presented. | B(4): The paper's main claims are clear and experimentally supported: a hard monotonic attention model trained on deterministically converted ADVANCE/WRITE oracles from precomputed character alignments achieves strong empirical accuracy on CELEX, Wiktionary, and SIGMORPHON2016 and compares to appropriate neural and FST baselines. There are no nontrivial mathematical derivations to check, and the methodological design (bi-LSTM encoder, decoder predicting action sequences, use of established aligner) is internally consistent; however, dependence on externally learned alignments is a substantive assumption and the paper does not report hyperparameter details or statistical significance testing, which weakens reproducibility and the strength of empirical claims. Overall the technical approach appears sound with minor issues around experimental completeness and reliance on alignment quality.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper makes clear, testable claims and evaluates on multiple standard datasets against strong baselines (MED, global attention, weighted FSTs), which supports its empirical claims to some degree. However, key reproducibility details are missing (no code, no hyperparameter or seed reporting) and there is heavy reliance on externally learned alignments whose quality and tuning are not analysed, raising concerns about whether gains stem from the model or the aligner. Also I see no mention of statistical significance or variance across runs, and the approach assumes near-monotonicity which is only discussed qualitatively. These methodological gaps mean the conclusions are plausible but not fully substantiated as presented."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clear and experimentally supported: a hard monotonic attention model trained on deterministically converted ADVANCE/WRITE oracles from precomputed character alignments achieves strong empirical accuracy on CELEX, Wiktionary, and SIGMORPHON2016 and compares to appropriate neural and FST baselines. There are no nontrivial mathematical derivations to check, and the methodological design (bi-LSTM encoder, decoder predicting action sequences, use of established aligner) is internally consistent; however, dependence on externally learned alignments is a substantive assumption and the paper does not report hyperparameter details or statistical significance testing, which weakens reproducibility and the strength of empirical claims. Overall the technical approach appears sound with minor issues around experimental completeness and reliance on alignment quality."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper addresses a core NLP task (morphological inflection) and proposes a novel hard monotonic attention model with strong empirical claims on standard benchmarks (CELEX, Wiktionary, SIGMORPHON2016) and comparisons to appropriate baselines (MED, Luong attention, neural/weighted FSTs), so topic and audience align well with a top NLP/ML venue. From a reproducibility/methodology perspective there are concerns: hyperparameters are not reported and code availability is not mentioned, and the approach depends on precomputed alignments and monotonicity assumptions, which limits generality. These issues warrant requests for additional experimental detail but do not disqualify it from the venue; overall a good fit with minor scope and reproducibility concerns. | B(5): This paper addresses a core NLP problem\u2014morphological inflection generation\u2014with a novel modeling choice (hard monotonic attention guided by precomputed alignments) and demonstrates state-of-the-art results across standard datasets (CELEX, Wiktionary, SIGMORPHON2016) against appropriate baselines. Its formulation, use of bi-LSTM encoders and cross-entropy training on action sequences, and evaluation with exact-match accuracy match community norms and expectations for a top-tier venue. The authors position the work carefully relative to relevant prior art (neural and FST-based models) and explicitly discuss applicability limits (nearly-monotonic languages), making the paper well-targeted to the conference audience. Overall, topicality, audience fit, evaluation, and positioning are all strong.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper addresses a core NLP task (morphological inflection) and proposes a novel hard monotonic attention model with strong empirical claims on standard benchmarks (CELEX, Wiktionary, SIGMORPHON2016) and comparisons to appropriate baselines (MED, Luong attention, neural/weighted FSTs), so topic and audience align well with a top NLP/ML venue. From a reproducibility/methodology perspective there are concerns: hyperparameters are not reported and code availability is not mentioned, and the approach depends on precomputed alignments and monotonicity assumptions, which limits generality. These issues warrant requests for additional experimental detail but do not disqualify it from the venue; overall a good fit with minor scope and reproducibility concerns."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper addresses a core NLP problem\u2014morphological inflection generation\u2014with a novel modeling choice (hard monotonic attention guided by precomputed alignments) and demonstrates state-of-the-art results across standard datasets (CELEX, Wiktionary, SIGMORPHON2016) against appropriate baselines. Its formulation, use of bi-LSTM encoders and cross-entropy training on action sequences, and evaluation with exact-match accuracy match community norms and expectations for a top-tier venue. The authors position the work carefully relative to relevant prior art (neural and FST-based models) and explicitly discuss applicability limits (nearly-monotonic languages), making the paper well-targeted to the conference audience. Overall, topicality, audience fit, evaluation, and positioning are all strong."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper tackles an important applied NLP problem (morphological inflection) and demonstrates state-of-the-art results across multiple datasets, notably strong low-resource performance (CELEX), which is likely to change practitioner choices for morphologically-rich, near-monotonic tasks. The approach\u2014decoupling alignment with an externally learned character-level aligner and using hard monotonic attention\u2014provides a clear, practically useful modelling alternative to soft-attention and latent FSTs, and is likely to be adopted and extended. However, dependence on precomputed alignments, restriction to nearly-monotonic phenomena, and missing reproducibility details (code/hyperparameters) limit its immediate transformative potential across the broader sequence-to-sequence landscape. | B(4): This paper addresses an important and practical problem\u2014morphological inflection\u2014by reintroducing hard monotonic attention and decoupling alignment from decoding, which is conceptually compelling and yields state-of-the-art results across multiple datasets (notably in low-resource CELEX). Its clear empirical gains relative to neural and weighted-FST baselines suggest researchers will reconsider monotonic, alignment-driven architectures for morphology and low-resource sequence transduction. However, reliance on precomputed alignments and the assumption of near-monotonicity limit applicability to non-concatenative or highly non-monotonic morphologies, so the contribution is strong and likely influential within morphology and low-resource NLP but not fully transformative across all sequence-to-sequence domains.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper tackles an important applied NLP problem (morphological inflection) and demonstrates state-of-the-art results across multiple datasets, notably strong low-resource performance (CELEX), which is likely to change practitioner choices for morphologically-rich, near-monotonic tasks. The approach\u2014decoupling alignment with an externally learned character-level aligner and using hard monotonic attention\u2014provides a clear, practically useful modelling alternative to soft-attention and latent FSTs, and is likely to be adopted and extended. However, dependence on precomputed alignments, restriction to nearly-monotonic phenomena, and missing reproducibility details (code/hyperparameters) limit its immediate transformative potential across the broader sequence-to-sequence landscape."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses an important and practical problem\u2014morphological inflection\u2014by reintroducing hard monotonic attention and decoupling alignment from decoding, which is conceptually compelling and yields state-of-the-art results across multiple datasets (notably in low-resource CELEX). Its clear empirical gains relative to neural and weighted-FST baselines suggest researchers will reconsider monotonic, alignment-driven architectures for morphology and low-resource sequence transduction. However, reliance on precomputed alignments and the assumption of near-monotonicity limit applicability to non-concatenative or highly non-monotonic morphologies, so the contribution is strong and likely influential within morphology and low-resource NLP but not fully transformative across all sequence-to-sequence domains."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized with a clear intro\u2192method\u2192experiments\u2192conclusion flow and the main contributions (hard monotonic attention, decoupling alignment and decoding, oracle action training) are stated early. Notation and methodology are presented consistently and related work coverage is thorough, and the writing quality is reported as good. However, presentation omits important reproducibility details (no mention of code or hyperparameter reporting) which weakens clarity for readers trying to reproduce results; figures/tables effectiveness is not highlighted in the summary, suggesting minor room for improvement in conveying experimental details. | B(4): Overall the paper is well organized and presents its main contributions early (hard monotonic attention with precomputed alignments) and follows a clear intro\u2192method\u2192experiments\u2192conclusion flow. Notation for the encoder/decoder and the ADVANCE/WRITE action formalism is consistent and understandable from the summary, and related work is covered thoroughly which helps situate the approach. A few presentation omissions (e.g., no mention of hyperparameter reporting or publicly available code) and limited detail about figures/tables in the summary suggest minor gaps in reproducibility-oriented exposition, but the writing quality is otherwise good and largely unambiguous.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized with a clear intro\u2192method\u2192experiments\u2192conclusion flow and the main contributions (hard monotonic attention, decoupling alignment and decoding, oracle action training) are stated early. Notation and methodology are presented consistently and related work coverage is thorough, and the writing quality is reported as good. However, presentation omits important reproducibility details (no mention of code or hyperparameter reporting) which weakens clarity for readers trying to reproduce results; figures/tables effectiveness is not highlighted in the summary, suggesting minor room for improvement in conveying experimental details."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and presents its main contributions early (hard monotonic attention with precomputed alignments) and follows a clear intro\u2192method\u2192experiments\u2192conclusion flow. Notation for the encoder/decoder and the ADVANCE/WRITE action formalism is consistent and understandable from the summary, and related work is covered thoroughly which helps situate the approach. A few presentation omissions (e.g., no mention of hyperparameter reporting or publicly available code) and limited detail about figures/tables in the summary suggest minor gaps in reproducibility-oriented exposition, but the writing quality is otherwise good and largely unambiguous."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares to an appropriate set of strong and recent baselines (MED, global attention models, neural-weighted FST, LAT, and joint alignment-transduction work) on the same standard datasets and exact-match metric, and it acknowledges limitations where monotonicity assumptions matter. However, the paper does not report hyperparameters or release code and relies on externally learned alignments, which raises reproducibility concerns and may affect the fairness of comparisons (e.g., differing alignment quality or tuning effort). Overall the comparisons are solid and relevant but lack some experimental detail needed for fully fair, reproducible evaluation. | B(4): The paper compares against a strong set of recent and relevant baselines (MED, Luong-style global attention, neural-weighted FST, LAT, Yu et al.\u2019s joint alignment-transduction) on standard datasets (CELEX, Wiktionary, SIGMORPHON2016) using the same exact-match metric, and reports favorable results especially in low-resource settings. It clearly distinguishes its approach (precomputed hard monotonic alignments and action-sequence decoding) from soft-attention and latent-FST methods and acknowledges limitations tied to monotonicity and alignment quality. Minor concerns remain about reproducibility and fairness (no mention of hyperparameter reporting or released code in the summary), which prevents awarding a fully comprehensive score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares to an appropriate set of strong and recent baselines (MED, global attention models, neural-weighted FST, LAT, and joint alignment-transduction work) on the same standard datasets and exact-match metric, and it acknowledges limitations where monotonicity assumptions matter. However, the paper does not report hyperparameters or release code and relies on externally learned alignments, which raises reproducibility concerns and may affect the fairness of comparisons (e.g., differing alignment quality or tuning effort). Overall the comparisons are solid and relevant but lack some experimental detail needed for fully fair, reproducible evaluation."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against a strong set of recent and relevant baselines (MED, Luong-style global attention, neural-weighted FST, LAT, Yu et al.\u2019s joint alignment-transduction) on standard datasets (CELEX, Wiktionary, SIGMORPHON2016) using the same exact-match metric, and reports favorable results especially in low-resource settings. It clearly distinguishes its approach (precomputed hard monotonic alignments and action-sequence decoding) from soft-attention and latent-FST methods and acknowledges limitations tied to monotonicity and alignment quality. Minor concerns remain about reproducibility and fairness (no mention of hyperparameter reporting or released code in the summary), which prevents awarding a fully comprehensive score."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a clear, tangible novel approach\u2014decoupling alignment and decoding by using externally learned character-level alignments to train a hard monotonic (WRITE/STEP) action-based decoder\u2014which is meaningfully different from prevalent soft-attention seq2seq and from joint alignment-transduction models. The reliance on a deterministic conversion from CRP-based aligner outputs (Sudoh et al., 2013) to action sequences and the empirical focus on low-resource gains constitute a non-trivial methodological contribution. Given prior work includes soft/global attention, neural-weighted FSTs, and joint alignment-transduction (Yu et al., 2016), this is a notable and well-differentiated extension rather than a purely incremental recombination. From a methodological-reproducibility perspective I would still expect explicit code/hyperparameters and analyses of alignment quality to fully assess novelty impact, but the core idea is original enough to merit a high score. | B(4): The paper proposes a clearly articulated methodological twist\u2014hard monotonic attention implemented as WRITE/STEP actions trained against externally learned character alignments\u2014decoupling alignment from decoding in a way that differs from prevailing soft-attention and joint latent alignment approaches. This is a non-trivial and practically useful technique (especially for nearly-monotonic morphology) that is distinguished from prior neural and weighted-FST baselines (e.g., MED, neural-weighted FST, Yu et al. joint model) and yields strong empirical gains. While the idea builds on existing alignment and action-sequence concepts, the explicit oracle-action training and emphasis on monotonic decoding represent a notable and informative contribution for morphology experts.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a clear, tangible novel approach\u2014decoupling alignment and decoding by using externally learned character-level alignments to train a hard monotonic (WRITE/STEP) action-based decoder\u2014which is meaningfully different from prevalent soft-attention seq2seq and from joint alignment-transduction models. The reliance on a deterministic conversion from CRP-based aligner outputs (Sudoh et al., 2013) to action sequences and the empirical focus on low-resource gains constitute a non-trivial methodological contribution. Given prior work includes soft/global attention, neural-weighted FSTs, and joint alignment-transduction (Yu et al., 2016), this is a notable and well-differentiated extension rather than a purely incremental recombination. From a methodological-reproducibility perspective I would still expect explicit code/hyperparameters and analyses of alignment quality to fully assess novelty impact, but the core idea is original enough to merit a high score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clearly articulated methodological twist\u2014hard monotonic attention implemented as WRITE/STEP actions trained against externally learned character alignments\u2014decoupling alignment from decoding in a way that differs from prevailing soft-attention and joint latent alignment approaches. This is a non-trivial and practically useful technique (especially for nearly-monotonic morphology) that is distinguished from prior neural and weighted-FST baselines (e.g., MED, neural-weighted FST, Yu et al. joint model) and yields strong empirical gains. While the idea builds on existing alignment and action-sequence concepts, the explicit oracle-action training and emphasis on monotonic decoding represent a notable and informative contribution for morphology experts."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce a neural model for morphological inflection generation that uses a hard monotonic attention mechanism (predicting WRITE and STEP actions) guided by externally learned character-level alignments.",
+      "Decouple alignment and decoding by learning hard character alignments beforehand (using Sudoh et al. (2013) CRP-based aligner) and use these oracles to train the encoder-decoder via cross-entropy on action sequences.",
+      "Demonstrate state-of-the-art results on multiple morphological inflection datasets, particularly strong in low-resource settings (CELEX), outperforming previous neural and non-neural approaches including a latent-variable weighted FST."
+    ],
+    "methodology": "Encode input character sequence with a bi-directional LSTM; learn hard character alignments beforehand and deterministically convert them to sequences of ADVANCE/WRITE actions; train an RNN decoder to predict this action sequence with a cross-entropy loss (softmax over next action).",
+    "datasets": [
+      "CELEX (Baayen et al., 1993)",
+      "Wiktionary dataset (Durrett and DeNero, 2013)",
+      "SIGMORPHON2016 dataset (Cotterell et al., 2016)"
+    ],
+    "baselines": [
+      "Morphological Encoder-Decoder (MED) of Kann and Sch\u00fctze (2016)",
+      "Global (soft) attention model of Luong et al. (2015)",
+      "Neural-weighted FST (Rastogi et al., 2016)",
+      "LAT: weighted FST with latent variables (Dreyer et al., 2008)",
+      "Faruqui et al. (2016) encoder-decoder without attention",
+      "Yu et al. (2016) joint alignment-transduction model"
+    ],
+    "metrics": [
+      "Exact match accuracy"
+    ],
+    "limitations": [
+      "Method assumes a nearly-monotonic alignment between input and output characters (more suitable for suffixing morphology).",
+      "Authors argue advantage specifically when monotonic alignment holds; performance tied to quality of precomputed alignments."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - morphological inflection generation",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Methodology Specialist",
+      "background": "Senior ML engineer with extensive experience evaluating sequence-to-sequence models and reproducing NLP experiments in both academic and industrial settings. Has implemented and benchmarked many character-level and attention-based models for morphological tasks.",
+      "traits": [
+        "insists on clear, reproducible experimental setups (code, hyperparameters, random seeds, data splits)",
+        "checks for strong and properly-tuned baselines, and values ablation studies that isolate contributions",
+        "evaluates statistical significance and robustness (variance across runs, low-resource behavior)",
+        "looks for implementation details about pretraining, alignment tools, and optimization to assess fairness of comparisons"
+      ],
+      "reviewing_style": "Focuses on empirical rigor and reproducibility, demanding clear baselines and analyses that convincingly attribute gains to the proposed components."
+    },
+    "reviewer_b": {
+      "name": "Domain Impact Researcher",
+      "background": "Senior NLP researcher with a track record in morphological modeling, finite-state approaches, and neural sequence models; active in workshops and conferences on morphology and low-resource NLP.",
+      "traits": [
+        "assesses novelty relative to prior linguistic and computational approaches (e.g., FSTs, hard vs. soft attention, latent-variable models)",
+        "values broader impact: how the method advances understanding of morphology, applicability to languages with rich morphology, and practicality for downstream tasks",
+        "notices theoretical and conceptual clarity (e.g., justification for decoupling alignment and decoding) and how the paper positions itself versus prior work",
+        "looks for limitations and realistic appraisal of when the approach will or will not work (alignment accuracy dependence, language typology constraints)"
+      ],
+      "reviewing_style": "Evaluates novelty and significance within the morphological NLP landscape, emphasizing conceptual contributions, applicability to diverse languages, and clear comparison to prior art."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  }
+}

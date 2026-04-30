@@ -1,0 +1,76 @@
+{
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 5,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "CLARITY": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important problem of character-level NMT and automatic morphology learning, proposing a novel hierarchical deep architecture (six RNNs with a specialized HGRU) that avoids large-vocabulary issues by operating at the character level. Empirically it shows practical benefits\u2014faster training convergence (higher BLEU than BPE after one epoch on En\u2013Fr and En\u2013Cs) and final BLEU comparable to state-of-the-art\u2014using large WMT corpora, and provides analyses demonstrating learned morphology and subword boundary detection. These results are likely to change how researchers view trade-offs between character, subword, and word models, open follow-up work on morphology-aware decoders and hierarchical generation, and be adopted or extended in related NLP areas. The impact is strong though not necessarily transformative across all of NLP."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are generally supported by large-scale experiments on WMT En-Fr and En-Cs and comparisons to appropriate baselines (bpe2bpe, char2char, etc.), with reported BLEU improvements after one epoch and comparable final BLEU to state-of-the-art, and analyses claiming learned morphology. There is no indication of mathematical errors, and the architecture and hyperparameters appear fully specified; however, the summary does not mention statistical significance testing or detailed efficiency measurements to substantiate the training-efficiency claim. The limitation of mapping all but the 120 most frequent characters to <unk> is noted and could affect generality for some languages, representing a minor unsupported assumption. Overall the technical evaluation is sound but with some missing experimental details."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses neural machine translation with a novel deep character-level architecture that learns morphology, which is squarely within the scope of top NLP/ML venues. It targets the right audience (NMT and representation learning researchers), uses appropriate problem formulation and methodology (hierarchical encoder/decoder, HGRU, comparisons to strong baselines such as BPE- and character-based models), and evaluates on standard large-scale WMT datasets with BLEU, matching community expectations. The positioning and experimental setup (En\u2013Fr, En\u2013Cs, newstest splits, and analysis of learned morphology) indicate strong relevance to the venue's research community."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against a broad set of relevant and recent baselines (bpe2bpe, bpe2char, char, char2char, C2W, CNMT) and evaluates on standard WMT En\u2013Cs and En\u2013Fr corpora using BLEU. Comparisons appear fair (same data and metric) and the authors report both faster training and BLEU results, noting that final BLEU is comparable to state-of-the-art. The paper also analyzes qualitative differences (morphology learning, subword boundary detection) and its related-work coverage is described as adequate, indicating comprehensive and fair comparison with prior work."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a distinct architecture \u2014 a hierarchical deep character-level NMT with a two-RNN word encoder that yields morpheme-aware word representations and a two-level decoder including a specialized HGRU for character generation \u2014 which is a non-trivial design not simply reusing prior char- or BPE-based models. The problem (character-level/morphology-aware NMT) is well-studied, but the specific multi-RNN, hierarchical design and the claimed automatic subword/morphology learning clearly differentiate it from BPE and existing character baselines. Overall this represents notable novelty and a clear technical contribution, though not a radical departure from prior work in the area."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates DCNMT against multiple strong baselines (bpe2bpe, char, char2char, C2W, etc.) on large WMT En\u2013Fr and En\u2013Cs corpora, reports BLEU results (including one-epoch and final comparisons), and provides morphological analyses (including segmentation checks on the Penn Treebank); hyperparameters are reported. However, the summary does not indicate explicit ablation or sensitivity studies isolating core architectural choices (e.g., the two-level decoder or HGRU) and efficiency claims are stated but not clearly quantified. Some limitations are discussed (restricted 120-character vocabulary, no monolingual data), so overall the evaluation is solid with minor gaps that prevent an excellent rating."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized with a clear logical flow from introduction through method and experiments, as evidenced by the detailed methodology description (a hierarchical DCNMT with six RNNs) and the listed datasets and baselines. The main contributions are stated early and clearly (novel deep character-level architecture, morphology learning, efficiency and BLEU claims). Notation and experimental details seem consistently presented (hyperparameters are reported) and related work coverage is adequate, though the summary notes only \"adequate\" writing quality, suggesting minor presentation issues rather than major clarity problems."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a novel deep character-level neural machine translation architecture that learns morphology via a word encoder composed of two recurrent networks and a hierarchical (two-level) decoder.",
+      "The proposed model (DCNMT) avoids large-vocabulary issues by translating at the character level and learns subword/morpheme structure automatically.",
+      "The model is more efficient to train than word-based models and conventional character-based models, achieving higher BLEU than a BPE-based model after one epoch on En-Fr and En-Cs.",
+      "Final BLEU of the model is comparable to state-of-the-art systems, and analyses show the model can learn morphology and detect subword boundaries.",
+      "Implements a deep model consisting of six recurrent networks (four layers) with a specialized HGRU in the second-level decoder for character generation."
+    ],
+    "methodology": "A hierarchical deep character-level NMT (DCNMT) with six RNNs: a source word encoder (two RNNs) that computes morpheme-aware word representations via weighted RNN hidden states, a bidirectional sentence encoder, a first-level decoder producing word-level states using feedback from a target word encoder, and a second-level character decoder (HGRU) that generates target characters until delimiters/EOS.",
+    "datasets": [
+      "WMT En-Cs parallel corpus (15.8M sentence pairs)",
+      "WMT En-Fr parallel corpus (12.1M sentence pairs)",
+      "newstest2013 (development set)",
+      "newstest2015 (test set)",
+      "Penn Treebank (used for segmentation analysis)"
+    ],
+    "baselines": [
+      "bpe2bpe (BPE-based models)",
+      "C2W (compositional character-to-word)",
+      "CNMT",
+      "bpe2char",
+      "char (pure character models)",
+      "char2char"
+    ],
+    "metrics": [
+      "BLEU"
+    ],
+    "limitations": [
+      "Only the 120 most frequent characters per language are used; characters not in the list are mapped to a special <unk> token.",
+      "The study reports that no monolingual corpus was used in training (explicitly stated)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - neural machine translation (character-level/morphology-aware)",
+    "writing_quality": "adequate"
+  }
+}

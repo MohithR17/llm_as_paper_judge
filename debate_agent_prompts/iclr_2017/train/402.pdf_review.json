@@ -1,0 +1,124 @@
+{
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well-organized and the main contributions are stated early (intro -> method -> experiments -> conclusion) with a clear description of HYPERBAND and its inputs (R, \u03b7) and bracket scheme. Notation appears consistent and the methodology (SUCCESSIVEHALVING, brackets) is defined, while figures/tables (datasets: MNIST, CIFAR-10, SVHN, MRBI; baselines compared) effectively communicate empirical results and speedups. Writing quality is generally good, though the paper defers a full theoretical treatment and does not mention code availability, which reduces reproducibility clarity for an experimental reader like me. Minor clarifications (e.g., explicit pseudocode, more detail on experimental protocol and seeds) would make the presentation exceptional. | B(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early\u2014presenting HYPERBAND, its bracketed SuccessiveHalving approach, and the minimal inputs (R, \u03b7). Notation and methodological description are clear enough to follow the algorithmic flow, and figures/tables (datasets, baselines, metrics like time-to-result and throughput) effectively illustrate empirical claims across MNIST/CIFAR/SVHN and benchmarks. Writing quality is generally good with adequate related-work coverage, though the theoretical treatment is deferred to a companion work which slightly weakens self-containment.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well-organized and the main contributions are stated early (intro -> method -> experiments -> conclusion) with a clear description of HYPERBAND and its inputs (R, \u03b7) and bracket scheme. Notation appears consistent and the methodology (SUCCESSIVEHALVING, brackets) is defined, while figures/tables (datasets: MNIST, CIFAR-10, SVHN, MRBI; baselines compared) effectively communicate empirical results and speedups. Writing quality is generally good, though the paper defers a full theoretical treatment and does not mention code availability, which reduces reproducibility clarity for an experimental reader like me. Minor clarifications (e.g., explicit pseudocode, more detail on experimental protocol and seeds) would make the presentation exceptional."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early\u2014presenting HYPERBAND, its bracketed SuccessiveHalving approach, and the minimal inputs (R, \u03b7). Notation and methodological description are clear enough to follow the algorithmic flow, and figures/tables (datasets, baselines, metrics like time-to-result and throughput) effectively illustrate empirical claims across MNIST/CIFAR/SVHN and benchmarks. Writing quality is generally good with adequate related-work coverage, though the theoretical treatment is deferred to a companion work which slightly weakens self-containment."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper presents a clear algorithmic idea and empirical evidence across several datasets and reasonable baselines (Random, SuccessiveHalving, SMAC/TPE/Spearmint, CVST), supporting the main claim that Hyperband can speed hyperparameter search in many settings. However, the theoretical treatment is explicitly deferred and derivations in the paper are only sketched, and the summary gives no indication of key reproducibility/experimental details (random seeds, train/validation/test splits, hardware, runtimes, confidence intervals) or open-source code\u2014weakening the strength of empirical claims. There are also logical tradeoffs acknowledged (extra work from multiple brackets) but no reported sensitivity analyses (\u03b7, R, bracket choices) or statistical tests, leaving gaps in robustness and generality. Overall the work is promising and empirically supported, but missing theoretical completeness and experimental rigor required to be technically flawless. | B(4): The paper clearly states its main claims and provides extensive empirical evidence across multiple datasets (MNIST, CIFAR-10, SVHN, IDA benchmarks) and reasonable baselines (SMAC, TPE, Spearmint, random, SUCCESSIVEHALVING, CVST). However, formal mathematical guarantees are deferred to a follow-up (Li et al. (2016)), so derivations/proofs in this paper are incomplete, and the experimental description does not report statistical tests or significance measures in the provided summary. I find no fatal logical errors\u2014the paper openly acknowledges the smax+1 work tradeoff and limitations\u2014so the conclusions are largely supported empirically but the theoretical treatment and some experimental rigor are lacking, motivating a score of 4.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents a clear algorithmic idea and empirical evidence across several datasets and reasonable baselines (Random, SuccessiveHalving, SMAC/TPE/Spearmint, CVST), supporting the main claim that Hyperband can speed hyperparameter search in many settings. However, the theoretical treatment is explicitly deferred and derivations in the paper are only sketched, and the summary gives no indication of key reproducibility/experimental details (random seeds, train/validation/test splits, hardware, runtimes, confidence intervals) or open-source code\u2014weakening the strength of empirical claims. There are also logical tradeoffs acknowledged (extra work from multiple brackets) but no reported sensitivity analyses (\u03b7, R, bracket choices) or statistical tests, leaving gaps in robustness and generality. Overall the work is promising and empirically supported, but missing theoretical completeness and experimental rigor required to be technically flawless."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims and provides extensive empirical evidence across multiple datasets (MNIST, CIFAR-10, SVHN, IDA benchmarks) and reasonable baselines (SMAC, TPE, Spearmint, random, SUCCESSIVEHALVING, CVST). However, formal mathematical guarantees are deferred to a follow-up (Li et al. (2016)), so derivations/proofs in this paper are incomplete, and the experimental description does not report statistical tests or significance measures in the provided summary. I find no fatal logical errors\u2014the paper openly acknowledges the smax+1 work tradeoff and limitations\u2014so the conclusions are largely supported empirically but the theoretical treatment and some experimental rigor are lacking, motivating a score of 4."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): HYPERBAND proposes a clearly new operational strategy\u2014hedging across multiple SuccessiveHalving \u201cbrackets\u201d with a geometric grid over n\u2014to trade off exploration (many random configurations) and exploitation (more resource per configuration). This is a noteworthy extension beyond prior single-bracket early-stopping and Bayesian-HPO approaches (SMAC/TPE/Spearmint) and differs from CVST/Fabolas by making minimal modeling assumptions and only requiring R and \u03b7. While the building blocks (SuccessiveHalving, bandit ideas, early stopping) are known, combining them into a simple, general-purpose, theoretically-motivated allocator that provably hedges across unknown convergence regimes is novel and would inform experts, though it is not a radical departure from existing primitives. | B(4): The paper presents a notable and practically useful new method (HYPERBAND) that systematically hedges across multiple instances of SuccessiveHalving to trade off exploration vs. per-configuration resource allocation; this bracketed, budget-hedging perspective is a clear methodological innovation beyond running a single SH or naive early-stopping. The formulation builds on well-studied bandit and multi-fidelity ideas but packages them into a simple, general-purpose algorithm making minimal assumptions and requiring only R and \u03b7, which meaningfully differentiates it from prior work like CVST, Fabolas, and vanilla SuccessiveHalving. While the approach is a principled combination of existing components rather than a wholly new theoretical framework (and deeper theoretical analysis is deferred), the design and empirical emphasis provide non-trivial extension and would be informative to experts in HPO.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "HYPERBAND proposes a clearly new operational strategy\u2014hedging across multiple SuccessiveHalving \u201cbrackets\u201d with a geometric grid over n\u2014to trade off exploration (many random configurations) and exploitation (more resource per configuration). This is a noteworthy extension beyond prior single-bracket early-stopping and Bayesian-HPO approaches (SMAC/TPE/Spearmint) and differs from CVST/Fabolas by making minimal modeling assumptions and only requiring R and \u03b7. While the building blocks (SuccessiveHalving, bandit ideas, early stopping) are known, combining them into a simple, general-purpose, theoretically-motivated allocator that provably hedges across unknown convergence regimes is novel and would inform experts, though it is not a radical departure from existing primitives."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable and practically useful new method (HYPERBAND) that systematically hedges across multiple instances of SuccessiveHalving to trade off exploration vs. per-configuration resource allocation; this bracketed, budget-hedging perspective is a clear methodological innovation beyond running a single SH or naive early-stopping. The formulation builds on well-studied bandit and multi-fidelity ideas but packages them into a simple, general-purpose algorithm making minimal assumptions and requiring only R and \u03b7, which meaningfully differentiates it from prior work like CVST, Fabolas, and vanilla SuccessiveHalving. While the approach is a principled combination of existing components rather than a wholly new theoretical framework (and deeper theoretical analysis is deferred), the design and empirical emphasis provide non-trivial extension and would be informative to experts in HPO."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "HYPERBAND is a novel bandit-based configuration evaluation method that uses principled early-stopping to allocate resources and evaluate many hyperparameter configurations efficiently.",
+      "HYPERBAND is general-purpose and makes minimal assumptions compared to prior adaptive evaluation approaches, and it can evaluate orders of magnitude more configurations than uniform allocation/random search in many settings.",
+      "HYPERBAND hedges between exploring many configurations and allocating more resources per configuration by running multiple brackets (geometric grid over n), and requires only two inputs (R and \u03b7).",
+      "Despite no knowledge of convergence envelopes or terminal-loss distributions, HYPERBAND requires a budget only log-factors larger than the optimal SUCCESSIVEHALVING and often attains large empirical speedups over baselines."
+    ],
+    "methodology": "HYPERBAND runs multiple brackets; each bracket invokes SUCCESSIVEHALVING on a set of n i.i.d. random configurations with a minimum resource r, iteratively evaluating and discarding a fraction (1\u22121/\u03b7) of configurations until one remains; inputs are R (max resource per config) and \u03b7 (elimination rate).",
+    "datasets": [
+      "MNIST",
+      "CIFAR-10",
+      "MRBI (rotated MNIST with background images)",
+      "SVHN",
+      "IDA benchmark datasets (for CVST comparison)"
+    ],
+    "baselines": [
+      "SMAC",
+      "TPE",
+      "Spearmint",
+      "SMAC early (SMAC with early stopping)",
+      "Random search",
+      "Random 2\u00d7",
+      "SUCCESSIVEHALVING",
+      "CVST",
+      "Fabolas (mentioned)"
+    ],
+    "metrics": [
+      "validation loss",
+      "test error",
+      "runtime / speedup (relative time-to-result)",
+      "number of configurations evaluated (throughput)"
+    ],
+    "limitations": [
+      "HYPERBAND considers smax+1 brackets and thus incurs approximately smax+1 times more work than running SUCCESSIVEHALVING for a single n (explicit tradeoff).",
+      "A thorough theoretical treatment is deferred to Li et al. (2016) (the paper only sketches theoretical properties).",
+      "Benefits are muted when only a small number of random configurations suffice (e.g., low-dimensional search spaces), i.e., when evaluating many configurations gives little advantage."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "ML - hyperparameter optimization / bandit-based configuration evaluation",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Experimental Methodologist",
+      "background": "Senior ML engineer and experimentalist with years of experience designing and evaluating hyperparameter optimization and AutoML systems in both research and production environments.",
+      "traits": [
+        "Insists on clear, reproducible experimental protocols (random seeds, train/validation/test splits, hardware, runtimes).",
+        "Looks for comprehensive baselines, ablations, and sensitivity analyses (e.g., impact of \u03b7, R, bracket choices).",
+        "Evaluates statistical rigor: confidence intervals, variance across trials, and appropriate use of significance testing.",
+        "Values implementation details and open-source artifacts (pseudocode, complexity, memory/runtime breakdowns) enabling replication."
+      ],
+      "reviewing_style": "Focuses on empirical rigor and reproducibility: identifies gaps in experiments and provides concrete requests or suggestions to make empirical claims verifiable and robust."
+    },
+    "reviewer_b": {
+      "name": "Hyperparameter Optimization Researcher",
+      "background": "Academic researcher specializing in AutoML, multi-armed bandits, and resource-aware optimization methods, with a track record of theoretical and empirical contributions in HPO and bandit algorithms.",
+      "traits": [
+        "Assesses novelty and theoretical contributions relative to prior work in bandits, SuccessiveHalving, and adaptive evaluation.",
+        "Values clear articulation of assumptions, worst-case guarantees, and how proposed methods trade off exploration vs. exploitation.",
+        "Pays attention to scalability, practical applicability across domains, and potential limitations or failure modes in real-world settings.",
+        "Notices connections to related literatures (e.g., Bayesian optimization, multi-fidelity methods) and expects a thoughtful discussion of when the method is preferable."
+      ],
+      "reviewing_style": "Evaluates significance and novelty in context: situates the paper within the broader research landscape, highlights theoretical or conceptual strengths/weaknesses, and comments on likely impact and avenues for follow-up."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "CLARITY": 4,
+  "REPLICABILITY": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 3,
+  "APPROPRIATENESS": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well-organized and the main contributions\u2014the joint SGNS extension, the additive document+word context, and the Dirichlet sparsity term\u2014are stated early and carried through the method and experiments. Notation and hyperparameters are reported and the writing quality is good, with effective examples and evaluations (Cv, NPMI, 3COSMUL) on sensible datasets and baselines. Minor clarity issues remain around the formal probabilistic justification of combining SGNS with a Dirichlet likelihood (the paper notes this limitation), so a brief, explicit probabilistic framing or clearer motivation of that design choice would improve presentation. | B(4): The paper is well organized and the main contributions \u2014 extending SGNS to jointly learn word/topic/document vectors and inducing sparse document-topic proportions via a Dirichlet term \u2014 are stated early and supported by experiments on Twenty Newsgroups and Hacker News. Notation and hyperparameters are reported and the writing quality is described as good, with available open-source code aiding reproducibility. Figures/tables and evaluations (Cv, NPMI, 3COSMUL) appear effective, though the presentation likely has minor issues rather than major clarity problems (hence not a perfect score).",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well-organized and the main contributions\u2014the joint SGNS extension, the additive document+word context, and the Dirichlet sparsity term\u2014are stated early and carried through the method and experiments. Notation and hyperparameters are reported and the writing quality is good, with effective examples and evaluations (Cv, NPMI, 3COSMUL) on sensible datasets and baselines. Minor clarity issues remain around the formal probabilistic justification of combining SGNS with a Dirichlet likelihood (the paper notes this limitation), so a brief, explicit probabilistic framing or clearer motivation of that design choice would improve presentation."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized and the main contributions \u2014 extending SGNS to jointly learn word/topic/document vectors and inducing sparse document-topic proportions via a Dirichlet term \u2014 are stated early and supported by experiments on Twenty Newsgroups and Hacker News. Notation and hyperparameters are reported and the writing quality is described as good, with available open-source code aiding reproducibility. Figures/tables and evaluations (Cv, NPMI, 3COSMUL) appear effective, though the presentation likely has minor issues rather than major clarity problems (hence not a perfect score)."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "REPLICABILITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is mostly reproducible: it reports key hyperparameters (negative samples n=15, beta=3/4), optimizer (Adam), training length (200 epochs), and provides code. Datasets are standard (Twenty Newsgroups) or described (Hacker News comments) and evaluation metrics (Cv, NPMI, 3COSMUL) are specified. Missing or underspecified elements that prevent full reproducibility are minor but important for exact replication\u2014most notably the preprocessing pipeline and any dataset-specific filtering/selection steps, and precise specification of the Dirichlet concentration \u03b1 (only described qualitatively as \u201clow\u201d)\u2014hence not a perfect score. | B(4): The paper provides key training details (negative sampling n=15, beta=3/4, Adam optimizer, 200 epochs), hyperparameters (Dirichlet \u03b1 reported), and evaluates with standard, specified metrics (Cv via Palmetto, NPMI, 3COSMUL). Code is released which substantially aids reproducibility. However, the summary does not confirm a detailed data preprocessing pipeline (tokenization, stopword handling, splits) or exact construction of the Hacker News corpus, so a reproducer may need to infer a few practical details \u2014 hence not fully reproducible from the paper alone.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is mostly reproducible: it reports key hyperparameters (negative samples n=15, beta=3/4), optimizer (Adam), training length (200 epochs), and provides code. Datasets are standard (Twenty Newsgroups) or described (Hacker News comments) and evaluation metrics (Cv, NPMI, 3COSMUL) are specified. Missing or underspecified elements that prevent full reproducibility are minor but important for exact replication\u2014most notably the preprocessing pipeline and any dataset-specific filtering/selection steps, and precise specification of the Dirichlet concentration \u03b1 (only described qualitatively as \u201clow\u201d)\u2014hence not a perfect score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper provides key training details (negative sampling n=15, beta=3/4, Adam optimizer, 200 epochs), hyperparameters (Dirichlet \u03b1 reported), and evaluates with standard, specified metrics (Cv via Palmetto, NPMI, 3COSMUL). Code is released which substantially aids reproducibility. However, the summary does not confirm a detailed data preprocessing pipeline (tokenization, stopword handling, splits) or exact construction of the Hacker News corpus, so a reproducer may need to infer a few practical details \u2014 hence not fully reproducible from the paper alone."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses an important practical problem, delivers a usable, well-documented method with released code and measurable gains in topic coherence, making it likely to be adopted by practitioners. However, its lack of a principled generative formulation and limited theoretical novelty constrain its impact on theory, so a strong but not perfect impact score is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper targets the important problem of combining dense embeddings with interpretable topic proportions and provides a simple, implementable approach (lda2vec) with open-source code and empirical gains on coherence metrics (20 Newsgroups, Hacker News). However, from a probabilistic-theory perspective its hybrid objective (SGNS plus a Dirichlet likelihood term) lacks a clear generative model or principled held-out-likelihood evaluation, which limits how strongly it will change theoretical thinking. Still, the practical blend of embeddings and sparse topic structure is likely to be adopted and spark follow-up work exploring more principled formulations and diagnostics."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses an important practical problem\u2014producing interpretable, sparse document-topic proportions while leveraging dense word embeddings\u2014by combining SGNS with a Dirichlet sparsity term in a simple, AD-friendly model (lda2vec). From my applied-NLP perspective the method is highly usable: it yields coherent topics (Cv/NPMI evaluations), is easy to implement, reports hyperparameters, and crucially releases code, which makes it likely to be adopted by practitioners. While not a theoretical breakthrough, it meaningfully changes the toolbox for scalable, interpretable topic modeling and should stimulate follow-up work and applications."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the experiments are reproducible and report useful coherence and embedding metrics on two corpora with released code and hyperparameters. However, Reviewer A rightly highlights missing principled evaluations (held-out likelihood/perplexity), limited theoretical justification for combining SGNS with a Dirichlet term, and incomplete sensitivity/ablation analyses. Given the solid but not comprehensive empirical depth, a middle score reflecting adequate but improvable substance is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides reasonable empirical comparisons (Twenty Newsgroups, Hacker News) against LDA and SGNS with coherence/NPMI and publishes code and hyperparameters, so reproduction is feasible. However, as a probabilistic-theory reviewer I find the work lacks principled evaluation (no held-out likelihood/perplexity or formal generative model justification for mixing SGNS and a Dirichlet term) and only limited sensitivity analysis (the \u03b1 sparsity effect is mentioned but full ablations over concentration, combination rules, or convergence/identifiability diagnostics are missing). Related work coverage is adequate and a limitation about \u03b1 is noted, but failure modes and theoretical justification are underdeveloped, so the experimental depth is adequate but incomplete for strong claims."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The experiments are solid and reproducible: code and hyperparameters are released, two corpora (20 Newsgroups, Hacker News) are evaluated, and topic coherence (Cv, NPMI) plus embedding similarity (3COSMUL) are reported against LDA and SGNS baselines. The paper includes an important sensitivity/ablation check showing the Dirichlet sparsity term is necessary for coherent topics, and training details (negative sampling, optimizer, epochs) are provided. It could be stronger by including more datasets and additional modern baselines or more extensive sensitivity analyses, but overall the empirical evaluation and reproducibility are convincing for practitioner use."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper is squarely within the venue\u2019s scope, uses appropriate datasets and metrics, and provides released code making it reproducible and practically useful. However, Reviewer A\u2019s concerns about missing probabilistic formulation, held-out likelihood evaluation, and ablation studies are valid methodological gaps that prevent a full, unqualified accept. Given the strong empirical contribution and reproducibility but some missing analyses, a score of 4 (accept with revisions) is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The topic (combining topic models and word embeddings) is clearly within top NLP/ML conference scope and the paper targets the right audience (practitioners of topic modeling and representation learning) using standard datasets (20 Newsgroups, Hacker News) and coherence metrics. However, from a probabilistic-theory perspective the paper mixes SGNS and a Dirichlet \"likelihood\" term without presenting a clear generative model or held-out-likelihood/perplexity evaluation, and it lacks the ablation studies (e.g. on Dirichlet concentration \u03b1 and alternative context combination rules) I would expect to justify the modeling choices. Given useful empirical results and released code but these methodological and evaluation gaps, the fit is borderline rather than a clear accept for a top venue."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper sits squarely within top-tier NLP/ML scope: it combines word embeddings and probabilistic topic modeling to produce interpretable, sparse document-topic proportions, a practical problem of clear interest. The methodology, evaluations (Cv, NPMI, baselines LDA and SGNS), and release of code/hyperparameters match the empirical and reproducibility standards I expect as an applied NLP engineer. The approach is simple, scalable, and positioned to appeal to both embedding and topic-modeling communities, making it a strong fit for the venue."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper is primarily a pragmatic combination of existing components (SGNS-style embeddings, document vectors, Dirichlet sparsity) that yields a useful, easy-to-use method and released code, but does not introduce a fundamentally new theoretical or probabilistic contribution. Given this consensus that the work is a solid engineering/applied contribution with moderate novelty rather than a major original advance, I assign an originality score of 3 to reflect useful but limited conceptual novelty.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper constructs lda2vec by combining well-known components\u2014SGNS-style word embeddings, an additive document vector context, and a Dirichlet sparsity term\u2014to produce interpretable topic proportions. This is primarily a pragmatic composition of existing techniques (SGNS, LDA-like Dirichlet priors, negative sampling) rather than a novel probabilistic formulation or principled generative model, and the method lacks theoretical identifiability or convergence analysis. While the implementation and empirical evaluations (20 Newsgroups, Hacker News) and open-source release are useful, the technical contribution is a limited integration of known methods rather than a fundamentally new idea. "
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper combines existing components\u2014SGNS-style word embeddings, document vectors, and a Dirichlet sparsity term\u2014to produce lda2vec, a practically useful and easily implemented hybrid. This is a sensible and useful engineering contribution (code released, clear hyperparameters) that yields interpretable, sparse document-topic proportions, but it largely stitches together well-known methods rather than introducing a fundamentally new modeling paradigm or theory. From an applied NLP perspective the work is a solid, moderate-novelty contribution that will inform practitioners, but it is not a highly original theoretical advance."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper clearly states its goals, releases code/hyperparameters, and provides empirical evidence of coherent topics on reasonable datasets. However, Reviewer A correctly highlights the lack of a principled probabilistic derivation tying the SGNS modification to a Dirichlet prior and missing quantitative diagnostics/ablations needed to assess identifiability and robustness. Given these substantive gaps in formal justification and targeted evaluation, a cautious score of 3 reflects promising empirical results but incomplete technical soundness.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its goals and provides empirical evidence (Cv, NPMI, 3COSMUL) on 20NG and Hacker News and reports hyperparameters and code, but it lacks a principled probabilistic generative model tying the SGNS modification to a Dirichlet document prior. Mathematical treatment is informal \u2014 mixing SGNS with a Dirichlet likelihood is not justified by a likelihood derivation or identifiability/ convergence analysis. Experimental methodology uses reasonable baselines (LDA, SGNS) but omits held-out likelihood/perplexity or other principled quantitative diagnostics and lacks targeted ablations (e.g. systematic study of \u03b1, combination rules) required to isolate claims about sparsity and topic coherence. Given these gaps, the contribution is promising but the technical evidence is incomplete, so I rate it a 3."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims and provides empirical support: joint training of word, topic, and document vectors with a Dirichlet sparsity term, experiments on 20 Newsgroups and Hacker News, comparisons to LDA and SGNS, and coherence/NPMI evaluations; code and hyperparameters are released which aids reproducibility. Mathematical modifications to SGNS are simple and appear consistent with the methodology described, and qualitative results (coherent topics) back the key claims. Minor issues remain: no mention of statistical significance testing, limited diversity of baselines and datasets, and potential sensitivity analyses for \u03b1 are not reported, so some empirical robustness questions are open. Overall the technical execution is sound but would benefit from additional statistical validation and broader evaluation."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the experiments are sensible, reproducible, and use standard metrics (LDA and SGNS baselines on two datasets), but they also agree important contemporary baselines (neural/variational topic models and other hybrid approaches) are missing and the probabilistic justification is limited. Given the solid empirical setup and transparency but incomplete comparisons that temper claims of clear superiority, a score slightly above middle is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper compares to LDA and SGNS on the same datasets (20 Newsgroups, Hacker News) using coherence/NPMI and a token similarity metric, so experimental conditions and metrics are broadly fair. However, it omits several relevant modern baselines (e.g., neural/variational topic models and other hybrid embedding\u2013topic approaches) and does not present a principled probabilistic justification for mixing SGNS and a Dirichlet likelihood, which weakens the comparative claim. The manuscript does acknowledge limitations (effect of \u03b1) and provides adequate related-work coverage, but the comparisons are therefore incomplete for establishing clear superiority."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against sensible baselines (LDA and SGNS) and evaluates on two datasets using standard coherence and NPMI metrics, with code and hyperparameters released\u2014supporting fair, reproducible comparisons. They analyze the effect of their Dirichlet sparsity term and report when omitting it degrades topics, but the summary suggests they do not compare to more recent or neural topic-model hybrids (e.g., variational neural topic models) which would be relevant. Overall the empirical comparisons are good and honest, with only minor omissions of other contemporary baselines."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Extends Skipgram Negative Sampling (SGNS) to jointly learn word, topic, and document vectors that produce coherent topics.",
+      "Produces sparse, interpretable document-to-topic proportions via a Dirichlet likelihood term, combining topic-model style sparsity with dense word embeddings.",
+      "Implements a simple model (lda2vec) that is easy to implement in automatic-differentiation frameworks and is released as open-source software."
+    ],
+    "methodology": "Modify the SGNS objective by forming the context vector as the sum of a pivot word vector and a document vector, and add a Dirichlet likelihood term (with low concentration \u03b1) over document-topic proportions to induce sparsity; train jointly with negative sampling (n=15, beta=3/4) using Adam for 200 epochs.",
+    "datasets": [
+      "Twenty Newsgroups",
+      "Hacker News comments corpus"
+    ],
+    "baselines": [
+      "LDA",
+      "SGNS"
+    ],
+    "metrics": [
+      "Cv topic coherence (via Palmetto)",
+      "Normalized Pointwise Mutual Information (NPMI)",
+      "3COSMUL token-to-word similarity"
+    ],
+    "limitations": [
+      "When the sparsity-inducing Dirichlet term is not used (e.g., \u03b1 = 1), document weights spread mass across topics and the learned topics become incoherent."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - topic modeling and word embeddings",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Probabilistic Theorist",
+      "background": "Senior researcher in probabilistic graphical models and statistical learning with a record of theoretical analyses of topic models and Bayesian methods.",
+      "traits": [
+        "Penalises papers that modify probabilistic objectives (e.g., combining SGNS and Dirichlet likelihood) without a clear probabilistic generative model or formal justification",
+        "Requires held-out likelihood / perplexity or equivalent principled quantitative evaluation for topic models and will downgrade if absent or incomplete",
+        "Demands ablation studies that isolate the effect of key modeling choices (e.g., Dirichlet concentration \u03b1, additive context vs. other combination rules) and penalises papers lacking them",
+        "Prefers methods with identifiability or convergence discussion; downgrades empirical-only claims that lack theoretical or diagnostic analysis"
+      ],
+      "reviewing_style": "Critical, theory-first reviewer who requires principled derivations, rigorous quantitative evaluation, and targeted ablations to accept methodological changes."
+    },
+    "reviewer_b": {
+      "name": "Applied NLP Engineer",
+      "background": "Research scientist/engineer working on practical NLP systems, embeddings, and interpretable models; focuses on reproducible, scalable methods used in industry applications.",
+      "traits": [
+        "Rewards papers that release code, training recipes, and pre-trained models and will score them higher for reproducibility and usability",
+        "Favors simple, scalable methods that improve interpretability or practitioner workflow (e.g., sparse document-topic proportions and coherent topics) even if theoretical guarantees are limited",
+        "Values strong qualitative results and topic coherence (human judgments or standard coherence metrics) and will upweight papers demonstrating clear practical benefits and examples",
+        "Tolerates pragmatic objective combinations if they yield easier implementation, faster training, or better downstream interpretability"
+      ],
+      "reviewing_style": "Pragmatic reviewer who prioritises reproducibility, usability, and demonstrable empirical benefits for practitioners over formal theoretical guarantees."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 8,
+    "debate_rate": 0.75
+  }
+}

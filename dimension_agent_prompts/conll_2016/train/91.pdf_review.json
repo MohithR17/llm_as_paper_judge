@@ -1,0 +1,44 @@
+{
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "CLARITY": 3,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "REPLICABILITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "IMPACT": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes. The paper studies compression of state-of-the-art NMT models (attention-based English\u2192German from Luong et al.) using magnitude-based pruning and retraining, evaluated on WMT\u201914 with BLEU and perplexity measures. The topic (model compression/pruning for LSTM-based NMT) is squarely of interest to both top ML and top NLP venues, uses standard datasets and metrics, compares pruning schemes (class-blind/uniform/distribution), and cites relevant prior work (Han et al., Luong et al.), so it is well positioned for a top conference audience."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper applies an existing magnitude-based pruning method (Han et al., 2015b) to LSTM-based NMT and empirically compares three pruning-distribution schemes (Section 3.3), claiming to be the first to adapt this pruning approach to recurrent/LSTM NMT. Its main contributions are empirical (finding class-blind pruning and retraining can recover/surpass performance at high sparsity and characterizing redundancy across LSTM weight classes), not a fundamentally new pruning algorithm. Thus the work is a solid, non-trivial application/analysis but overall an incremental rather than a highly novel methodological contribution."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is organized into standard sections (Approach, Pruning Schemes, Retraining, Experiments, Future Work) and presents experimental settings and results (e.g., Figure 3 and training hyperparameters), but presentation suffers from duplicated and garbled text (many repeated paragraphs, stray fragments like \u201cstudent a am I Je Je\u201d), leftover TeX/formatting artifacts, and missing or inconsistently referenced figures (Figure 8 is discussed but not shown). Notation is partially defined (Eq. (1) and an LSTM block in Eq. (2)), yet matrix/variable formatting is messy (T4n,2n appears without clear definition) and equations are poorly rendered. The main contribution is stated in the body (\u201cwe extend the magnitude-based pruning...\u201d), but it is not presented cleanly or early enough, and overall the paper needs careful copy-editing to fix repetition, citation/formatting errors, and improve figure inclusion and equation clarity."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents solid experiments on a realistic large-scale NMT system (WMT\u201914 English\u2013German, newstest2014) and evaluates three concrete pruning schemes (class-blind/uniform/distribution), including analyses by weight class (Figure 3) and visualizations of redundancy (Figure 8). Retraining procedures and hyperparameters are reported (e.g., LR 0.5, 4 epochs, schedule, batch size, dropout) and key quantitative claims are supported (40% pruning with little loss; 80% pruning with retraining recovers/surpasses baseline). Missing are broader comparisons to other compression/pruning methods (OBD/OBS are only suggested for future study), iterative pruning experiments and wall\u2011clock/runtime/speedup measurements exploiting sparsity, and more extensive sensitivity studies of retraining/pruning schedules, so the evaluation is strong but has some important gaps."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper clearly states its main claims (e.g., magnitude-based pruning schemes and that with retraining an 80%-pruned NMT model can recover or surpass original performance) and reports experiments on a real WMT\u201914 English\u2013German model (Section 4, baseline perplexity/BLEU reported). The mathematical content is standard (LSTM gating equation) and appears correct. However, the provided text lacks crucial experimental details and evidence: numeric pruning results and comparisons are only asserted (\u2018\u2018we can recover and even surpass the original performance with an 80%-pruned model\u2019\u2019) but not reported here, there is no mention of multiple runs or statistical significance, and only a single model/dataset is evaluated. These omissions create methodological gaps that weaken confidence in the generality of the claims, so the paper is technically plausible but missing some needed experimental support."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "The paper gives a clear description of the pruning schemes and retraining settings (retrained lr=0.5, epochs=4, SGD, LR halving schedule after 2 epochs, batch size=128, max grad norm=5, dropout=0.2) and specifies the dataset and test set (WMT'14, newstest2014) and baseline model source (Luong et al., 2015a). However, several important reproduction details are omitted or deferred to Luong et al. \u2014 e.g., exact architecture hyperparameters (layer sizes, vocabulary/BPE/tokenization, initialization), full original training hyperparameters, and BLEU computation/tokenization specifics \u2014 and the paper only states that trained models/code were obtained from the authors (URL truncated here). Because essential preprocessing and baseline training details are not fully contained in this text, reproduction from this paper alone is only partially possible."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper performs fair, in-domain comparisons: it evaluates three pruning schemes on a state-of-the-art Luong et al. (2015a) English\u2013German NMT model using WMT\u201914/newstest2014 and reports that class-blind pruning outperforms class-uniform and class-distribution (see Section 3.3 and 4). It situates itself relative to prior pruning work (Han et al., 2015b) and other compression approaches (OBD/OBS, low-rank, hashing, quantization, distillation) and cites relevant recent papers. However, it does not provide direct experimental comparisons to those alternative compression methods or to iterative pruning pipelines (noted as future work), so some important baselines are omitted."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses a practical and important problem\u2014compressing very large (\u2248200M parameter) state-of-the-art NMT models\u2014by demonstrating magnitude-based pruning for LSTM-based encoder\u2013decoder attention models and showing that with retraining an 80%\u2011pruned model can recover and even surpass original performance (paper reports 40% pruning with little loss and 80% recovery after retraining). It provides actionable findings (class-blind pruning outperforms class-uniform and class-distribution) and concrete analyses of redundancy across embeddings, gates, layers, and vocabulary that will influence how practitioners think about overparameterization in NMT. The work plausibly opens follow-up directions (iterative prune/retrain, exploiting sparsity for speed, comparisons to other compression schemes) and is likely to be widely built upon for practical model deployment, though results are presented on a single strong baseline (WMT\u201914 En\u2013De) which somewhat limits immediate generality."
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "IMPACT": 3,
+  "SUBSTANCE": 3,
+  "CLARITY": 2,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes. The paper tackles automatic hypernym/hierarchy construction \u2014 a core NLP task \u2014 using neural models (MLP, RNN) over word embeddings and compares against standard baselines (Hearst patterns, distributional methods, Fu 2014, etc.), so it clearly belongs in a top NLP/ML venue. The experimental setup uses expected resources and evaluation standards (Skip-gram embeddings on Baidubaike, manually labeled test set, precision/recall/F1, comparisons in Table 3 and combinations with Wikipedia/CilinE), and the related-work positioning cites the relevant community (Hearst, Snow, Kotlerman, Mikolov, Fu). Overall the problem formulation, audience, methods and positioning are appropriate for a top-tier NLP/ML conference."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines established components (Skip-gram embeddings, an MLP generative model, an RNN/Elman discriminative model, and a simple lexical-rule) into a fused architecture to improve hypernym discovery. Prior work cited (Fu 2014) used linear transformations of embeddings and Shwartz et al. used LSTMs with extra linguistic signals, so the main novelty here is the particular fusion and non-linear MLP generator rather than a fundamentally new paradigm. This is a sensible, experimentally-motivated extension that yields empirical gains, but it largely composes known techniques rather than introducing a highly original method or problem formulation."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states its main claim (a fusion of an MLP generative model, an RNN discriminative model and a simple lexical rule improves semantic-hierarchy construction) and presents experimental results (Tables 3 and 6) that broadly support it (MFusion F1 74.20 vs MEmb 73.74, and MFusion+Wiki+CilinE F1 82.01). However important methodological details are missing or insufficiently described in the provided text (exact model/hyperparameter settings referenced but not shown, how negatives/controls are created, how fusion decisions are combined), there are no statistical significance tests or variance estimates for reported scores, and some claims are inadequately supported (e.g. language-independence is asserted but experiments are only on Chinese data; training the MLP on positives only is not justified). The mathematical content is minimal but correct (standard RNN equations); overall the experiments are promising but some gaps and unsupported assumptions prevent a higher technical-score."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper tackles an important problem (automatic construction of semantic hierarchies/\u2018is-a\u2019 relations) and proposes a practical fusion of a generative MLP and a discriminative RNN plus a simple lexical rule. Empirically it attains high precision (91.60%) and an F1 of 74.20%, slightly outperforming a strong embedding baseline (MEmb F1=73.74) and yielding further gains (F1=82.01) when combined with manual hierarchies, and it claims language-independence. The contribution appears to be a solid, useful incremental advance likely to be built upon (e.g., fusion architectures for taxonomy induction) but is not transformative for the field."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper includes a reasonable experimental suite: comparisons to many prior methods (Table 3), component ablations (MMLPgen., MRNNdis., MMLP+RNN) and threshold sensitivity plots (Figures 5\u20136), and combination with manual hierarchies (Table 6). However, important reproducibility and analysis details are missing (Section 4.1 only gives corpus size and optimizer parameters; Table 1 and exact model architectures, training schedules, dataset split sizes, loss functions and fusion procedure are not specified), limiting replication. Some failure discussion is present (Figure 7 and the Aconitum\u2013Ranunculaceae example), but broader error analysis, statistical significance testing, multilingual validation (despite claiming language independence), and deeper ablations of fusion choices are absent."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has a recognizable structure (sections for method, experiments) but suffers from poor organization and many repetitions that interrupt logical flow \u2014 e.g. multiple verbatim duplicated paragraphs and repeated sentence blocks throughout the introduction and related work. Notation and descriptions are inconsistent or imprecise (the RNN description alternates between xt and xt\u22121 as inputs, and there is a typo 'number of neutrons' for hidden units), and several formula/figure references and training details are presented unclearly. Figures and tables are present and potentially informative, but formatting issues, mixed-language fragments, and pervasive grammatical errors make interpretation difficult and require substantial editing for clarity."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against a wide range of relevant baselines (pattern-based Hearst/Snow, distributional balAPinc/invCL, web-mining Fu, and embedding-based MEmb) and reports precision/recall/F1 in Table 3 and Table 6, and explicitly uses the same test set as Fu et al. (2014) for comparability. It also discusses when prior methods perform better (e.g. MEmb had the best prior F1) and analyses sources of improvement (fusion + lexical rule) and failure cases. Minor weaknesses: it is not always explicit whether all baseline numbers are re-run under identical conditions (training/data) and some more recent competing neural approaches (e.g. Shwartz et al. 2016 is mentioned but not quantitatively compared) are omitted from the results."
+    }
+  }
+}

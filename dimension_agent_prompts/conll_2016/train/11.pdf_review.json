@@ -1,0 +1,44 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 3,
+  "CLARITY": 3,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "REPLICABILITY": 3,
+  "SUBSTANCE": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes. The paper addresses coreference resolution in Wikipedia, a central NLP problem, and targets the NLP/ML community by comparing to state-of-the-art systems (Lee et al., Clark & Manning, Durrett & Klein) and using standard evaluation (CoNLL scorer) on a released dataset (WCR) (sections 5\u20136). The formulation (identifying main-concept mentions using supervised classifiers with Wikipedia/Freebase features) and methodology (SVMs, cross-validation, integration into Dcoref) match expectations for a top venue (sections 4.2, 6.2, 6.4). The work is positioned within recent literature on leveraging KBs for coreference and provides reproducible resources, making it a strong fit for a top NLP/ML conference."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper tackles a concrete, useful problem\u2014identifying all mentions of an article\u2019s main concept in Wikipedia\u2014and demonstrates substantial empirical gains (89% F1, an absolute +13 F1 over the best baseline) while improving a full pipeline (Dcoref++ yields \u2248+4 CoNLL F1) as reported in Sections 6\u20137. It also provides a dedicated WCR resource and releases mention dumps (Section 5 and Conclusion), which encourages follow-on work. However, the contribution is narrow (focused on main-concept detection rather than full coreference) and the dataset is small (30 documents, 60k tokens), limiting immediate broad applicability, so the impact is useful but not transformative."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall the paper is reasonably organized (Related Work -> Approach -> Dataset -> Experiments -> Conclusion) and the experimental table (Table 1) is helpful, but presentation problems reduce clarity. Multiple references to figures (Figure 1, Figure 2) and to dataset details are missing or anonymized, making parts of Section 4 and 5 hard to follow. There are formatting/typographical artifacts (e.g. \"selected5\", inline footnotes/URLs, stray TeX/PDF markers) and occasional awkward phrasing (\"we call it Dcoref\", run\u2011on sentences) that interrupt reading. With those fixes and inclusion of the referenced figures and dataset details the paper would be much clearer."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper tackles a narrowly defined, seldom-studied problem\u2014identifying mentions of the article's main concept in Wikipedia\u2014and differentiates itself from prior work by exploiting Wikipedia markup and Freebase links directly (sections 2, 4) and by releasing a dedicated WCR dataset (section 5). However, the methodological contributions are largely feature engineering and application of standard SVM classifiers (section 6.2) and integration as a sieve into an existing rule-based system (section 6.4), building on prior uses of Wikipedia/Freebase for coreference and entity linking (cited works). Overall this is a moderate, incremental novelty: a clear, focused problem formulation and dataset novelty but no fundamentally new algorithms."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The core claims (a classifier that identifies mentions of a Wikipedia article's main concept and yields large F1 gains, and that adding it to Dcoref gives +4 CoNLL F1) are supported by experimental results reported in the text (e.g. Table 1 comparisons, Dcoref++ improvement). However, the experimental methodology has notable gaps: the WCR dataset is very small (30 documents, 60k tokens) and its full details are withheld (\u201cwill be described in the nonanonymized version\u201d), the key 89% F1 claim is not clearly tied to a held-out test vs. cross-validation, no statistical significance tests are reported, and only a limited set of baselines are evaluated. These issues weaken confidence in the generality of the conclusions despite the reported empirical improvements."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "Partially reproducible: the paper gives some implementation details (two SVMs using LIBSVM, linear kernel, negative-class weight=2.0; CoNLL scorer version; high-level feature families and counts such as 11 boolean features per comparison and 34\u00d74 POS features). However many crucial details are missing or underspecified in the provided text: exact preprocessing and algorithms for extracting the MC and mention representations from Wikipedia/Freebase, precise definitions or code for the hundreds of features, the SVM C hyperparameter and training/split protocol, and the (anonymized) WCR dataset is not accessible from the text. No code release or precise data access instructions are present, so full reproduction would require substantial guesswork."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper evaluates its MC classifier on a dedicated WCR dataset (30 documents, ~60k tokens, ~7k non-singleton mentions) and compares against state-of-the-art baselines, and also shows end-to-end benefit by adding a high-precision sieve to Dcoref (reported +4 CoNLL F1 and 89% F1 for the classifier), which supports the main claims. However, the provided text omits detailed ablation/sensitivity numbers (it only states that it \"analyze[s] the impact of the families of features\") and gives limited experimental scale (small 30-doc dataset). Related work is reasonably thorough (many prior systems and wikification work are cited), and some limitations are acknowledged (dataset size, precision vs. recall tradeoff), but reproducibility is only partly supported: classifier settings (LIBSVM, linear kernel, negative-class weight 2.0) and feature families are described, yet full dataset and non-anonymized details are withheld."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to appropriate recent baselines (Lee et al. 2013 Dcoref, Durrett & Klein 2013/2014, Martschat & Strube 2015, Clark & Manning 2015) and cites relevant prior work on Wikipedia/KB features (Section 2). Comparisons use standard CoNLL metrics and the v8.01 scorer (Table 1 and Section 6), and the paper analyzes differences (genre effects, Dcoref++ yields +4 CoNLL F1 and discusses precision/recall tradeoffs). One minor omission is lack of clarity about whether competing statistical systems were retrained/adapted to the WCR data (the paper notes adaptation is future work), so some comparisons may be against off\u2011the\u2011shelf models rather than fully adapted baselines."
+    }
+  }
+}

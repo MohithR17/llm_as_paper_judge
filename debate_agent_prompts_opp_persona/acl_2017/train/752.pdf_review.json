@@ -1,0 +1,182 @@
+{
+  "MEANINGFUL_COMPARISON": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 3,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "_details": {
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against a broad set of classical and recent AMR parsers/realizers (JAMR, CAMR, CCG, SBMT, SEQ2SEQ, etc.) and uses standard metrics (SMATCH, BLEU), so baseline coverage is strong. However, it appears to omit comparisons to more recent/structured neural or graph-based approaches (e.g., GNN-based AMR models) and uses additional unlabeled Gigaword data in its training pipeline, which risks unfair advantage relative to baselines unless explicitly controlled. The authors report related work thoroughly and acknowledge limitations, but the summary lacks evidence of careful fairness checks (same-data ablations) or detailed analyses isolating each proposed component, which a theory-focused evaluation would require. | B(4): The paper compares against a broad set of relevant baselines (JAMR, CAMR, CCG, SBMT, prior seq2seq and realization work) and uses the standard metrics (SMATCH, BLEU), which aligns with my emphasis on empirical effectiveness. However, the summary omits explicit reporting of the AMR training dataset name and hyperparameters/code, which weakens reproducibility and leaves some uncertainty about exact parity of experimental conditions. The authors do acknowledge when prior methods are competitive and analyze key differences (preprocessing, anonymization, paired self-training), so overall comparisons are strong but marred by minor reporting omissions.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against a broad set of classical and recent AMR parsers/realizers (JAMR, CAMR, CCG, SBMT, SEQ2SEQ, etc.) and uses standard metrics (SMATCH, BLEU), so baseline coverage is strong. However, it appears to omit comparisons to more recent/structured neural or graph-based approaches (e.g., GNN-based AMR models) and uses additional unlabeled Gigaword data in its training pipeline, which risks unfair advantage relative to baselines unless explicitly controlled. The authors report related work thoroughly and acknowledge limitations, but the summary lacks evidence of careful fairness checks (same-data ablations) or detailed analyses isolating each proposed component, which a theory-focused evaluation would require."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against a broad set of relevant baselines (JAMR, CAMR, CCG, SBMT, prior seq2seq and realization work) and uses the standard metrics (SMATCH, BLEU), which aligns with my emphasis on empirical effectiveness. However, the summary omits explicit reporting of the AMR training dataset name and hyperparameters/code, which weakens reproducibility and leaves some uncertainty about exact parity of experimental conditions. The authors do acknowledge when prior methods are competitive and analyze key differences (preprocessing, anonymization, paired self-training), so overall comparisons are strong but marred by minor reporting omissions."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper is well within the venue\u2019s scope, tackling AMR parsing/realization with strong empirical gains and standard metrics that appeal to the NLP community. The only reservations center on missing theoretical justification, ablations, and some reproducibility details, which seem like minor concerns relative to the work\u2019s clear practical impact and audience fit\u2014hence a top score with those caveats noted.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper sits squarely within the scope of a top-tier NLP venue: it tackles AMR parsing/realization with methods (seq2seq, self-training) and metrics (SMATCH, BLEU) that the community expects, and reports strong empirical gains including a claimed 61.9 SMATCH parser and 32.3 BLEU realizer. However, from my Theory Purist perspective there are important concerns that temper a perfect fit: the core claims rely heavily on engineering (anonymization, scope markers, concatenated encoder states, large-scale paired self-training) without accompanying theoretical justification or the detailed ablations I would expect to isolate each contribution, and key reproducibility details (code, hyperparameters) are not reported. Given strong empirical relevance but these methodological and reproducibility gaps, I judge it a good fit with minor concerns rather than a perfect fit."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This is squarely within top-tier NLP/ML scope: it tackles AMR parsing/realization with large-scale empirical methods and strong reported gains (61.9 SMATCH parsing; +5 BLEU to 32.3 for realization) using millions of unlabeled Gigaword sentences. The work targets the right audience by emphasizing practical, scalable self-training and preprocessing strategies that address annotation scarcity \u2014 exactly the kind of empirical innovation and evaluation standards expected at the venue. While code and hyperparameter details aren\u2019t mentioned (which would aid reproducibility), the thorough baselines, use of standard metrics, and clear real-world utility make it an excellent fit."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper provides convincing empirical results showing improvements and plausible modeling choices, but they also concur that important ablations, theoretical justification, and reproducibility/statistical testing details are missing. Because these gaps weaken confidence in the claimed causes of improvement and limit the work\u2019s scientific rigor, I rate soundness/correctness as a 3, reflecting promising empirical evidence but insufficient substantiation of core claims.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents convincing empirical numbers (61.9 SMATCH, 32.3 BLEU) and a plausible engineering recipe, but it lacks the theoretical analysis I would expect for central claims (no justification why paired self-training should converge or why linearization invariance holds under anonymization). Critical ablations are missing: the summary does not report isolated removal of anonymization, scope markers, concatenated encoder states, or self-training, so it is unclear which components drive gains. Experimental methodology is partially sound (reasonable baselines reported) but omits comparisons to structured/graph-based realizers and no statistical significance or reproducibility details (hyperparameters, code) are provided. Given these gaps the core claims are promising but not fully substantiated, so I rate it a 3."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper makes clear empirical claims and presents experiments (SMATCH=61.9, BLEU=32.3) that substantiate the main assertions about preprocessing and paired self-training improving seq2seq AMR performance. There are no mathematical derivations to check, and the modelling choices are plausible. However, the experimental reporting lacks important reproducibility details (hyperparameters, code availability) and there is no mention of statistical significance testing; additionally some robustness claims (linearization agnosticism) would benefit from more ablation detail. These are minor but notable gaps that do not overturn the main empirical conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper does not introduce a fundamentally new modeling paradigm but presents a useful, well-engineered set of techniques and a large-scale paired self-training procedure that yields substantial empirical gains. Given the clear practical contribution\u2014scaling self\u2011training and demonstrating robustness and strong results\u2014balanced against the lack of theoretical novelty and limited ablations, a score of 4 reflects meaningful, non\u2011trivial advancement without claiming foundational innovation.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper assembles a set of engineering choices (anonymization, scope-marked linearization, concatenated encoder states, and unknown-word copying) around a standard seq2seq LSTM-attention architecture and obtains strong empirical results; this is useful but largely incremental rather than a fundamentally new modeling paradigm. The paired self-training procedure (bootstrapping a parser on Gigaword then pre-training a realizer) is the clearest methodological novelty, but the summary lacks theoretical motivation, formal claims about convergence or invariance, and the required ablations isolating each component to show which changes drive gains. From my perspective as a theory-focused reviewer the work provides informative empirical recipes but does not offer principled or surprising new ideas that would substantially change how experts think about AMR modeling."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper does not invent a fundamentally new modelling paradigm\u2014sequence\u2011to\u2011sequence AMR parsing and graph linearization have prior art\u2014but it delivers a notable, pragmatically novel combination: careful anonymization/linearization plus a paired self\u2011training loop that leverages millions of Gigaword sentences to pretrain both parser and realizer. From my applied perspective, scaling self\u2011training to this magnitude and demonstrating robustness to linearization order while obtaining large empirical gains (competitive SMATCH and +5 BLEU on realization) constitutes a meaningful, non\u2011trivial extension beyond existing work. The contributions are clearly differentiated from prior AMR systems and would be informative to practitioners even if the core techniques are engineered rather than theoretically new."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper makes a useful empirical contribution with strong overall results and sensible baselines, including useful sensitivity checks on preprocessing and effective self\u2011training to address data sparsity. However, substantial gaps remain: missing ablations isolating core components, absent hyperparameters/code for reproducibility, limited error analysis, and lack of comparisons to some modern structured/graph methods. Balancing the solid empirical gains against these methodological and reporting weaknesses yields a middle\u2011ground score.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper presents an interesting engineering recipe and compares to many prior seq2seq and classical AMR systems, but it lacks the principled analyses I require: there are no reported ablations isolating core contributions (anonymization, scope markers, concatenated encoder states, and the paired self\u2011training), no hyperparameters or code for reproduction, and no statistical significance testing. Related work coverage is said to be thorough, and some limitations are noted (anonymization necessity and data sparsity), but important experimental sensitivity analyses and comparisons to modern structured/graph\u2011based alternatives (e.g., GNN\u2011based AMR methods) are missing, so the experimental evidence is shallow."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper delivers a strong empirical evaluation: competitive SMATCH and substantially improved BLEU, experiments showing robustness to linearization order, and effective paired self-training on millions of Gigaword sentences addressing data sparsity. It reports sensible baselines and explores preprocessing/anonymization effects (a useful sensitivity check). However, key reproduction details are missing (no hyperparameters, unclear exact training AMR dataset name, and code not mentioned), and some failure-mode analysis appears limited to brief stated limitations rather than in-depth error analysis\u2014hence solid depth with minor gaps."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the work addresses an important practical bottleneck and demonstrates that careful preprocessing plus massive paired self-training yields strong, widely useful results in AMR parsing and realization. Concerns about limited theoretical novelty, missing ablations, and reproducibility details temper the claim of transformative impact, but the pragmatic value and likely adoption of the approach justify a higher-than-middling score. Given its clear practical contribution and potential to change engineering practices, a score of 4 reflects substantial but not revolutionary impact.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical bottleneck\u2014AMR parsing/realization under data sparsity\u2014and demonstrates that careful preprocessing plus massive paired self-training produces competitive parsing (61.9 SMATCH) and strong realization (32.3 BLEU), which could change engineering practices. However, from my perspective the impact is limited by lack of theoretical justification for paired self-training and claimed linearization invariance, missing ablations isolating anonymization/scope markers/encoder concatenation/self-training, and sparse reproducibility details (code/hyperparameters). Because the gains appear driven largely by heavy unlabeled data and heuristics rather than principled analysis, the work is useful but not transformative; it suggests promising directions but needs stronger analysis and controlled comparisons to influence broader research trajectories."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles the important problem of data-sparse AMR parsing/realization and demonstrates a practical, scalable remedy: paired self-training on millions of Gigaword sentences yields competitive parsing (61.9 SMATCH) and a clear state-of-the-art in realization (32.3 BLEU). From a pragmatic perspective, showing that vanilla seq2seq models\u2014when combined with anonymization/preprocessing and massive unlabeled data\u2014can match or exceed prior structured approaches challenges common assumptions and will change how practitioners prioritize engineering vs. linguistic resources. The approach is likely to be widely adopted and extended (e.g., different unlabeled corpora, pretraining schedules, or linearization schemes), opening useful research directions, though it stops short of a transformative theoretical shift. "
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper is well organized, clearly states contributions, and uses consistent notation with effective figures/tables. Remaining clarity issues are mainly missing reproducibility details (unnamed training data, hyperparameters, and some preprocessing/self\u2011training specifics) which warrant improvement but do not obscure the core claims, so a 4 reflects strong overall clarity with room for more methodological detail.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper is adequately organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states main contributions early, but several presentation gaps hinder clarity for a technically exacting reader. Notation and methodological details are sketched (stacked BiLSTM/LSTM, attention, anonymization, scope markers, paired self-training) yet important specifics are omitted or inconsistently reported (e.g., training AMR dataset unnamed, hyperparameters and code not provided), which makes reproduction and understanding of choices difficult. Figures/tables and examples are reported as effective overall, and the writing is generally adequate, but some sections (preprocessing choices, the paired self-training pipeline, and when heuristics break) are under-explained and would benefit from more precise definitions and ablation-oriented exposition."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized with a clear intro\u2192method\u2192experiments\u2192conclusion flow and the main contributions are stated up front (paired self\u2011training, preprocessing/anonymization, strong seq2seq baselines). Notation and presentation are generally consistent and figures/tables/examples are reported as effective and informative; related work coverage is thorough. Minor presentation gaps remain (hyperparameters and code availability are not reported, and some methodological details tied to reproducibility are thin), but these do not obscure the core claims or results."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Sequence-to-sequence models with careful preprocessing and a paired self-training procedure using millions of unlabeled sentences can achieve competitive AMR parsing performance (61.9 SMATCH) without heavy use of external annotated semantic resources.",
+      "Their approach obtains state-of-the-art AMR realization performance (32.3 BLEU), outperforming prior work by over 5 BLEU points.",
+      "Seq2seq models are largely agnostic/robust to the choice of graph linearization order when anonymization and preprocessing are applied.",
+      "A paired training/self-training procedure that bootstraps a parser on unlabeled Gigaword sentences and then pre-trains an AMR realizer is effective to mitigate data sparsity."
+    ],
+    "methodology": "Use a stacked bidirectional-LSTM encoder and stacked LSTM decoder sequence-to-sequence model with global attention, unknown-word replacement/copying, concatenated encoder hidden states at every layer, linearize AMR graphs with scope markers and anonymize named entities, and employ a paired self-training procedure that pre-trains on parser-produced AMRs from large unlabeled corpora (Gigaword) then fine-tunes on human-annotated data.",
+    "datasets": [
+      "Gigaword (unlabeled external corpus)",
+      "Training AMR dataset D (not explicitly named in text)"
+    ],
+    "baselines": [
+      "JAMR (Flanigan et al., 2014)",
+      "CAMR (Wang et al., 2016)",
+      "CCG (Artzi et al., 2015)",
+      "SBMT (Pust et al., 2015)",
+      "SEQ2SEQ (Peng and Xue, 2017)",
+      "CHAR-LSTM (Barzdins and Gosko, 2016)",
+      "PBMT (Pourdamghani et al., 2016)",
+      "TSP (Song et al., 2016)",
+      "TREETOSTR (Flanigan et al., 2016)"
+    ],
+    "metrics": [
+      "SMATCH",
+      "BLEU"
+    ],
+    "limitations": [
+      "Seq2seq-based AMR parsing is largely ineffective without anonymization (sparsity issue).",
+      "AMR annotation is expensive and training data is limited (data sparsity challenge)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - AMR parsing and AMR realization (seq2seq models)",
+    "writing_quality": "adequate"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior researcher with a PhD in Computational Linguistics and a track record of work on formal semantics and provable properties of neural models.",
+      "traits": [
+        "Penalizes papers that lack theoretical analysis or formal justification for core claims (e.g., why paired self-training should converge or why linearization invariance holds).",
+        "Requires explicit ablations isolating each claimed contribution (expects separate scores when removing anonymization, scope markers, concatenated encoder states, and self-training).",
+        "Deducts points for heavy engineering or heuristic preprocessing without principled motivation (e.g., anonymization and scope markers) unless accompanied by analysis explaining when they break.",
+        "Demands comparisons to structured or graph-based baselines (e.g., GNN-based AMR parsers/realizers) and statistical significance testing when claiming state-of-the-art."
+      ],
+      "reviewing_style": "Critical and conservative: emphasizes principled contributions, reproducibility of claims, and penalizes work that appears to win primarily through engineering or scale without explanations."
+    },
+    "reviewer_b": {
+      "name": "Pragmatic Empiricist",
+      "background": "Applied NLP researcher with industry and academic experience building large-scale sequence models and deploying parsers/realizers in production systems.",
+      "traits": [
+        "Rewards substantial empirical gains and practical utility (will boost score for large absolute improvements like +5 BLEU or competitive SMATCH without heavy external resources).",
+        "Values effective use of unlabeled data and scalable self-training; gives credit when methods leverage large corpora (e.g., millions of Gigaword sentences) to overcome annotation scarcity.",
+        "Prefers thorough experimental evaluation and reproducibility: rewards papers that report multiple linearizations, robustness checks, and implementation details enabling replication.",
+        "Is tolerant of engineering and preprocessing if it leads to clear, reproducible improvements and provides ablations demonstrating their impact."
+      ],
+      "reviewing_style": "Practical and results-oriented: prioritizes empirical effectiveness, scalability, and clear demonstrations that methods improve real-world performance even if theoretical justification is limited."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

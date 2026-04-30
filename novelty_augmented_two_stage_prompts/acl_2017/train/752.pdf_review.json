@@ -1,0 +1,102 @@
+{
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses AMR parsing and realization with seq2seq models and large-scale self-training using Gigaword\u2014topics squarely within top NLP/ML venues. It compares to standard baselines (JAMR, CAMR, SEQ2SEQ, etc.) and uses community metrics (SMATCH, BLEU), and discusses practical data-scarcity issues and preprocessing choices relevant to the audience. The methodology (seq2seq with attention, anonymization, paired self-training) and the scale of unlabeled data make it directly relevant to current research in representation learning and structured prediction. Overall the scope, evaluation standards, and positioning are well aligned with a top-tier conference.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main empirical claims (competitive 61.9 SMATCH for parsing and 32.3 BLEU for realization) are supported by experiments comparing against sensible baselines and using large unlabeled data with a paired self-training procedure. There are no mathematical derivations to check, and the learning approach appears sound, but the paper omits important reproducibility details (no hyperparameters, code, or statistical significance testing reported). These omissions are minor relative to the empirical evidence but leave some questions about robustness and exact reproducibility, so I deduct one point.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important problem of data sparsity for AMR parsing/realization by showing that careful preprocessing plus a paired self-training procedure over millions of unlabeled Gigaword sentences makes simple seq2seq models competitive (61.9 SMATCH for parsing) and yields a notably stronger AMR realization result (32.3 BLEU, +5 BLEU over prior SOTA). These results would likely change how researchers view the utility of straightforward seq2seq architectures for structured semantic tasks and suggest a practical route\u2014large-scale unlabeled bootstrapping and anonymization\u2014to overcome annotation scarcity. The work opens clear follow-up directions (large-scale pretraining/bootstrapping for graph-to-sequence tasks) and is likely to be adopted or built upon by others working on AMR and related semantic formalisms, though its impact is somewhat focused within semantic parsing/realization rather than broadly across all NLP.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experimental evaluation is fairly comprehensive: the paper compares to a wide range of prior AMR parsers and realisers, evaluates both parsing (SMATCH) and generation (BLEU), and leverages large unlabeled Gigaword data via paired self-training to support its central claims. The authors explicitly analyze the impact of anonymization (noting seq2seq models fail without it) and discuss data-scarcity limitations, and related work coverage is reported as thorough (consistent with overlapping prior neural AMR studies [1\u20134]). However, important reproducibility details are missing (no hyperparameters or code mentioned), and the summary does not indicate broader ablation or sensitivity analyses beyond anonymization, so some experimental gaps remain.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a logical flow (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (self-training on millions of unlabeled sentences, competitive SMATCH and strong BLEU results). The writing quality is good, related work coverage is thorough, and examples/tables appear effective enough to support claims about preprocessing and linearization robustness. Minor presentation gaps include absence of reported hyperparameters and unspecified code availability, which slightly reduce reproducibility and clarity about experimental details.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper combines established seq2seq architectures and preprocessing (anonymization, linearization) with a large-scale paired self-training procedure using millions of unlabeled Gigaword sentences to address data sparsity\u2014an approach that meaningfully extends prior neural AMR work (e.g., Neural AMR; character-level and data-sparsity papers from 2017). Its empirical claims\u2014robustness to graph linearization, reduced reliance on alignments, and a large BLEU gain for realization\u2014are clearly differentiated from earlier efforts that did not exploit such massive self-training or systematically study linearization effects. While the core components are drawn from existing methods, the scale of unlabeled pretraining and the specific findings about linearization and anonymization constitute a notable and non-trivial advance rather than a purely incremental replication.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to a wide set of relevant baselines (JAMR, CAMR, CCG, SBMT/PBMT, recent seq2seq and char-LSTM approaches) and uses standard metrics (SMATCH, BLEU) and comparable datasets (AMR parallel set, Gigaword). It explicitly positions itself relative to recent neural seq2seq AMR work and data-sparsity papers and analyzes how preprocessing and paired self-training differ from prior methods. Minor gaps remain (e.g., hyperparameters/code not reported, and it is not fully explicit in the summary about acknowledging any baselines that might outperform it), but overall the comparisons are comprehensive and fair.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "With careful preprocessing and a paired self-training procedure leveraging millions of unlabeled sentences, seq2seq models can overcome data sparsity for AMR tasks.",
+      "For AMR parsing they obtain competitive performance of 61.9 SMATCH without heavy use of external annotated semantic resources.",
+      "For AMR realization they outperform prior state-of-the-art by over 5 BLEU points, achieving 32.3 BLEU.",
+      "Seq2seq models are largely agnostic to the linearization order used to convert AMR graphs to sequences and can learn to ignore artifacts introduced by graph-to-sequence conversion."
+    ],
+    "methodology": "They use stacked bidirectional-LSTM encoder / stacked LSTM decoder seq2seq models with global attention and unknown-word replacement, combined with preprocessing (AMR linearization, anonymization) and a paired training/self-training procedure that bootstraps from an AMR parser trained on labeled data to parse millions of Gigaword sentences for pretraining and then fine-tunes on the labeled set.",
+    "datasets": [
+      "Gigaword (unannotated external corpus, Napoles et al., 2012)",
+      "AMR parallel dataset (training set D; name not explicitly given in text)"
+    ],
+    "baselines": [
+      "JAMR (Flanigan et al., 2014)",
+      "CAMR (Wang et al., 2016)",
+      "CCG (Artzi et al., 2015)",
+      "SBMT (Pust et al., 2015)",
+      "PBMT (Pourdamghani et al., 2016)",
+      "TSP (Song et al., 2016)",
+      "TREETOSTR (Flanigan et al., 2016)",
+      "SEQ2SEQ (Peng and Xue, 2017)",
+      "CHAR-LSTM (Barzdins and Gosko, 2016)"
+    ],
+    "metrics": [
+      "SMATCH",
+      "BLEU"
+    ],
+    "limitations": [
+      "Seq2seq based AMR parsing is largely ineffective without anonymization (sparsity remains a problem absent anonymization).",
+      "AMR annotation is expensive and training data is limited (data scarcity is a challenge motivating their approach)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - AMR parsing and AMR realization (sequence-to-sequence models)",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 5,
+    "paper_novelty_mean": 0.3727,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

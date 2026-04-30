@@ -1,0 +1,92 @@
+{
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "IMPACT": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This work is squarely within the scope of top NLP/ML venues: it proposes a character-level representation method (visual CNN embeddings) and evaluates them on multilingual (Chinese/Japanese/Korean) text classification from Wikipedia with standard neural encoders and accuracy metrics. The methodology (CNN for character images + GRU sequence encoder) and fusion experiments against a lookup baseline match the methods and evaluation standards expected at these conferences. The audience is appropriate (character-level/NLP representation learning) and the paper is positioned within the community through multilingual experiments and thorough related-work coverage.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper provides solid experimental evidence for its claims: it evaluates visual CNN character embeddings on multiple CJK datasets, demonstrates improvements for low-frequency characters, and explores complementary fusion strategies (early/late/fallback). It includes analyses such as occlusion sensitivity and visualization of learned embeddings, and reports hyperparameters, while also noting limitations (data-size sensitivity and imperfect cross-script transfer). Related work is described as thorough, but reproducibility is only partial (code not mentioned) and some additional ablations on low-resource settings or broader tasks would strengthen generality, so the work is strong but not exhaustive.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses a relevant problem\u2014representing rare/low-frequency CJK characters\u2014by proposing visual glyph-based embeddings that demonstrably improve classification accuracy and complement standard lookup embeddings via fusion. These results are practically useful for languages with large character sets and suggest a concrete method for handling rare characters, but gains depend on sufficient training data and transfer across scripts is imperfect, limiting immediate broad applicability. Thus the work is a useful, moderate-impact contribution that could be built upon but is unlikely to be transformative on its own.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are supported by experiments showing visual CNN character embeddings improve handling of rare characters and are complementary to lookup embeddings, with fusion methods yielding consistent gains on the Wikipedia title classification task across CJK datasets. There are no mathematical derivations to check, and the experimental setup uses a reasonable baseline (lookup) and multiple fusion strategies; however, the summary does not report statistical significance testing and notes reduced effectiveness in low-resource settings and imperfect transfer between traditional and simplified Chinese. These are minor methodological gaps that do not overturn the core experimental evidence, so the paper is largely technically sound.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper compares its visual CNN character embeddings against a standard character-lookup baseline on the same Wikipedia-derived datasets and metrics, and explores fusion variants (fair same-data comparisons). However, it appears to lack comparisons to other relevant alternative approaches for handling rare characters (e.g., radical/subcharacter decomposition methods or other recent character-level models), so important baselines are missing. The paper does analyze differences between its model and the lookup baseline (including where visual features help and noted limitations) and reportedly has thorough related-work discussion, but empirical comparisons are incomplete, yielding a partial but not comprehensive evaluation.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a distinct perspective\u2014representing characters by rendered glyph images and learning visual embeddings via a CNN integrated end-to-end with an RNN classifier\u2014which is not shown in the retrieved prior work and directly targets rare/low-frequency characters in CJK scripts. While the approach composes well-known components (CNNs, GRUs, fusion strategies), applying visual glyph-based embeddings to character-level NLP and demonstrating complementary gains with lookup embeddings is a notable and clearly differentiated contribution. The methodology and empirical claims (improvements on rare characters, various fusion methods, end-to-end backprop through the CNN) represent a meaningful, non-trivial extension beyond standard lookup embeddings that would inform experts in the area.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a clear flow from introduction through method and experiments, and the main contributions (visual glyph embeddings, improvements on rare characters, and fusion methods) are stated early. Notation and methodology are presented clearly (rendering characters as images, CNN to embeddings, GRU encoder, classifiers) and hyperparameters and related work are reported thoroughly. Figures/examples (glyph renderings) and tables of classification accuracy appear to support the claims and the writing is overall good, though a small number of presentation details could be tightened for maximal clarity.",
+      "survey_injected": false,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Characters can be represented by rendering their glyphs to images and learning visual embeddings via a CNN, which can be used in downstream NLP tasks.",
+      "The visual character embeddings improve handling of instances containing rare/low-frequency characters in Chinese, Japanese, and Korean for a text classification task.",
+      "Visual embeddings are complementary to standard (lookup) character embeddings; combining them via fusion (early, late, fallback) yields consistent improvements over the lookup-only baseline.",
+      "The learned visual model focuses on the character parts that carry categorical/semantic content, producing embeddings that are coherent in visual space."
+    ],
+    "methodology": "Each character is rendered as an image (e.g., 36x36) and passed through a convolutional neural network to produce a visual character embedding; sequences of these embeddings are fed to a GRU-based RNN encoder and a classifier for Wikipedia-derived category prediction. Fusion with standard lookup embeddings is explored via early, late, and fallback fusion methods.",
+    "datasets": [
+      "Wikipedia-derived dataset of article titles with 12 main categories (Chinese traditional, Chinese simplified, Japanese, Korean)"
+    ],
+    "baselines": [
+      "Lookup model (standard character embedding lookup)"
+    ],
+    "metrics": [
+      "classification accuracy"
+    ],
+    "limitations": [
+      "Smaller amounts of training data adversely impact the CNN\u2019s ability to learn useful visual features, so there is not a clear gain in low-resource scenarios.",
+      "When training on traditional Chinese and testing on simplified Chinese, accuracy drops (around 40% vs 55%), indicating imperfect transfer between scripts under some conditions."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - character-level embeddings / text classification",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 1,
+    "paper_novelty_mean": 0.5273,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON",
+      "ORIGINALITY"
+    ],
+    "total_dims": 7
+  }
+}

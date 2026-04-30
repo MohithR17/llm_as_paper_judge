@@ -1,0 +1,71 @@
+{
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported: GBS is described algorithmically (generate/start/continue operations, coverage vectors) and evaluated against standard beam search across multiple datasets with BLEU improvements reported for post-editing and domain adaptation. Mathematical details seem consistent for an algorithmic contribution (no formal proofs are required here) and the authors acknowledge the O(ktc) runtime and mitigation strategies. The experimental methodology includes reasonable baselines and multiple corpora, but the summary does not mention statistical significance testing or code release, and the runtime/scalability tradeoffs could use fuller empirical analysis. Overall the work is technically sound with only minor missing evidence related to significance and scalability."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper evaluates Grid Beam Search against standard time-based beam search and baseline translation models using BLEU across multiple datasets (Europarl, CommonCrawl, JRC-Aquis, OpenSubtitles, Autodesk Post-Editing), which supports fair, same-data/same-metric comparisons. The authors discuss limitations (runtime O(ktc)) and cover related work adequately, showing analysis of differences versus standard decoding. However, the comparisons appear to omit direct empirical baselines from other specialized constrained-decoding methods and do not explicitly report when prior methods perform comparably or better, so there are minor omissions."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a clear algorithmic extension (Grid Beam Search) that meaningfully augments standard beam search to enforce arbitrary lexical constraints\u2014including multi-token and discontinuous phrases\u2014without retraining models and while supporting subword units. This is a non-trivial technical contribution that generalizes decoding for any sequence model and is distinguished from prior time-based beam search baselines in the summary. While not a radical theoretical breakthrough, the method and its stated capabilities (constraint coverage, generate/start/continue ops, and parallelization) represent notable and practically useful novelty that would inform experts."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014enforcing pre-specified lexical constraints during sequence generation\u2014using Grid Beam Search that requires no model or training changes and supports subword units, which increases applicability across sequence models. Empirical results showing large improvements in interactive post-editing and significant gains in domain adaptation (across Europarl, CommonCrawl, JRC-Aquis, OpenSubtitles, Autodesk datasets) suggest the approach could change practitioner workflows and be widely adopted. While the O(ktc) runtime and need for parallelization are notable limitations, the generality of the method likely opens new research directions and has impact beyond a narrow niche."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper's topic\u2014lexically constrained decoding for sequence generation (Grid Beam Search)\u2014is squarely within the scope of top NLP/ML conferences, addressing neural machine translation and general sequence models. It targets the right audience by proposing an algorithm that works with off-the-shelf seq2seq models and subword units and evaluates on standard datasets (Europarl, CommonCrawl, JRC-Aquis, OpenSubtitles, Autodesk post-editing) using common metrics (BLEU) and baselines (beam search). The methodology, experimental setup, and explicit discussion of limitations (runtime complexity, unknown-token handling) align well with the expectations and concerns of the venue's research community."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized with a clear progression from introduction to method (Grid Beam Search with generate/start/continue operations and coverage vectors) to experiments (multiple datasets and BLEU evaluation) and conclusion, and the main contributions are stated early (GBS algorithm, support for multi-token/discontinuous constraints, and applicability without retraining). Notation and algorithmic descriptions seem consistent and well-defined (e.g., open/closed hypotheses, coverage vectors), and experimental results and comparisons (datasets, baselines, BLEU scores) suggest figures/tables are informative. Writing quality is reported as good and related work/hyperparameters are adequately covered, though the discussion of practical efficiency (naive O(k t c) complexity) could be emphasized more for readers concerned with runtime trade-offs."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are reasonably comprehensive: tests on multiple corpora (Europarl, CommonCrawl, JRC-Aquis, OpenSubtitles and an Autodesk post-editing corpus) with comparisons to standard beam search and BLEU evaluation support the main claims about effectiveness. The paper reports hyperparameters and discusses algorithmic details and practical limits (runtime O(ktc), handling of unknown tokens), and related work coverage is described as adequate. However, the summary does not indicate ablation or sensitivity analyses (e.g., varying number/type of constraints or detailed runtime/parallelization trade-offs), and code availability is not mentioned, which limits full reproducibility."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "We present Grid Beam Search (GBS), an algorithm which extends beam search to allow the inclusion of pre-specified lexical constraints in sequence generation.",
+      "Lexical constraints can take the form of words or multi-token phrases (including discontinuous phrases) and can be incorporated without modifying model parameters or training data.",
+      "GBS can be used with any sequence model (e.g., NMT with attention) and supports subword units to handle unknown or rare tokens.",
+      "Experiments show GBS provides large improvements in translation quality in interactive post-editing scenarios and significant gains in domain adaptation."
+    ],
+    "methodology": "Grid Beam Search (GBS) organizes beams over timesteps and constraint-coverage (maintaining open/closed hypotheses and coverage vectors) to enforce lexical constraints during decoding; it uses generate/start/continue operations with the underlying sequence model and can operate on subword units and be parallelized across beams.",
+    "datasets": [
+      "Europarl",
+      "CommonCrawl",
+      "JRC-Aquis",
+      "OpenSubtitles",
+      "Autodesk Post-Editing corpus"
+    ],
+    "baselines": [
+      "standard time-based beam search",
+      "baseline translation models"
+    ],
+    "metrics": [
+      "BLEU"
+    ],
+    "limitations": [
+      "Naive GBS runtime complexity is O(ktc) (beam size k, timesteps t, constraints c), i.e., beams are multiplied by number of constraints, requiring efficiency considerations and parallelization.",
+      "Constraints may contain tokens unseen in training (unknown tokens), which poses a risk unless mitigated by using subword representations."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - lexically constrained decoding / neural machine translation",
+    "writing_quality": "good"
+  }
+}

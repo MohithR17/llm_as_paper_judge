@@ -1,0 +1,178 @@
+{
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 4,
+  "APPROPRIATENESS": 4,
+  "SUBSTANCE": 4,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and readable: the introduction, method (MDP formulation and Q-learning/CBOW estimator), experiments (SCWS results, data-efficiency claim), and conclusion follow a clear logical flow and the main contributions are stated early. Notation and methodological descriptions appear consistent and the writing quality is good, with thorough related work and reported hyperparameters aiding reproducibility. Figures/tables and examples (e.g., reward/negative-sampling setup, evaluation metrics AvgSimC/MaxSimC) are effective, though the presentation would benefit from a more explicit, formal statement of the MDP objective and clearer pointers to where theoretical assumptions or convergence guarantees would be found. | B(4): Overall the paper is well organized and communicates the DRL-Sense framework clearly (intro \u2192 method \u2192 experiments \u2192 conclusion) with main contributions stated early (joint RL-based sense selection and representation, linear-time inference, non-parametric sense counts). Notation and methodological descriptions appear consistent and practical for implementation (CBOW-based Q-estimator, skip-gram representation, reward signal) and hyperparameters and related work are reported thoroughly. Figures/tables are described as effective and the writing quality is good, though a few explanatory points (e.g., nuances of the policy-gradient drawbacks and early greedy selection) could be clarified to aid readers reproducing the approach.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and readable: the introduction, method (MDP formulation and Q-learning/CBOW estimator), experiments (SCWS results, data-efficiency claim), and conclusion follow a clear logical flow and the main contributions are stated early. Notation and methodological descriptions appear consistent and the writing quality is good, with thorough related work and reported hyperparameters aiding reproducibility. Figures/tables and examples (e.g., reward/negative-sampling setup, evaluation metrics AvgSimC/MaxSimC) are effective, though the presentation would benefit from a more explicit, formal statement of the MDP objective and clearer pointers to where theoretical assumptions or convergence guarantees would be found."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and communicates the DRL-Sense framework clearly (intro \u2192 method \u2192 experiments \u2192 conclusion) with main contributions stated early (joint RL-based sense selection and representation, linear-time inference, non-parametric sense counts). Notation and methodological descriptions appear consistent and practical for implementation (CBOW-based Q-estimator, skip-gram representation, reward signal) and hyperparameters and related work are reported thoroughly. Figures/tables are described as effective and the writing quality is good, though a few explanatory points (e.g., nuances of the policy-gradient drawbacks and early greedy selection) could be clarified to aid readers reproducing the approach."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares to a broad set of relevant prior work (Huang et al., Neelakantan et al., Bartunov et al., Li & Jurafsky, etc.) and evaluates on standard SCWS metrics (Spearman \u03c1, AvgSimC, MaxSimC). However, claims of strong data-efficiency (1/100 training data) are not clearly validated against tuned non-RL baselines trained under matched low-data budgets, so the comparisons are not fully fair for that claim. The authors do acknowledge when alternative formulations (policy-gradient joint probabilistic models) have drawbacks and clearly describe methodological differences, and the related-work coverage is thorough\u2014hence a near-comprehensive but not perfect comparison. | B(4): The paper compares against a comprehensive set of established multi-sense embedding baselines (Huang et al., Neelakantan et al., Bartunov et al., etc.) and evaluates on the standard SCWS benchmark with appropriate metrics (Spearman \u03c1, AvgSimC, MaxSimC) using the same Wikipedia corpus. The authors report hyperparameters, discuss limitations, and explicitly acknowledge when prior methods are comparable; they also analyze differences between their RL formulation and probabilistic/greedy alternatives. Minor concerns remain about absolute fairness of training-data/compute parity across all baselines (e.g., some prior work may have used different corpora or larger resources), so I mark it strong but not fully comprehensive.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares to a broad set of relevant prior work (Huang et al., Neelakantan et al., Bartunov et al., Li & Jurafsky, etc.) and evaluates on standard SCWS metrics (Spearman \u03c1, AvgSimC, MaxSimC). However, claims of strong data-efficiency (1/100 training data) are not clearly validated against tuned non-RL baselines trained under matched low-data budgets, so the comparisons are not fully fair for that claim. The authors do acknowledge when alternative formulations (policy-gradient joint probabilistic models) have drawbacks and clearly describe methodological differences, and the related-work coverage is thorough\u2014hence a near-comprehensive but not perfect comparison."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against a comprehensive set of established multi-sense embedding baselines (Huang et al., Neelakantan et al., Bartunov et al., etc.) and evaluates on the standard SCWS benchmark with appropriate metrics (Spearman \u03c1, AvgSimC, MaxSimC) using the same Wikipedia corpus. The authors report hyperparameters, discuss limitations, and explicitly acknowledge when prior methods are comparable; they also analyze differences between their RL formulation and probabilistic/greedy alternatives. Minor concerns remain about absolute fairness of training-data/compute parity across all baselines (e.g., some prior work may have used different corpora or larger resources), so I mark it strong but not fully comprehensive."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Framing sense selection as an MDP and applying a Q-learning style CBOW-based estimator to jointly train sense selection and representation modules is a notable and concrete methodological departure from prior multi-sense embedding work (e.g., Neelakantan et al., Bartunov et al.). The paper also claims practical contributions (linear-time selection, non-parametric sense count) that clearly differentiate it from earlier clustering/mixture approaches. However, much of the representation machinery (CBOW/skip-gram, negative sampling) is standard and the novelty lies primarily in the RL formulation and joint training procedure rather than wholly new modeling primitives, so the contribution is notable but not a radical paradigm shift. | B(4): DRL-Sense offers a notable and practically novel perspective by casting sense selection as an MDP and applying a Q-learning style CBOW estimator jointly with a skip-gram style sense representation learner \u2014 this framing and joint RL/embedding training appears distinct from prior multi-sense methods. The paper also claims efficient linear-time sense selection and supports non-parametric sense counts, which are useful, deployable contributions beyond prior fixed- or heuristic-based sense assignment approaches. That said, many building blocks (CBOW, skip-gram, Q-learning) are established, so the work is more a creative and well-differentiated combination than a wholly new theoretical paradigm, hence not the maximal originality score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Framing sense selection as an MDP and applying a Q-learning style CBOW-based estimator to jointly train sense selection and representation modules is a notable and concrete methodological departure from prior multi-sense embedding work (e.g., Neelakantan et al., Bartunov et al.). The paper also claims practical contributions (linear-time selection, non-parametric sense count) that clearly differentiate it from earlier clustering/mixture approaches. However, much of the representation machinery (CBOW/skip-gram, negative sampling) is standard and the novelty lies primarily in the RL formulation and joint training procedure rather than wholly new modeling primitives, so the contribution is notable but not a radical paradigm shift."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "DRL-Sense offers a notable and practically novel perspective by casting sense selection as an MDP and applying a Q-learning style CBOW estimator jointly with a skip-gram style sense representation learner \u2014 this framing and joint RL/embedding training appears distinct from prior multi-sense methods. The paper also claims efficient linear-time sense selection and supports non-parametric sense counts, which are useful, deployable contributions beyond prior fixed- or heuristic-based sense assignment approaches. That said, many building blocks (CBOW, skip-gram, Q-learning) are established, so the work is more a creative and well-differentiated combination than a wholly new theoretical paradigm, hence not the maximal originality score."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper is a strong fit for a top NLP/ML venue, introducing a novel DRL formulation for multi\u2011sense embeddings with solid empirical results and appropriate baselines/metrics. However, Reviewer A\u2019s concerns about limited formal justification of the MDP design and missing controlled ablations/tuned low\u2011data baselines indicate the work needs additional analysis to fully satisfy top\u2011tier standards, so a slightly conservative score of 4 is warranted.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper sits squarely within the NLP/ML embedding literature \u2014 it proposes a new learning framework (DRL\u2011Sense) for multi\u2011sense embeddings, evaluates on SCWS, compares to major multi\u2011sense baselines, and reports standard metrics (Spearman \u03c1, AvgSimC/MaxSimC). From a theory\u2011first perspective the fit is good but not perfect: the RL/MDP formulation is novel and of clear interest to the community, yet the summary suggests limited formal justification of the MDP choice and potential absence of the controlled ablations and tuned low\u2011data non\u2011RL baselines I would expect for top venues (especially given the strong claim of 1/100 data efficiency). Overall it is appropriate for a top NLP/ML venue but would benefit from stronger theoretical grounding and more systematic ablation to be a perfect fit."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP/ML venue: it introduces a practical, novel framework (DRL\u2011Sense) that formulates sense selection as an MDP and jointly trains sense selection and representation modules, delivering linear\u2011time inference and non\u2011parametric sense counts \u2014 properties I value for deployability. Empirically it achieves state\u2011of\u2011the\u2011art results on SCWS and strong data\u2011efficiency claims (comparable to word2vec with 1/100 training data), and it compares against appropriate baselines using standard metrics (Spearman \u03c1, AvgSimC/MaxSimC). The methodology and evaluations are aligned with community expectations, and although code release isn\u2019t mentioned, the algorithmic clarity and reported hyperparameters make it relevant to the venue\u2019s applied ML/NLP audience."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper has a solid empirical comparison against relevant baselines, reports hyperparameters, and candidly discusses failure modes, but lacks key controlled ablations, theoretical justification for the RL formulation, and a code release which weakens reproducibility. Because the strong experimental benchmarking and acknowledgement of limitations outweigh the missing analyses, I give a 4 while noting the paper would benefit from more sensitivity/ablation studies and a public implementation.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides reasonable empirical comparisons to a broad set of multi-sense baselines and reports hyperparameters, and it explicitly discusses several failure modes of the policy-gradient formulation. However, from the summary there is no formal/theoretical justification or convergence analysis for the MDP/Q-learning formulation, and key controlled ablations (e.g., systematic sensitivity to reward shaping, Q-estimator architecture, negative sampling rate, and comparisons to tuned non-RL low-data baselines) appear absent. Related work coverage is thorough, but reproducibility is only partial (code not mentioned) and the empirical claims about data-efficiency lack matched-budget non-RL baselines, so the evaluation is adequate but missing important analyses."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the experimental evaluation is solid: DRL\u2011Sense is compared against a wide set of relevant baselines and evaluated on standard contextual similarity metrics (Spearman, AvgSimC, MaxSimC) on SCWS, and hyperparameters are reported. The paper also discusses limitations of alternative formulations (policy\u2011gradient) and addresses exploration issues, which is good. However the summary does not mention explicit ablation or sensitivity analyses (e.g., effect of non\u2011parametric sense counts, exploration strategies, or training\u2011data reduction beyond the 1/100 claim), and code is not reported which weakens reproducibility despite provided hyperparameters. Given strong baseline comparisons and acknowledgement of failure modes but missing some important analyses and release, I rate it a 4."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses an important practical problem and provides empirically strong, deployable contributions (SOTA on SCWS, efficient linear-time sense selection, and non\u2011parametric sense counts). Concerns about limited theoretical analysis and need for broader replication temper claims of transformational impact, but the clear empirical gains and engineering advances make the work likely to influence practitioners and follow-up research, so a moderately high impact score is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important and practical problem (multi-sense word representations) and demonstrates promising empirical gains (SOTA on SCWS and comparable embeddings using 1/100 of data), plus useful engineering contributions (linear-time sense selection and non\u2011parametric sense counting). From my theory-first perspective, the absence of formal guarantees or convergence analysis for the MDP/RL formulation and no indication of thorough ablations against tuned non\u2011RL low\u2011data baselines limits how strongly this will change prevailing modelling choices. Nonetheless, framing sense selection as an RL problem and the joint training architecture open credible new research directions that others will likely build on, so the impact is moderate rather than transformative."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles the important practical problem of scalable multi-sense embeddings with a novel RL-based joint training approach that yields linear-time sense selection and supports non-parametric sense counts \u2014 properties I prize for deployability. The reported SOTA on SCWS and competitive performance using only 1/100 of training data suggest strong empirical impact that could change practitioner choices for sense modeling. The method\u2019s efficiency and automated sense-number selection open clear avenues for applied work and integration into downstream systems, though it stops short of being transformative across NLP without broader replication and public code. "
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper presents clear claims, reasonable empirical support on SCWS, and a plausible RL-based method, but they also note gaps: limited theoretical justification for the MDP formulation, missing ablations on key RL design choices, and incomplete low-data comparisons and reproducibility details. Given these substantive methodological and empirical omissions that weaken confidence in the claimed advantages of the RL approach, a middle score is warranted until more thorough analysis and experiments are provided.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its main claims and provides empirical evidence on SCWS and comparison to multiple multi-sense baselines, and it reports hyperparameters and analyses of some failure modes. However, from the summary there is no accompanying theoretical justification for casting sense selection as an MDP (no proofs, convergence analysis, or conditions when the RL formulation is preferable), and the empirical claims about data-efficiency lack comparison to tuned non-RL baselines trained under matched low-data regimes. There are also missing systematic ablations over key RL choices (reward shaping, Q-estimator design, negative-sampling rate) that my reviewer persona requires to accept the methodological choices without reservation."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and appear supported by experiments on SCWS and comparisons to relevant baselines, and the proposed RL-based joint training with a CBOW Q-estimator is a plausible, implementable approach that explains the linear-time sense selection and non-parametric sense control. Mathematical framing as an MDP and use of Q-learning/negative sampling is reasonable from the summary; no explicit proof flaws are reported but some theoretical limitations (policy-gradient issues, exploration) are acknowledged. Experimental methodology seems sound in terms of baselines and metrics, though the summary doesn't mention statistical significance or code release which weakens reproducibility. Overall the work is technically solid with minor concerns about exploration behavior and completeness of empirical reporting."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes DRL-Sense, a novel reinforcement learning based framework that jointly trains a sense selection module and a sense representation module for multi-sense word embeddings.",
+      "Achieves state-of-the-art performance on contextual word similarity (SCWS) and comparable performance to word2vec while using only 1/100 of training data.",
+      "Introduces an efficient, linear-time sense selection procedure using embeddings and supports non-parametric learning to automatically decide the number of senses per word."
+    ],
+    "methodology": "DRL-Sense models sense selection as an MDP and applies a Q-learning style approach with a CBOW-based Q-value estimator to select senses; selected senses are passed to a skip-gram style sense representation module (negative sampling) and the collocation likelihood is used as a reward to jointly train both modules.",
+    "datasets": [
+      "April 2010 Wikipedia dump",
+      "Stanford Contextual Word Similarities (SCWS)"
+    ],
+    "baselines": [
+      "Huang et al. (2012)",
+      "Neelakantan et al. (2014)",
+      "Tian et al. (2014)",
+      "Qiu et al. (2016)",
+      "Bartunov et al. (2016)",
+      "Li and Jurafsky (2015)"
+    ],
+    "metrics": [
+      "Spearman's rank correlation (\u03c1)",
+      "AvgSimC",
+      "MaxSimC"
+    ],
+    "limitations": [
+      "Policy-gradient joint probabilistic formulation has drawbacks: requires fitting a valid probability distribution which underestimates probabilities of senses not yet selected.",
+      "Stochastic gradient ascent on the joint log likelihood can decrease the probability of correctly selected senses because log Co \u2264 0.",
+      "Greedy sense selection can fail early in training due to exploration-exploitation issues (necessitating exploration like dropout)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - multi-sense word representations / word embeddings",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory-First Linguisticist",
+      "background": "Senior researcher with a PhD in computational linguistics and a track record of theoretical analyses of representation learning and probabilistic models for meaning.",
+      "traits": [
+        "Requires formal/theoretical justification for modeling choices: penalizes papers that introduce an MDP/RL formulation without proofs, convergence analysis, or clear bounds on when it is preferable to alternative formulations.",
+        "Demands thorough ablations: deducts points if there is no systematic ablation over key hyperparameters (e.g., reward shaping, Q-value estimator architecture, negative sampling rate) and no analysis of failure cases.",
+        "Penalizes empirical claims that omit strong baselines at comparable compute/data budgets: downgrades papers that claim data-efficiency without comparing to tuned non-RL baselines (e.g., sense induction via clustering or simpler EM-based multi-sense models) trained under matching low-data regimes."
+      ],
+      "reviewing_style": "I focus on whether a paper provides principled justification and careful, controlled analyses of novel modeling choices; empirical novelty alone is insufficient without theory or detailed ablation."
+    },
+    "reviewer_b": {
+      "name": "Practical-Methods Engineer",
+      "background": "Applied ML/NLP researcher working on scalable representation learning and deploying embedding models in production systems for downstream tasks.",
+      "traits": [
+        "Rewards novel, practical modeling frameworks that improve efficiency or usability: awards points for methods that enable linear-time inference, automated (non-parametric) sense counts, or strong performance with much less data/compute.",
+        "Values strong empirical results and task-driven evaluation: gives credit when a method achieves SOTA or comparable performance on standard benchmarks (e.g., SCWS) and demonstrates real-world benefits (e.g., 1/100 training data claim).",
+        "Prioritizes reproducibility and implementation practicality: positively scores papers that present clear algorithmic descriptions suitable for deployment, include complexity analyses, and (ideally) release code or reproducible training details."
+      ],
+      "reviewing_style": "I judge papers primarily on practical novelty, empirical impact, and deployability \u2014 if a method is efficient, effective, and well-evaluated, I am positive even if formal theory is limited."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 4,
+    "total_dimensions": 7,
+    "debate_rate": 0.571
+  }
+}

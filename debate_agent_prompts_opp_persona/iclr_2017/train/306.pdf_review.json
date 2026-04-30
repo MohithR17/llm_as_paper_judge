@@ -1,0 +1,110 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early \u2014 the LSTM-based meta-learner, joint initialization/update gate learning, and empirical competitiveness are made explicit. Notation appears consistent and the paper reports key experimental details (datasets, baselines, hyperparameters, confidence intervals) with effective figures/tables summarizing accuracy and test loss. Writing quality is good overall, though as a theory-minded reader I would have liked a clearer, more explicit explanation of the gradient-independence simplifying assumption and its implications; that caveat slightly reduces presentation clarity but does not obscure the main ideas. | B(4): The paper is well organized with a logical flow from problem setup to method and experiments, and its main contributions (LSTM-based meta-learner, learned initialization and update gates) are stated clearly early on. Notation appears consistent and definitions are provided, and figures/tables effectively support empirical claims on mini-ImageNet (including accuracy and test loss reporting). Writing quality is good overall, though a couple of experimental-detail sections (e.g., the gradient-independence assumption and exact episode sampling) could be described with slightly more clarity for full reproducibility.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early \u2014 the LSTM-based meta-learner, joint initialization/update gate learning, and empirical competitiveness are made explicit. Notation appears consistent and the paper reports key experimental details (datasets, baselines, hyperparameters, confidence intervals) with effective figures/tables summarizing accuracy and test loss. Writing quality is good overall, though as a theory-minded reader I would have liked a clearer, more explicit explanation of the gradient-independence simplifying assumption and its implications; that caveat slightly reduces presentation clarity but does not obscure the main ideas."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized with a logical flow from problem setup to method and experiments, and its main contributions (LSTM-based meta-learner, learned initialization and update gates) are stated clearly early on. Notation appears consistent and definitions are provided, and figures/tables effectively support empirical claims on mini-ImageNet (including accuracy and test loss reporting). Writing quality is good overall, though a couple of experimental-detail sections (e.g., the gradient-independence assumption and exact episode sampling) could be described with slightly more clarity for full reproducibility."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a concrete new application of learned optimizers\u2014a two-layer LSTM meta-learner that jointly learns a task-common initialization and a fixed sequence of update gates to rapidly train a CNN in few-shot episodes\u2014which is a clear methodological novelty compared to standard metric-learning baselines. The technique meaningfully departs from existing matching- or metric-based few-shot approaches by learning an explicit optimization/update rule rather than embedding or similarity metrics, and the authors provide empirical comparisons to relevant baselines. That said, the idea is a natural extension of prior learned-optimizer/meta-learning work rather than a radical rethinking, and the lack of formal analysis of the learned update dynamics (noted in the summary) limits the degree of conceptual novelty. Overall the contribution is a notable and non-trivial advance but not a fundamentally new paradigm. | B(4): The paper introduces a notable and practically meaningful new idea\u2014an LSTM-based meta-learner that outputs parameter updates and jointly learns a task-common initialization to enable rapid few-step adaptation\u2014distinct from predominant metric-learning approaches like Matching Networks. Framed as a learned optimizer for few-shot classification, the technique is a non-trivial extension beyond existing baselines (it directly learns update gates and update sequences rather than fixed fine-tuning or nearest-neighbor rules). The contribution is clearly differentiated from prior work and would inform experts interested in learned update rules, though it stops short of a sweeping theoretical advance and is focused on a specific few-shot regime, so I view it as notable but not revolutionary.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a concrete new application of learned optimizers\u2014a two-layer LSTM meta-learner that jointly learns a task-common initialization and a fixed sequence of update gates to rapidly train a CNN in few-shot episodes\u2014which is a clear methodological novelty compared to standard metric-learning baselines. The technique meaningfully departs from existing matching- or metric-based few-shot approaches by learning an explicit optimization/update rule rather than embedding or similarity metrics, and the authors provide empirical comparisons to relevant baselines. That said, the idea is a natural extension of prior learned-optimizer/meta-learning work rather than a radical rethinking, and the lack of formal analysis of the learned update dynamics (noted in the summary) limits the degree of conceptual novelty. Overall the contribution is a notable and non-trivial advance but not a fundamentally new paradigm."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper introduces a notable and practically meaningful new idea\u2014an LSTM-based meta-learner that outputs parameter updates and jointly learns a task-common initialization to enable rapid few-step adaptation\u2014distinct from predominant metric-learning approaches like Matching Networks. Framed as a learned optimizer for few-shot classification, the technique is a non-trivial extension beyond existing baselines (it directly learns update gates and update sequences rather than fixed fine-tuning or nearest-neighbor rules). The contribution is clearly differentiated from prior work and would inform experts interested in learned update rules, though it stops short of a sweeping theoretical advance and is focused on a specific few-shot regime, so I view it as notable but not revolutionary."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper presents clear empirical claims with code, hyperparameters, and reasonable baselines on mini-ImageNet, and that the LSTM meta-learner setup is practical. They also agree the gradient-independence approximation and the narrow evaluation (limited N and k regimes) are notable methodological limitations, and important baselines/ablations (e.g., MAML, learned-optimizer comparisons, stability across seeds) are missing. Because the empirical evidence is promising but these technical and comparative gaps limit the soundness of the claims, I rate it a 3.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents clear empirical claims and provides experimental evidence on mini-ImageNet with reported hyperparameters and released code, and compares to metric-learning baselines (Matching Networks) and simple finetune/NN baselines. However, there is no theoretical analysis or convergence guarantees for the learned LSTM update rule, and the authors rely on a gradient-independence simplification that ignores higher-order derivatives without sufficient justification. Important algorithmically similar baselines (e.g., MAML or prior learned-optimizer methods) and stronger ablations on stability across seeds and meta-update choices are missing, leaving some methodological gaps. Given these technical omissions, the results are promising but not fully substantiated, so I rate it a 3."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and backed by empirical evidence on mini-ImageNet with appropriate baselines (Matching Nets variants, nearest-neighbour, finetune), reporting accuracy and test-loss with confidence intervals and providing code and hyperparameters. The methodological setup (LSTM meta-learner producing parameter updates, episodic meta-training) is sound and practical, though the authors make a gradient-independence approximation (ignoring higher-order derivatives) that is a simplifying assumption and should be noted as a potential source of bias. The evaluation is somewhat narrow (only N=5, k={1,5}) so conclusions about broader regimes are limited, but these issues are minor and do not undermine the core experimental support for the claims."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes an LSTM-based meta-learner that learns an optimization/update rule to train a learner neural network for few-shot classification.",
+      "The meta-learner jointly learns a task-common initialization for the learner and a sequence of update gates (input/forget) enabling rapid convergence with a fixed small number of updates.",
+      "The proposed approach outperforms naive baselines and is competitive with state-of-the-art metric-learning approaches (Matching Networks) on few-shot benchmarks."
+    ],
+    "methodology": "Train a two-layer LSTM meta-learner (second layer modified to output parameter updates) that, given preprocessed learner gradients and losses, produces parameter updates for a CNN classifier across a fixed small number of steps; the meta-learner is trained by optimizing the learner's test loss on episodes sampled from meta-training.",
+    "datasets": [
+      "Mini-ImageNet (their constructed split of 100 ImageNet classes, 600 examples per class; 64/16/20 train/val/test)"
+    ],
+    "baselines": [
+      "Matching Networks (basic and FCE variants)",
+      "Baseline-nearest-neighbor",
+      "Baseline-finetune"
+    ],
+    "metrics": [
+      "Classification accuracy (mean with confidence intervals)",
+      "Test loss (Ltest)"
+    ],
+    "limitations": [
+      "Study focused on few-shot and few-classes settings (k=1 or 5, N=5); not evaluated across a full spectrum of training-example and class-count regimes.",
+      "Uses a gradient-independence simplifying assumption that ignores higher-order derivatives when computing meta-learner gradients."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Meta-learning / Few-shot learning (computer vision)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory-first Methodologist",
+      "background": "Faculty in machine learning with a focus on optimization theory and formal guarantees for learning algorithms; has published theory papers on convergence and generalization of meta-learning methods.",
+      "traits": [
+        "Penalises papers that propose new learned optimizers or update rules without formal analysis (proofs, convergence, or at least clear theoretical justification) \u2014 expects at least a sketch of why the learned rule converges or avoids pathological behavior.",
+        "Demands thorough ablations on key design choices that affect fundamental behavior (e.g., effect of number of meta-update steps, initialization sensitivity, and stability across seeds); will downgrade if these are missing or superficial.",
+        "Requires comparisons against algorithmically similar baselines (e.g., MAML, learned optimizers from prior literature) rather than only metric-learning baselines; lacking such comparisons reduces novelty/impact score.",
+        "Penalises insufficient reproducibility detail: missing hyperparameter lists, training schedules, random seeds, or code release plans lead to lower confidence and score."
+      ],
+      "reviewing_style": "Critical, focused on formal understanding and rigorous empirical controls; gives credit only when methods are accompanied by theoretical justification or very comprehensive ablations and reproducibility."
+    },
+    "reviewer_b": {
+      "name": "Empirical Meta-learning Enthusiast",
+      "background": "Senior researcher with extensive experience in few-shot and meta-learning for vision; publishes applied and empirical work that develops practical meta-learners and benchmarks them on standard tasks.",
+      "traits": [
+        "Rewards novel, practically effective mechanisms for meta-learning (e.g., learned optimizers/LSTM meta-learners) that demonstrate improved few-shot performance even if formal analysis is limited.",
+        "Values strong empirical evidence on standard few-shot benchmarks (accuracy gains, learning speed, robustness across multiple held-out tasks) and will boost score if results are competitive with or improve over established baselines like Matching Networks and prototypical approaches.",
+        "Considers clarity and plausibility of experimental protocol and ablation sufficient for confidence (e.g., episode sampling, architecture details, held-out meta-test tasks); will penalise only if experiments are irreproducible or clearly flawed.",
+        "Favors methods that are practically simple and potentially generalize to varied architectures (e.g., LSTM-based update rules) and will reward demonstrations of rapid convergence with a fixed small number of updates."
+      ],
+      "reviewing_style": "Pragmatic and results-oriented: emphasizes solid empirical validation and practical contributions, and is willing to accept limited theory if experiments convincingly show usefulness."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 1,
+    "total_dimensions": 3,
+    "debate_rate": 0.333
+  }
+}

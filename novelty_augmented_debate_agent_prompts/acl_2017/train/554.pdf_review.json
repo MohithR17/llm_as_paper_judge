@@ -1,0 +1,213 @@
+{
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized with a clear logical flow from introduction through method and experiments, and the main contributions are stated early (scalable SG-MCMC for RNNs, model averaging, combination with dropout). Notation appears consistent and the writing quality is good; figures/tables and task coverage (language modeling, captioning, classification) are informative for the reader. A minor presentation issue is that some important implementation details and hyperparameters are delegated to the Supplementary Material, which slightly impedes immediate reproducibility and makes the experimental setup less self-contained in the main text. | B(4): The paper appears well-organized with a logical progression from motivation to method (pSGLD for RNNs) and experiments across multiple tasks; main contributions are stated early and repeatedly (scaling SG-MCMC to RNNs, combining with dropout, model averaging). Notation and writing are reported as good, with hyperparameters and model specs provided in the Supplementary Material, though some implementation/testing details are deferred which slightly reduces standalone clarity. Figures/tables seem informative given the broad set of evaluated datasets and metrics, but the admitted efficiency limitation and reliance on supplements suggest minor presentation gaps that prevent an exceptional rating.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized with a clear logical flow from introduction through method and experiments, and the main contributions are stated early (scalable SG-MCMC for RNNs, model averaging, combination with dropout). Notation appears consistent and the writing quality is good; figures/tables and task coverage (language modeling, captioning, classification) are informative for the reader. A minor presentation issue is that some important implementation details and hyperparameters are delegated to the Supplementary Material, which slightly impedes immediate reproducibility and makes the experimental setup less self-contained in the main text."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper appears well-organized with a logical progression from motivation to method (pSGLD for RNNs) and experiments across multiple tasks; main contributions are stated early and repeatedly (scaling SG-MCMC to RNNs, combining with dropout, model averaging). Notation and writing are reported as good, with hyperparameters and model specs provided in the Supplementary Material, though some implementation/testing details are deferred which slightly reduces standalone clarity. Figures/tables seem informative given the broad set of evaluated datasets and metrics, but the admitted efficiency limitation and reliance on supplements suggest minor presentation gaps that prevent an exceptional rating."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper addresses a meaningful problem\u2014scalable Bayesian learning for RNNs\u2014and demonstrates consistent empirical gains of pSGLD (with/without dropout) across multiple language modeling, captioning, and classification benchmarks, which is practically useful. However, the contribution is primarily an application and scaling of existing SG-MCMC methods rather than a fundamentally new algorithm, and practical barriers (testing efficiency for large RNNs, unclear code availability, some details relegated to supplements) limit immediate adoption. From an empirical-methods perspective the results are promising but not yet transformative: useful and likely to be built upon, but not field-changing without further reproducibility, efficiency, and ablation work. | B(4): This paper tackles the important problem of scalable Bayesian learning for RNNs and demonstrates consistent empirical gains across multiple language and sequence tasks (character/word LM, image captioning, sentence classification) by using pSGLD and posterior model averaging. By showing that SG-MCMC can be combined with dropout and yields complementary samples and improved calibration/regularization for recurrent weights, it could change how researchers incorporate uncertainty into sequence models and encourage further work on scalable Bayesian approaches. Practical barriers (testing efficiency for large RNNs, unclear code availability) limit immediate adoption, but the approach opens promising directions for uncertainty-aware, ensemble-like models in NLP.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper addresses a meaningful problem\u2014scalable Bayesian learning for RNNs\u2014and demonstrates consistent empirical gains of pSGLD (with/without dropout) across multiple language modeling, captioning, and classification benchmarks, which is practically useful. However, the contribution is primarily an application and scaling of existing SG-MCMC methods rather than a fundamentally new algorithm, and practical barriers (testing efficiency for large RNNs, unclear code availability, some details relegated to supplements) limit immediate adoption. From an empirical-methods perspective the results are promising but not yet transformative: useful and likely to be built upon, but not field-changing without further reproducibility, efficiency, and ablation work."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles the important problem of scalable Bayesian learning for RNNs and demonstrates consistent empirical gains across multiple language and sequence tasks (character/word LM, image captioning, sentence classification) by using pSGLD and posterior model averaging. By showing that SG-MCMC can be combined with dropout and yields complementary samples and improved calibration/regularization for recurrent weights, it could change how researchers incorporate uncertainty into sequence models and encourage further work on scalable Bayesian approaches. Practical barriers (testing efficiency for large RNNs, unclear code availability) limit immediate adoption, but the approach opens promising directions for uncertainty-aware, ensemble-like models in NLP."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper runs broad evaluations across character/word language modeling, captioning, and classification and compares to strong baselines (RMSprop, dropout variants), which supports the main empirical claim of consistent gains. However, from the provided summary key methodological choices are not isolated with thorough ablations or sensitivity analyses (e.g., detailed comparisons pSGLD vs RMSprop under identical regularization, effects of number of posterior samples, noise/step-size schedules, and runtime/cost trade-offs), and reproducibility is weakened by no code release and important details relegated to supplementary material. Related work appears adequately covered and limitations on test-time efficiency are acknowledged, but the experimental rigor and reporting fall short of the standards I expect for fully convincing, reproducible claims. | B(4): The paper provides a fairly comprehensive experimental suite across character/word language modeling, image captioning, and sentence classification (War and Peace, PTB, Flickr8k/30k, several sentiment/TREC datasets), and compares pSGLD against strong baselines including RMSprop and dropout variants. It includes some ablations (combining pSGLD with dropout and comparing sample averaging) but lacks deeper sensitivity analyses on MCMC settings (e.g., number of samples, burn-in, step-size robustness) that are important for SG-MCMC methods. Related work is treated adequately and limitations (test-time efficiency, noise adequacy) are explicitly discussed; hyperparameters are reported in the supplement although code is not mentioned, which leaves some reproducibility risk. Overall the work is solid and well-evidenced but misses a few key empirical diagnostics expected for Bayesian sampling approaches.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper runs broad evaluations across character/word language modeling, captioning, and classification and compares to strong baselines (RMSprop, dropout variants), which supports the main empirical claim of consistent gains. However, from the provided summary key methodological choices are not isolated with thorough ablations or sensitivity analyses (e.g., detailed comparisons pSGLD vs RMSprop under identical regularization, effects of number of posterior samples, noise/step-size schedules, and runtime/cost trade-offs), and reproducibility is weakened by no code release and important details relegated to supplementary material. Related work appears adequately covered and limitations on test-time efficiency are acknowledged, but the experimental rigor and reporting fall short of the standards I expect for fully convincing, reproducible claims."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper provides a fairly comprehensive experimental suite across character/word language modeling, image captioning, and sentence classification (War and Peace, PTB, Flickr8k/30k, several sentiment/TREC datasets), and compares pSGLD against strong baselines including RMSprop and dropout variants. It includes some ablations (combining pSGLD with dropout and comparing sample averaging) but lacks deeper sensitivity analyses on MCMC settings (e.g., number of samples, burn-in, step-size robustness) that are important for SG-MCMC methods. Related work is treated adequately and limitations (test-time efficiency, noise adequacy) are explicitly discussed; hyperparameters are reported in the supplement although code is not mentioned, which leaves some reproducibility risk. Overall the work is solid and well-evidenced but misses a few key empirical diagnostics expected for Bayesian sampling approaches."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against sensible and strong baselines (RMSprop, RMSprop+dropout, and Gal-style dropout) across multiple datasets and metrics, and reports hyperparameters in the supplement\u2014supporting fair same-data, same-metric comparisons. However, it omits direct empirical comparisons to closely related Bayesian/variational RNN approaches (e.g., prior Bayesian RNN and variational Bayesian RNN papers cited in the context), so the claimed benefits of SG-MCMC versus other Bayesian treatments are not fully established. From an empirical-methods perspective this is a minor but important omission that prevents the comparison set from being fully comprehensive. | B(4): The paper evaluates pSGLD against strong optimization baselines (RMSprop) and common regularization baselines (standard dropout and Gal\u2019s dropout) across multiple tasks and metrics, which is appropriate and largely fair. It acknowledges limitations and discusses related Bayesian/variational RNN work, but it does not appear to include empirical comparisons to other explicit Bayesian RNN methods (e.g., variational Bayesian RNNs or earlier Bayesian RNN papers) despite citing them, which is a notable omission for a paper emphasizing Bayesian advantages. Overall the comparisons are well executed on the included baselines but miss at least one important class of competing empirical baselines, so the evaluation is strong but not fully comprehensive.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against sensible and strong baselines (RMSprop, RMSprop+dropout, and Gal-style dropout) across multiple datasets and metrics, and reports hyperparameters in the supplement\u2014supporting fair same-data, same-metric comparisons. However, it omits direct empirical comparisons to closely related Bayesian/variational RNN approaches (e.g., prior Bayesian RNN and variational Bayesian RNN papers cited in the context), so the claimed benefits of SG-MCMC versus other Bayesian treatments are not fully established. From an empirical-methods perspective this is a minor but important omission that prevents the comparison set from being fully comprehensive."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper evaluates pSGLD against strong optimization baselines (RMSprop) and common regularization baselines (standard dropout and Gal\u2019s dropout) across multiple tasks and metrics, which is appropriate and largely fair. It acknowledges limitations and discusses related Bayesian/variational RNN work, but it does not appear to include empirical comparisons to other explicit Bayesian RNN methods (e.g., variational Bayesian RNNs or earlier Bayesian RNN papers) despite citing them, which is a notable omission for a paper emphasizing Bayesian advantages. Overall the comparisons are well executed on the included baselines but miss at least one important class of competing empirical baselines, so the evaluation is strong but not fully comprehensive."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "[Consensus avg=5] A(5): This work addresses a topical ML/NLP problem\u2014scalable Bayesian learning for RNNs\u2014with methods (pSGLD + model averaging) and evaluations (language modeling, captioning, sentence classification) that align with expectations for a top venue. The paper reports comparisons to strong baselines (RMSprop, dropout variants), uses standard datasets and metrics (PTB, BLEU/METEOR/CIDEr, classification error), and discusses limitations (test-time efficiency) and hyperparameter details in the supplement, making it relevant to the venue's audience. From an empirical-methods perspective I appreciate the multi-task validation, though reproducibility would be strengthened if code and full sensitivity analyses (noise schedules, seed variability, compute cost) were explicitly released. | B(5): This paper sits squarely within top NLP/ML venues: it tackles Bayesian learning for RNNs (important for language modeling and sequence tasks) using SG-MCMC (pSGLD) and demonstrates gains across multiple relevant datasets (PTB, War and Peace, Flickr8k/30k, sentiment/TREC benchmarks). The problem formulation, methodology (posterior sampling, model averaging, combination with dropout), and evaluation metrics (BLEU/METEOR/CIDEr, classification error) match community expectations, and the paper discusses practical limitations (test-time efficiency) and hyperparameter details. From a Bayesian-NLP perspective it addresses the right audience and is well positioned with respect to prior work on Bayesian RNNs, dropout, and SG-MCMC.",
+      "reviewer_a": {
+        "score": 5,
+        "justification": "This work addresses a topical ML/NLP problem\u2014scalable Bayesian learning for RNNs\u2014with methods (pSGLD + model averaging) and evaluations (language modeling, captioning, sentence classification) that align with expectations for a top venue. The paper reports comparisons to strong baselines (RMSprop, dropout variants), uses standard datasets and metrics (PTB, BLEU/METEOR/CIDEr, classification error), and discusses limitations (test-time efficiency) and hyperparameter details in the supplement, making it relevant to the venue's audience. From an empirical-methods perspective I appreciate the multi-task validation, though reproducibility would be strengthened if code and full sensitivity analyses (noise schedules, seed variability, compute cost) were explicitly released."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper sits squarely within top NLP/ML venues: it tackles Bayesian learning for RNNs (important for language modeling and sequence tasks) using SG-MCMC (pSGLD) and demonstrates gains across multiple relevant datasets (PTB, War and Peace, Flickr8k/30k, sentiment/TREC benchmarks). The problem formulation, methodology (posterior sampling, model averaging, combination with dropout), and evaluation metrics (BLEU/METEOR/CIDEr, classification error) match community expectations, and the paper discusses practical limitations (test-time efficiency) and hyperparameter details. From a Bayesian-NLP perspective it addresses the right audience and is well positioned with respect to prior work on Bayesian RNNs, dropout, and SG-MCMC."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper makes clear empirical claims and tests pSGLD-based SG-MCMC across multiple tasks and datasets (War and Peace, PTB, Flickr8k/30k, several classification sets), and reports improvements over RMSprop and dropout baselines, which supports the central claim. However, from the summary I see missing details important for technical validation: there is no mention of multiple random seeds, confidence intervals or statistical tests, limited ablations isolating each component (e.g., pSGLD vs RMSprop with the same noise schedule, impact of preconditioning, number of posterior samples), and code release is not reported \u2014 all of which hinder reproducibility and make it hard to attribute gains to the proposed method alone. Mathematical foundations (SG-MCMC/pSGLD) are standard and likely correct, and stated limitations (testing efficiency) are acknowledged, but the experimental methodology lacks the statistical rigor and component-wise analyses my review standard requires to fully accept the conclusions. | B(4): The paper's main claims\u2014that pSGLD-based SG-MCMC can regularize RNN weights and that posterior sampling plus model averaging improves language-modeling and related tasks\u2014are supported by multi-task empirical comparisons against RMSprop and dropout baselines across several datasets. The methodology appears sound in using pSGLD and combining with dropout, and there are no obvious mathematical inconsistencies reported in the summary; however some implementation and experimental details are relegated to supplementary material and there is no mention of statistical significance testing, which weakens reproducibility and robustness claims. The authors acknowledge practical limitations (test-time efficiency) and justify combining SGLD noise with dropout, but the claim that different posterior samples capture complementary aspects would benefit from more targeted analysis. Overall the technical evidence supports the conclusions, with minor gaps in experimental rigor and reporting.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper makes clear empirical claims and tests pSGLD-based SG-MCMC across multiple tasks and datasets (War and Peace, PTB, Flickr8k/30k, several classification sets), and reports improvements over RMSprop and dropout baselines, which supports the central claim. However, from the summary I see missing details important for technical validation: there is no mention of multiple random seeds, confidence intervals or statistical tests, limited ablations isolating each component (e.g., pSGLD vs RMSprop with the same noise schedule, impact of preconditioning, number of posterior samples), and code release is not reported \u2014 all of which hinder reproducibility and make it hard to attribute gains to the proposed method alone. Mathematical foundations (SG-MCMC/pSGLD) are standard and likely correct, and stated limitations (testing efficiency) are acknowledged, but the experimental methodology lacks the statistical rigor and component-wise analyses my review standard requires to fully accept the conclusions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims\u2014that pSGLD-based SG-MCMC can regularize RNN weights and that posterior sampling plus model averaging improves language-modeling and related tasks\u2014are supported by multi-task empirical comparisons against RMSprop and dropout baselines across several datasets. The methodology appears sound in using pSGLD and combining with dropout, and there are no obvious mathematical inconsistencies reported in the summary; however some implementation and experimental details are relegated to supplementary material and there is no mention of statistical significance testing, which weakens reproducibility and robustness claims. The authors acknowledge practical limitations (test-time efficiency) and justify combining SGLD noise with dropout, but the claim that different posterior samples capture complementary aspects would benefit from more targeted analysis. Overall the technical evidence supports the conclusions, with minor gaps in experimental rigor and reporting."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper brings a notable and practical novelty by scaling SG-MCMC (pSGLD) to recurrent neural networks and empirically demonstrating gains across multiple language and vision\u2013language tasks; this is a clear methodological differentiator from prior variational or smaller-scale Bayesian RNN work (e.g., Bayesian RNN and variational Bayesian RNN papers). The joint use and interpretation of SGLD with dropout as posterior sampling of a mixture of RNNs, together with extensive empirical comparisons to RMSprop/dropout baselines, further distinguishes it beyond a straightforward application. However, the core building blocks (SGLD, dropout, Bayesian RNN objectives) are existing techniques, so the contribution is an important and non-trivial engineering and empirical advance rather than a fundamentally new theoretical paradigm\u2014hence a near-top score rather than maximal. | B(3): The paper applies scalable SG-MCMC (pSGLD) to RNNs and demonstrates empirical gains and complementary behavior with dropout \u2014 a concrete and useful engineering contribution but not a radical conceptual advance over prior Bayesian RNN work (e.g., variational Bayesian RNNs and earlier Bayesian RNN proposals). The joint use of pSGLD and dropout and the emphasis on posterior sampling/model averaging for RNNs are modestly novel technical combinations, but largely build on existing SG-MCMC and Bayesian RNN literature rather than introducing a fundamentally new paradigm. An expert would find the empirical scaling and the combined pSGLD+dropout angle informative, though the contribution reads as an incremental extension rather than a breakthrough.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper brings a notable and practical novelty by scaling SG-MCMC (pSGLD) to recurrent neural networks and empirically demonstrating gains across multiple language and vision\u2013language tasks; this is a clear methodological differentiator from prior variational or smaller-scale Bayesian RNN work (e.g., Bayesian RNN and variational Bayesian RNN papers). The joint use and interpretation of SGLD with dropout as posterior sampling of a mixture of RNNs, together with extensive empirical comparisons to RMSprop/dropout baselines, further distinguishes it beyond a straightforward application. However, the core building blocks (SGLD, dropout, Bayesian RNN objectives) are existing techniques, so the contribution is an important and non-trivial engineering and empirical advance rather than a fundamentally new theoretical paradigm\u2014hence a near-top score rather than maximal."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper applies scalable SG-MCMC (pSGLD) to RNNs and demonstrates empirical gains and complementary behavior with dropout \u2014 a concrete and useful engineering contribution but not a radical conceptual advance over prior Bayesian RNN work (e.g., variational Bayesian RNNs and earlier Bayesian RNN proposals). The joint use of pSGLD and dropout and the emphasis on posterior sampling/model averaging for RNNs are modestly novel technical combinations, but largely build on existing SG-MCMC and Bayesian RNN literature rather than introducing a fundamentally new paradigm. An expert would find the empirical scaling and the combined pSGLD+dropout angle informative, though the contribution reads as an incremental extension rather than a breakthrough."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": true,
+      "novelty_injected": true
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Scaling Bayesian learning to RNNs using stochastic gradient MCMC (SG-MCMC, specifically pSGLD) yields better performance than standard stochastic optimization for language modeling and related tasks.",
+      "SG-MCMC allows imposing model uncertainty on recurrent weights (unlike naive dropout), improving regularization and enabling model averaging at test time.",
+      "Combining pSGLD with dropout further improves performance, and different posterior samples can capture complementary aspects of inputs (useful e.g. in image captioning).",
+      "The proposed approach is validated across multiple tasks (character/word-level language modeling, image captioning, sentence classification), showing consistent improvements over RMSprop and dropout baselines."
+    ],
+    "methodology": "Use stochastic gradient MCMC (SG-MCMC), in particular preconditioned SGLD (pSGLD), to draw posterior samples of RNN weights (LSTM/GRU), optionally combined with dropout; perform model averaging over sampled models at test time.",
+    "datasets": [
+      "War and Peace (character-level)",
+      "Penn Treebank (PTB)",
+      "Flickr8k",
+      "Flickr30k",
+      "TREC",
+      "MR",
+      "SUBJ",
+      "CR",
+      "MPQA"
+    ],
+    "baselines": [
+      "RMSprop",
+      "RMSprop + Dropout",
+      "RMSprop + Gal's Dropout"
+    ],
+    "metrics": [
+      "BLEU",
+      "METEOR",
+      "ROUGE-L",
+      "CIDEr-D",
+      "classification error"
+    ],
+    "limitations": [
+      "Testing efficiency for large-scale RNNs is an issue; future work includes learning a single network that approximates model averaging to improve efficiency.",
+      "The noise injected by (vanilla) SGLD may not be sufficient in practice, motivating combination with dropout.",
+      "Hyperparameter settings and model specifications are provided in Supplementary Material (suggesting some details are not in the main text)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - Bayesian learning for RNNs / language modeling",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Empirical Methods Critic",
+      "background": "Senior ML engineer with a PhD in machine learning; 8+ years building and evaluating neural sequence models and maintaining reproducible experimental pipelines in industry and academia.",
+      "traits": [
+        "insists on thorough ablation studies that isolate the contribution of each component (e.g., pSGLD vs. RMSprop, with/without dropout, number of posterior samples)",
+        "values reproducibility: expects clear hyperparameter settings, training budgets, code release, and sensitivity analyses for optimization/noise schedules",
+        "checks statistical rigor: looks for appropriate use of baselines, confidence intervals or multiple random seeds, and computational cost reporting",
+        "focuses on implementation details that affect results (preconditioning, gradient clipping, learning rate schedules, minibatch sizes, memory/latency trade-offs)"
+      ],
+      "reviewing_style": "I evaluate papers primarily on whether experiments are designed and reported so that claims are supported, replicable, and the marginal benefit of each methodic choice is quantified."
+    },
+    "reviewer_b": {
+      "name": "Bayesian NLP Strategist",
+      "background": "Associate professor specializing in Bayesian methods for NLP and deep learning, with experience publishing on uncertainty estimation, model averaging, and applications in language generation.",
+      "traits": [
+        "assesses novelty and positioning relative to prior Bayesian/regularization work (e.g., Bayesian RNNs, variational inference, MC dropout, earlier SG-MCMC papers)",
+        "values clear discussion of theoretical/empirical trade-offs and when Bayesian sampling materially helps downstream tasks (e.g., calibration, robustness, diversity in generation)",
+        "looks for broader impact: scalability to large datasets/models, applicability to state-of-the-art architectures, and potential adoption barriers",
+        "notices whether claimed advantages (e.g., uncertainty modeling, complementary samples) are demonstrated on tasks that matter to the community"
+      ],
+      "reviewing_style": "I judge contributions by their novelty, fit within the existing literature, and the practical/long-term significance of the proposed approach for NLP research and applications."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 3,
+    "paper_novelty_mean": 0.605,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON",
+      "ORIGINALITY"
+    ],
+    "total_dims": 7
+  }
+}

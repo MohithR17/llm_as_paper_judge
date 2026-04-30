@@ -1,0 +1,39 @@
+{
+  "IMPACT": 4,
+  "CLARITY": 3,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 5,
+  "SUBSTANCE": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper introduces TUPA, the first parser for UCCA that jointly handles reentrancy (DAGs), discontinuous units and non-terminal nodes\u2014a conjunction of properties the authors claim is unsupported by existing parsers\u2014addressing an important gap in semantic parsing. Empirically it outperforms strong baselines in both in-domain and out-of-domain settings using a BiLSTM-based transition system, so the results are likely to change practice for anchored semantic representations. By enabling reliable automatic UCCA annotation (and suggesting conversion/representation comparisons), it opens significant new research directions and has clear broader implications for downstream applications such as MT evaluation, simplification and summarization."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is generally organized into standard sections (UCCA description, parser, experimental setup, evaluation, conclusion) and introduces key notation clearly (e.g., graphs Gp/Gg, yields y(e), and labeled precision/recall). However the text suffers from substantial repetition and copy-paste artifacts (multiple repeated paragraphs about transition-based techniques and related work), and some formatting/figure references are cluttered (inline role labels and broken figure excerpts make examples hard to parse). Overall the formal definitions and evaluation are explained well, but editing and presentation issues make some sections harder to follow and reduce overall clarity."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents the first dedicated parser for UCCA (\"We present TUPA, the first parser for UCCA\") and explicitly targets a conjunction of structural properties\u2014reentrancy (multiple parents), discontinuity, and non-terminal nodes\u2014that prior parsers do not jointly support (\"To our knowledge, the conjunction of these formal properties is not supported by any existing parser\"). While the technical components (transition-based parsing, SWAP, NODE, dynamic oracles, BiLSTM classifiers) are largely drawn from existing work, the paper contributes a novel transition set and an integrated parser architecture tailored to UCCA\u2019s representational needs (\"our transition-based parser, which uses a novel transition set and features based on bidirectional LSTMs\"). This makes the contribution a notable and well-differentiated advancement (new target + non-trivial engineering of transitions), likely to be of clear interest to experts. "
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states clear claims (first UCCA parser that handles reentrancy, discontinuity and non-terminal nodes) and defines a sensible evaluation measure (Section 4 Evaluation) and experimental setup using in-/out-of-domain corpora and multiple baselines (Section 4 and Baseline parsers). However, the provided text omits concrete quantitative results and statistical significance testing (the only numeric fragment is unclear: \u201c5% F-score on primary edges\u201d), and details on conversion-induced upper bounds are only referenced but not shown, limiting verification of the core empirical claims. Overall the methodology is generally sound (appropriate baselines, data splits, BiLSTM classifier, dynamic oracle), but missing reported results and statistical analysis constitute a substantive gap in the evidence."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper presents TUPA, the first parser for UCCA, tackling semantic DAG parsing with reentrancy, discontinuity and non-terminal nodes (intro/Section 2\u20133), which is squarely an NLP/ML research topic. It employs contemporary methods (BiLSTM feature extractor, NN classifiers, DyNet) and standard experimental practice (in-domain and out-of-domain evaluation on the UCCA Wiki and 20K Leagues corpora, baseline comparisons to DAGParser, TurboParser, UPARSE, Malt, and an LSTM parser). The work is positioned within relevant communities (SDP/AMR/transition-based parsing literature) and uses evaluation measures and baselines expected at top venues, making it a strong fit."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares TUPA to a comprehensive set of relevant baselines (DAGParser, TurboParser, UPARSE, MaltParser, the Dyer et al. LSTM parser) and to tree-approximation baselines, and uses the same UCCA training/dev/test data and a clear evaluation measure (primary vs. remote edges, with upper bounds for conversions). It explicitly discusses limitations of prior parsers (lack of non-terminal node support, handling of discontinuity and reentrancy), cites and contrasts with related work (AMR, SDP, transition-based and constituency/CCG/HPSG approaches), and acknowledges when a baseline (the LSTM parser) attains the highest primary F-score among baselines while showing TUPA\u2019s improvements and conversion-induced upper bounds. Comparisons appear fair and analyzed (including conversion losses and out-of-domain testing), and the most relevant competing approaches are cited and discussed."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are fairly comprehensive: in-domain and out-of-domain evaluation (Wiki and 20K Leagues), clear train/dev/test splits, a dedicated UCCA evaluation metric, comparisons to multiple strong baselines (bilexical graph and tree parsers, constituency parser), and conversion/upper-bound analyses (Sections 4\u20136 and Appendix references). Ablation/sensitivity analysis is limited \u2014 the paper describes several classifier variants (TUPASparse, TUPAMLP, BiLSTM TUPA) but no detailed ablation or hyperparameter sensitivity study is presented in the main text. Related work is extensively covered (AMR, SDP, transition-based and constituency work), and some limitations are acknowledged (conversion upper bounds, difficulty with remote edges, future work), though there is little concrete error analysis of failure cases. Reproducibility appears reasonably supported: implementation details (DyNet), training regime, optimizer, dynamic oracle, use of spaCy and pointers to hyperparameters and conversion procedures in appendices are provided."
+    }
+  }
+}

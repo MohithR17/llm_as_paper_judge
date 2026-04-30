@@ -1,0 +1,173 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "APPROPRIATENESS": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and communicates its ideas clearly: the joint CTC\u2013attention approach and its motivation (mitigating attention alignment errors) are stated early, notation and hyperparameter reporting are said to be consistent, and figures/tables are informative. The writing quality is good and related work coverage thorough. However, the summary omits explicit evaluation metrics and statistical significance reporting, which hinders clarity about experimental claims; given my preference for rigorous, fully reproducible presentation, this prevents a top score. | B(4): Overall the paper is well organized and readable: the flow from intro to method to experiments and conclusion is logical, the main contribution (joint CTC-attention training and two-pass decoding) is stated early, and notation and hyperparameters are reported. Figures/tables seem effective and related work coverage is thorough; writing quality is described as good. I mark one notch down only because the summary mentions evaluation metrics were not specified in the extract, which could hinder reproduction and clarity of experimental claims for a practitioner audience.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and communicates its ideas clearly: the joint CTC\u2013attention approach and its motivation (mitigating attention alignment errors) are stated early, notation and hyperparameter reporting are said to be consistent, and figures/tables are informative. The writing quality is good and related work coverage thorough. However, the summary omits explicit evaluation metrics and statistical significance reporting, which hinders clarity about experimental claims; given my preference for rigorous, fully reproducible presentation, this prevents a top score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and readable: the flow from intro to method to experiments and conclusion is logical, the main contribution (joint CTC-attention training and two-pass decoding) is stated early, and notation and hyperparameters are reported. Figures/tables seem effective and related work coverage is thorough; writing quality is described as good. I mark one notch down only because the summary mentions evaluation metrics were not specified in the extract, which could hinder reproduction and clarity of experimental claims for a practitioner audience."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the work offers a meaningful and practically useful integration of CTC and attention that addresses known alignment failures and is validated on realistic benchmarks. While it is largely an empirical integration of existing components without new theoretical analysis (a valid point raised by Reviewer A), the non-trivial methodological combination and clear empirical benefits justify a slightly above-average originality score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper proposes a concrete joint CTC\u2013attention training and decoding recipe that combines CTC\u2019s monotonic alignment guidance with attention-based modeling, which is a meaningful and practically useful idea beyond off-the-shelf components. However, the core idea is primarily a principled combination of existing techniques (CTC + attention, multi-task loss, rescoring) rather than a fundamentally new formulation, and the summary indicates no formal analysis or guarantees of the proposed hybrid alignment behavior. The authors clearly differentiate their contributions via experiments on CSJ and HKUST, but as a theory-minded reviewer I must downgrade somewhat for the empirical-only nature and absence of theoretical justification or stronger novelty beyond component integration."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a notable joint CTC\u2013attention approach that combines CTC and attention objectives during training and leverages them jointly in decoding\u2014this is a clear methodological departure from attention-only or CTC-only systems described in the summary. It explicitly targets and mitigates known attention alignment failures (repetitions/deletions) and is empirically validated on realistic non-English benchmarks (CSJ and HKUST), showing comparable performance to hybrid systems without linguistic resources. The idea is a non-trivial integration (multi-task objective plus two-pass decoding/rescoring) and is clearly differentiated from prior CTC and attention work, so it would inform practitioners even if it is not a radical theoretical breakthrough."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper is squarely within the venue scope and of clear interest to end-to-end ASR and sequence-model researchers, with appropriate datasets and baselines. I award a 4 because, while the empirical contributions and evaluations make it a strong fit, the lack of formal analysis (e.g., monotonicity/convergence), comprehensive ablations/statistical significance, and missing code/reproducibility details justify a small deduction from a perfect score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper addresses an important, current topic in end-to-end ASR (joint CTC-attention) that is squarely within the scope of top NLP/ML venues and targets the right audience (sequence models and speech recognition researchers). However, from the provided summary it appears to lack formal analysis of guarantees (e.g., monotonicity/convergence) and comprehensive ablation/statistical significance studies and code release \u2014 shortcomings I penalize given my emphasis on theoretical understanding and reproducibility. The datasets and baselines are appropriate and the problem formulation and methodology match community expectations, so overall it is a good but not perfect fit."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top-tier NLP/ML venue: it addresses a core ASR modeling problem (combining CTC and attention) with practical impact (mitigating attention alignment errors) and evaluates on realistic non-English benchmarks (CSJ and HKUST) against strong baselines including hybrid HMM/DNN and sequence-discriminative TDNN. The methodology (multi-task CTC+attention training and two-pass decoding/rescoring) and reporting of hyperparameters match community standards, and the contribution is clearly positioned to interest both end-to-end ASR researchers and practitioners seeking resource-light, deployable systems. Minor limitations (not matching the best LF-MMI TDNN) are acknowledged, but do not reduce its relevance to the venue."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper clearly states its claims and provides convincing empirical evidence on realistic benchmarks, but they also agree important components are missing: formal analysis, comprehensive ablations/weighting experiments, statistical significance/multiple seeds, and reproducibility artifacts. These gaps undermine confidence in the generality and robustness of the technical claims, so I assign a moderately cautious score reflecting promising results but incomplete substantiation.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its main claim (joint CTC-attention training/decoding to mitigate attention alignment errors) and supports it with experiments on CSJ and HKUST and comparisons to sensible baselines; however, there is no formal analysis (e.g., convergence or monotonicity guarantees) and no proofs of when or why the joint objective enforces better alignments. The experimental methodology lacks reported evaluation metrics/statistical significance and comprehensive ablations (e.g., weighting of CTC vs attention, decoding schedule, multiple seeds), and code/recipes are not mentioned, which impedes reproducibility. Given these gaps, the empirical results are promising but the technical claims are not fully substantiated, so I downgrade the score accordingly."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper articulates its main claims clearly and supports them with experiments on two realistic benchmarks (CSJ and HKUST) against strong baselines (hybrid HMM/DNN, CTC variants, TDNN), showing that joint CTC\u2013attention reduces alignment problems and achieves competitive error rates without linguistic resources. Mathematical content appears appropriate for the proposed multi-task training and two-pass decoding; no obvious derivation errors are reported in the summary. My concerns are pragmatic: evaluation metrics and statistical significance testing are not specified in the summary, and code/reproducibility details are missing, which prevents full verification of empirical claims. Overall the technical approach and evidence are solid, with only minor gaps in reporting that do not overturn the conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper compares against strong, relevant baselines on standard corpora and openly acknowledge that TDNN+LF\u2011MMI still outperforms the proposed method. I award a 4 because the experimental comparison is broadly fair and convincing (datasets, baselines, and hyperparameters reported), but it falls short of a top score due to missing details on evaluation variance/statistical significance and limited ablation analyses isolating each component's contribution.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper compares to a reasonable set of strong baselines (DNN\u2011hybrid, several CTC variants, and a state\u2011of\u2011the\u2011art TDNN with LF\u2011MMI) on two standard corpora (CSJ and HKUST), and the related work coverage is reported as thorough. However, the summary does not specify evaluation metrics or statistical significance/variance across seeds, making it unclear whether comparisons are fully fair and reproducible; the authors also admit the TDNN LF\u2011MMI baseline still outperforms their method. Finally, although differences are described conceptually (CTC guidance of attention), the summary lacks evidence of detailed quantitative ablations or analyses isolating the contribution of each component, so I cannot judge the comparisons as fully comprehensive."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper evaluates against strong and relevant baselines (hybrid HMM/DNN, several CTC systems, and a competitive TDNN with LF-MMI) on two realistic corpora (CSJ and HKUST), which matches my practical evaluation priorities. Comparisons appear fair (same benchmarks) and the authors explicitly acknowledge that TDNN+LF-MMI still outperforms their method. They also clearly explain differences (CTC alignment guidance vs attention) and report hyperparameters; minor omissions could include even more recent end-to-end competitors, but overall the experimental comparison is solid and convincing."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses an important practical problem and demonstrates competitive empirical gains on realistic benchmarks, making it broadly useful to practitioners. The lower concern is lack of theoretical alignment guarantees, comprehensive ablations/statistical robustness, and explicit code release, which temper transformative impact but do not negate the method\u2019s likely adoption\u2014hence a slightly above-moderate impact score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014irregular alignments in attention-only end-to-end ASR\u2014and proposes a pragmatic joint CTC\u2013attention training/decoding scheme that yields competitive results on CSJ and HKUST, so it will be of clear interest to ASR researchers and practitioners. However, from the provided summary there is no formal analysis of alignment/monotonicity guarantees, limited evidence of comprehensive ablations or statistical robustness (multiple seeds/confidence intervals), and code/release is not mentioned; these omissions reduce how strongly the community will adopt or build on it. Given solid empirical gains but lacking theoretical guarantees and reproducibility artifacts, I assess the likely impact as moderate rather than transformative."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper tackles an important practical problem\u2014instability and alignment errors of attention-only end-to-end ASR\u2014by proposing a joint CTC-attention training and two-pass decoding strategy that leverages CTC\u2019s monotonic alignment while retaining attention\u2019s modeling power. Empirically it produces competitive results on realistic benchmarks (CSJ and HKUST) and matches hybrid systems without needing linguistic resources, which is valuable for deployment and resource-poor languages. While it does not yet surpass a strong TDNN + LF-MMI hybrid baseline, the method is broadly applicable and likely to be adopted or extended in practice, opening pragmatic directions for more robust end-to-end ASR integration."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper provides solid empirical evaluation on two realistic benchmarks and compares to strong baselines, supporting the main claim that CTC guidance helps attention alignment. However, they also concur that key analyses are missing\u2014ablation studies, statistical significance or multi-seed variability, runtime/latency measurements, and code release\u2014which limits the work's reproducibility and thoroughness; for these reasons I give a mid\u2011range score reflecting useful empirical contribution but insufficient comprehensive validation.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper evaluates the joint CTC-attention model on two standard benchmarks (CSJ and HKUST), which provides reasonable empirical coverage to support the central claim that CTC guidance mitigates attention alignment errors. However, from the summary there is no indication of required ablation studies (e.g., multi-task loss weighting, single- vs two-pass decoding effects), no statistical significance or multi-seed variability reported, and no released code \u2014 all issues I penalize as a theory-focused reviewer. Related work appears thorough and the limitations note the gap to TDNN/LF-MMI, but the lack of formal analysis of alignment/monotonicity guarantees and missing comprehensive sensitivity studies prevent a higher score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper evaluates the joint CTC\u2011attention approach on two realistic benchmarks (CSJ and HKUST) and compares against several strong baselines (hybrid DNN, syllable CTC, CTC+LM, TDNN LF\u2011MMI), which provides solid empirical support for the main claims. It reports hyperparameters and discusses limitations (including not reaching TDNN LF\u2011MMI and attention failure modes) and uses a practical two\u2011pass decoding strategy, but important practical analyses are missing or limited (e.g., no runtime/latency or decoding-cost measurements, exact evaluation metrics were not specified in the summary, and ablation/sensitivity on decoding tradeoffs appears incomplete). Overall the experimental work is thorough and pragmatic for deployment relevance but has minor gaps that prevent a fully comprehensive validation."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a joint CTC-attention end-to-end ASR method that combines benefits of CTC and attention during training and decoding.",
+      "Joint CTC-attention mitigates irregular alignment problems of attention-only models (e.g., repetitions and deletions) by using CTC-based alignment as guidance.",
+      "Applied to Japanese (CSJ) and Mandarin (HKUST) benchmarks, showing comparable performance to conventional hybrid ASR systems without requiring linguistic resources."
+    ],
+    "methodology": "Attach a CTC objective to an attention-based encoder-decoder network (multi-task learning) and use the combined CTC-attention model jointly during training and in a two-pass decoding (rescoring) procedure to leverage CTC\u2019s monotonic alignment and attention\u2019s flexible modeling.",
+    "datasets": [
+      "Corpus of Spontaneous Japanese (CSJ)",
+      "HKUST Mandarin Chinese conversational telephone speech recognition (MTS)"
+    ],
+    "baselines": [
+      "Hybrid HMM/DNN (DNN-hybrid)",
+      "Syllable-based CTC (Kanda et al.)",
+      "CTC with language model (Miao et al.)",
+      "TDNN with lattice-free sequence discriminative training (Povey et al.)"
+    ],
+    "metrics": [],
+    "limitations": [
+      "The proposed method did not reach the performance of TDNN with lattice-free sequence discriminative training.",
+      "Attention-based models can produce irregular alignments (repetitions and deletions); joint CTC-attention is proposed to avoid these issues."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Speech recognition - end-to-end ASR (CTC and attention)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Tenured faculty in machine learning and speech with a track record of publishing theoretical analyses of sequence models and alignment algorithms. Strong background in statistical learning theory and formal properties of sequence-to-sequence models.",
+      "traits": [
+        "Downgrades empirical papers that lack formal analysis of method guarantees (e.g., convergence or monotonicity proofs) by at least 1-2 points compared to a neutral reviewer",
+        "Penalises papers that do not provide comprehensive ablation studies on key design choices (weighting of multi-task loss, decoding schedule, architectural variants) \u2014 expects numeric ablations for each major component",
+        "Requires statistical significance testing or confidence intervals across multiple seeds/conditions; will deduct points if only single-run numbers are reported",
+        "Penalises absence of released code/configs/sufficient training recipe for exact reproducibility"
+      ],
+      "reviewing_style": "Prioritizes theoretical understanding and rigorous controlled experiments; treats engineering-driven empirical gains skeptically unless accompanied by formal analysis and thorough ablations."
+    },
+    "reviewer_b": {
+      "name": "Practical Systems Engineer",
+      "background": "Senior research engineer with extensive experience building deployed ASR systems and publishing empirical improvements on benchmark corpora; focuses on end-to-end modeling, decoding strategies, and resource-efficient pipelines.",
+      "traits": [
+        "Rewards papers that demonstrate clear empirical improvements on realistic benchmarks (especially non-English corpora) and that simplify deployment (e.g., removing need for linguistic resources) \u2014 will upscore such papers",
+        "Gives positive weight to pragmatic contributions like joint training/decoding strategies and two-pass rescoring if they lead to consistent error-rate reductions across datasets",
+        "Values inclusion of runtime, decoding latency, and practical implementation details; will penalise omissions but less than Reviewer A",
+        "Accepts strong empirical evidence without formal proofs; does not require theoretical guarantees to consider the work significant"
+      ],
+      "reviewing_style": "Evaluates work primarily on practical impact and empirical robustness; favors methods that simplify pipelines and yield reproducible improvements on realistic ASR benchmarks."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

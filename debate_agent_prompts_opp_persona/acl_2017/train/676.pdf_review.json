@@ -1,0 +1,176 @@
+{
+  "MEANINGFUL_COMPARISON": 5,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "[Consensus avg=5] A(5): The paper evaluates against an appropriate and broad set of baselines (standard softmax, hierarchical and differentiated softmax, sampling-based approximations, and character/subword methods) using the same datasets (ASPEC, BTEC) and BLEU metric, which supports fair head-to-head comparison. The authors report both accuracy and resource trade-offs (memory and CPU) and explicitly acknowledge limitations of the simplest binary mapping, indicating honest comparison to prior methods. Related work coverage is described as adequate and the hybrid/error\u2011correcting variants are analysed relative to the baselines, so the empirical comparison is comprehensive and appropriately contextualised. | B(5): The paper compares against a wide set of relevant baselines (standard softmax, hierarchical and differentiated softmax, sampling approximations, and character/subword methods) using the same datasets (ASPEC, BTEC) and BLEU, and reports hyperparameters\u2014supporting fair comparisons. It explicitly acknowledges when the simple binary mapping underperforms and analyzes remedies (error-correcting codes, hybrid softmax/binary), provides wall-clock/memory reduction claims, and discusses related work adequately. From a deployment-oriented perspective this is a comprehensive and practically focused empirical comparison with only minor room for additional wall-clock reproducibility details.",
+      "reviewer_a": {
+        "score": 5,
+        "justification": "The paper evaluates against an appropriate and broad set of baselines (standard softmax, hierarchical and differentiated softmax, sampling-based approximations, and character/subword methods) using the same datasets (ASPEC, BTEC) and BLEU metric, which supports fair head-to-head comparison. The authors report both accuracy and resource trade-offs (memory and CPU) and explicitly acknowledge limitations of the simplest binary mapping, indicating honest comparison to prior methods. Related work coverage is described as adequate and the hybrid/error\u2011correcting variants are analysed relative to the baselines, so the empirical comparison is comprehensive and appropriately contextualised."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper compares against a wide set of relevant baselines (standard softmax, hierarchical and differentiated softmax, sampling approximations, and character/subword methods) using the same datasets (ASPEC, BTEC) and BLEU, and reports hyperparameters\u2014supporting fair comparisons. It explicitly acknowledges when the simple binary mapping underperforms and analyzes remedies (error-correcting codes, hybrid softmax/binary), provides wall-clock/memory reduction claims, and discusses related work adequately. From a deployment-oriented perspective this is a comprehensive and practically focused empirical comparison with only minor room for additional wall-clock reproducibility details."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well-organized and follows a clear structure (intro \u2192 method \u2192 experiments \u2192 conclusion), and its main contributions (binary-code output layer, convolutional error-correcting codes with Viterbi decoding, and a hybrid softmax/binary model) are stated early. Notation appears consistent and hyperparameters are reported, while figures/tables and examples are described as effective and informative. The writing quality is good overall, though the presentation occasionally undersells the limitations of the simplest binary mapping model and could more explicitly connect algorithmic claims to practical costs (e.g., decoding overhead) for maximal clarity. | B(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (binary-code prediction, error-correcting codes, hybrid model). Notation and definitions are consistent, and figures/tables (BLEU results on ASPEC and BTEC, memory/speed comparisons) effectively support the claims. Writing quality is good overall, with only minor presentation issues rather than major clarity problems.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well-organized and follows a clear structure (intro \u2192 method \u2192 experiments \u2192 conclusion), and its main contributions (binary-code output layer, convolutional error-correcting codes with Viterbi decoding, and a hybrid softmax/binary model) are stated early. Notation appears consistent and hyperparameters are reported, while figures/tables and examples are described as effective and informative. The writing quality is good overall, though the presentation occasionally undersells the limitations of the simplest binary mapping model and could more explicitly connect algorithmic claims to practical costs (e.g., decoding overhead) for maximal clarity."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (binary-code prediction, error-correcting codes, hybrid model). Notation and definitions are consistent, and figures/tables (BLEU results on ASPEC and BTEC, memory/speed comparisons) effectively support the claims. Writing quality is good overall, with only minor presentation issues rather than major clarity problems."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper delivers substantial practical gains in memory and CPU that make it compelling for deployment, though it is not a fundamentally theoretical advance. Reviewer A\u2019s concern about lack of formal guarantees is valid, but the strong empirical benefits and sensible engineering remedies argued by Reviewer B make the contribution high-impact for systems and applied NMT work. Therefore a score of 4 reflects solid practical impact while acknowledging limits on theoretical novelty.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles the important and practical problem of reducing output-layer cost in NMT and demonstrates substantial empirical gains (memory reductions of 10\u20131000x and 5\u201320x CPU speedups on ASPEC/BTEC) which make the approach practically interesting. However, from a theory-first perspective the work lacks the kind of formal analysis and error-rate/complexity guarantees I would expect for broad adoption: the proposed binary coding and convolutional ECC + Viterbi fixes are heuristic without stated bounds on decoding error as a function of score noise, and asymptotic claims (O(H log V)) are not accompanied by a rigorous accounting of constants and hidden costs. Thus the contribution is promising and likely to spur follow-up work, but not yet sufficiently principled to be transformative across the field."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles a practical and important deployment problem\u2014output-layer memory and CPU costs in NMT\u2014and demonstrates substantial real-world gains (\u22481/10\u20131/1000 memory reduction and 5\u00d7\u201320\u00d7 CPU speedups) which practitioners care about. The hybrid softmax/binary approach and use of convolutional error-correcting codes, validated on ASPEC and BTEC with comparisons to sensible baselines, make the technique immediately compelling for production systems that tolerate small accuracy tradeoffs. While not necessarily transformative to core modeling theory, the measured efficiency wins and concrete ablation-style remedies for robustness make this a strong-impact contribution likely to be adopted and further explored by systems-focused researchers and engineers."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper addresses an important, deployment-relevant problem in NMT and proposes practical, well-evaluated techniques that suit a top-tier NLP/ML audience. While Reviewer A correctly notes the lack of formal theoretical guarantees on decoding/error bounds, the strong empirical results, relevant baselines, and clear system-level benefits justify full appropriateness for the venue; the theoretical gap is a minor weakness rather than a mismatch with venue scope.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper addresses a core efficiency problem in neural MT (reducing softmax cost) with methods (binary codes, ECC + Viterbi, hybrid softmax/binary) and evaluations on standard MT datasets (ASPEC, BTEC) using BLEU and relevant baselines, so it is well within the scope and audience of top NLP/ML venues. However, from the provided summary I note important methodological claims about complexity and robustness that hinge on error-correcting analysis and probabilistic guarantees; the absence of stated theoretical bounds on decoding error or formal complexity constants weakens its fit slightly for the very top venues that expect principled guarantees alongside empirical results. Overall it is a strong submission for the venue but would benefit from clearer theoretical framing to be a perfect fit."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper fits a top-tier NLP/ML venue: it tackles an important deployment-focused problem (output-layer cost in NMT) and proposes practical techniques (binary code prediction, convolutional error-correcting codes, hybrid softmax/binary model) that yield substantial resource gains (reported 5x\u201320x CPU speedups and 10x\u20131000x memory reductions) while approaching standard softmax BLEU. Evaluation uses relevant NMT datasets (ASPEC, BTEC), compares against sensible baselines (hierarchical/differentiated/sampled softmax, character/subword methods), and reports hyperparameters and ablations addressing robustness\u2014exactly the empirical standards I expect as a systems-oriented reviewer. Overall the topic, audience, formulation, methods, and positioning are well aligned with a top conference (minor implementation/code-release details aside)."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper addresses a well-studied problem (softmax cost) and combines known techniques in a pragmatic way; its main novelty is the concrete pairing of binary-code prediction with error-correcting codes and a hybrid softmax that yields useful practical tradeoffs. While Reviewer B found this combination non-trivial and informative, Reviewer A reasonably characterized it as an incremental composition rather than a fundamentally new formulation. Given the solid engineering contribution but limited conceptual novelty, a middle score of 3 best reflects originality.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper combines the well-studied goal of reducing softmax cost with a concrete scheme of predicting binary codes, plus pragmatic additions (convolutional error-correcting codes with Viterbi decoding and a softmax/binary hybrid). While the particular combination and engineering (ECC + hybrid) applied to NMT appears useful and distinct from standard hierarchical or sampled softmaxs, it is largely an incremental composition of known ideas rather than a fundamentally new formulation. The authors do differentiate from prior work empirically and with methodological tweaks, but the core concept (compressing output space via binary encodings) is a natural extension of existing approaches and would not strongly surprise an expert."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable and reasonably novel approach by replacing softmax with explicit binary-code prediction for words and addressing its brittleness via convolutional error-correcting codes and Viterbi decoding plus a hybrid softmax/binary model. This combination \u2014 direct binary word encodings for O(H log V) complexity together with error-correction and hybrid treatment of frequent words \u2014 is a non-trivial extension beyond standard softmax approximations and is clearly differentiated from hierarchical/sampled/character methods in the summary. An expert would find the concrete pairing of binary-code prediction with ECC and hybridization informative for practical efficiency tradeoffs, even if the general goal (softmax approximation for large vocabularies) is well-studied."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the empirical results convincingly support the main claims (large memory reductions and CPU speedups with comparable BLEU) and the methodology compares to reasonable baselines. I give a 4 because the approach is sound and experimentally validated, but I note the legitimate gap highlighted by Reviewer A: the paper lacks formal analysis of the error\u2011correcting scheme and more precise complexity/implementation details, which are important but do not invalidate the technical contribution.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper states clear claims and supports them with experiments on ASPEC and BTEC showing reduced memory and faster CPU decoding versus softmax, and compares reasonable baselines. However, there is no formal analysis or bounds for the error-correcting scheme (decoding error probability as a function of bit/noise rates) nor rigorous treatment of the O(H log V) complexity claim (constants, mapping costs, and Viterbi overhead are not specified). The experimental methodology appears acceptable but limited to two datasets and lacks theoretical guarantees that my reviewer persona requires, so the technical contribution is plausible but incomplete."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims and supports them with experiments on ASPEC and BTEC showing large memory reductions (\u224810\u20131000\u00d7) and measured CPU decoding speedups (\u22485\u201320\u00d7) while retaining BLEU close to softmax by using error\u2011correcting codes and a hybrid softmax/binary model. Mathematical framing (O(HB) complexity \u2248 O(H log V)) is plausible and no obvious derivation errors are reported in the summary. Methodologically the authors compare to relevant baselines (hierarchical/differentiated/sampling softmax and subword methods) and report hyperparameters, but the summary lacks mention of statistical significance tests, public code, and some implementation details that would help reproducibility. These are minor gaps that do not undermine the main technical claims, so the paper is sound but not flawless."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper provides a solid, well-ablated empirical evaluation with meaningful speed and memory gains and a broad set of baselines. I award a 4 because while the experimental contributions and practical impact are convincing, the work lacks formal theoretical guarantees and fuller reproducibility details (e.g., code release and more detailed runtime/memory breakdowns), preventing a higher score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experimental evaluation is reasonably comprehensive: two NMT datasets (ASPEC, BTEC) and multiple baselines (softmax, hierarchical, differentiated, sampling, character/subword) are used and hyperparameters are reported, and the paper studies variants (plain binary mapping, convolutional error-correcting codes with Viterbi decoding, and the hybrid softmax/binary model). However, from the provided summary there is no formal theoretical analysis of the proposed error-correcting scheme (e.g. decoding error probability as a function of score noise) nor a rigorous accounting of hidden constants in the O(H log V) claim, which I penalize given my theory-first stance. The paper does discuss limitations and negative results (failure of the simplest mapping) and includes sensible ablations (ECC and hybrid), but reproducibility is weakened by no mention of released code and the lack of formal guarantees limits the depth of the contribution."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the empirical evaluation is solid and pragmatically focused: experiments on ASPEC and BTEC report BLEU, wall-clock CPU speedups (5x\u201320x) and large memory reductions (1/10\u20131/1000), and the paper compares to a broad set of softmax alternatives (hierarchical, differentiated, sampling, character/subword). Ablations addressing robustness (hybrid softmax/binary and convolutional error-correcting codes with Viterbi) are present and directly target the main failure mode. Minor gaps remain for full reproducibility/deployment readiness (code availability not mentioned) and I would have liked additional wall-clock/memory breakdowns across more varied model sizes and latency-sensitive settings, so I rate it a strong but not flawless 4."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes predicting a binary code for each output word to reduce output-layer computation and memory, achieving complexity O(HB) (\u2248 O(H log V) with minimal mapping).",
+      "Introduces convolutional error-correcting codes with Viterbi decoding and a hybrid softmax/binary model to improve robustness and accuracy of binary code prediction.",
+      "Achieves translation accuracies approaching standard softmax while reducing memory usage by about 1/10 to 1/1000 and improving CPU decoding speed by about 5x to 20x."
+    ],
+    "methodology": "Replace standard softmax word prediction with prediction of binary codes for words, optionally augmented with convolutional error-correcting codes decoded by Viterbi and a hybrid model that predicts frequent words with softmax and others with binary codes to improve robustness and efficiency.",
+    "datasets": [
+      "ASPEC",
+      "BTEC"
+    ],
+    "baselines": [
+      "standard softmax",
+      "hierarchical softmax",
+      "differentiated softmax",
+      "sampling-based softmax approximations",
+      "character/subword methods"
+    ],
+    "metrics": [
+      "BLEU"
+    ],
+    "limitations": [
+      "The simplest binary mapping model (direct mapping words to bit arrays) seriously decreases translation quality due to robustness issues.",
+      "Strong independence constraints between bits introduce robustness problems that require additional techniques (error-correcting codes and hybrid models) to mitigate."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - neural machine translation",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory-first Skeptic",
+      "background": "Associate professor in machine learning and theoretical computer science with a track record of work on algorithmic guarantees for neural models and coding theory.",
+      "traits": [
+        "penalises papers that introduce an algorithmic trick without providing formal guarantees (e.g. bounds on error rates, expected runtime, or provable approximation to softmax) \u2014 deducts points if no theoretical analysis is given",
+        "expects explicit analysis of the error-correcting scheme (e.g. bounds on decoding error probability as a function of bit-noise or model score noise) and will lower score if absent",
+        "insists on comparing asymptotic complexity rigorously (if claiming O(H log V), requires clear statement of constants, mapping algorithm, and any hidden costs such as Viterbi decoding) and penalises vague complexity claims",
+        "gives limited credit for empirical-only contributions unless accompanied by insights that generalize beyond specific datasets or setups"
+      ],
+      "reviewing_style": "Critical, focused on theoretical rigor and principled understanding; rewards formal analysis and generalizable insight over engineering/empirical optimizations."
+    },
+    "reviewer_b": {
+      "name": "Practical Systems Enthusiast",
+      "background": "Senior research scientist in applied NLP and machine translation engineering, with experience deploying NMT models in production where memory footprint and CPU latency are primary constraints.",
+      "traits": [
+        "rewards papers that demonstrate substantial real-world improvements (e.g. measured 5x\u201320x CPU decoding speedups or 10x\u20131000x memory reduction) with reproducible experiments and sensible baselines",
+        "values careful empirical evaluation and ablation studies (e.g. hybrid vs pure binary, effect of code length, impact of error-correcting codes) and increases score when such studies are thorough",
+        "penalises omission of strong empirical baselines relevant to deployment (e.g. hierarchical softmax, sampled softmax, character-level decoders) but gives credit when comparisons include wall-clock and memory measurements",
+        "prefers solutions that trade a small loss in accuracy for large gains in efficiency and will rate such tradeoffs favorably when clearly quantified"
+      ],
+      "reviewing_style": "Pragmatic and results-oriented; favors solutions that deliver tangible efficiency gains with robust empirical validation suitable for deployment."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 5,
+    "total_dimensions": 7,
+    "debate_rate": 0.714
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "CLARITY": 5,
+  "ORIGINALITY": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper is very well organized, with clear exposition of contributions, consistent notation, effective figures/tables, and sufficient implementation details for reproduction. Reviewer A notes only minor clarity issues around some architectural choices and theoretical justification for the quantization relaxation, but these do not substantially impede understanding. Given the overall excellent writing and reproducibility, a top clarity score is warranted.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized with a clear logical flow and states its main contributions early (end-to-end optimized nonlinear transform coding, GDN/IGDN, and entropy modeling). Notation and definitions are generally consistent and figures/tables effectively illustrate architecture and rate\u2013distortion results; writing quality is excellent and related work and hyperparameters are adequately reported. Minor clarity issues remain around some ad-hoc architectural choices and the extent of theoretical justification for the quantization relaxation (noted in the limitations), which could use clearer exposition and motivation."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper is exceptionally clear and well organized: the intro, method (analysis/synthesis/GDN + quantization relaxation + entropy model), experiments (PSNR/MS-SSIM and actual bit rates with CABAC) and conclusion flow logically. Main contributions are stated early and supported by concrete implementation details (three-stage transforms, GDN/IGDN, additive-noise relaxation) and reported hyperparameters. Notation appears consistent and figures/tables/visual examples (including Kodak and standard test images) effectively convey empirical gains and real-bitrate measurements. Writing quality is excellent with minimal ambiguity, making the work easy to understand and reproduce from a systems perspective."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper constitutes a clear and substantive novelty: an end-to-end optimized nonlinear transform coding framework that jointly learns analysis/synthesis transforms, a continuous quantization relaxation, and an entropy model, together with practical implementation details (GDN/IGDN and CABAC) and reported bitrates. Given these methodological and engineering contributions that go beyond prior separated or handcrafted codecs and present a deployable advance for learned image compression, a top originality score is warranted.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper offers a clearly new perspective by formulating end-to-end optimization of nonlinear transform coding \u2014 jointly learning analysis/synthesis transforms and an entropy model using a continuous relaxation of quantization \u2014 which was not standard practice in prior codecs. The use of cascaded conv stages with GDN/IGDN and the additive-uniform noise relaxation to enable gradient-based training are non-trivial methodological innovations beyond classical transform coding and previous learned features. While the problem (lossy image compression) is well-studied, the integrated training of transforms and entropy model and demonstration with an actual entropy coder mark a notable, differentiated advance that would inform experts, even if some design choices (GDN, architecture) are somewhat heuristic."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This work presents a clearly novel end-to-end optimized nonlinear transform coding pipeline \u2014 jointly learning analysis/synthesis transforms, a continuous quantization relaxation (additive uniform noise), and an entropy model \u2014 which goes beyond traditional separated design and prior handcrafted codecs. The inclusion of GDN/IGDN nonlinearities, practical CABAC-based entropy coding and reporting of actual bit rates demonstrates a substantive, deployable advance rather than a minor tweak. From a systems perspective, the combined methodological and engineering contributions would meaningfully inform experts building learned image codecs."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper makes a clear empirical contribution with extensive evaluations and an implemented entropy coder that supports the main claims. Remaining concerns are primarily about limited theoretical justification for key approximations (e.g., uniform-noise quantization relaxation) and a lack of detailed ablation/sensitivity studies and comparisons to stronger learned baselines. These issues do not invalidate the technical contribution but prevent a top score, so a 4/5 reflects strong empirical correctness with modest methodological gaps.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents clear claims and provides extensive experimental evidence (ImageNet subset, Kodak, standard images) showing improved MS-SSIM/PSNR over JPEG/JPEG 2000 and implements an actual entropy coder, so empirical support is substantial. However, from a theory-first perspective key algorithmic approximations lack formal justification\u2014most notably the additive uniform-noise relaxation for quantization\u2014and there is insufficient analysis/ablation to justify architectural choices (GDN, stage count, filter sizes) or sensitivity to optimization hyperparameters (\u03bb, learning dynamics). Experimental methodology is competent versus classical codecs but omits comparisons to strong learned baselines and deeper robustness/statistical analyses. Overall the work is promising and largely correct empirically but has notable gaps in theoretical justification and ablation that prevent a higher technical score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper clearly states and empirically supports its main claim that jointly optimized analysis/synthesis transforms with a learned entropy model improve rate\u2013distortion/perceptual performance: evaluations report PSNR and MS-SSIM on Kodak, ImageNet subset and standard images, and crucially include an implemented CABAC-based entropy coder with measured bit rates. The theoretical treatment (GDN/IGDN, uniform-quantization relaxation via additive uniform noise, and nonparametric marginals) is standard and appears correctly applied for end-to-end gradient optimization. Experimental methodology is strong \u2014 appropriate baselines (JPEG, JPEG 2000), real bitrates, and multiple metrics \u2014 though some design choices (architecture, GDN benefits) are described as ad-hoc and the method does not uniformly beat JPEG 2000 at all rates/images. Overall the evidence supports the claims, with only minor concerns about generality and architecture selection that do not undermine the main technical contribution."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces an end-to-end optimized nonlinear transform coding framework for lossy image compression, jointly optimizing analysis and synthesis transforms and the entropy model for rate\u2013distortion performance.",
+      "Uses cascaded convolutional stages with a generalized divisive normalization (GDN) nonlinearity (and approximate inverse IGDN), followed by uniform scalar quantization with a continuous relaxation (additive uniform noise) to enable gradient-based optimization.",
+      "Demonstrates that the proposed method yields substantially improved perceptual quality (MS-SSIM) across tested images and bit rates, and better PSNR-based rate\u2013distortion performance than JPEG and JPEG 2000 for most (but not all) test images, especially at low bit rates.",
+      "Implements an actual entropy coder (CABAC-based) and reports performance in actual bit rates, showing feasibility as a complete lossy compression method."
+    ],
+    "methodology": "A three-stage analysis transform (convolution + downsampling + GDN) maps images to code space, which is quantized with uniform scalar quantization; during training quantization is relaxed via additive uniform noise, marginals of the noisy codes are modeled non-parametrically, and analysis/synthesis/entropy parameters are jointly optimized by stochastic gradient descent to minimize a weighted rate\u2013distortion objective R+\u03bbD.",
+    "datasets": [
+      "Subset of ImageNet (6507 images)",
+      "Kodak image dataset",
+      "Standard test images (Lena, Barbara, Peppers, Mandrill)"
+    ],
+    "baselines": [
+      "JPEG",
+      "JPEG 2000"
+    ],
+    "metrics": [
+      "Mean squared error (MSE) / PSNR",
+      "MS-SSIM (perceptual metric)",
+      "Bit rate (actual bits from entropy coding)"
+    ],
+    "limitations": [
+      "Training computational costs are high (training is costly), though encoding/decoding with trained models is efficient.",
+      "The method does not outperform JPEG 2000 on all test images and bit rates (it outperforms for most but not all images, especially at high rates some images are worse).",
+      "Architecture choices are described as somewhat ad-hoc and may admit further improvements.",
+      "Preliminary comparisons to simpler nonlinearities are provisional; conclusions about GDN/IGDN efficiency are not definitive."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Image compression - lossy nonlinear transform coding",
+    "writing_quality": "excellent"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior researcher in information theory and statistical signal processing with extensive experience in formal analysis of compression algorithms and optimization theory.",
+      "traits": [
+        "Demands theoretical justification or provable bounds for key algorithmic approximations (e.g., validity of additive uniform-noise relaxation for quantization) and will deduct score if such analysis is absent.",
+        "Penalizes papers that rely primarily on empirical tuning rather than clear algorithmic/architectural principles\u2014requires ablation studies that explain why each design choice (GDN, number of stages, filter sizes) is necessary.",
+        "Requires comparison to strong learned baselines and, if claiming general improvements, cross-dataset or theoretical robustness analyses; will lower score if only standard codecs and a limited test set are used.",
+        "Insists on analysis of optimization/stability (e.g., sensitivity to \u03bb, learning rate, initialization) and will downgrade papers that omit training dynamics or reproducibility-critical details."
+      ],
+      "reviewing_style": "I emphasize formal understanding, reproducibility, and principled justification; I rate down empirical-only advances that lack theoretical analysis, extensive ablations, and robustness checks."
+    },
+    "reviewer_b": {
+      "name": "Practical Systems Advocate",
+      "background": "Senior applied machine learning researcher focused on building deployable visual codecs and end-to-end optimized systems for image/video applications in industry.",
+      "traits": [
+        "Rewards clear, reproducible empirical gains in perceptual quality (e.g., MS-SSIM) and actual bitrate measurements over classical codecs, especially when accompanied by visual examples.",
+        "Gives credit for engineering completeness: implementation of an actual entropy coder, reporting of real bit rates, and demonstration of a working end-to-end pipeline that could be deployed.",
+        "Favors end-to-end learned approaches and joint optimization of components (analysis/synthesis/entropy model); will score higher when the method simplifies the design pipeline and automates tuning.",
+        "Values demonstrated improvements at practical operating points (low bit rates, real images) and will be less concerned by absence of formal proofs if empirical evidence and ablations convincingly show robustness."
+      ],
+      "reviewing_style": "I prioritize empirical impact, practical deployability, and end-to-end system design; I reward well-engineered methods that demonstrate clear improvements on real metrics and operating points."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 3,
+    "total_dimensions": 3,
+    "debate_rate": 1.0
+  }
+}

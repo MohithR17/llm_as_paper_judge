@@ -1,0 +1,62 @@
+{
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a clear, new practical method (HYPERBAND) that systematically runs multiple instances of SUCCESSIVEHALVING across different n/r tradeoffs to hedge the unknown optimal allocation, which is a non-trivial and original way to extend early-stopping/bandit ideas to hyperparameter search. It explicitly positions itself relative to prior adaptive evaluators (e.g., SMAC, TPE, Fabolas) and claims minimal assumptions and generality, and backs this with empirical speedups across standard datasets. While the core components (successive halving, bandit-style resource allocation) are known, their orchestration into a simple, parameter-sparse algorithm that performs well in practice is a notable and useful novelty rather than a purely incremental tweak. The paper therefore provides a meaningful, clearly differentiated contribution that would inform experts in hyperparameter optimization."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized with a clear logical flow from problem statement to method (HYPERBAND) to experiments and conclusions; main contributions are stated early and the methodology (brackets, SUCCESSIVEHALVING, inputs R and \u03b7) is explained concretely. Notation and inputs appear consistent and well-defined (e.g., R, \u03b7, get_hyperparameter_configuration), and limitations are explicitly listed, which aids clarity. Experimental presentation is informative\u2014multiple datasets, baselines, and metrics (validation loss, test error, wall-clock speedups) are reported\u2014while related work coverage is adequate. Overall writing quality is good, suggesting only minor presentation polish is needed rather than major rewrites."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are largely supported by empirical evidence: HYPERBAND shows large reported speedups (~6\u00d7\u201370\u00d7) over sensible baselines (random search, SMAC, TPE, Spearmint, SUCCESSIVEHALVING) on several datasets (MNIST, CIFAR-10, MRBI, SVHN). However, the paper provides only a brief/high-level theoretical discussion (a thorough treatment is deferred to Li et al. (2016)), so mathematical guarantees are not fully developed here. Experimental methodology appears broadly sound in baseline choice and metrics, but one experiment (SVHN) shows HYPERBAND being outperformed by SMAC with early stopping and no mention of statistical testing is given in the summary. Overall the technical claims are well-supported empirically with minor gaps in theoretical completeness and some experimental detail."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "HYPERBAND is a principled early-stopping based method that adaptively allocates resources to hyperparameter configurations, allowing evaluation of orders of magnitude more configurations than uniform allocation strategies.",
+      "HYPERBAND is a general-purpose technique that makes minimal assumptions compared to prior adaptive configuration evaluation approaches.",
+      "HYPERBAND organizes multiple runs (brackets) of SUCCESSIVEHALVING over different n/r tradeoffs to hedge the unknown optimal tradeoff between number of configurations and resources per configuration, requiring only inputs R and \u03b7.",
+      "Empirically, HYPERBAND achieves large speedups over random search and Bayesian optimization baselines (reported ranges ~6\u00d7 to 70\u00d7) on several tasks, while returning competitive test/validation errors."
+    ],
+    "methodology": "HYPERBAND runs multiple brackets of the SUCCESSIVEHALVING algorithm with different choices of number of configurations n and minimum resource r (controlled by inputs R and \u03b7), using successive halving within each bracket to allocate more resources to promising configurations and early-stop poor ones.",
+    "datasets": [
+      "MNIST",
+      "CIFAR-10",
+      "rotated MNIST with background images (MRBI)",
+      "SVHN"
+    ],
+    "baselines": [
+      "SMAC",
+      "TPE",
+      "Spearmint",
+      "SMAC early (SMAC with early stopping)",
+      "random search",
+      "random 2\u00d7",
+      "SUCCESSIVEHALVING",
+      "CVST",
+      "Fabolas (discussed)"
+    ],
+    "metrics": [
+      "validation loss",
+      "test error (error rate)",
+      "runtime / wall-clock speedup (multiples relative to baselines)",
+      "number of configurations evaluated"
+    ],
+    "limitations": [
+      "HYPERBAND costs approximately (smax+1) times more work than running SUCCESSIVEHALVING for a single fixed n (i.e., extra work across multiple brackets).",
+      "HYPERBAND requires choosing inputs R (max resource per config) and \u03b7 and requires defining get_hyperparameter_configuration, run_then_return_val_loss, and top_k for the problem.",
+      "HYPERBAND was outperformed by SMAC with early stopping on the SVHN experiment, showing cases where combining adaptive selection and evaluation can be beneficial.",
+      "A thorough theoretical treatment is deferred to Li et al. (2016) (the paper only provides a brief/high-level theoretical discussion)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Hyperparameter optimization (adaptive configuration evaluation / bandit-based)",
+    "writing_quality": "good"
+  }
+}

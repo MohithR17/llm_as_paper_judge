@@ -26,6 +26,7 @@ from dimension_agents import (
     VENUE_DIMENSIONS,
     VENUE_MAP,
     load_paper_json,
+    has_ground_truth,
 )
 
 # ---------------------------------------------------------------------------
@@ -114,6 +115,10 @@ def call_single_agent(client, title, parsed_text, dimensions):
 # ---------------------------------------------------------------------------
 
 def process_paper(client, paper_json, dimensions, out_dir):
+    out_file = out_dir / f"{paper_json.stem}_review.json"
+    if out_file.exists():
+        return paper_json.name
+
     title, parsed_text = load_paper_json(paper_json)
 
     try:
@@ -137,33 +142,48 @@ def process_paper(client, paper_json, dimensions, out_dir):
 
 def process_venue(client, venue_folder, venue_name, output_dir):
     base = Path("PeerRead/data")
-    split_dir = base / venue_folder / "test" / "parsed_pdfs"
-    if not split_dir.exists():
-        tqdm.write(f"Skipping {venue_folder}: no test/parsed_pdfs")
-        return
+    venue_dir = base / venue_folder
 
     dimensions = VENUE_DIMENSIONS.get(venue_folder, [])
     if not dimensions:
         tqdm.write(f"Skipping {venue_folder}: no dimensions defined")
         return
 
-    out_dir = output_dir / venue_folder / "test"
-    out_dir.mkdir(parents=True, exist_ok=True)
-    files = list(split_dir.glob("*.json"))
+    for split in ["train", "dev", "test"]:
+        split_dir = venue_dir / split / "parsed_pdfs"
+        reviews_dir = venue_dir / split / "reviews"
+        if not split_dir.exists():
+            continue
 
-    pbar = tqdm(total=len(files), desc=f"{venue_name} (single-agent, {len(dimensions)} dims)", unit="paper")
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        futures = {
-            executor.submit(process_paper, client, paper_json, dimensions, out_dir): paper_json
-            for paper_json in files
-        }
-        for future in as_completed(futures):
-            try:
-                future.result()
-            except Exception as e:
-                tqdm.write(f"[ERROR] {venue_name} {futures[future].name}: {e}")
-            pbar.update(1)
-    pbar.close()
+        all_files = list(split_dir.glob("*.json"))
+        if reviews_dir.exists():
+            files = [f for f in all_files if has_ground_truth(f, reviews_dir, dimensions)]
+            skipped = len(all_files) - len(files)
+            if skipped:
+                tqdm.write(f"[INFO] {venue_name}/{split}: skipping {skipped}/{len(all_files)} papers with no GT scores")
+        else:
+            files = all_files
+
+        if not files:
+            tqdm.write(f"[INFO] {venue_name}/{split}: no papers with GT scores, skipping split")
+            continue
+
+        out_dir = output_dir / venue_folder / split
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        pbar = tqdm(total=len(files), desc=f"{venue_name}/{split} (single-agent, {len(dimensions)} dims)", unit="paper")
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures = {
+                executor.submit(process_paper, client, paper_json, dimensions, out_dir): paper_json
+                for paper_json in files
+            }
+            for future in as_completed(futures):
+                try:
+                    future.result()
+                except Exception as e:
+                    tqdm.write(f"[ERROR] {venue_name}/{split} {futures[future].name}: {e}")
+                pbar.update(1)
+        pbar.close()
 
 
 # ---------------------------------------------------------------------------

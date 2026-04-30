@@ -1,0 +1,74 @@
+{
+  "MEANINGFUL_COMPARISON": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "APPROPRIATENESS": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 3,
+  "CLARITY": 4,
+  "_details": {
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and influential baselines (GARCH; Market; Wang et al. 2013; Tsai et al. 2014; Kogan et al. 2009) and evaluates on the same dataset (SEC 10-Ks, 2006\u20132015) using standard metrics (r^2, MSE). The authors analyze differences (word\u2011embedding IR weighting vs. lexicon baselines, fusion strategies, sector/temporal effects) and provide thorough related-work coverage. Minor concerns remain about fairness/transparency (some GARCH implementation details relegated to supplementary material) and the summary does not indicate whether the paper acknowledges cases where prior methods perform comparably or better."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014forecasting volatility from 10-K Risk Factors\u2014and demonstrates a clear performance gain by introducing a word embedding\u2013based IR term-weighting that extends Loughran & McDonald lexicons using Word2Vec, reportedly outperforming prior state-of-the-art (Kogan et al., Wang et al., Tsai et al.). Its empirical finding that fusing textual signals with market features (via early fusion, stacking, MKL) improves forecasts, plus the analysis of conceptual drift in older reports, would likely change methodological choices in this subfield and encourage embedding-based lexicon expansion. While primarily focused on financial volatility prediction, the techniques and insights are broadly applicable to other long-form financial text tasks, suggesting a strong (but not transformative) impact."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are broadly comprehensive: they evaluate the proposed Word2Vec-augmented IR weighting against multiple prior baselines (Kogan et al., Wang et al., Tsai et al.), GARCH and market-only models, report r^2 and MSE, and test several fusion strategies (early fusion, stacking, MKL). The paper also analyzes sector/report characteristics and conceptual drift (older reports adding noise), and reports hyperparameters. However, ablation/sensitivity analyses are not clearly described in the summary, and reproducibility is partially hindered (code not mentioned and GARCH implementation details moved to supplementary materials), representing minor but important gaps."
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "The paper sits squarely at the intersection of NLP and ML, applying sentiment analysis (lexicon expansion with Word2Vec and IR weighting) and standard ML fusion methods (SVR, stacking, MKL) to a well-defined prediction task (10-K risk factors \u2192 realized volatility), which is appropriate for a top NLP/ML venue. It uses community-expected methods and evaluation (r^2, MSE), compares to established baselines (Kogan et al., Wang et al., Tsai et al.), and provides thorough related work coverage. My only reservation is that the contribution is strongly application-focused within finance, which may make it slightly more suited to an applied or interdisciplinary venue, but it remains a good fit for NLP/ML audiences interested in applied sentiment and representation methods."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s main claims are clearly stated and appear supported by experiments on SEC 10-K reports (2006\u20132015) using appropriate baselines (GARCH; Market; Kogan et al.; Wang et al.; Tsai et al.) and evaluation metrics (r^2, MSE), and the methodological choices (Word2Vec-augmented IR weighting, SVR with RBF, fusion strategies) are sensible and have hyperparameters reported. However, the summary does not mention statistical significance testing for the reported \"significant\" improvements and code is not reported available, which weakens the strength of the outperforming claim. Minor methodological issues (GARCH details moved to supplementary material, acknowledged stacking/data-split and conceptual-drift limitations) are noted but do not materially undermine the main conclusions."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The core contribution\u2014extending lexicon term weights by adding Word2Vec-similar terms within an IR weighting framework\u2014is a sensible but straightforward application of existing embedding-augmented lexicon ideas rather than a fundamentally new method. The work applies this extension to 10-K Risk Factors and combines textual features with market features via standard fusion approaches (early fusion, stacking, MKL) and SVR, which constitutes a non-trivial but largely incremental integration of known techniques. The paper appears to clearly differentiate itself from prior work and reports empirical gains, but the techniques are mainly combinations and adaptations of established methods rather than a novel algorithmic or conceptual advance. The analysis of conceptual drift in older reports is a useful empirical observation but not a substantial novelty on its own."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized (methodology, datasets, baselines, experiments and conclusions are all present) and states its main contributions early (embedding-based IR weighting for sentiment and fusion with market features). Writing quality is reported as good, related work coverage is thorough, and hyperparameters are reported which supports clarity and reproducibility. A minor presentation issue is that some implementation details (e.g., GARCH) are deferred to supplementary materials, which slightly reduces clarity in the main text, and the paper notes practical limitations (stacking data-split issue, conceptual drift) that could use more prominence in discussion."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A word embedding\u2013based IR term weighting approach (extending lexicon term weights with similar words from Word2Vec) improves sentiment analysis of 10-K Risk Factors for volatility prediction.",
+      "The proposed word embedding\u2013based sentiment method significantly outperforms prior state-of-the-art methods (e.g., Kogan et al., 2009; Wang et al., 2013; Tsai and Wang, 2014).",
+      "Textual features combined with market features (current volatility, GARCH, sector) via fusion methods (early fusion, stacking, MKL) improve volatility forecasting performance.",
+      "The paper analyses report characteristics across industry sectors and shows that older reports can introduce noise due to conceptual drift, affecting prediction performance."
+    ],
+    "methodology": "Extract Risk Factors text from SEC 10-K reports (stemmed, lexicon-based keywords from Loughran & McDonald), expand lexicon weights using Word2Vec similarity and IR weighting schemes, and predict future realized volatility using SVR (SVM with RBF) alone or combined with market features via early fusion, stacking, or MKL.",
+    "datasets": [
+      "SEC 10-K reports (U.S. companies, 2006\u20132015)",
+      "Yahoo Finance stock prices (used to compute returns and volatility)"
+    ],
+    "baselines": [
+      "GARCH",
+      "Market (current volatility + sector features)",
+      "Wang et al. (2013)",
+      "Tsai et al. (2014)",
+      "Kogan et al. (2009)"
+    ],
+    "metrics": [
+      "r^2 (coefficient of determination)",
+      "Mean Squared Error (MSE)"
+    ],
+    "limitations": [
+      "10-K reports are long, redundant, and written in a complex style, making them difficult to process (explicitly stated).",
+      "Stacking (late fusion) may suffer from lack of training data due to the required split of the training set (explicitly stated).",
+      "Older reports introduce noise due to conceptual drift, reducing prediction performance when including older years (explicitly stated).",
+      "Implementation details of the GARCH model are moved to supplementary materials due to lack of space (limits detail in main text)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - sentiment analysis for financial volatility prediction",
+    "writing_quality": "good"
+  }
+}

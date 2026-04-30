@@ -1,0 +1,44 @@
+{
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "REPLICABILITY": 3,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is generally well organized with a logical flow (Related Work -> Model -> Experiments) and concrete sections for datasets and analysis (e.g., 3 Named Entity Recognition Model, 4 Experiments and Analysis). The main contribution (cross-lingual wikification and language-independent features) is stated, though in the provided excerpt it appears toward the end rather than up front; notation and modeling choices (BIO/IOB1, feature groups, gazetteer labeling) are explained and mostly consistent. Tables and examples are informative (Table 3 and the \u201cBill and Melinda Gates Foundation\u201d example help understanding), but some referenced tables (Table 1, Table 2) are missing from the excerpt and a few formatting/artifact issues (inline footnotes, stray \u201cTeX\u201d) and minor grammatical/formatting slips slightly reduce polish."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper addresses cross-lingual NER, a core NLP problem well suited to top NLP/ML venues. It uses standard datasets and metrics (CoNLL2002/2003, REFLEX/LORELEI, phrase-level F1), compares to appropriate baselines (Ratinov & Roth, T\u00e4\u0308ckstr\u00f6m), and includes ablation analyses (FreeBase and interlanguage-link experiments). The related-work discussion (projection, Wikipedia-based methods, direct transfer) and multilingual evaluation make it well positioned for the venue's audience."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles a widely important problem\u2014cross-lingual NER for many languages\u2014by introducing language-independent wikifier features that can be \"trivially applied to all languages in Wikipedia\" and that the authors show \"outperforms comparable approaches on the standard CoNLL datasets (Spanish, German, and Dutch)\" and also works \"very well on low-resource languages (Turkish, Tagalog, Yoruba, Bengali, and Tamil).\" This approach is practically useful because its sole requirement is a multilingual Wikipedia dump and it supports multi-source training and monolingual enhancement, suggesting broad reusability. The impact is moderated by the noted sensitivity to Wikipedia size and FreeBase/interlanguage-link coverage (Table 3 and the discussion of degraded performance for small Wikipedias), so it is strong but not fully transformative."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Experiments are broad across high- and low-resource languages (CoNLL languages plus Turkish, Tagalog, Yoruba, Bengali, Tamil) and evaluate monolingual, direct-transfer and multi-source settings; the paper also analyzes Wikipedia-size effects (Table 3) and includes concrete ablations for the wikifier (removing FreeBase queries and varying interlanguage links). Related work is discussed and compared (projection, Wikipedia approaches, direct transfer, and specific comparisons to Ta\u0308ckstro\u0308m and Ratinov & Roth). Limitations and failure modes (e.g., lack of FreeBase coverage for Yoruba/Bengali/Tamil and degraded performance with fewer interlanguage links) are explicitly examined. Reproducibility is partially addressed (datasets, Wikipedia/FreeBase usage, gazetteer construction and matching rules are described) but lacks low-level training/hyperparameter details, full tables/metrics for some comparisons, and significance testing, so the analysis is strong but not exhaustively reproducible."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "The paper gives many high-level details (uses Ratinov & Roth (2009) averaged perceptron NER, BIO labeling, CoNLL2002/2003 and REFLEX/LORELEI datasets with some LDC codes, and uses phrase-level F1 as defined by Tjong Kim Sang (2002)), and describes gazetteer and wikifier approaches (Freebase queries, interlanguage links). However, crucial reproducibility details are missing: training hyperparameters (epochs, learning rate, feature representations), exact feature templates (Table 1 referenced but not provided), window sizes and matching heuristics for gazetteers, precise wikification algorithm/thresholds and Wikipedia/Freebase dump versions, and no code is provided. Given that datasets are identifiable but several implementation and training specifics are absent, the work is only partially reproducible from the text alone."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces cross-lingual \"wikifier\" features that ground words/phrases in non-English text to English Wikipedia entries (and Freebase types) to produce truly delexicalized, language-independent features for NER\u2014an approach the authors explicitly position as combining direct transfer with Wikipedia-based resources. Prior work they cite (projection, Wikipedia-based NER, and direct transfer such as T\u00e4ckstr\u00f6m et al.) used related ingredients, but the specific use of cross-lingual wikification as delexicalized features for direct transfer and multi-source training appears to be a non-trivial and clearly differentiated contribution. While it builds on existing resources (Wikipedia, Freebase) rather than inventing entirely new machinery, the idea is sufficiently novel to be of clear interest to experts."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and relevant baselines (uses Ratinov & Roth (2009) as the base monolingual model and explicitly compares to T\u00e4ckstr\u00f6m (2012) for cross-lingual transfer) and evaluates on standard CoNLL datasets with phrase-level F1, using the same train/test splits. It includes sensible ablations and analyses (e.g. Table 3 removing FreeBase queries and interlanguage links, Wikipedia-size effects) that clarify how the proposed wikifier features differ from and improve over baselines. However, the provided text does not show explicit comparisons to some projection-based baselines (though they are discussed in related work) or explicit acknowledgement when prior methods perform comparably or better, so comparisons are good but not fully comprehensive."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper states clear claims (cross-lingual wikifier features improve NER and enable direct transfer) and supports them with experiments on standard CoNLL splits and low-resource datasets, and with targeted ablations (Table 3 shows large drops when FreeBase queries or interlanguage links are removed). There are no mathematical derivations to check, and the experimental setup uses standard phrase-level F1 and known baselines (Ratinov & Roth, Ta\u0308ckstro\u0308m) as described. Minor concerns remain: the authors alter label sets (mapping/removing MISC, TTL, TIME) when mixing CoNLL and low-resource data which can affect comparability, and the approach depends heavily on FreeBase/interlanguage-link coverage (acknowledged in \u00a74.4) and no statistical significance testing is reported. These issues are important but do not invalidate the main empirical conclusions."
+    }
+  }
+}

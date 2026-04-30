@@ -1,0 +1,176 @@
+{
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "APPROPRIATENESS": 4,
+  "IMPACT": 3,
+  "SUBSTANCE": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early, with a thorough related-work section that situates the model. Notation and methodological descriptions are generally clear and consistent, and figures/tables/examples effectively illustrate the cross-attention and TransE integration. Minor presentation gaps remain (e.g., the description of how global KB embeddings are incorporated and ablation details could be more explicitly highlighted), but overall the writing is good and easy to follow. | B(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and clearly states its main contributions early: a cross\u2011attention end\u2011to\u2011end KB\u2011QA model that injects TransE global KB embeddings. Notation and methodological descriptions are reported consistently (with hyperparameters given) and related work is covered thoroughly, which helps place the approach in context. Figures/tables and examples are effective enough to convey the experiments on WebQuestions and comparisons to prior baselines, and overall the writing is good, with only minor presentation issues that prevent it from being exceptional.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early, with a thorough related-work section that situates the model. Notation and methodological descriptions are generally clear and consistent, and figures/tables/examples effectively illustrate the cross-attention and TransE integration. Minor presentation gaps remain (e.g., the description of how global KB embeddings are incorporated and ablation details could be more explicitly highlighted), but overall the writing is good and easy to follow."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and clearly states its main contributions early: a cross\u2011attention end\u2011to\u2011end KB\u2011QA model that injects TransE global KB embeddings. Notation and methodological descriptions are reported consistently (with hyperparameters given) and related work is covered thoroughly, which helps place the approach in context. Figures/tables and examples are effective enough to convey the experiments on WebQuestions and comparisons to prior baselines, and overall the writing is good, with only minor presentation issues that prevent it from being exceptional."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the empirical results on WebQuestions support the paper\u2019s main claim and that the model and training are correctly applied, but they also highlight missing analyses (no ablations, single dataset, no significance testing) and limited theoretical motivation. Given the sound experimental evidence against reasonable baselines tempered by these methodological gaps, a slightly positive score is warranted while reflecting the need for more thorough evaluation and analysis.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper's main empirical claim (improved QA on WebQuestions using cross-attention and TransE integration) is supported by experiments against reasonable baselines, but it lacks theoretical motivation or any formal analysis explaining why the proposed cross-attention or TransE augmentation should generalize. Methodologically, evaluation on only a single dataset (WebQuestions) and no reported ablations isolating key components (e.g., cross-attention vs. a standard question encoder, effect of TransE embeddings) leave open the possibility that gains are dataset- or engineering-specific. Given these gaps, the results suggest promise but do not fully substantiate broad technical claims of general effectiveness."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and supported by experimental evidence on WebQuestions with comparisons to relevant baselines and sensible, practical candidate generation (1-/2-hop Freebase neighbors). The model design and training objective (pairwise hinge loss) are standard and correctly applied; mathematical content is lightweight but appears consistent. Minor practical gaps remain \u2014 no mention of statistical significance testing, code release, or robustness to topic-entity errors \u2014 and the authors acknowledge dependence on training data and limitations versus systems that use external text. Overall the technical claims are convincing with only modest missing analysis, so I rate it a 4."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper offers a useful, pragmatic combination of cross-attention conditioning and incorporation of global TransE embeddings into an end\u2011to\u2011end KB\u2011QA ranking architecture, representing a meaningful engineering contribution. However, they also concur that the work is incremental rather than theoretically novel and is validated only on a limited dataset without extensive ablations, so originality is moderate rather than high.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper combines several existing components (topic-entity candidate generation, pairwise hinge ranking, TransE KG embeddings, and attention-based question encoders) into an end-to-end KB-QA system, which reads as an incremental rather than fundamentally new paradigm. The per-candidate cross-attention to produce dynamic question representations and the explicit incorporation of global TransE embeddings into answer representations are useful engineering contributions, but closely relate to prior attention- and embedding-based QA/work (e.g., memory networks, CNN encoders) and lack formal motivation or broader validation (only WebQuestions). Given the absence of theoretical novelty and limited cross-dataset/ablation evidence in the summary, the contribution is moderate rather than highly original."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable, if not revolutionary, novelty by combining a cross-attention mechanism that dynamically conditions question representations on candidate answer aspects with the explicit incorporation of global KB embeddings (TransE) into answer modeling \u2014 a pragmatic fusion I haven't seen emphasized in earlier KB\u2011QA work. The problem (KB\u2011QA over Freebase/WebQuestions) is well studied, but the method clearly differentiates itself from prior staged or memory\u2011network approaches by delivering an end\u2011to\u2011end ranking architecture that integrates structured KB embeddings to address OOV/coverage issues. This is a non\u2011trivial extension of existing neural ranking methods and would be informative to practitioners seeking simpler, integrated pipelines."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper compares against appropriate and contemporary baselines on the standard WebQuestions benchmark using the same F1 metric, and that the comparisons are broadly fair and well situated in prior work. However, Reviewer A correctly notes missing ablations and evaluation on additional datasets to rule out dataset-specific tuning, tempering claims of general effectiveness. Given the solid baseline comparisons but incomplete experimental breadth, a middle score of 4 is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper compares against a reasonable set of prior work (Bordes et al., Dong et al., Yih et al., Xu et al., memory networks) using the same WebQuestions dataset and F1 metric and explicitly acknowledges differences for systems that use external text. However, from the summary it evaluates only a single benchmark (WebQuestions) and does not indicate rigorous ablations isolating the cross-attention and TransE contributions or tests across diverse datasets \u2014 shortcomings myoretical-prioritist reviewers view as important to rule out dataset-specific tuning. Overall the comparisons are competent but incomplete for strong claims of general effectiveness."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper evaluates on the standard WebQuestions benchmark using F1 and compares against a comprehensive set of contemporary baselines (Bordes et al. 2014/2015, Dong et al. 2015, Yih et al. 2015/2016, Xu et al. 2016), which matches my expectation for empirical KB-QA work. Comparisons appear fair (same dataset/metric) and the authors explicitly acknowledge limitations and when staged or external-resource systems can outperform their end-to-end model. They also clearly contrast their contributions (cross-attention, TransE-based global KB embeddings) with prior architectures and discuss related competing approaches, so the experimental and citation coverage is thorough and appropriate."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses a core KB-QA problem and uses community-standard methods and evaluation, making it appropriate for a top-tier NLP/ML venue. I rate it slightly below the strongest endorsement because of Review A\u2019s valid concerns about reliance on a single dataset and limited ablation/theoretical justification, which reduce its impact for a more theory-focused readership while still retaining solid empirical relevance.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The topic (KB question answering) and the proposed end-to-end neural model are squarely within top NLP/ML conference scope, and the methods and evaluations (pairwise hinge loss, standard F1 on WebQuestions) match community practice. However, from the summary the work relies on a single dataset (WebQuestions), lacks formal motivation or theoretical analysis for the cross-attention/TransE integration, and does not report thorough ablations isolating key components\u2014issues that matter to the theory-focused readership I represent. Given solid engineering relevance but limited cross-dataset validation and little principled justification, I judge this a borderline fit for a top venue."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper sits squarely within top-tier NLP/ML venues: it proposes a neural end-to-end KB-QA model evaluated on the standard WebQuestions benchmark and compares to appropriate baselines (Bordes et al., Yih et al., Dong et al., Xu et al.). The methodology (cross-attention per-candidate question representations, integration of TransE KB embeddings, pairwise hinge-loss ranking) and evaluation by F1 are exactly the empirical practices expected for this community. The work targets the right audience (KB-driven QA and representation learning) and is positioned with thorough related work and realistic candidate generation (1-/2-hop Freebase neighbors), making it a strong fit for a top conference."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper addresses an important KB-QA problem and demonstrates empirical gains by combining cross-attention with global TransE embeddings, showing practical promise for simplifying pipelines. However, concerns about limited evaluation (single dataset), missing ablation/theoretical justification, and unclear generalization reduce its perceived impact. Given the useful engineering contribution tempered by the lack of broader validation, a middle-ground score reflects a modest but not transformative contribution.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper tackles an important task (KB-QA) and proposes engineering additions (cross-attention conditioned question representations and incorporation of TransE global embeddings) that yield empirical gains on WebQuestions. However, from the summary there is no formal motivation, theoretical analysis, or guarantees for why the cross-attention or TransE integration should generalize, and evaluation is limited to a single dataset without reported ablations isolating each component. Given the lack of principled justification and sparse cross-dataset validation, the contribution feels like an incremental empirical improvement with limited broader influence."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles the central problem of end-to-end KB question answering with a practical, integrated architecture that dynamically conditions question representations on candidate answer aspects and explicitly injects global KB information via TransE\u2014an approach that plausibly reduces engineering complexity compared with staged pipelines. The demonstrated effectiveness on WebQuestions and the attention to realistic candidate generation (1-/2-hop Freebase neighbors) make the results likely to influence practitioners building deployed QA systems. While it does not beat methods that augment with external text and is limited by end-to-end data dependence, the combination of cross-attention and KB embeddings opens useful directions for robustness to OOVs and simpler pipelines, making the contribution a strong, practically relevant advance."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper provides solid end-to-end experiments on WebQuestions, compares to relevant baselines, and sensibly integrates TransE/realistic candidate generation, but they also agree important analyses are missing. In particular, the lack of ablations isolating the cross-attention module and TransE contribution, evaluation on only a single dataset, and limited reproducibility (no code/details) materially weaken the empirical claims. Given these omissions, a middling score reflecting useful engineering contributions but insufficient experimental rigor is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper shows promising empirical gains on WebQuestions and reports hyperparameters, but evaluation is limited to a single dataset so claims of general effectiveness are under-supported. The summary gives no indication of thorough ablations isolating the cross-attention vs. baseline encoders or the contribution of TransE embeddings, which is a serious omission given the paper\u2019s architectural claims. Related work coverage is reported as thorough, and some limitations are discussed, but reproducibility is only partially addressed (no code mentioned and key implementation/selection choices could drive results). Overall, the experimental depth is adequate but missing important analyses required by a theoretically minded reviewer."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents solid, end-to-end experiments on the standard WebQuestions benchmark and compares to a wide set of relevant baselines (Bordes, Yih, Dong, Xu, memory networks), which supports the main empirical claims. It also evaluates a realistic candidate-generation pipeline (1-/2-hop Freebase neighbors) and explicitly integrates global KB embeddings (TransE) to address OOV/coverage \u2014 a practically useful design choice. However, the summary does not mention explicit ablation studies isolating the contributions of cross-attention vs. TransE or release of code, so some sensitivity/reproducibility aspects appear underexplored. The authors do discuss limitations (dependence on training data and lack of external text), which is a plus, hence a rating of 4."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes an end-to-end neural KB-QA model that represents questions dynamically via a cross-attention mechanism conditioned on various candidate answer aspects.",
+      "Integrates global KB information (via TransE embeddings) into the answer representation to improve answer modeling and alleviate OOV issues.",
+      "Uses topic-entity-based candidate generation (1- and 2-hop neighbors from Freebase) and ranks candidates by a learned similarity score, trained with pairwise hinge loss; experiments on WebQuestions show effectiveness."
+    ],
+    "methodology": "Identify topic entity via Freebase API and generate 1- and 2-hop candidate answers; represent the question dynamically for each candidate using a cross-attention neural network over answer aspects and incorporate global KB embeddings (TransE); train with pairwise hinge loss and SGD, and select answers within a margin of the top score.",
+    "datasets": [
+      "WebQuestions"
+    ],
+    "baselines": [
+      "Bordes et al. (2014a,b) subgraph/BOW methods",
+      "Dong et al. (2015) three-column CNNs",
+      "Yih et al. (2015; 2016) staged systems",
+      "Xu et al. (2016a; 2016b) integrated systems incorporating Wikipedia",
+      "Bordes et al. (2015) memory networks"
+    ],
+    "metrics": [
+      "F1 score"
+    ],
+    "limitations": [
+      "Approach totally depends on training data (end-to-end) and thus may lack adaptability in some scenarios.",
+      "Not directly comparable to systems that leverage external resources (e.g., Wikipedia free text).",
+      "Staged systems (e.g., Yih et al.) can handle constraints and aggregations better than this end-to-end model."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - knowledge-base question answering",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theoretical Purist",
+      "background": "Senior NLP/ML researcher with a strong background in formal models of language and representation learning; has published work on provable guarantees for neural architectures and reasoning systems.",
+      "traits": [
+        "Penalises papers that present empirical improvements without accompanying theoretical analysis or formal justification (will deduct points if no bounds/guarantees or formal motivation provided).",
+        "Requires at least two diverse benchmarks or cross-dataset validation for claims of general effectiveness (will downgrade if only one dataset is used).",
+        "Demands thorough ablation studies isolating each proposed component (will penalise if key components like cross-attention vs. baseline question encoders or inclusion of TransE are not separately evaluated).",
+        "Skeptical of gains that could be due to engineering choices (will subtract if implementation/experimental details are insufficient to rule out dataset-specific tuning)."
+      ],
+      "reviewing_style": "Prioritises formal motivation, theoretical clarity, and rigorous ablations; treats empirical-only papers as incremental unless backed by principled analysis or broad validation."
+    },
+    "reviewer_b": {
+      "name": "Practical Empiricist",
+      "background": "Senior applied NLP researcher focusing on knowledge-grounded QA systems and deployed QA pipelines; extensive experience building end-to-end neural models that combine structured KBs and distributional embeddings.",
+      "traits": [
+        "Rewards clear empirical improvements on standard, widely-used benchmarks (will give positive credit for state-of-the-art or clear gains on WebQuestions).",
+        "Favourable to pragmatic, end-to-end architectures that simplify pipelines (will score higher if the model reduces engineering complexity, e.g., integrated candidate ranking and representation).",
+        "Values incorporation of external/global KB information (will boost score if the method convincingly leverages KB embeddings such as TransE to address OOV/coverage issues).",
+        "Appreciates methods evaluated with realistic candidate generation and ranking (will score down only if candidate generation is unrealistic; otherwise credits practical choices like 1-/2-hop Freebase neighbors)."
+      ],
+      "reviewing_style": "Emphasises empirical effectiveness, engineering practicality, and whether the work materially advances usable KB-QA systems; tolerant of limited formal analysis if experiments are thorough and results convincing."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

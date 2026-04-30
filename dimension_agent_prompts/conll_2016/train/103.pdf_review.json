@@ -1,0 +1,44 @@
+{
+  "CLARITY": 2,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "REPLICABILITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has a plausible high-level organization (background, method, experiments, conclusion) but is poorly presented: many paragraphs and sentences are duplicated or scrambled (e.g. repeated blocks beginning \"Since topics give a particular perspective...\"), and LaTeX/formatting artifacts break readability. Key items are referenced but missing or not shown (Table 1, Table 2, Figure 1), equations are formatted unclearly (the LDA Order Weight definition is hard to parse), and citations/phrasing are repeatedly duplicated. Notation is intermittently defined (SVD components are explained) but overall consistency and prose quality suffer from grammatical issues and repetition, so substantial editing is needed."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states clear claims (TBuckets variants, especially TBuckets\u2011SVD\u2011Reorg, improve correlation with human topic coherence) and reports experiments on three standard datasets using the established Pearson\u2011r evaluation from R\u00f6der et al. (2015), which supports the main claim. However, methodological details are incomplete (algorithmic description of the SVD reorganization, exact scoring formulas and rationale for weighting by the squared top singular value are under\u2011specified), and no statistical significance testing or error bars are reported for the reported correlations; the baseline comparison is described only as \u201cbest performing correlation values\u201d without fuller experimental control. These omissions create unsupported assumptions about why the proposed scores work and weaken confidence in the claimed improvements, so the contribution is plausible but not fully substantiated."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Measuring topic coherence is a widely used, practical problem and the paper proposes a simple, interpretable approach (grouping topic words into buckets) that is evaluated on three standard datasets. The authors report that TBuckets-SVD-Reorg outperforms prior state-of-the-art on 2/3 datasets (NYT and 20NG) and that the SVD-based variants are parameter-free, which increases practical applicability. The method\u2019s demonstrated utility for weakly supervised text classification and the authors\u2019 discussion of domain-specific similarity (e.g., Genomics) suggest this approach could be adopted and extended in related applications, making it a strong (but not transformative) contribution."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses an established NLP problem\u2014measuring topic coherence\u2014and proposes practical methods (TBuckets variants using clustering, SVD, and SVD-Reorg) that are squarely within the scope of top NLP/ML venues. It uses community-standard resources and evaluation (GloVe embeddings, 20NG/NYT/Genomics datasets, Pearson r correlation with human judgements, and comparison to R\u00f6der et al. (2015)), and includes an application to weakly supervised text classification, indicating relevance to the venue audience. The formulation (coherence scoring via word buckets) and evaluation protocol match expectations for a conference contribution and are positioned against appropriate prior work (Newman, Mimno, R\u00f6der, etc.)."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper proposes a new framing (TBuckets) that groups topic words into thematic \"buckets\" and scores coherence via largest-bucket size and SVD-derived signals, implemented with three concrete techniques (agglomerative clustering, TBuckets-SVD, TBuckets-SVD-Reorg). Prior work it cites already includes PMI/CUMASS co-occurrence measures, distributional-semantics distances (Aletras & Stevenson) and a unifying framework (Ro\u0308der et al.), so the core idea mainly repackages known components (word embeddings, clustering, SVD) into a coherent application. The SVD-based, parameter-free scoring and the particular bucket-based scoring perspective are modestly novel but constitute an incremental methodological combination rather than a highly original breakthrough."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "Partially reproducible. The paper gives some concrete details (uses 300-dim GloVe vectors with URL; datasets named 20NG/NYT/Genomics with 100 topics \u00d7 10 words and human scores; evaluation uses Pearson\u2019s r; LDA order weight formula and that SVD-based scores are weighted by the square of the top singular value). However, many crucial implementation details are missing: exact SVD-to-bucket procedure and the TBuckets-SVD-Reorg algorithm are not specified, clustering linkage/distance metric and other clustering choices (beyond a single 'Max Dist' parameter) are unspecified, how word\u2013eigenvector similarity (EVS) is computed and any preprocessing steps are not described, and no code or full hyperparameter/configuration details are provided (LDA/topic extraction details are deferred to external work). These gaps would impede faithful reimplementation."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against the established coherence measures via the unifying evaluation of R\u00f6der et al. (2015), uses the same datasets and Pearson r metric, and cites the key prior works (Newman, Mimno, Aletras, R\u00f6der et al.). It reports outperforming the state-of-the-art on 2/3 datasets and acknowledges parity on Genomics, and highlights the parameter-free advantage of its SVD methods. However, comparisons are made to reported numbers rather than re-running baselines under identical resource/implementation conditions, and the paper offers limited analysis of why it beats specific baselines, so the evaluation is good but not fully comprehensive."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper evaluates TBuckets on three public datasets (20NG, NYT, Genomics) using Pearson\u2019s r against human judgments and reports that TBuckets-SVD-Reorg outperforms prior work on 2/3 datasets (Table 1), which gives reasonable empirical support. It includes a limited sensitivity analysis for the clustering parameter (Figure 1) and example buckets (Table 2). However, there are missing ablations (e.g., contributions of size vs WL vs EVS, choices of weighting by singular value), limited evaluation metrics and baselines beyond reported best correlations, sparse discussion of failure cases/limitations (only brief future work), and insufficient low-level methodological detail to fully reproduce the SVD/Reorg procedures and scoring choices."
+    }
+  }
+}

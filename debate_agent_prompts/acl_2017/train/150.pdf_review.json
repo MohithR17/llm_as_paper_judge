@@ -1,0 +1,180 @@
+{
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "CLARITY": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "[Consensus avg=5] A(5): This paper addresses a core NLP/ML topic\u2014character-level neural machine translation\u2014with a novel architecture (two-RNN word encoder + hierarchical character decoder) and evaluation on large-scale WMT En-Fr and En-Cs corpora using BLEU, which squarely targets the conference audience. The methodology, comparison to strong baselines (BPE, char2char, C2W) and analysis of learned morphology and segmentation align with standards expected at a top venue. While code availability is not mentioned, the paper reports hyperparameters and uses standard test sets (newstest2015/newstest2013), so its scope and evaluation fit the venue well. | B(5): This paper squarely fits top-tier NLP/ML venues: it advances neural machine translation by proposing a novel deep character-level architecture that explicitly models morphology and is evaluated on large WMT En-Fr and En-Cs corpora with standard dev/test splits and BLEU comparisons to strong baselines (BPE, char2char, C2W). The methodology and experimental setup meet community expectations (large-scale data, ablations, linguistic analyses of learned morphemes), and its contributions are directly relevant to researchers working on subword/character models, morphology learning, and scalable NMT systems.",
+      "reviewer_a": {
+        "score": 5,
+        "justification": "This paper addresses a core NLP/ML topic\u2014character-level neural machine translation\u2014with a novel architecture (two-RNN word encoder + hierarchical character decoder) and evaluation on large-scale WMT En-Fr and En-Cs corpora using BLEU, which squarely targets the conference audience. The methodology, comparison to strong baselines (BPE, char2char, C2W) and analysis of learned morphology and segmentation align with standards expected at a top venue. While code availability is not mentioned, the paper reports hyperparameters and uses standard test sets (newstest2015/newstest2013), so its scope and evaluation fit the venue well."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper squarely fits top-tier NLP/ML venues: it advances neural machine translation by proposing a novel deep character-level architecture that explicitly models morphology and is evaluated on large WMT En-Fr and En-Cs corpora with standard dev/test splits and BLEU comparisons to strong baselines (BPE, char2char, C2W). The methodology and experimental setup meet community expectations (large-scale data, ablations, linguistic analyses of learned morphemes), and its contributions are directly relevant to researchers working on subword/character models, morphology learning, and scalable NMT systems."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against a strong set of recent baselines (bpe2bpe, C2W, CNMT, char, char2char) on standard WMT En-Fr and En-Cs datasets using BLEU, which is appropriate. However, there are fairness concerns and missing controls: mapping all but the 120 most frequent characters to <unk> could bias comparisons with pure character models, and the report appears to rely on single-run BLEU/epoch claims without statistical significance or learning-curve analyses. The authors do analyze differences (word encoder segmentation and representation studies) and cite related work adequately, but more ablations and explicit fairness checks (multiple seeds, identical preprocessing for baselines) are needed to claim comprehensive, fully fair comparisons. | B(5): The paper compares against a strong set of relevant baselines (BPE, C2W, CNMT, pure char and char2char) on large WMT En-Fr and En-Cs corpora using BLEU, with hyperparameters reported, which supports fair head-to-head comparisons. The authors explicitly report that final BLEU is comparable to state-of-the-art and analyze where their method differs (learning morpheme-like subunits, segmentation behavior), and the related-work coverage is described as adequate\u2014together indicating comprehensive and fair comparisons with the most relevant prior approaches in character-level and subword NMT.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against a strong set of recent baselines (bpe2bpe, C2W, CNMT, char, char2char) on standard WMT En-Fr and En-Cs datasets using BLEU, which is appropriate. However, there are fairness concerns and missing controls: mapping all but the 120 most frequent characters to <unk> could bias comparisons with pure character models, and the report appears to rely on single-run BLEU/epoch claims without statistical significance or learning-curve analyses. The authors do analyze differences (word encoder segmentation and representation studies) and cite related work adequately, but more ablations and explicit fairness checks (multiple seeds, identical preprocessing for baselines) are needed to claim comprehensive, fully fair comparisons."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper compares against a strong set of relevant baselines (BPE, C2W, CNMT, pure char and char2char) on large WMT En-Fr and En-Cs corpora using BLEU, with hyperparameters reported, which supports fair head-to-head comparisons. The authors explicitly report that final BLEU is comparable to state-of-the-art and analyze where their method differs (learning morpheme-like subunits, segmentation behavior), and the related-work coverage is described as adequate\u2014together indicating comprehensive and fair comparisons with the most relevant prior approaches in character-level and subword NMT."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a clearly distinct architecture (a two-RNN word encoder producing weighted character-state summations and a hierarchical two-level decoder forming a six-RNN DCNMT) that departs from prior pure-char and C2W approaches by explicitly learning morphological subunits and generating at character level via a hierarchical scheme. This is a non-trivial extension rather than a trivial combination: the weighted character-state word representation and the hierarchical word/character decoder are novel design choices that are meaningfully differentiated from baselines like bpe2bpe, C2W, char, and char2char. An expert would find these architectural ideas informative, though the core problem (character-level NMT) is well-studied so the contribution is notable but not radically paradigm-shifting. | B(4): The paper proposes a clearly differentiated architecture: a two-RNN word encoder that forms 600-d word vectors by weighted summation of character RNN states and a hierarchical decoder that couples a word-level decoder with a character-level HGRU\u2014resulting in a six-RNN DCNMT trained end-to-end. These design choices go beyond prior C2W/char and char2char work by explicitly learning morphology-aware word representations and a two-tier decoding process, and the authors show the encoder yields morpheme-like subword units and faster early training. From the perspective of a translation/morphology researcher, this is a non-trivial and notable extension rather than a negligible combination of known tricks, though it builds on established character/subword threads in the literature.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a clearly distinct architecture (a two-RNN word encoder producing weighted character-state summations and a hierarchical two-level decoder forming a six-RNN DCNMT) that departs from prior pure-char and C2W approaches by explicitly learning morphological subunits and generating at character level via a hierarchical scheme. This is a non-trivial extension rather than a trivial combination: the weighted character-state word representation and the hierarchical word/character decoder are novel design choices that are meaningfully differentiated from baselines like bpe2bpe, C2W, char, and char2char. An expert would find these architectural ideas informative, though the core problem (character-level NMT) is well-studied so the contribution is notable but not radically paradigm-shifting."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clearly differentiated architecture: a two-RNN word encoder that forms 600-d word vectors by weighted summation of character RNN states and a hierarchical decoder that couples a word-level decoder with a character-level HGRU\u2014resulting in a six-RNN DCNMT trained end-to-end. These design choices go beyond prior C2W/char and char2char work by explicitly learning morphology-aware word representations and a two-tier decoding process, and the authors show the encoder yields morpheme-like subword units and faster early training. From the perspective of a translation/morphology researcher, this is a non-trivial and notable extension rather than a negligible combination of known tricks, though it builds on established character/subword threads in the literature."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper clearly states main claims and provides empirical evidence (BLEU on WMT En-Fr/En-Cs, faster early training, and morphological analyses using Penn Treebank), and reports hyperparameters and multiple competitive baselines (BPE, C2W, char, char2char). However, critical reproducibility and attribution details are missing: code/seeds are not mentioned, no statistical significance or multiple-run variability is reported, and the unusual decision to cap to 120 characters and map others to <unk> risks dataset-specific artifacts. The claim that the word encoder learns morpheme-like units is plausible but would require stronger ablations and quantitative segmentation comparisons to fully support causality. Overall technically promising but some methodological gaps prevent a higher score. | B(4): The paper's main claims are generally supported: large-scale experiments on WMT En-Fr and En-Cs with BLEU comparisons to strong baselines (bpe2bpe, char2char, C2W) and analyses showing morpheme-like subunits and segmentation on PTB support the architecture and learned representations. Mathematical content consists of architectural descriptions rather than formal proofs and appears consistent; hyperparameters and datasets are reported. Minor technical concerns remain (e.g., limiting to the 120 most frequent characters and mapping others to <unk> may bias results, and the summary does not mention statistical significance testing), but these do not invalidate the core experimental evidence.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states main claims and provides empirical evidence (BLEU on WMT En-Fr/En-Cs, faster early training, and morphological analyses using Penn Treebank), and reports hyperparameters and multiple competitive baselines (BPE, C2W, char, char2char). However, critical reproducibility and attribution details are missing: code/seeds are not mentioned, no statistical significance or multiple-run variability is reported, and the unusual decision to cap to 120 characters and map others to <unk> risks dataset-specific artifacts. The claim that the word encoder learns morpheme-like units is plausible but would require stronger ablations and quantitative segmentation comparisons to fully support causality. Overall technically promising but some methodological gaps prevent a higher score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are generally supported: large-scale experiments on WMT En-Fr and En-Cs with BLEU comparisons to strong baselines (bpe2bpe, char2char, C2W) and analyses showing morpheme-like subunits and segmentation on PTB support the architecture and learned representations. Mathematical content consists of architectural descriptions rather than formal proofs and appears consistent; hyperparameters and datasets are reported. Minor technical concerns remain (e.g., limiting to the 120 most frequent characters and mapping others to <unk> may bias results, and the summary does not mention statistical significance testing), but these do not invalidate the core experimental evidence."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper tackles the important open-vocabulary NMT problem by proposing a deep character-level architecture that learns morphology and matches state-of-the-art BLEU while training faster on large WMT En-Fr and En-Cs corpora, which is practically relevant. Its empirical claims (faster early training, comparable final BLEU, and morpheme-like segmentation on PTB) would likely change how researchers approach character-level modeling and inspire follow-up work building on hierarchical decoders and learned word encoders. Adoption depends on reproducibility (code not mentioned) and some engineering choices (e.g., limiting to 120 frequent characters mapped to <unk>) that may constrain immediate practical uptake, but the approach opens clear new directions for morphology-aware end-to-end models with broader implications across low-resource and morphologically rich languages. | B(4): The paper addresses an important practical bottleneck in MT (large-vocabulary handling) by proposing a scalable, end-to-end deep character-level architecture that explicitly learns morphology and attains competitive BLEU on large WMT En\u2013Fr and En\u2013Cs corpora while training faster (higher BLEU after one epoch). From my perspective as a translation-systems researcher, demonstrating morpheme-like units and useful word representations learned by the two-RNN word encoder is conceptually significant and likely to change how researchers think about integrating morphology into neural MT. The approach opens clear follow-ups (morphology-informed transfer, low-resource setups, integration with production pipelines) and is likely to be built upon, though some practical caveats (limited character set, no monolingual data) temper a fully transformative claim.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper tackles the important open-vocabulary NMT problem by proposing a deep character-level architecture that learns morphology and matches state-of-the-art BLEU while training faster on large WMT En-Fr and En-Cs corpora, which is practically relevant. Its empirical claims (faster early training, comparable final BLEU, and morpheme-like segmentation on PTB) would likely change how researchers approach character-level modeling and inspire follow-up work building on hierarchical decoders and learned word encoders. Adoption depends on reproducibility (code not mentioned) and some engineering choices (e.g., limiting to 120 frequent characters mapped to <unk>) that may constrain immediate practical uptake, but the approach opens clear new directions for morphology-aware end-to-end models with broader implications across low-resource and morphologically rich languages."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper addresses an important practical bottleneck in MT (large-vocabulary handling) by proposing a scalable, end-to-end deep character-level architecture that explicitly learns morphology and attains competitive BLEU on large WMT En\u2013Fr and En\u2013Cs corpora while training faster (higher BLEU after one epoch). From my perspective as a translation-systems researcher, demonstrating morpheme-like units and useful word representations learned by the two-RNN word encoder is conceptually significant and likely to change how researchers think about integrating morphology into neural MT. The approach opens clear follow-ups (morphology-informed transfer, low-resource setups, integration with production pipelines) and is likely to be built upon, though some practical caveats (limited character set, no monolingual data) temper a fully transformative claim."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The experimental setup is reasonably strong in scale (large WMT En-Fr and En-Cs corpora, standard dev/test sets) and the paper compares against multiple competitive baselines and reports BLEU and segmentation analyses, supporting core claims. However, important reproducibility artifacts are missing or unclear in the summary (no code release mentioned, no explicit random seeds or multi-run variance/statistical significance reported), and the handling of rare characters via a fixed 120-char cutoff is a notable constraint. Ablation/sensitivity testing appears limited: while alternative baselines are evaluated, there is no detailed ablation isolating the contribution of the two-RNN word encoder vs. other architectural choices or hyperparameter sensitivity. Some limitations are acknowledged (char cutoff, no monolingual data), but failure cases and training stability/compute trade-offs are not thoroughly explored, so I judge the empirical evidence as adequate but incomplete. | B(4): The paper provides substantial experimental evidence on large-scale WMT En\u2192Fr and En\u2192Cs data, compares to multiple strong baselines (BPE, char, C2W, char2char) and presents linguistic analysis (morpheme-like segments on PTB), which supports the main claims. Related work coverage is reported as adequate and hyperparameters are given, but code is not mentioned and an important practical detail (restricting to the 120 most frequent characters) is a notable limitation. Ablation/sensitivity analyses are not clearly described in the summary (e.g., effects of the two-RNN encoder or hierarchical decoder components), so some key causal evidence and reproducibility aspects are missing \u2014 overall solid but with minor gaps. ",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experimental setup is reasonably strong in scale (large WMT En-Fr and En-Cs corpora, standard dev/test sets) and the paper compares against multiple competitive baselines and reports BLEU and segmentation analyses, supporting core claims. However, important reproducibility artifacts are missing or unclear in the summary (no code release mentioned, no explicit random seeds or multi-run variance/statistical significance reported), and the handling of rare characters via a fixed 120-char cutoff is a notable constraint. Ablation/sensitivity testing appears limited: while alternative baselines are evaluated, there is no detailed ablation isolating the contribution of the two-RNN word encoder vs. other architectural choices or hyperparameter sensitivity. Some limitations are acknowledged (char cutoff, no monolingual data), but failure cases and training stability/compute trade-offs are not thoroughly explored, so I judge the empirical evidence as adequate but incomplete."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper provides substantial experimental evidence on large-scale WMT En\u2192Fr and En\u2192Cs data, compares to multiple strong baselines (BPE, char, C2W, char2char) and presents linguistic analysis (morpheme-like segments on PTB), which supports the main claims. Related work coverage is reported as adequate and hyperparameters are given, but code is not mentioned and an important practical detail (restricting to the 120 most frequent characters) is a notable limitation. Ablation/sensitivity analyses are not clearly described in the summary (e.g., effects of the two-RNN encoder or hierarchical decoder components), so some key causal evidence and reproducibility aspects are missing \u2014 overall solid but with minor gaps. "
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early (novel two-RNN word encoder, hierarchical character-level decoder, and DCNMT architecture). Notation appears consistent and hyperparameters are reported, which supports reproducibility, and figures/tables (BLEU comparisons on En-Fr/En-Cs and segmentation on Penn Treebank) are informative. Minor presentation issues remain: the character-vocabulary truncation to 120 symbols and the <unk> mapping could be explained more clearly, and a few methodological choices (e.g., selection of BiRNN weighting scheme) would benefit from brief motivating examples to reduce ambiguity. | B(4): From the provided summary the paper reads as well structured\u2014introduction, method, experiments, and conclusion are clearly delineated and the main contributions (the two-RNN word encoder, hierarchical character decoder, and the DCNMT architecture) are stated early. Notation and experimental details (including hyperparameters and datasets) appear to be reported consistently, and examples such as the Penn Treebank segmentation analysis and BLEU comparisons to sensible baselines (bpe2bpe, C2W, char2char) make the results interpretable. Writing quality is described as adequate and related work coverage is sufficient, so only minor presentation improvements (e.g., explicitly noting code availability and clarifying the 120-character restriction) would be helpful.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early (novel two-RNN word encoder, hierarchical character-level decoder, and DCNMT architecture). Notation appears consistent and hyperparameters are reported, which supports reproducibility, and figures/tables (BLEU comparisons on En-Fr/En-Cs and segmentation on Penn Treebank) are informative. Minor presentation issues remain: the character-vocabulary truncation to 120 symbols and the <unk> mapping could be explained more clearly, and a few methodological choices (e.g., selection of BiRNN weighting scheme) would benefit from brief motivating examples to reduce ambiguity."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "From the provided summary the paper reads as well structured\u2014introduction, method, experiments, and conclusion are clearly delineated and the main contributions (the two-RNN word encoder, hierarchical character decoder, and the DCNMT architecture) are stated early. Notation and experimental details (including hyperparameters and datasets) appear to be reported consistently, and examples such as the Penn Treebank segmentation analysis and BLEU comparisons to sensible baselines (bpe2bpe, C2W, char2char) make the results interpretable. Writing quality is described as adequate and related work coverage is sufficient, so only minor presentation improvements (e.g., explicitly noting code availability and clarifying the 120-character restriction) would be helpful."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a novel architecture that learns morphology via a word encoder composed of two recurrent networks and a hierarchical character-level decoder.",
+      "Introduces a deep character-level neural machine translation (DCNMT) model composed of six recurrent networks that avoids large-vocabulary issues and can be trained end-to-end.",
+      "Shows faster training efficiency (higher BLEU after one epoch) on En-Fr and En-Cs and achieves final BLEU comparable to state-of-the-art systems.",
+      "Demonstrates that the word encoder learns morpheme-like subword units and meaningful word representations, and can segment subword boundaries (applied to Penn Treebank)."
+    ],
+    "methodology": "A two-RNN word encoder (one RNN producing character-level states and a BiRNN producing weights/energies) produces 600-d word representations by weighted summation of character RNN states; a hierarchical decoder uses a first-level decoder producing word-level state st (combining context, previous target word representation and previous hidden state) and a second-level character decoder (HGRU) to generate target characters until delimiters/EOS.",
+    "datasets": [
+      "WMT En-Cs parallel corpus (15.8M sentence pairs)",
+      "WMT En-Fr parallel corpus (12.1M sentence pairs)",
+      "newstest2013 (development)",
+      "newstest2015 (test)",
+      "Penn Treebank (Line 1, used for segmentation analysis)"
+    ],
+    "baselines": [
+      "bpe2bpe (BPE)",
+      "C2W (compositional character-to-word)",
+      "CNMT",
+      "char (pure character model)",
+      "char2char"
+    ],
+    "metrics": [
+      "BLEU"
+    ],
+    "limitations": [
+      "Only 120 most frequent characters selected per language; characters outside that list are mapped to a special <unk> token.",
+      "They do not use any monolingual corpus for training."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - neural machine translation (character-level)",
+    "writing_quality": "adequate"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Reproducible Methodologist",
+      "background": "Senior ML engineer with 8+ years building and evaluating neural NLP systems, focusing on rigorous experimental design, benchmarking, and reproducible training pipelines.",
+      "traits": [
+        "insists on clear, replicable experimental setups (exact hyperparameters, training regime, code/seed availability)",
+        "requires strong baselines and thorough ablation studies to attribute gains to specific components",
+        "checks statistical significance and learning curves (not just single-run best metrics) and notices training/compute trade-offs",
+        "values clarity on optimization details (initialization, clipping, batching), dataset preprocessing, and vocabulary/tokenization choices"
+      ],
+      "reviewing_style": "Practical and detail-oriented: pinpoints missing experimental controls, requests concrete ablations and reproducibility artifacts, and evaluates claims based on empirical rigor."
+    },
+    "reviewer_b": {
+      "name": "Translation Systems Researcher",
+      "background": "Senior researcher in machine translation and computational morphology with a track record of work on subword/character models and their linguistic and system-level impact.",
+      "traits": [
+        "situates contributions relative to prior character/subword and morphological MT work and values conceptual novelty",
+        "evaluates linguistic plausibility of learned representations and their utility across languages and downstream tasks",
+        "cares about practical impact: scalability to real-world MT pipelines, inference speed, and integration with existing systems",
+        "notices broader research directions (e.g., how this approach informs morphology learning, low-resource MT, or transfer) and expected limitations across language typologies"
+      ],
+      "reviewing_style": "Big-picture and impact-focused: assesses novelty and significance relative to the literature, judges whether the approach meaningfully advances translation or linguistic modeling, and highlights potential real-world implications and follow-up work."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  }
+}

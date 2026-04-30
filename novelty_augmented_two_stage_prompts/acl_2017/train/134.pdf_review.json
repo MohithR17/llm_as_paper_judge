@@ -1,0 +1,97 @@
+{
+  "IMPACT": 3,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 3,
+  "APPROPRIATENESS": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses an important problem in computational argumentation mining by demonstrating that end-to-end neural tagging models (BiLSTM-CRF and variants) achieve new state-of-the-art results on the Persuasive Essays dataset and that multi-task joint learning improves AM performance. Its finding that token-based dependency parsing performs poorly relative to simpler local taggers clarifies effective modeling choices for the community. While these results are useful and likely to influence model selection and follow-up work within the AM subfield, the impact is moderate since evaluations are limited to a single dataset and broader cross-domain or practical implications are not demonstrated.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized with a clear experimental pipeline (intro \u2192 methods framing AM as parsing and tagging \u2192 experiments on the PE dataset \u2192 conclusions) and states its main contributions early (new SOTA on PE, comparison of framings, and benefits of multi-task learning). The writing quality is described as adequate and related work coverage is thorough, though some presentation details are missing (hyperparameters not reported, and encoder\u2013decoder framing left as future work) which slightly reduces reproducibility and clarity. Figures/tables and examples are not flagged as problematic, and overall notation seems usable, so only minor presentation improvements are needed.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against appropriate and recent baselines including the feature-based ILP from Stab & Gurevych (2016), Persing & Ng (2016) evaluation, multiple dependency parsers, LSTM-ER, and a strong BiLSTM-CRF tagger (STagBLCC). Comparisons use the same Persuasive Essays dataset and standard Component and Relation F1 metrics, and the paper explicitly acknowledges when parsing-based framing performs worse and discusses limitations. Related work coverage is reported as thorough and the main competing approaches are cited and analyzed, yielding comprehensive and fair comparisons.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper applies contemporary neural architectures (BiLSTM-CRF, adapted LSTM-ER, multi-task tagging) to the end-to-end argumentation mining problem and explores alternative framings (token-based dependency parsing vs. sequence tagging), which is a meaningful extension beyond prior feature-based ILP and classical parsing baselines (Stab & Gurevych 2016; Persing & Ng 2016). However, the methods are largely adaptations of existing neural models rather than fundamentally new algorithms, and the core problem formulation (end-to-end AM on the PE dataset) is already studied, so the contribution is incremental rather than highly novel. The negative finding that dependency-parsing framing performs poorly and the empirical insight that local BiLSTM tagging with multi-task learning works well are useful to experts but not transformative.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper runs a broad set of experiments comparing multiple neural tagging models (BiLSTM-CRF variants, LSTM-ER) and several dependency parsers against established baselines (Stab and Gurevych 2016 ILP, Persing & Ng setup) on the PE dataset, which supports many of its claims. However, crucial reproducibility details (hyperparameters, code) are missing, and there is no indication of systematic ablation or sensitivity analyses beyond the reported multi-task vs single-task comparisons. The related work is described as thorough and limitations (poor performance of parsing framing, omission of encoder\u2013decoder framing) are acknowledged, but evaluation is confined to a single dataset and important experimental analyses for robustness and reproducibility are lacking.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "The paper addresses computational argumentation mining, a clear NLP topic with strong ML components (BiLSTM-CRF, LSTM-ER, dependency parsers) and evaluates on the established Persuasive Essays (PE) dataset, so it sits well within a top NLP/ML venue's scope. It compares to appropriate baselines (Stab and Gurevych 2016 ILP, Persing & Ng 2016) and uses standard metrics (component and relation F1), indicating expected evaluation standards. Minor scope concerns are the narrow dataset (single PE corpus) and omission of some modeling avenues (encoder-decoder not explored, hyperparameters/code not reported), but these do not preclude relevance to the venue\u2019s audience.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main empirical claims (new SOTA on the PE dataset, poorer performance for dependency-parsing framing, strong performance of BiLSTM-based taggers, and gains from joint multi-task learning) are supported by experiments comparing to appropriate baselines (feature-based ILP from Stab & Gurevych 2016, LSTM-ER, multiple dependency parsers) using established evaluation metrics. There are no mathematical derivations to check. Methodologically the experiments are broadly sound, but the summary lacks reporting of hyperparameters and statistical significance testing, and code is not mentioned, which are minor gaps for reproducibility. Overall the conclusions are reasonable given the provided experimental setup and results.",
+      "survey_injected": false,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "The proposed neural end-to-end approach yields new state-of-the-art results on the Persuasive Essays (PE) dataset from Stab and Gurevych (2016).",
+      "Framing argumentation mining as token-based dependency parsing leads to subpar performance compared to other approaches.",
+      "Less complex (local) tagging models based on BiLSTMs (including BiLSTM-CRF and variants) perform robustly across classification scenarios and can capture long-range dependencies for AM.",
+      "Jointly learning related subtasks in a multi-task learning setup improves performance on the AM problem."
+    ],
+    "methodology": "They frame end-to-end argumentation mining as both a token-based dependency parsing problem and a token-based sequence tagging problem, including multi-task tagging setups; models evaluated include BiLSTM-CRF (and BLCC variants) for tagging and adapted LSTM-ER for joint entity/relation extraction, compared against feature-based ILP and parsing baselines.",
+    "datasets": [
+      "Persuasive Essays (PE) dataset from Stab and Gurevych (2016) (402 essays, 80 reserved for testing)"
+    ],
+    "baselines": [
+      "Feature-based ILP model from Stab and Gurevych (2016)",
+      "Persing and Ng (2016) evaluation setup",
+      "LSTM-ER (Miwa and Bansal, 2016) adapted for AM",
+      "Dependency parsers: MST (McDonald et al., 2005), Mate (Bohnet and Nivre, 2012), Dyer et al. (2015) LSTM-Parser, Kiperwasser and Goldberg (2016)",
+      "BLCC tagger from Ma and Hovy (2016) (referred to as STagBLCC)"
+    ],
+    "metrics": [
+      "Component F1",
+      "Relation F1 (evaluation as in Persing and Ng, 2016)"
+    ],
+    "limitations": [
+      "Framing AM as dependency parsing produced subpar performance.",
+      "Encoder-decoder framing for AM was not considered in this work; its suitability is left as future work."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - Computational Argumentation Mining",
+    "writing_quality": "adequate"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 1,
+    "paper_novelty_mean": 0.68,
+    "augmented_dims": [
+      "MEANINGFUL_COMPARISON",
+      "ORIGINALITY",
+      "SUBSTANCE"
+    ],
+    "total_dims": 7
+  }
+}

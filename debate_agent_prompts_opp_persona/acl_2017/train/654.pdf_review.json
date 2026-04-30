@@ -1,0 +1,179 @@
+{
+  "CLARITY": 4,
+  "APPROPRIATENESS": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized and readable: contributions are stated early, the method/experiments/conclusion follow a clear flow, and hyperparameters and related work are documented. Notation appears consistent and figures/tables/examples are informative for the SRL task and results (including ensemble performance and per-error analyses). Writing is largely clear and grammatical, though a few explanatory gaps remain\u2014e.g., the presentation does not fully clarify why enforcing certain SRL constraints degrades performance, which would benefit from clearer exposition or pointers to appendices. | B(4): From the provided summary the paper is well organized with clear early statement of its main contributions (deep highway BiLSTM + constrained A* decoding and strong ensemble results), and the writing quality is described as good. Practical details that aid reproducibility (hyperparameters reported, code available) and thorough related-work coverage further improve clarity. I deduct one point because the summary does not confirm consistency of notation or the effectiveness of figures/tables and examples, so a few presentation details may remain unclear.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized and readable: contributions are stated early, the method/experiments/conclusion follow a clear flow, and hyperparameters and related work are documented. Notation appears consistent and figures/tables/examples are informative for the SRL task and results (including ensemble performance and per-error analyses). Writing is largely clear and grammatical, though a few explanatory gaps remain\u2014e.g., the presentation does not fully clarify why enforcing certain SRL constraints degrades performance, which would benefit from clearer exposition or pointers to appendices."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "From the provided summary the paper is well organized with clear early statement of its main contributions (deep highway BiLSTM + constrained A* decoding and strong ensemble results), and the writing quality is described as good. Practical details that aid reproducibility (hyperparameters reported, code available) and thorough related-work coverage further improve clarity. I deduct one point because the summary does not confirm consistency of notation or the effectiveness of figures/tables and examples, so a few presentation details may remain unclear."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper is an excellent empirical contribution that fits the venue, uses standard datasets and metrics, and provides code and analyses producing strong SOTA results. I dock one point because, as Reviewer A notes, the work leans heavily on large ensembles and engineering choices without deeper principled explanations or controlled analyses of why the components yield gains, which makes it slightly less compelling for a top conference compared to a more theory-informed contribution.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is squarely within the scope of a top NLP/ML conference: it tackles SRL with standard datasets (CoNLL-2005/2012), accepted metrics (F1, exact-predicate accuracy), and compares to relevant baselines, and even provides code and hyperparameters. However, from my theory-focused perspective the work leans heavily on empirical recipe improvements (deep highway BiLSTMs, large product-of-experts ensemble and A* decoding) without principled analysis explaining why these choices yield the gains (e.g., why deep/highway BiLSTMs implicitly capture syntax), which makes it less compelling for a top venue unless augmented by stronger explanatory or controlled analyses. Overall it fits the audience and evaluation standards but has minor concerns about over-reliance on large ensembles and limited theoretical motivation."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP/ML venue: it presents substantial empirical advances (new deep highway BiLSTM + constrained A* decoding and an 8-model product-of-experts ensemble) that yield SOTA results on standard benchmarks (83.2 F1 on CoNLL-2005, 83.4 F1 on CoNLL-2012). The study meets community standards by evaluating on canonical datasets, using F1 and complete-predicate metrics, reporting hyperparameters, releasing code, and providing useful error analyses (long-distance recovery, syntax probing, and remaining failure modes). Methodology and evaluation are exactly the kind of rigorous, reproducible engineering and empirical analysis valued by top conferences, and the paper is well positioned for the NLP research community."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the empirical results are strong, baselines and hyperparameters are well-documented, and the experiments largely support the main claims. I give a 4 because while the experimental evidence and ablations are convincing overall, the paper would benefit from additional statistical significance testing, variance estimates across random restarts, and more controlled analyses to substantiate causal claims about implicitly learned syntax and the role of the ensemble.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents strong empirical gains with a clear methodological description (deep highway BiLSTMs, constrained A* decoding, product-of-experts ensemble) and reports hyperparameters and code, which supports the central performance claims. However, from the summary there is no evidence of statistical significance testing or variance estimates across random restarts, and the heavy reliance on an 8\u2011model ensemble without per\u2011model analysis weakens claims about what design choices drive improvement. Claims that deep models \"implicitly learn\" syntax or global constraints are asserted based on correlations (error analyses) rather than controlled probing or causal evidence. Overall the experiments are promising but lack the principled ablations and statistical rigor I require to fully accept the explanatory conclusions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and primarily supported by thorough experiments on CoNLL-2005/2012 showing substantial F1 gains (single deep BiLSTM + constrained A* and an 8-model product-of-experts ensemble reaching 83.2/83.4 F1). There are no significant mathematical derivations to verify, and the experimental setup appears sound with appropriate baselines, detailed hyperparameters, and ablations (including analysis of long-distance dependencies and constraint enforcement). Minor concerns remain about some unsupported design choices (e.g., why enforcing certain SRL constraints degrades performance and the decision not to enforce R roles) and potential sensitivity to engineering details, but these do not undermine the main empirical conclusions. Overall the results and analyses justify the paper's conclusions, with only minor technical reservations."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses an important problem and achieves substantial, reproducible empirical gains that will serve as a strong baseline and influence future SRL work. While its contributions are mainly empirical (with limited formal analysis and reliance on ensembles) and it leaves systematic errors and open questions, its practical impact and the research directions it opens justify a high\u2014but not maximal\u2014impact score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important task (SRL) and achieves substantial empirical gains with deep highway BiLSTMs and constrained A* decoding, producing new state-of-the-art figures on CoNLL-2005/2012\u2014so practitioners will notice and likely adopt aspects (model recipes, decoding). However, from a theory-focused perspective its contribution is primarily empirical: claims about implicit learning of syntax and global constraints lack formal or causal analysis, and heavy reliance on an 8-model product-of-experts ensemble without per-model variance/significance analysis limits principled insight. Thus it is useful and will spur follow-up work, but it does not fundamentally change how we think about SRL representations or learning, placing it at moderate impact."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles the important problem of semantic role labeling and delivers substantial empirical improvements (e.g., 83.2 F1 on CoNLL-2005 and 83.4 on CoNLL-2012) via a well-engineered deep highway BiLSTM + constrained A* decoding and product-of-experts ensemble, with code and hyperparameters provided\u2014making the claims practically reproducible. Its detailed empirical analyses (long-distance dependency recovery, implicit learning of syntactic/global constraints) will change how researchers view deep sequence models for SRL and motivate further work combining deep encoders with explicit syntax or better constraints. While not wholly transformative (the model still makes systematic errors like PP attachment and adjunct/argument confusions and some constraints hurt performance), the work is likely to be widely used and built upon as a strong engineering baseline and opens useful research directions integrating syntax and decoding constraints."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper delivers strong, reproducible empirical results (SOTA gains, released code/hyperparameters) and useful analyses of model behavior and engineering choices. Reviewer A rightly flags missing rigorous statistical testing, random-restart variance estimates, and deeper causal probing for syntactic knowledge, while Reviewer B views these as minor gaps given the breadth of experiments and ablations presented. Given the paper\u2019s substantial empirical contribution and reproducibility, but noting the important (though addressable) analysis shortcomings, I assign a score of 4.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents solid empirical results on two standard datasets, explores decoding constraints and ensembles, and releases code and hyperparameters \u2014 so experiments are adequate in scope. However, from the summary there is no evidence of the rigorous ablations, random-restart variance estimates or statistical-significance testing that my theory-focused stance requires, nor of controlled probing to support claims about implicit syntax learning. The authors do discuss some failure modes and limitations, but important analyses (per-model performance vs ensemble, causal probes for syntactic knowledge) appear missing, so the evaluation is adequate but incomplete."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper delivers strong, well-documented empirical results (clear SOTA gains on CoNLL-2005/2012, ensemble and single-model numbers) and examines model behavior (long-distance dependencies, implicit syntax, error types like PP attachment). It reports hyperparameters, releases code, and includes practical engineering details (recurrent dropout, orthonormal init, constrained A* decoding), supporting reproducibility. Ablative/sensitivity analysis appears present (effects of constraints, ensemble vs single models) though the summary suggests some choices (e.g., not enforcing R constraints) could use deeper investigation; overall the experimental coverage is solid with only minor gaps."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper is primarily an engineering advance\u2014combining deep highway BiLSTMs, regularization/initialization tricks, constrained A* decoding, and ensemble techniques\u2014to achieve substantial empirical gains and informative diagnostics on CoNLL SRL benchmarks. While not a fundamentally new modeling paradigm, the specific combination and careful study constitute a non-trivial and useful advance that meaningfully pushes state-of-the-art, so a score slightly above average is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper applies an engineering combination\u2014deep highway BiLSTMs with recurrent dropout/orthonormal init, constrained A* BIO decoding, and a product-of-experts ensemble\u2014to a well-studied SRL task. While the authors clearly differentiate their pipeline and show strong empirical gains on CoNLL-2005/2012, the core ideas are incremental extensions of existing sequence-labeling and decoding techniques rather than a fundamentally new formulation or theory. An expert would find the empirical findings (e.g., implicit learning of long-distance dependencies) informative but not surprising, since the techniques largely compose known methods rather than introduce a novel modeling paradigm."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable and clearly-differentiated technical package: deep highway BiLSTMs with orthonormal init/recurrent dropout, paired with constrained A* decoding and a product-of-experts ensemble, which together yield substantial SOTA gains on CoNLL-2005/2012. While SRL is a well-studied problem, the combination of very deep recurrent architectures, specific engineering choices, and constrained decoding is a non-trivial advance beyond prior systems (e.g., Zhou & Xu, FitzGerald et al.), and the work provides empirical and diagnostic evidence that would inform experts in the field."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper compares against a comprehensive set of relevant baselines on standard CoNLL benchmarks, uses the same F1-based metrics, and provides sufficient details (and code) to enable reproducibility. However, Reviewer A\u2019s concern about heavy reliance on an 8-model ensemble, lack of variance estimates or statistical significance testing across random restarts, and limited per-model/ablation clarity is valid and prevents a full endorsement as perfectly rigorous. Given the strong empirical comparisons but incomplete reporting of experimental variance and component-wise isolation, a score of 4 is appropriate.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares to a comprehensive set of appropriate, recent SRL baselines (e.g. Zhou & Xu 2015; FitzGerald 2015; T\u00e4ckstr\u00f6m 2015) on the standard CoNLL-2005 and CoNLL-2012 splits using the same F1-based metrics, and the related work discussion appears thorough. However, the experimental reporting leans heavily on an 8-model ensemble (product-of-experts) without clear variance estimates or statistical significance testing across random restarts, and it is unclear whether per-model results and principled ablations isolate the contributions of architectural/training choices and decoding constraints. For these reasons the comparisons are good but not fully rigorous by the standards I require as a theory-focused reviewer."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper conducts comprehensive, fair comparisons on standard SRL benchmarks (CoNLL-2005 and CoNLL-2012) against a broad set of state-of-the-art baselines (e.g., Zhou & Xu 2015; FitzGerald et al. 2015; T\u00e4ckstr\u00f6m et al. 2015; Toutanova et al. 2008), using the same F1 metrics and reporting predicate-level exactness. It documents training details and releases code, enabling reproducibility, clearly analyzes where deep models outperform prior work (e.g., long-distance dependencies) and acknowledges remaining failure modes and cases where certain constraints hurt performance. From an empirical and reproducibility standpoint this counts as comprehensive and fair comparison with relevant competing approaches."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introducing a deep highway BiLSTM SRL model with constrained A* decoding that significantly improves state-of-the-art performance.",
+      "An 8-layer ensemble (product-of-experts) achieves 83.2 F1 on CoNLL-2005 and 83.4 F1 on CoNLL-2012, giving substantial absolute and relative gains over prior systems.",
+      "Deep models excel at recovering long-distance predicate-argument dependencies and can implicitly learn syntactic and global constraint information, but they still make notable errors and can benefit from explicit syntax."
+    ],
+    "methodology": "Train deep highway bidirectional LSTMs with recurrent dropout and orthonormal initialization to produce local tag scores, apply constrained A* decoding (with BIO and selected SRL and optional syntactic constraints) at prediction time, and ensemble multiple models via a product-of-experts.",
+    "datasets": [
+      "CoNLL-2005",
+      "CoNLL-2012"
+    ],
+    "baselines": [
+      "Zhou and Xu (2015)",
+      "FitzGerald et al. (2015)",
+      "T\u00e4ckstr\u00f6m et al. (2015)",
+      "Toutanova et al. (2008)",
+      "Punyakanok et al. (2008)",
+      "Pradhan et al. (2013)"
+    ],
+    "metrics": [
+      "F1",
+      "percentage of completely correct predicates"
+    ],
+    "limitations": [
+      "Model still makes surprisingly obvious errors (e.g., adjunct/argument distinctions).",
+      "Errors tied to prepositional phrase (PP) attachment are common.",
+      "Enforcing some SRL constraints (R/reference roles) degrades performance, so they are not enforced."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - semantic role labeling",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory-Focused Skeptic",
+      "background": "Associate professor in computational linguistics with a strong focus on formal models of semantics and learning theory; long-standing programmatic interest in interpretability and provable guarantees for NLP models.",
+      "traits": [
+        "Penalizes papers that present large empirical gains without accompanying theoretical motivation or analysis (e.g., why deep/highway BiLSTMs should capture SRL structure).",
+        "Requires principled ablation studies that isolate the contribution of each architectural/training choice and explicitly penalizes reliance on large ensembles without per-model analysis.",
+        "Demands statistical significance testing and variance estimates across random restarts for reported numbers; subtracts points if only a single run or ensemble aggregate is reported.",
+        "Skeptical of claims about implicit learning of syntax unless supported by formal analyses or controlled probing experiments that test causality rather than correlation."
+      ],
+      "reviewing_style": "Focuses on whether the paper advances understanding (theory or principled analysis) beyond engineering, giving lower scores to strong empirical results that lack explanatory or statistically rigorous support."
+    },
+    "reviewer_b": {
+      "name": "Practical Empiricalist",
+      "background": "Senior research scientist in applied NLP with extensive experience building and evaluating state-of-the-art models for core NLP tasks and deploying models in production; frequently chairs evaluation tracks and benchmarks.",
+      "traits": [
+        "Rewards clear, substantial empirical improvements on standard benchmarks (CoNLL-2005/2012) and treats SOTA gains as strong evidence of contribution.",
+        "Values thorough engineering rigor: comprehensive hyperparameter details, sensible regularization/initialization choices, and practical decoding strategies (e.g., constrained A*), and boosts scores when these are well-documented.",
+        "Positively weights extensive error analysis and empirical investigations (e.g., long-distance dependency recovery, syntactic probing), even if not formal/theoretical.",
+        "Favors reproducibility and practical utility: increases score if code/models/checkpoints or detailed training recipes are promised or released, and if ensembles demonstrate clear practical benefits."
+      ],
+      "reviewing_style": "Prioritizes empirical impact, reproducibility, and practical engineering insights; gives higher scores to papers that advance state-of-the-art with clear documentation and useful analyses."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

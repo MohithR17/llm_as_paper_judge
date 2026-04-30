@@ -1,0 +1,187 @@
+{
+  "CLARITY": 4,
+  "SUBSTANCE": 3,
+  "ORIGINALITY": 3,
+  "IMPACT": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "APPROPRIATENESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and follows a logical flow from introduction to method to experiments and conclusion, with the main contributions stated early (ITransF and its sparse attention interpretability). Notation is reported as consistent and hyperparameters are provided, and figures/tables (extensive baseline comparisons on WN18/FB15k) appear informative. Writing quality and related-work coverage are good, though the manuscript could be improved by explicitly noting limitations and making clearer any assumptions (e.g., initialization and sampling heuristics) to aid reader comprehension. From a presentation perspective it is strong but has a few minor clarity omissions. | B(4): The paper appears well-organized with a clear flow from introduction to method to experiments and conclusion, and the main contributions (ITransF, sparse attention for shared concepts, interpretability, and empirical gains) are stated early. Notation seems consistent and definitions are provided (initialization and training details are described), and figures/tables are effective given the thorough related work coverage and reported hyperparameters and metrics. Writing quality is good overall, though the summary notes no stated limitations or code availability which could be mentioned explicitly for clearer reproduction and discussion.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and follows a logical flow from introduction to method to experiments and conclusion, with the main contributions stated early (ITransF and its sparse attention interpretability). Notation is reported as consistent and hyperparameters are provided, and figures/tables (extensive baseline comparisons on WN18/FB15k) appear informative. Writing quality and related-work coverage are good, though the manuscript could be improved by explicitly noting limitations and making clearer any assumptions (e.g., initialization and sampling heuristics) to aid reader comprehension. From a presentation perspective it is strong but has a few minor clarity omissions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper appears well-organized with a clear flow from introduction to method to experiments and conclusion, and the main contributions (ITransF, sparse attention for shared concepts, interpretability, and empirical gains) are stated early. Notation seems consistent and definitions are provided (initialization and training details are described), and figures/tables are effective given the thorough related work coverage and reported hyperparameters and metrics. Writing quality is good overall, though the summary notes no stated limitations or code availability which could be mentioned explicitly for clearer reproduction and discussion."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper presents a novel, interpretable model with solid empirical gains on standard KBC benchmarks and reasonably thorough baseline comparisons and hyperparameter reporting. They also agree the work lacks ablation/sensitivity analyses, broader robustness evaluation, theoretical justification, and code release, which limits confidence in the necessity and generality of the proposed design choices. Given these strengths and the significant methodological/validation gaps, a middle-ground score of 3 appropriately reflects the paper\u2019s promise but incomplete substantiation.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The experimental validation is shallow: improvements are shown only on WN18 and FB15k (two standard but narrow datasets) and there is no discussion of generalization or robustness. Key modeling choices (sparse attention, noisy-identity initialization, Bernoulli negative sampling and sparsity projection) appear ad-hoc in the summary and lack controlled ablation or sensitivity analyses demonstrating necessity or stability. Related work is reported as thorough, but the paper provides no theoretical justification (identifiability, consistency or bounds) for the proposed composition/transfer mechanism and does not discuss failure modes or limitations. Reproducibility is partially aided by hyperparameter reporting, but absence of code and limited methodological analysis undermines confidence in the results."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The experimental evaluation is strong in that the model is tested on standard KBC benchmarks (WN18, FB15k) against a wide range of baselines and uses standard metrics (Mean Rank, Hits@10); training recipe details (Bernoulli negative sampling, initializations) and hyperparameters are reported which aids reproducibility. However, the summary does not mention any ablation studies or sensitivity analyses to isolate the contribution of the sparse attention or concept sharing, nor are failure cases or limitations discussed. Related work coverage is said to be thorough and the method is interpretable by design, which I value. Overall the paper provides solid empirical evidence but lacks some ablations and explicit discussion of limitations, so I rate it a 4."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper presents a sensible, practically useful mechanism\u2014sparse attention over shared projection concepts\u2014that is a non-trivial extension of existing relation-specific projection models and improves interpretability and transfer. However, the contribution is primarily incremental rather than a fundamental conceptual advance, and lacks broader theoretical analysis or extensive empirical validation beyond standard datasets. Given this balance, a moderate novelty score of 3 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper proposes a concrete architectural twist\u2014sparse attention over a shared pool of projection \"concept\" matrices to enable parameter sharing and interpretable relation\u2013concept associations\u2014which is a clear but relatively modest innovation relative to prior projection/transfer models (TransR, STransE, CTransR, TransD). The idea of composing relation-specific projections from shared components is sensible and practically useful, but it is primarily an incremental extension of existing embedding transfer approaches rather than a fundamentally new problem formulation or theory. From the provided summary there is no formal theoretical analysis or broad empirical validation beyond WN18/FB15k to indicate a major conceptual advance that would surprise experts, so I rate it as moderate novelty."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper introduces a reasonably novel mechanism\u2014sparse attention over a shared set of projection \"concepts\"\u2014that enables interpretable relation-concept associations and transfer of statistical strength, which is not present in prior relation-specific projection models like TransR/STransE/CTransR. The formulation builds on well-studied KBC embedding frameworks (so the problem is not new) but the technique is a non-trivial extension that emphasizes parameter sharing and interpretability, and the authors clearly differentiate it from prior work and demonstrate empirical improvements on WN18/FB15k. From an applied perspective this would inform experts interested in practical, interpretable transfer across relations."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper addresses an important problem and shows empirical gains with an interpretable, parameter-efficient mechanism. However, the impact is tempered by limited empirical validation (only two benchmarks), several ad-hoc training choices without principled analysis or thorough ablations, and no formal theoretical justification for the sparse attention scheme. Given the clear practical promise but important gaps that limit broader influence, a mid\u2011level impact score is appropriate.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "While the paper tackles the important problem of transfer and interpretability in knowledge\u2011base completion, its impact is limited by narrow empirical validation (only WN18 and FB15k) and reliance on several ad\u2011hoc training choices (noisy identity init, Bernoulli negative sampling, sparsity projection) without principled analysis or thorough ablations. From a theory\u2011first perspective there is no formal justification (identifiability, consistency, or complexity) for the sparse attention construction, so it is unclear when the concept sharing will generalize. The reported metric gains over baselines that do not use extra information are useful but unlikely to change prevailing thinking or catalyze broad follow\u2011on work without stronger theoretical grounding and more extensive empirical robustness studies."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses an important practical problem (knowledge base completion) with a parameter-efficient, interpretable mechanism (sparse attention over shared projection \u2018concepts\u2019) that demonstrably improves mean rank and Hits@10 on standard benchmarks (WN18, FB15k) versus many baselines. From my applied perspective the combination of empirical gains, interpretability of relation\u2013concept associations, and clear training details makes the approach likely to change how practitioners design transfer between relations and to be built upon in downstream KBC systems. While not obviously transformative, it opens useful directions for concept-sharing, sparsity, and interpretability in embedding models that should see broad follow-up."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper makes clear claims and demonstrates empirical improvements on standard KBC benchmarks, and that the model and training recipe are reasonable. Remaining concerns\u2014lack of theoretical guarantees, limited ablation/robustness studies, and missing statistical significance/code\u2014are valid but relatively minor and do not invalidate the main experimental findings. Given the solid empirical support but room for stronger analysis and reproducibility, a score of 4 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its claims and provides empirical improvements on WN18 and FB15k, but it lacks principled theoretical analysis (no identifiability/consistency guarantees) and does not present formal proofs justifying the sparse attention design. Key methodological choices (noisy identity initialization, Bernoulli negative sampling, sparsity projection) appear ad\u2011hoc and are not accompanied by controlled ablation or sensitivity studies showing their necessity. The experimental evaluation is limited to two benchmark datasets without robustness checks or statistical significance testing, and while many baselines are included, comparisons omit some more recent neural/convolutional models; thus the conclusions are partially supported but important gaps remain."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper states clear claims (ITransF with sparse attention that enables interpretable concept sharing and improves KBC) and supports them with experiments showing improved mean rank and Hits@10 on standard benchmarks WN18 and FB15k against a wide set of baselines. The model formulation and training recipe (initializations, Bernoulli negative sampling) appear technically sound and appropriate for embedding models; no formal proofs were required and none seem necessary. My remaining concern is the lack of reported statistical significance, public code, and some ablations (e.g., effect of sparsity level) which would strengthen reproducibility and rule out minor experimental confounds, but these are minor and do not undermine the main technical claims."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper compares to a wide and relevant set of baselines and reports standard metrics and training details, but they also both flag shortcomings in evaluation scope (only WN18/FB15k), lack of controlled ablations to separate architectural gains from training heuristics, and some ambiguity about the exact evaluation protocol. Given these consistent concerns about robustness and clarity of comparisons, a middle-ground score of 3 reflects solid baseline coverage but insufficient experimental rigor and reporting to merit a higher rating.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper compares to a broad set of classic and many competitive embedding baselines (SE, TransE/TransH/TransR/TransD, DISTMULT, STransE, etc.), which is good, but evaluation is limited to only WN18 and FB15k and therefore lacks broader robustness checks and newer model classes. Comparisons appear to use the same metrics (mean rank, Hits@10) but the summary indicates reliance on training heuristics (noisy identity init, Bernoulli negative sampling, sparsity projection) without reported controlled ablations, so it is unclear whether improvements are due to the architecture or experimental choices. The paper also does not state limitations or explicitly acknowledge when prior methods perform comparably, which reduces transparency. Overall, reasonable baseline coverage but insufficient robustness and ablation analysis by my standards."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares to a wide set of relevant baselines (TransE, TransH, TransR, STransE, DISTMULT, NTN, PTransE, KG2E, etc.) on standard KBC benchmarks WN18 and FB15k using mean rank and Hits@10, which matches the community practice. Training details (initialization, Bernoulli negative sampling) and hyperparameters are reported, suggesting reasonably fair experimental conditions. It\u2019s unclear from the summary whether evaluation used the standard filtered protocol or explicitly acknowledges cases where prior methods match or beat ITransF, so fairness/complete reporting on comparisons could be better documented. Overall the comparisons are strong and thorough but miss a few clarity points about evaluation protocol and explicit discussion when baselines perform comparably."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses a core KBC problem and is well within the scope of top NLP/ML venues, offering a practical, interpretable model with measurable empirical gains on standard benchmarks. I rate it a 4 because while the method and reported improvements make it a good fit and useful to practitioners, the limited empirical breadth (only two datasets), lack of controlled ablations and deeper analysis justify some reservations about pushing it to the highest tier without additional validation.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper addresses a core KBC topic that is squarely within top NLP/ML venue scope and targets the right audience (knowledge\u2011graph embedding / representation learning). The formulation and proposed sparse attention mechanism are appropriate and evaluated with standard metrics (Mean Rank, Hits@10) on WN18 and FB15k, but the empirical validation is narrow (only two standard datasets) and the summary gives no theoretical analysis or controlled ablations for key components (sparse attention, noisy\u2011identity init, Bernoulli negative sampling), which my reviewer persona heavily penalizes. While related work coverage and baseline list is reasonably thorough, absence of more recent neural/convolutional baselines, broader robustness checks, and principled justification reduce its fit to a top\u2011tier venue, making the paper borderline."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP/ML venue: it addresses the core KBC community with a practical, parameter\u2011efficient embedding model (ITransF) that introduces sparse attention for interpretable concept sharing and transfer. Empirically it reports improvements on standard benchmarks (WN18, FB15k) using canonical metrics (Mean Rank, Hits@10) and compares to a thorough set of baselines, which aligns with my emphasis on measurable gains and interpretability. The paper also supplies sensible training details and hyperparameter reporting, making it directly useful to practitioners and researchers in the venue."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a novel embedding model ITransF for knowledge base completion.",
+      "ITransF employs a sparse attention mechanism to discover hidden concepts of relations and transfer statistical strength via sharing of concepts.",
+      "The learned associations between relations and concepts (sparse attention vectors) are interpretable.",
+      "ITransF obtains improvements on mean rank and Hits@10 on WN18 and FB15k over baselines that do not use additional information."
+    ],
+    "methodology": "ITransF is an embedding-based KBC model that uses a sparse attention mechanism to compose/shared projection matrices (concepts) for relations, trained with minibatch SGD and Bernoulli negative sampling; entity and relation vectors are initialized by TransE and projection matrices by noisy identity.",
+    "datasets": [
+      "WN18",
+      "FB15k"
+    ],
+    "baselines": [
+      "SE",
+      "Unstructured",
+      "TransE",
+      "TransH",
+      "TransR",
+      "CTransR",
+      "KG2E",
+      "TransD",
+      "TATEC",
+      "NTN",
+      "DISTMULT",
+      "STransE",
+      "RTransE",
+      "PTransE",
+      "NLFeat",
+      "Random Walk",
+      "IRN"
+    ],
+    "metrics": [
+      "Mean Rank",
+      "Hits@10"
+    ],
+    "limitations": [],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Knowledge Base Completion (knowledge graph embeddings)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory\u2011Prioritizing Skeptic",
+      "background": "Senior researcher in machine learning theory and representation learning, with publications on provable properties of embedding methods and model identifiability.",
+      "traits": [
+        "Penalizes papers that do not provide theoretical analysis: expects formal statements (e.g., identifiability, consistency, or complexity bounds) or principled justification for proposed architectures.",
+        "Penalizes reliance on ad\u2011hoc training heuristics or initializations without ablation: will deduct points if key components (e.g., noisy identity init, Bernoulli negative sampling, sparsity projection) lack controlled ablation studies showing necessity and sensitivity.",
+        "Requires broad empirical validation: deducts points if evaluation is limited to two standard datasets (WN18, FB15k) without robustness checks, cross\u2011dataset generalization, or statistical significance testing.",
+        "Penalizes insufficient baseline selection: expects comparison to a representative set of recent state\u2011of\u2011the\u2011art baselines (including more recent convolutional and neural scoring models), and will mark down if only older/transE\u2011style baselines are used."
+      ],
+      "reviewing_style": "I focus on theoretical grounding and rigorous ablations; if a paper is mainly incremental empirical work without principled analysis or thorough controlled experiments, I score it low."
+    },
+    "reviewer_b": {
+      "name": "Practical Empirical Advocate",
+      "background": "Experienced applied ML/NLP researcher working on knowledge graphs and industrial KBC applications, with emphasis on interpretable, parameter\u2011efficient models that improve downstream performance.",
+      "traits": [
+        "Rewards demonstrable empirical gains on standard benchmarks: gives credit for consistent improvements in mean rank and Hits@10 on WN18 and FB15k even if gains are modest.",
+        "Favors interpretability and parameter sharing: positively scores models that introduce sparse attention or concept sharing that make relation behavior more explainable and enable transfer between rare and frequent relations.",
+        "Values practical training and scalability details: scores up papers that provide clear training recipes (initializations, negative sampling) and show improvements without heavy additional supervision or resources.",
+        "Forgiving of missing formal proofs: will not penalize absence of theoretical guarantees as long as empirical results, interpretability analyses, and ablations demonstrate utility and robustness."
+      ],
+      "reviewing_style": "I prioritize empirical usefulness and interpretability; I give higher scores to models that are practical, interpretable, and yield measurable gains on standard KBC benchmarks."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

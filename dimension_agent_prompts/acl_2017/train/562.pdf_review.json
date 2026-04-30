@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 2,
+  "CLARITY": 3,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper fits very well within a top-tier NLP/ML venue: it proposes reducing relation extraction to reading comprehension and demonstrates this with modern neural QA methods (extends BiDAF to model answerability) and large-scale data (WikiReading, 30M examples) aimed at slot-filling and zero-shot extraction. It uses standard experimental protocols and metrics (precision/recall/F1), evaluates on sensible splits (unseen entities/questions/relations), and situates itself in relevant prior work (SQuAD, Universal Schema, InfoboxQA), targeting the NLP/ML audience directly. Overall the problem formulation, methods, dataset scale, and evaluation are appropriate for such conferences."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important problem\u2014zero-shot and large-scale relation extraction\u2014by reducing slot-filling to reading comprehension and leveraging recent QA models (extending BiDAF to model answerability). It produces a very large, cheaply generated training corpus (\"30,000,000 examples with a budget of $1,250\") and demonstrates strong generalization to unseen entities (89.44% F1) and viable zero-shot extraction for unseen relations, thereby opening practical new directions for using QA techniques in IE. These contributions are likely to be widely used and to reshape how researchers approach relation extraction, though the zero-shot results are preliminary enough to be influential rather than fully transformative."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 2,
+      "justification": "The paper cites many relevant prior works (Rockt\u00e4schel et al., Demeester et al., Bronstein et al., OpenIE, SQuAD, SimpleQA, QA-SRL, Seo et al.) and discusses conceptual differences, but it does not present experimental comparisons against those baselines or report their numbers on the same tasks/datasets. Comparisons are largely qualitative (discussion of related work and adoption of BiDAF as a backbone) rather than fair, quantitative head-to-head evaluations, and the paper does not acknowledge cases where prior methods perform comparably or better."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is generally organized into standard sections (Experiments 5.1, Related Work, Dataset/Method descriptions) and clearly describes experimental setup and results (e.g., the unseen-entities split and 89.44% F1). The main contribution is stated (e.g., \u201cWe show that relation extraction can be reduced to answering simple reading comprehension questions\u201d), and notation is minimal but consistent (e.g., R(e, a)). However, presentation suffers from many duplicated lines, citation and phrasing errors (multiple repeated \u2018Reading Comprehension\u2019 paragraphs, repeated citations, instances of \u201cnaturallanguage\u201d), and some formatting issues, which make parts of the text hard to follow and reduce overall clarity."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a novel framing\u2014reducing relation extraction to reading comprehension by associating natural-language questions with relation slots\u2014and demonstrates zero-shot extraction of relations specified only at test time (see Sections 5.2\u20135.3). It also introduces a practical data-collection strategy (\"schema querification\" producing ~30M examples for $1,250) and extends a state-of-the-art RC model (BiDAF) to model answerability, which together constitute a non-trivial methodological contribution. The authors explicitly contrast their approach with prior work (universal schema, open IE, QA-SRL, SimpleQA), clarifying how their setting and zero-shot goal differ. Overall this is a notable and clearly-differentiated idea rather than a purely incremental combination of existing techniques."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper runs multiple zero-shot experiments (unseen entities, unseen question templates, unseen relations) and reports a strong result for unseen entities (89.44% F1) with an error analysis attributing 36% to annotation errors and 42% to span selection (Section 5.1), but the provided excerpt does not show detailed results for the unseen-question and unseen-relation experiments. There are no systematic ablation or sensitivity studies of model components or hyperparameters beyond a small 50-example error analysis. Related work coverage is broad and fair, and some limitations are discussed (error breakdown, noting that pure zero-shot is substantially more challenging), but reproducibility is only partial \u2014 basic details are given (use of BiDAF, GloVe, ~1M training examples, 3 epochs, 1:1 pos/neg ratio) while many training/implementation specifics (optimizers, learning rates, batch size, exact model modifications) are missing."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper's main claim (reducing relation extraction to reading comprehension) is supported experimentally for unseen entities: Section 5.1 reports 89.44% F1 (87.66% P, 91.32% R) and an error analysis noting 36% annotation noise, indicating strong empirical performance on that setting. There are no mathematical derivations to check, and the model extension (BiDAF + answerability) and hyperparameters (GloVe, 3 epochs) are plausibly described. However, the experimental methodology has gaps in the provided text: I see no comparisons to strong relation-extraction baselines or statistical significance tests, and the distant-supervision labeling and negative-example construction (matching questions for different relations on the same entity) can introduce noisy/incorrect labels and false negatives, which the authors partly acknowledge but do not fully control for. Claims about zero-shot to unseen relations are asserted but not substantiated in the excerpt, so conclusions are only partly justified by the presented results."
+    }
+  }
+}

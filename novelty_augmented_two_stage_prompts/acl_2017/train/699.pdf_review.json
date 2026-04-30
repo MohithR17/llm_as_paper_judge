@@ -1,0 +1,105 @@
+{
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "Based on the provided summary, the paper is well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and clearly states its main contributions early (CopyRNN model, large training corpus, KP20k dataset). Notation appears consistent and hyperparameters are reported, and figures/tables/examples (datasets, baselines, metrics) are informative for evaluation. Minor presentation issues are implied (e.g., domain-adaptation limitation and some baselines failing on KP20k are noted) but overall the writing quality is good with clear coverage of related work.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This work sits squarely in the core NLP/ML area (keyphrase generation) and proposes a practical encoder\u2013decoder model with attention and a copying mechanism, which is well-aligned with recent sequence generation research. It targets the right audience by comparing to standard baselines (Tf-Idf, TextRank, KEA, Maui) and using established evaluation metrics (precision/recall/F1) on multiple benchmark datasets (Inspec, Krapivin, NUS, SemEval-2010) plus a large new corpus and test set (KP20k). The problem formulation (generative keyphrase modeling with copy) and evaluation protocol meet typical conference standards, and the paper is positioned appropriately within the NLP keyphrase extraction/generation community.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "This work addresses an important, practical problem\u2014automatic keyphrase generation\u2014for which it provides a novel, well-motivated model (CopyRNN) that combines attention and a copying mechanism and demonstrably outperforms standard unsupervised and supervised baselines on multiple benchmarks. The ability to generate absent (not-in-text) topical keyphrases and the provision of a very large training corpus plus a new large test set (KP20k) make the contribution likely to be adopted and built upon by researchers and practitioners. While impactful and likely to change practices in keyphrase extraction/generation, the domain-specific training and noted limitations (OOV/general phrases, need for adaptation to other domains) temper the claim of being fully transformative across NLP.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper provides a notable, but not radical, novelty: it adapts encoder\u2013decoder generation to keyphrase prediction by integrating an attention+copy mechanism (CopyRNN) to address OOV/copying limitations of plain generative models, which is a meaningful technical extension beyond prior seq2seq keyphrase work. Prior relevant works already applied deep sequence-to-sequence models to keyphrase generation (including convolutional seq2seq and other \u201cdeep keyphrase generation\u201d efforts), so the core task and generative framing are not new; however, the specific copy-augmented RNN architecture and the large KP20k test corpus (20k articles) are clear, differentiable contributions that would inform experts. Given the close overlap with very recent deep keyphrase studies, the contribution is best characterized as a notable incremental advance rather than a breakthrough.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The summary indicates the main claims are clearly stated and supported by empirical evidence: a CopyRNN encoder\u2013decoder with attention+copy trained on a large corpus (527,830) and evaluated on multiple standard datasets (Inspec, Krapivin, NUS, SemEval-2010, KP20k) with comparisons to reasonable baselines (Tf-Idf, TextRank, SingleRank, ExpandRank, KEA, Maui) using macro P/R/F1. The model design addressing OOVs via copying is technically appropriate and the reported limitations (overly general outputs, domain transfer issues, ExpandRank scalability) show awareness of shortcomings. However, the summary does not mention statistical significance testing or ablation studies in detail, and code availability is unclear, so there is minor missing evidence to fully validate robustness and reproducibility. Overall the methodology is sound with only minor issues that do not overturn the main conclusions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents substantial experiments on multiple standard datasets plus a new large KP20k test set and compares to a broad set of unsupervised and supervised baselines, supporting the main claims about the CopyRNN\u2019s gains and its ability to generate absent keyphrases. Related work appears well covered and the paper discusses concrete limitations (overly general outputs from plain RNNs, OOV issues, and domain transfer concerns); hyperparameters and a large training corpus are reported which aids reproducibility. However, the summary does not indicate thorough ablation or sensitivity analyses (e.g., isolated effect of the copy mechanism, beam size, training-data size) and code release is not mentioned, so some experimental aspects needed to fully validate robustness are missing. The methods build logically on prior seq2seq work (including convolutional seq2seq and other deep keyphrase generation papers) but would benefit from more targeted ablations and public artifacts for complete reproducibility.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against a broad set of traditional supervised and unsupervised baselines (Tf-Idf, TextRank, SingleRank, ExpandRank, KEA, Maui) on standard datasets and uses consistent metrics (precision/recall/F1), and it discusses limitations and why the copy mechanism improves over plain RNNs. However, recent neural sequence-to-sequence approaches that directly target keyphrase generation (e.g., contemporaneous ConvS2S and other \"Deep Keyphrase Generation\" models) are not included in the empirical comparisons, which is an important omission given the paper\u2019s claim of a neural generative model advantage. Overall the comparisons are fair and well-analyzed but miss some directly relevant recent neural baselines.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a generative deep keyphrase generation model (named deep keyphrase generation / CopyRNN) that maps a document (title+abstract) to representative keyphrases.",
+      "The CopyRNN model, which combines an encoder-decoder RNN with attention and a copying mechanism, significantly outperforms prior unsupervised and supervised baselines on extracting present keyphrases and also can generate absent (not-in-text) topical keyphrases.",
+      "Collected a very large scientific-publication training corpus (567,830 raw articles; model trained on 527,830) and introduced a new testing dataset KP20k (20,000 articles) for evaluation."
+    ],
+    "methodology": "Use an RNN encoder-decoder framework: a bidirectional GRU encoder and a forward GRU decoder with attention, augmented with a copy mechanism (CopyRNN) to allow copying tokens from the source; trained end-to-end (Adam optimizer) and decoded with beam search.",
+    "datasets": [
+      "Inspec",
+      "Krapivin",
+      "NUS",
+      "SemEval-2010",
+      "KP20k",
+      "(training corpus of 567,830 articles; model trained on 527,830 articles)"
+    ],
+    "baselines": [
+      "Tf-Idf",
+      "TextRank",
+      "SingleRank",
+      "ExpandRank",
+      "KEA",
+      "Maui"
+    ],
+    "metrics": [
+      "macro-averaged precision",
+      "macro-averaged recall",
+      "macro-averaged F-measure (F1)"
+    ],
+    "limitations": [
+      "The plain RNN generative model tends to produce overly general keyphrases and cannot recall out-of-vocabulary words.",
+      "A pure generative model may not fit extraction tasks without mechanisms linking back to source text (motivating the copy mechanism).",
+      "ExpandRank failed to return results on KP20k due to high time complexity.",
+      "The model trained on publication data may require adaptive training to improve performance on other domains (e.g., news)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - keyphrase generation / extraction (encoder-decoder with copy mechanism)",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 2,
+    "paper_novelty_mean": 0.8,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

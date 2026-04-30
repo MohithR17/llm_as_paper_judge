@@ -1,0 +1,180 @@
+{
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized (intro\u2192method\u2192experiments\u2192conclusion) and states its main contributions early: the DMC task, a decoy-generation algorithm, the MCIC dataset, and baseline models. Notation appears consistent and hyperparameters are reported; figures/tables and examples (e.g., COCO-derived MCIC instances) are effective and the writing quality is good overall. Some presentation issues remain: important details of human evaluation and rater disagreement are deferred to the supplement, which reduces immediate clarity about evaluation protocol and may frustrate readers seeking reproducibility. From a clarity/presentation standpoint the manuscript is strong but would benefit from bringing key evaluation specifics into the main text. | B(4): The paper is well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and clearly states its main contributions early\u2014introducing the DMC task, an algorithm for constructing challenging decoys, and a large MCIC dataset derived from COCO. Notation and methodology are presented consistently, and the experiments (including baselines, human upper-bounds, and multi-task \u03bbgen studies) are described with useful metrics and examples; figures/tables appear informative. Writing quality is generally good, though a few details (e.g., human rater disagreement) are deferred to the supplement which slightly interrupts completeness of the narrative.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized (intro\u2192method\u2192experiments\u2192conclusion) and states its main contributions early: the DMC task, a decoy-generation algorithm, the MCIC dataset, and baseline models. Notation appears consistent and hyperparameters are reported; figures/tables and examples (e.g., COCO-derived MCIC instances) are effective and the writing quality is good overall. Some presentation issues remain: important details of human evaluation and rater disagreement are deferred to the supplement, which reduces immediate clarity about evaluation protocol and may frustrate readers seeking reproducibility. From a clarity/presentation standpoint the manuscript is strong but would benefit from bringing key evaluation specifics into the main text."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and clearly states its main contributions early\u2014introducing the DMC task, an algorithm for constructing challenging decoys, and a large MCIC dataset derived from COCO. Notation and methodology are presented consistently, and the experiments (including baselines, human upper-bounds, and multi-task \u03bbgen studies) are described with useful metrics and examples; figures/tables appear informative. Writing quality is generally good, though a few details (e.g., human rater disagreement) are deferred to the supplement which slightly interrupts completeness of the narrative."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper provides a useful, reusable dataset and decoy-generation recipe that establish a practical benchmark likely to be adopted, and the neural baselines and human upper-bounds are valuable. However, they also concur the work lacks deeper theoretical analysis and more rigorous validation of decoy hardness and baselines. Given the clear empirical contribution and likely community impact despite limited theoretical novelty, a score of 4 reflects meaningful practical importance with room for stronger validation.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper contributes a useful new dataset (MCIC) and a practical decoy-generation recipe (paragraph-vector plus surface-similarity) that make a concrete empirical task for joint vision\u2013language comprehension, which is likely to be adopted as a benchmark. However, from a theoretical and methodological standpoint the work lacks formal analysis of decoy hardness and rigorous validation of the negative-example generation process, and the set of baselines and human-evaluation protocol appear limited\u2014factors that reduce its potential to reshape how researchers reason about representation learning. The reported multi-task trade-off between comprehension and captioning is interesting and could spur follow-up work, but without stronger theoretical guarantees or broader validation the impact is moderate rather than transformative."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles a practically important and under-explored problem\u2014dual vision-language machine comprehension\u2014and supplies a concrete, reusable benchmark (MCIC) plus an automatic, empirically-motivated decoy construction method that addresses a common weakness of naive MC formulations. By releasing a large-scale dataset derived from COCO, providing human upper-bounds, and demonstrating neural baselines (including a multi-task Vec2seq+FFNN that reveals trade-offs between comprehension and captioning), the work is likely to change how researchers evaluate multimodal understanding and to be built upon by follow-up methods. While not a radical theoretical advance, it creates a well-documented experimental platform that should open significant new directions and attract adoption across the community."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper makes a substantial empirical contribution with a large MCIC dataset, multiple baselines, human upper-bounds, and useful analyses (\u03bbgen, decoy-construction choices). They both note gaps in reproducibility (code release), limited ablations/statistical testing, and missing validation of decoy hardness; these are important but do not undermine the core contributions. Given the solid experimental work and only moderate shortcomings, a score of 4 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides a sizable dataset construction, multiple neural baselines (FFNN, Vec2seq, Vec2seq+FFNN), multi-task experiments varying \u03bbgen, and human upper-bounds, which is adequate to support core claims. However, as a theorist I note missing theoretical/empirical validation of decoy hardness and failure modes of the automatic decoy generation, a paucity of diverse baselines (non-neural or stronger SOTA comparisons), and no mention of statistical significance testing or detailed reproducibility artifacts (code not reported). Related work appears well covered and some limitations are discussed, but the experimental suite omits critical ablations and rigorous human-eval protocol details, so the evaluation is incomplete."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The experiments are solid: the authors produce a large-scale MCIC dataset with human upper-bounds, evaluate reasonable baselines (embedding+Inception, FFNN, Vec2seq, Vec2seq+FFNN), and analyze the trade-off between comprehension and caption generation via \u03bbgen. They provide sensitivity analysis (\u03bbgen) and compare decoy-construction choices (PV + linguistic similarity), and report hyperparameters, but code release is not mentioned which weakens reproducibility. Related work is described as thorough and limitations (dataset difficulty, human disagreement, generation\u2013comprehension trade-offs) are discussed, so the paper is comprehensive with only minor gaps in reproducibility and potentially more detailed ablations of decoy construction choices."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper poses clear claims and provides useful empirical evidence (dataset, baselines, and human evaluation), but also agree that methodological gaps remain\u2014chiefly lack of theoretical justification for decoy construction, limited baseline diversity, missing statistical significance testing, and incomplete reproducibility details. These shortcomings do not invalidate the results but do weaken the technical completeness, so a mid-range score reflecting a promising but methodologically incomplete contribution is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its claims and provides empirical evidence (dataset construction via PV+surface similarity, baselines including FFNN and Vec2seq variants, and human evaluations), but from a methodological standpoint there are notable gaps. There is no formal analysis or guarantees about the hardness or adversarial quality of the automatically generated decoys (the paragraph-vector + BLEU heuristic is plausible but not theoretically justified), the set of baselines lacks diverse non-neural and stronger state-of-the-art comparators, and statistical significance testing / detailed human-evaluation protocol are not reported. These issues do not invalidate the experiments, but they leave some key claims under-supported, so the paper is technically promising but incomplete."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper states clear claims (new DMC task, decoy-construction algorithm, large-scale MCIC dataset, human upper-bounds, and multi-task models) and supports them with experiments comparing reasonable baselines (FFNN, Vec2seq, hybrid) plus human evaluation. There are no nontrivial mathematical derivations to check and the methodological choices\u2014using PV + surface similarity for hard negatives, COCO-based dataset construction, and reporting accuracy/ROUGE/CIDEr\u2014are sound; hyperparameters and baselines are reported. Minor concerns remain about absence of reported statistical significance tests and whether code/data release is ensured for full reproducibility, but these do not undermine the main conclusions, which the results justify."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper squarely fits the vision-and-language remit of top NLP/ML venues, proposing a large-scale, well-motivated Dual Machine Comprehension dataset and appropriate baseline evaluations. While Reviewer A raises valid methodological concerns (decoy hardness analysis, broader baselines, and more detail on human evaluation), these do not undermine topical fit or the paper\u2019s potential to catalyze follow-up work, so I rate appropriateness at the top level.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper is squarely within the vision+language remit of top NLP/ML conferences: it proposes a new dual vision-language comprehension task, constructs a large-scale MCIC dataset from COCO using PV and surface-similarity heuristics, and evaluates neural baselines (FFNN, Vec2seq, Vec2seq+FFNN) with human upper-bounds. However, from my reviewing stance I note missing theoretical analysis or guarantees about the hardness of automatically generated decoys, limited diversity of strong baselines (no non-neural or recent state-of-the-art multi-modal comparators), and human-evaluation details deferred to supplementary material \u2014 issues that raise methodological concerns but do not remove topical fit. Overall it\u2019s a good fit for the venue subject to stronger validation and ablation rigor."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper targets a core vision-and-language problem and introduces a large-scale, well-motivated Dual Machine Comprehension (MCIC) dataset derived from COCO, which is directly relevant to top NLP/ML venues. The proposed automatic decoy-construction (paragraph-vector + linguistic surface similarity), human upper-bound evaluation, and empirical baselines (FFNN, Vec2seq, Vec2seq+FFNN) use evaluation metrics (accuracy, ROUGE-L, CIDEr) and experimental protocol expected by the community. The work is positioned to catalyze follow-up research on multimodal comprehension and generation trade-offs and therefore fits the audience and standards of a top conference."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper provides a useful new task framing and a large, reusable dataset that meaningfully differs from standard captioning benchmarks, but that the modeling and decoy-generation techniques are largely engineered from existing components rather than introducing deep theoretical advances. Given the clear empirical and benchmark value and the non-trivial methodological contributions (decoy construction plus multi-task modeling), a moderately high originality score is warranted while recognizing the work is more practical/engineering than conceptual novelty.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper proposes a concrete dual vision-language machine comprehension (DMC) task and a large MCIC dataset produced by combining paragraph-vector retrieval with surface-similarity (BLEU) filtering \u2014 an intuitive but largely incremental construction built from known components. While the explicit task framing and large-scale dataset are useful, the decoy-generation technique and models (FFNN, Vec2seq, Vec2seq+FFNN) do not introduce fundamentally new methodological ideas or theoretical analysis of decoy hardness, which limits novelty. The authors do clearly differentiate their dataset/task from prior captioning work, but the core techniques are non-trivial engineering rather than a surprising conceptual advance that would strongly inform an expert."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clearly new task formulation (dual vision-language machine comprehension) and delivers a large-scale MCIC dataset by automatically generating challenging decoy captions using a combination of paragraph-vector embeddings and surface-similarity heuristics\u2014an empirically useful and reusable contribution. The decoy construction algorithm and the explicit pairing of comprehension (multi-choice) with caption generation (multi-task Vec2seq+FFNN) distinguish it from standard captioning work and provide non-trivial methodological novelty beyond simply applying existing models to COCO. From a benchmark/replicability standpoint this would be notable and likely to inform follow-up work, even if the core modeling components are not radically new."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper provides fair within-study comparisons on a consistent COCO-derived dataset, uses appropriate metrics, and includes useful analyses (e.g., trade-offs and human upper-bounds). However, they also agree the benchmarking omits stronger state-of-the-art vision\u2013language and non-neural baselines, limiting the rigor of external comparisons. Given those omissions, a conservative midpoint score of 3 reflects solid internal comparison but insufficient breadth for top marks.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper includes several internal baselines (Inception+PV retrieval, FFNN, Vec2seq, Vec2seq+FFNN) and evaluates all methods on the same COCO-derived MCIC data and metrics, which supports fair within-study comparisons. However, from the summary it appears to omit stronger external and recent baselines (e.g., contemporary vision\u2013language retrieval or VQA/captioning models) and non-neural classical baselines for robustness, so the benchmarking is somewhat narrow. The authors perform useful analyses (e.g., multi-task \u03bbgen trade-off) and provide thorough related-work discussion, but the lack of broader, state-of-the-art comparative baselines and stronger ablations prevents a higher score under rigorous standards."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper evaluates its models against reasonable and relevant baselines (Inception-v3 + paragraph-vector embedding, FFNN, Vec2seq, and a hybrid Vec2seq+FFNN) on the same COCO-derived MCIC dataset and uses consistent metrics (accuracy, ROUGE-L, CIDEr) plus human upper-bounds. Comparisons appear fair and the authors analyze differences (including the trade-off between comprehension and generation) and acknowledge prior simplistic approaches (random decoys) that are inadequate. However, from the summary it is unclear whether the authors included stronger state-of-the-art captioning/comprehension baselines beyond their proposed architectures, so the evaluation seems good but with minor omissions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce a new dual vision-language machine comprehension (DMC) task where given an image, a system must pick the best caption among similar decoys.",
+      "Present an effective and extensible algorithm to generate challenging decoy captions using paragraph-vector embeddings and linguistic surface similarity.",
+      "Create and release a large-scale MCIC dataset by applying the algorithm to COCO, and provide human evaluation results as an upper-bound.",
+      "Provide baseline and neural models (e.g., FFNN, Vec2seq, Vec2seq+FFNN) and show that multi-task training for DMC and caption generation yields positively correlated performance."
+    ],
+    "methodology": "Automatically construct difficult decoy caption sets by combining paragraph-vector (PV) similarity and linguistic surface similarity (BLEU-based) to produce MCIC from COCO; evaluate baselines and neural models (FFNN, Vec2seq, Vec2seq+FFNN) and multi-task loss weighting (\u03bbgen) to study comprehension and generation trade-offs.",
+    "datasets": [
+      "COCO",
+      "MCIC (the authors' Dual Machine Comprehension dataset derived from COCO)"
+    ],
+    "baselines": [
+      "Baseline using GoogleInception-v3 image features + paragraph-vector caption embeddings with random projection",
+      "FFNN (feedforward neural network argmax model)",
+      "Vec2seq (vector-to-sequence)",
+      "Vec2seq+FFNN (hybrid model)"
+    ],
+    "metrics": [
+      "Accuracy (detecting the true target among decoys)",
+      "ROUGE-L",
+      "CIDEr",
+      "Human accuracy metrics (percentage correct; percentage of instances with at least 50% correct responses among 3 raters)"
+    ],
+    "limitations": [
+      "Na\u00efve approach of using random captions as decoys can produce datasets that are too easy.",
+      "There is an inherent trade-off between comprehension (prediction accuracy) and caption generation performance when increasing the generation loss weight (\u03bbgen).",
+      "Human raters exhibit disagreement (more discussion deferred to supplementary material)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Vision+Language \u2014 multi-modal machine comprehension / image captioning",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Skeptical Theorist",
+      "background": "Professor of machine learning with a focus on theoretical foundations of representation learning and rigorous empirical methodology. Experienced in peer reviewing for NeurIPS and ICLR.",
+      "traits": [
+        "Penalizes papers that introduce empirical benchmarks without accompanying formal analysis or theoretical justification for the proposed construction method (e.g., no guarantees or analyses of decoy hardness).",
+        "Demands at least three strong, diverse baselines (including non-neural and state-of-the-art methods) and ablation studies isolating key components; deducts points if missing.",
+        "Requires statistical significance testing and detailed human-evaluation protocol (annotator agreement, sampling, instructions); penalizes when human evaluation is limited or under-described.",
+        "Skeptical of synthetic/automatically-generated negative examples: reduces score if negative generation process is not validated thoroughly (e.g., failure modes, adversarial quality)."
+      ],
+      "reviewing_style": "Prioritizes theoretical grounding, rigorous ablations, and reproducible, well-validated empirical claims; will downscore novelty/impact if methodology lacks formal justification or thorough validation."
+    },
+    "reviewer_b": {
+      "name": "Benchmark Enthusiast",
+      "background": "Senior researcher in vision-and-language multimodal systems who has built and evaluated large-scale datasets and models for image captioning and multimodal understanding. Regular reviewer for CVPR and ACL.",
+      "traits": [
+        "Rewards clear, reusable dataset and benchmark contributions, especially when code/data are released and human upper-bounds are provided; increases score for large-scale, well-documented releases.",
+        "Values practical empirical advances and strong baseline comparisons; gives credit for demonstrating that simple neural architectures (plus multi-task training) improve both comprehension and generation.",
+        "Favors novel problem formulations that expose new challenges (e.g., dual vision-language MC) and will be generous on impact/novelty when a task is clearly useful for the community.",
+        "Appreciates empirical methods for constructing challenging negatives (e.g., combining embedding and surface similarity) and will be lenient about lack of formal proofs if the automatic procedure is shown to produce meaningful difficulty and human evaluation supports it."
+      ],
+      "reviewing_style": "Focuses on the practical utility of new benchmarks and empirical evidence of progress; emphasizes dataset quality, reproducibility, and whether the work will catalyze follow-up research."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

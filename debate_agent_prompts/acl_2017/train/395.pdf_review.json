@@ -1,0 +1,181 @@
+{
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "APPROPRIATENESS": 5,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper tackles an important and practical problem\u2014efficient, non-parametric multi-sense word representations\u2014and introduces a novel RL-based formulation that jointly trains sense selection and pure sense-level representations, which is likely to influence how researchers frame sense induction. The claims of state-of-the-art SCWS performance, linear-time sense selection, and comparable quality to word2vec using 1/100 of the data suggest strong practical impact and efficiency gains that practitioners will care about. From a reproducibility perspective I note code release is not mentioned and some training details (e.g., exploration strategy effects) may affect adoption, but the method\u2019s clear advantages and joint training approach open promising directions for follow-up work. | B(4): The paper addresses an important practical and conceptual problem\u2014efficient, scalable multi-sense representation learning\u2014and offers a novel framing (MDP/Q-learning sense selection) that departs from prior EM/probabilistic and contextualized-skipgram approaches. The demonstrated state-of-the-art on SCWS and strong data-efficiency (comparable to word2vec with 1/100 data) suggest this could change how researchers think about jointly training sense selection and sense embeddings, and the linear-time, non-parametric sense allocation is practically useful. While not clearly transformative relative to the rise of deep contextual models, the method opens promising research directions (reinforcement learning for sense induction, reward-passing training) and is likely to be adopted and extended within the lexical semantics community.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper tackles an important and practical problem\u2014efficient, non-parametric multi-sense word representations\u2014and introduces a novel RL-based formulation that jointly trains sense selection and pure sense-level representations, which is likely to influence how researchers frame sense induction. The claims of state-of-the-art SCWS performance, linear-time sense selection, and comparable quality to word2vec using 1/100 of the data suggest strong practical impact and efficiency gains that practitioners will care about. From a reproducibility perspective I note code release is not mentioned and some training details (e.g., exploration strategy effects) may affect adoption, but the method\u2019s clear advantages and joint training approach open promising directions for follow-up work."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper addresses an important practical and conceptual problem\u2014efficient, scalable multi-sense representation learning\u2014and offers a novel framing (MDP/Q-learning sense selection) that departs from prior EM/probabilistic and contextualized-skipgram approaches. The demonstrated state-of-the-art on SCWS and strong data-efficiency (comparable to word2vec with 1/100 data) suggest this could change how researchers think about jointly training sense selection and sense embeddings, and the linear-time, non-parametric sense allocation is practically useful. While not clearly transformative relative to the rise of deep contextual models, the method opens promising research directions (reinforcement learning for sense induction, reward-passing training) and is likely to be adopted and extended within the lexical semantics community."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): DRL-Sense applies a clearly different algorithmic perspective (formulating sense selection as an MDP and training a Q-learning style selector with reward signals from a sense-level skip-gram module) which is non-trivial compared to prior EM/probabilistic or clustering based multi-sense methods. The joint reward-passing training and claim of linear-time sense selection and non-parametric sense-number discovery differentiate it from earlier work (Neelakantan et al., Bartunov et al., etc.). The problem itself (multi-sense embeddings) is well-studied, so the paper is not fundamentally a new task, but the RL-based formulation and the specific selector/representation interaction constitute a notable and informative methodological novelty that would interest experts. | B(4): Framing sense selection as an MDP and using reinforcement learning (Q-learning/policy-gradient) with a reward-passing scheme to jointly train a sense selector and pure sense-level skip-gram module is a meaningful methodological departure from prior EM/probabilistic and contextualized-skipgram approaches. The paper also claims practical novelties \u2014 non-parametric sense number discovery and linear-time sense selection \u2014 that clearly differentiate it from heavy EM/search-based methods. The core problem (multi-sense embeddings) is well-studied, so this is a notable, non-trivial extension rather than a radical reinvention; an expert would find the RL formulation and the reward-passing training insightful and informative.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "DRL-Sense applies a clearly different algorithmic perspective (formulating sense selection as an MDP and training a Q-learning style selector with reward signals from a sense-level skip-gram module) which is non-trivial compared to prior EM/probabilistic or clustering based multi-sense methods. The joint reward-passing training and claim of linear-time sense selection and non-parametric sense-number discovery differentiate it from earlier work (Neelakantan et al., Bartunov et al., etc.). The problem itself (multi-sense embeddings) is well-studied, so the paper is not fundamentally a new task, but the RL-based formulation and the specific selector/representation interaction constitute a notable and informative methodological novelty that would interest experts."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Framing sense selection as an MDP and using reinforcement learning (Q-learning/policy-gradient) with a reward-passing scheme to jointly train a sense selector and pure sense-level skip-gram module is a meaningful methodological departure from prior EM/probabilistic and contextualized-skipgram approaches. The paper also claims practical novelties \u2014 non-parametric sense number discovery and linear-time sense selection \u2014 that clearly differentiate it from heavy EM/search-based methods. The core problem (multi-sense embeddings) is well-studied, so this is a notable, non-trivial extension rather than a radical reinvention; an expert would find the RL formulation and the reward-passing training insightful and informative."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper clearly states its main claims and provides experimental comparisons against relevant baselines (Huang et al., Neelakantan et al., Bartunov et al., etc.) reporting state-of-the-art SCWS results and strong data-efficiency; hyperparameters are reported and evaluations use standard metrics (AvgSimC/MaxSimC, Spearman \u03c1). The mathematical framing (MDP/Q-learning for sense selection and reward-passing to the sense-representation module) appears coherent, but the summary notes known limitations of the policy-gradient variant and relies on heuristic exploration (dropout), suggesting some unaddressed risks in training stability and sense-probability calibration. Experimental methodology is mostly sound\u2014appropriate baselines and datasets\u2014but the absence of mentioned code/checkpoints and no note of statistical significance testing or multiple random restarts weakens reproducibility and confidence in claims about data efficiency. Overall the claims are supported but with minor methodological gaps that should be addressed to fully validate robustness and reproducibility. | B(4): Overall the paper presents a coherent technical approach and provides experimental evidence (SCWS comparisons and training-data efficiency) supporting its main claims. The joint RL/skip-gram formulation and reward-passing training are plausible and derivations appear consistent, though the summary admits a nontrivial limitation of the policy-gradient variant (probability underestimation) and the exploration strategy (dropout) seems ad-hoc. Experimental methodology compares to appropriate prior multi-sense baselines, but the summary does not report statistical significance or ablation details for key design choices (e.g., exploration, non-parametric sense growth), leaving some evidence gaps. These are minor issues that do not overturn the main technical contribution, so I rate it 4.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims and provides experimental comparisons against relevant baselines (Huang et al., Neelakantan et al., Bartunov et al., etc.) reporting state-of-the-art SCWS results and strong data-efficiency; hyperparameters are reported and evaluations use standard metrics (AvgSimC/MaxSimC, Spearman \u03c1). The mathematical framing (MDP/Q-learning for sense selection and reward-passing to the sense-representation module) appears coherent, but the summary notes known limitations of the policy-gradient variant and relies on heuristic exploration (dropout), suggesting some unaddressed risks in training stability and sense-probability calibration. Experimental methodology is mostly sound\u2014appropriate baselines and datasets\u2014but the absence of mentioned code/checkpoints and no note of statistical significance testing or multiple random restarts weakens reproducibility and confidence in claims about data efficiency. Overall the claims are supported but with minor methodological gaps that should be addressed to fully validate robustness and reproducibility."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper presents a coherent technical approach and provides experimental evidence (SCWS comparisons and training-data efficiency) supporting its main claims. The joint RL/skip-gram formulation and reward-passing training are plausible and derivations appear consistent, though the summary admits a nontrivial limitation of the policy-gradient variant (probability underestimation) and the exploration strategy (dropout) seems ad-hoc. Experimental methodology compares to appropriate prior multi-sense baselines, but the summary does not report statistical significance or ablation details for key design choices (e.g., exploration, non-parametric sense growth), leaving some evidence gaps. These are minor issues that do not overturn the main technical contribution, so I rate it 4."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early and maintained through method and experiments; writing quality is reported as good and related work coverage is thorough. Notation and hyperparameter reporting appear adequate for reproducibility, and the joint-module design and limitations are clearly explained. A few presentation details could be tightened\u2014the description of the policy-gradient limitation and the exploration strategy (dropout) could use clearer, slightly expanded exposition, and concrete figures/tables/code release are not mentioned in the summary. From a reproducible-ML reviewer perspective this is a strong, clear write-up with only minor clarity issues. | B(4): The paper is overall well-organized and follows a clear intro\u2192method\u2192experiments\u2192conclusion arc, and the main contributions (DRL-Sense framework, joint training, nonparametric/linear-time selection) are stated early. Notation appears consistent and definitions (MDP, Q-values, reward-passing) are presented clearly enough to follow the joint training procedure. Figures/tables (results on SCWS and baselines) and examples are informative and the writing is generally good; a few sections (e.g., the policy-gradient limitation explanation and the exploration strategy) could be made more concise or illustrated with an example to avoid minor ambiguity. From a lexical-semantics researcher\u2019s perspective the presentation is effective, with only small clarifications needed for full readability.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early and maintained through method and experiments; writing quality is reported as good and related work coverage is thorough. Notation and hyperparameter reporting appear adequate for reproducibility, and the joint-module design and limitations are clearly explained. A few presentation details could be tightened\u2014the description of the policy-gradient limitation and the exploration strategy (dropout) could use clearer, slightly expanded exposition, and concrete figures/tables/code release are not mentioned in the summary. From a reproducible-ML reviewer perspective this is a strong, clear write-up with only minor clarity issues."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is overall well-organized and follows a clear intro\u2192method\u2192experiments\u2192conclusion arc, and the main contributions (DRL-Sense framework, joint training, nonparametric/linear-time selection) are stated early. Notation appears consistent and definitions (MDP, Q-values, reward-passing) are presented clearly enough to follow the joint training procedure. Figures/tables (results on SCWS and baselines) and examples are informative and the writing is generally good; a few sections (e.g., the policy-gradient limitation explanation and the exploration strategy) could be made more concise or illustrated with an example to avoid minor ambiguity. From a lexical-semantics researcher\u2019s perspective the presentation is effective, with only small clarifications needed for full readability."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The paper presents a plausible DRL-Sense approach, compares against relevant baselines on SCWS, reports hyperparameters and discusses several limitations (policy-gradient weaknesses and exploration issues), and situates itself well in related work. However, the experiments are narrowly focused (SCWS + Wikipedia) and do not include broader downstream tasks or clear ablations/sensitivity analyses isolating the joint training, sense-selection policy, or the non-parametric sense-count mechanism. Reproducibility is partially supported by reported hyperparameters but no code/checkpoints are mentioned, reducing confidence in replicability. | B(4): The paper provides solid empirical validation (state-of-the-art on SCWS and strong data-efficiency claims) and reports hyperparameters, while discussing important failure modes (policy-gradient bias, exploration) and relating the work thoroughly to prior multi-sense and contextualized methods. However, experiments are somewhat narrow (evaluation focused on SCWS, no broader downstream task suite) and ablation/sensitivity analyses are limited (exploration strategies and components of the joint training deserve deeper probing). Reproducibility is partially supported by hyperparameter reporting but code availability is not mentioned, leaving minor gaps for full replication.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents a plausible DRL-Sense approach, compares against relevant baselines on SCWS, reports hyperparameters and discusses several limitations (policy-gradient weaknesses and exploration issues), and situates itself well in related work. However, the experiments are narrowly focused (SCWS + Wikipedia) and do not include broader downstream tasks or clear ablations/sensitivity analyses isolating the joint training, sense-selection policy, or the non-parametric sense-count mechanism. Reproducibility is partially supported by reported hyperparameters but no code/checkpoints are mentioned, reducing confidence in replicability."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper provides solid empirical validation (state-of-the-art on SCWS and strong data-efficiency claims) and reports hyperparameters, while discussing important failure modes (policy-gradient bias, exploration) and relating the work thoroughly to prior multi-sense and contextualized methods. However, experiments are somewhat narrow (evaluation focused on SCWS, no broader downstream task suite) and ablation/sensitivity analyses are limited (exploration strategies and components of the joint training deserve deeper probing). Reproducibility is partially supported by hyperparameter reporting but code availability is not mentioned, leaving minor gaps for full replication."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against a broad set of relevant multi-sense embedding baselines (Huang et al. 2012; Neelakantan et al. 2014; Bartunov et al. 2016; Tian et al. 2014; Qiu et al. 2016; Li & Jurafsky 2015) and evaluates on the standard SCWS benchmark with standard metrics (Spearman \u03c1, AvgSimC, MaxSimC). Hyperparameters are reported and related work is discussed thoroughly, which supports reasonably fair comparisons. However, the summary does not state release of code or explicit matching of training budgets and data conditions for all baselines (the strong claim of matching word2vec with 1/100 data needs careful controlled baselines), so while comparisons are good they leave minor reproducibility/fairness questions unresolved. | B(5): The paper compares against a comprehensive set of recent and relevant multi-sense embedding baselines (Huang et al., Neelakantan et al., Bartunov et al., Qiu et al., Tian et al., Li & Jurafsky) and evaluates on the standard SCWS benchmark using established metrics (Spearman \u03c1, AvgSimC, MaxSimC). The experimental setup appears fair (same dataset and metrics) and the authors explicitly note when prior methods perform comparably or have different trade-offs; they also analyze how their RL-based selector and reward-passing training differ from EM and probabilistic alternatives. Related work coverage is thorough and the paper discusses computational and modeling distinctions versus baselines, supporting a comprehensive and fair comparison.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against a broad set of relevant multi-sense embedding baselines (Huang et al. 2012; Neelakantan et al. 2014; Bartunov et al. 2016; Tian et al. 2014; Qiu et al. 2016; Li & Jurafsky 2015) and evaluates on the standard SCWS benchmark with standard metrics (Spearman \u03c1, AvgSimC, MaxSimC). Hyperparameters are reported and related work is discussed thoroughly, which supports reasonably fair comparisons. However, the summary does not state release of code or explicit matching of training budgets and data conditions for all baselines (the strong claim of matching word2vec with 1/100 data needs careful controlled baselines), so while comparisons are good they leave minor reproducibility/fairness questions unresolved."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper compares against a comprehensive set of recent and relevant multi-sense embedding baselines (Huang et al., Neelakantan et al., Bartunov et al., Qiu et al., Tian et al., Li & Jurafsky) and evaluates on the standard SCWS benchmark using established metrics (Spearman \u03c1, AvgSimC, MaxSimC). The experimental setup appears fair (same dataset and metrics) and the authors explicitly note when prior methods perform comparably or have different trade-offs; they also analyze how their RL-based selector and reward-passing training differ from EM and probabilistic alternatives. Related work coverage is thorough and the paper discusses computational and modeling distinctions versus baselines, supporting a comprehensive and fair comparison."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "[Consensus avg=5] A(5): This paper addresses a core NLP/ML problem (multi-sense word representations) using a novel methodology (reinforcement-learning-based sense selection) and evaluates on standard benchmarks (SCWS) with strong baselines (Huang et al., Neelakantan et al., Bartunov et al., etc.), which is squarely within a top conference\u2019s scope. The formulation (MDP/Q-learning for sense selection + skip-gram style sense representations), reported hyperparameters, and comparisons to prior work meet the empirical and audience expectations for such venues. From a reproducibility and community positioning perspective the work is well situated, though release of code/checkpoints would further strengthen its fit. | B(5): This paper sits squarely within top-tier NLP/ML scope: it addresses multi-sense word representations with a novel learning framework (DRL-Sense) that uses reinforcement learning for sense selection and joint sense-level representation learning. The methodology, datasets (Wikipedia) and evaluation (SCWS with AvgSimC/MaxSimC and Spearman \u03c1) match community standards, and reported state-of-the-art contextual similarity plus efficiency gains (comparable to word2vec with 1/100 data and linear-time sense selection) make it highly relevant to the venue\u2019s audience. From my perspective as a lexical semantics researcher, the work is positioned appropriately and advances both modeling and practical concerns (non-parametric sense counts, scalability), so it is an excellent fit.",
+      "reviewer_a": {
+        "score": 5,
+        "justification": "This paper addresses a core NLP/ML problem (multi-sense word representations) using a novel methodology (reinforcement-learning-based sense selection) and evaluates on standard benchmarks (SCWS) with strong baselines (Huang et al., Neelakantan et al., Bartunov et al., etc.), which is squarely within a top conference\u2019s scope. The formulation (MDP/Q-learning for sense selection + skip-gram style sense representations), reported hyperparameters, and comparisons to prior work meet the empirical and audience expectations for such venues. From a reproducibility and community positioning perspective the work is well situated, though release of code/checkpoints would further strengthen its fit."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper sits squarely within top-tier NLP/ML scope: it addresses multi-sense word representations with a novel learning framework (DRL-Sense) that uses reinforcement learning for sense selection and joint sense-level representation learning. The methodology, datasets (Wikipedia) and evaluation (SCWS with AvgSimC/MaxSimC and Spearman \u03c1) match community standards, and reported state-of-the-art contextual similarity plus efficiency gains (comparable to word2vec with 1/100 data and linear-time sense selection) make it highly relevant to the venue\u2019s audience. From my perspective as a lexical semantics researcher, the work is positioned appropriately and advances both modeling and practical concerns (non-parametric sense counts, scalability), so it is an excellent fit."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes DRL-Sense, a reinforcement learning based framework for learning multi-sense word representations composed of a sense selection module and a sense representation module.",
+      "Jointly trains sense selection (MDP/Q-learning with Q-values computed from context) and pure sense-level representation learning via a reward-passing procedure.",
+      "Achieves state-of-the-art performance on contextual word similarity (SCWS) and comparable performance to word2vec using only 1/100 of training data.",
+      "Supports non-parametric learning to automatically decide the number of senses per word and performs linear-time sense selection (vs. exponential search in some prior EM methods)."
+    ],
+    "methodology": "The model uses two jointly trained modules: a sense selection module formulated as an MDP that uses Q-learning (CBOW-style context aggregation and a sigmoid Q-value) to pick senses given local context, and a sense representation module (skip-gram with negative sampling) that provides collocation likelihoods as reward signals to train the selector via a cross-entropy loss.",
+    "datasets": [
+      "April 2010 Wikipedia dump",
+      "Stanford Contextual Word Similarities (SCWS)"
+    ],
+    "baselines": [
+      "Huang et al. (2012)",
+      "Neelakantan et al. (2014)",
+      "Tian et al. (2014)",
+      "Qiu et al. (2016)",
+      "Bartunov et al. (2016)",
+      "Li and Jurafsky (2015)"
+    ],
+    "metrics": [
+      "Spearman's rank correlation (\u03c1)",
+      "AvgSimC",
+      "MaxSimC"
+    ],
+    "limitations": [
+      "Policy-gradient joint formulation underestimates probabilities for senses not yet selected and can decrease the probability of correctly selected senses because the collocation log-likelihood is non-positive.",
+      "Exploration-exploitation trade-off: greedy sense selection may fail in early training, requiring exploration mechanisms (they use dropout).",
+      "Prior EM-based and probabilistic methods have high computational cost and/or fail to maintain pure sense-level representation learning (stated as limitations of prior work)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - multi-sense word representation / word embeddings",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Reproducible ML Engineer",
+      "background": "Senior machine learning engineer with 8+ years building and evaluating NLP models in both research and production settings; experience implementing word embedding algorithms, large-scale training pipelines, and reproducibility tooling.",
+      "traits": [
+        "focuses on experimental rigor: checks dataset splits, training budgets, hyperparameter search, and statistical significance",
+        "values clear, detailed baselines and ablation studies that isolate contributions",
+        "looks for reproducibility: requests pseudocode, release of code/checkpoints, and exact training settings",
+        "examines computational cost and efficiency claims (e.g., training time, memory, and inference complexity)"
+      ],
+      "reviewing_style": "I evaluate whether the experiments and methodology convincingly support the claims, emphasizing reproducibility, correct baselines, and careful ablations."
+    },
+    "reviewer_b": {
+      "name": "Word Representation Researcher",
+      "background": "Associate professor whose research focuses on lexical semantics and representation learning, with a track record of work on multi-sense embeddings, contextualization, and evaluation of lexical semantic models.",
+      "traits": [
+        "assesses novelty relative to prior work on multi-sense and contextual embeddings, including EM-based and contextualized-skipgram methods",
+        "values theoretical and practical significance: whether the approach addresses important shortcomings (e.g., sense induction, scalability, interpretability)",
+        "attends to evaluation choices and downstream impact: cares whether intrinsic metrics translate to real NLP tasks and where the method best fits in the research landscape",
+        "notices modeling assumptions (e.g., independence, choice of reward) and their implications for linguistic plausibility"
+      ],
+      "reviewing_style": "I judge the paper by its novelty and impact on the research area, examining how it advances understanding of multi-sense representations and whether it meaningfully shifts practice or opens new directions."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  }
+}

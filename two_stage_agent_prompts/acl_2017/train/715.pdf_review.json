@@ -1,0 +1,77 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is directly within the core scope of top NLP/ML venues: open-domain question answering and machine reading using large-scale text (Wikipedia). It targets the right audience by combining an efficient retriever with a neural Document Reader, evaluates on community standards (SQuAD, CuratedTREC, WebQuestions, WikiMovies) using EM/F1, and compares to strong baselines (BiDAF, DCN, ElasticSearch/YodaQA). The problem formulation (extractive QA over Wikipedia) and use of distant supervision/multitask training are appropriate and well positioned for the NLP/ML research community."
+    },
+    "IMPACT": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper tackles the important problem of open-domain QA over a single, realistic knowledge source (Wikipedia) and combines a highly practical non-ML Document Retriever with a neural Document Reader. Demonstrating state-of-the-art performance on SQuAD, outperforming the built-in Wikipedia search API, and showing an effective distant-supervision multitask pipeline for assembling end-to-end open-domain QA systems makes the approach immediately useful and likely to change practice. Because the components are simple, effective, and demonstrated across multiple datasets (SQuAD, CuratedTREC, WebQuestions, WikiMovies), the work opens significant follow-up directions and is likely to be widely built upon beyond just the QA subfield."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported by experimental evidence: the Document Reader achieves state-of-the-art on SQuAD and the TF-IDF+bigram Document Retriever outperforms the built-in Wikipedia search API, with comparisons to strong baselines (BiDAF, Dynamic Coattention, YodaQA). There are no mathematical derivations to verify, and the experimental setup uses appropriate baselines and reported hyperparameters. Minor concerns remain: no mention of statistical significance testing and the distant-supervision procedure discards examples (potential dataset bias), but these do not undermine the core experimental claims."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable and coherent integration of ideas\u2014framing open-domain QA over Wikipedia as a single knowledge source and combining an efficient TF-IDF + bigram-hash Document Retriever with a neural multi-layer BiLSTM Document Reader\u2014which was not a common full-system approach prior. It clearly differentiates its contributions (retriever design, reader architecture achieving SQuAD state-of-the-art, and distant-supervision paragraph labeling) from prior work and demonstrates effective system-level results. However, the components themselves (TF-IDF retrieval, neural readers, distant supervision) are largely known techniques adapted here, so the novelty is in their effective assembly and empirical validation rather than fundamentally new methods."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper provides a broad experimental evaluation across multiple datasets (SQuAD, CuratedTREC, WebQuestions, WikiMovies) and compares against strong baselines (Wikipedia Search API, YodaQA, BiDAF, etc.), reporting state-of-the-art performance on SQuAD and improved retrieval over the built-in search. It also describes concrete methodological details (TF-IDF + bigram hashing retriever, 3-layer BiLSTM reader, hyperparameters) and uses distant supervision with discussion of its limitations. However, the summary does not mention explicit ablation or sensitivity analyses of key design choices (e.g., retriever hashing, reader architecture), and code release is not stated, so reproducibility is only partially supported. Related work coverage is noted as thorough and several failure modes/limitations are discussed."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-written and its main contributions are clearly stated early (proposing a Wikipedia-based open-domain QA pipeline combining a TF-IDF + bigram Document Retriever and a multi-layer RNN Document Reader), and experimental details are presented (SQuAD results, other datasets, and hyperparameters are reported). Related work coverage is thorough and overall writing quality is good, supporting a logical methods\u2192experiments\u2192conclusion flow. The summary does not specify the clarity of notation or the effectiveness of figures/tables, so there may be minor presentation issues in those areas."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares to appropriate, recent baselines (BiDAF, Dynamic Coattention, Multi-Perspective Matching, YodaQA and the built-in Wikipedia Search API) and evaluates on standard datasets (SQuAD, CuratedTREC, WebQuestions, WikiMovies/Wikipedia) using common metrics (EM and F1). Comparisons appear fair (same benchmarks/metrics) and the paper both claims and demonstrates when it outperforms prior methods (state-of-the-art on SQuAD, better than Wikipedia Search) while providing a thorough related-work discussion and clear analysis of how its retriever/reader and distant-supervision approach differ from competitors."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes tackling open-domain question answering using Wikipedia as the unique knowledge source, where answers are text spans in Wikipedia articles.",
+      "Combines an efficient non-ML Document Retriever (TF-IDF + bigram hashing) with a multi-layer recurrent neural network Document Reader, and shows both modules are highly competitive with existing counterparts.",
+      "Shows that Document Reader achieves state-of-the-art results on the SQuAD benchmark and that Document Retriever outperforms the built-in Wikipedia search API.",
+      "Demonstrates that multitask learning using distant supervision to generate paragraph-level training data is an effective approach for building a complete open-domain QA system over Wikipedia."
+    ],
+    "methodology": "Use a Document Retriever that scores TF-IDF weighted bag-of-word vectors augmented with bigram counts hashed to 224 bins (unsigned murmur3) to return the top-5 Wikipedia articles, and a Document Reader implemented as a 3-layer bidirectional LSTM (h=128) with GloVe embeddings, aligned question embeddings and manual features, trained with Adamax and dropout; distant supervision associates paragraphs to QA pairs when paragraph labels are not provided.",
+    "datasets": [
+      "Wikipedia (2016-12-21 dump)",
+      "SQuAD",
+      "CuratedTREC",
+      "WebQuestions",
+      "WikiMovies"
+    ],
+    "baselines": [
+      "Built-in Wikipedia Search API (ElasticSearch)",
+      "YodaQA",
+      "Dynamic Coattention Networks",
+      "BiDAF",
+      "Multi-Perspective Matching"
+    ],
+    "metrics": [
+      "Exact Match (EM)",
+      "F1"
+    ],
+    "limitations": [
+      "Wikipedia is designed for humans, not machines (stated as a challenge for using it as a knowledge source).",
+      "Datasets without associated paragraphs require distant supervision to associate paragraphs before training the reader.",
+      "Distant supervision procedure discards paragraphs without an exact match of the known answer and examples with no paragraph having nonzero question overlap (therefore some examples are discarded).",
+      "Task transfer / multitask learning is challenging (poor performance reported when training on one dataset and testing on another in prior work)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - open-domain question answering / machine comprehension",
+    "writing_quality": "good"
+  }
+}

@@ -1,0 +1,179 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "IMPACT": 4,
+  "APPROPRIATENESS": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early; the introduction, method, experiments and conclusion follow a logical flow and the writing quality is good. Figures, tables and examples are reported as effective, and related work coverage is adequate. Presentation shortcomings: hyperparameters are not reported and code availability is not mentioned, which hinders reproducibility and makes some experimental details opaque; the description of the multi-stage pipeline (including hand-crafted rules and rescoring) would benefit from clearer per-component explanations/ablation to match the claimed modularity. | B(4): Overall the paper is well organized and the main contributions (decoupling translation and morphology generation; the new neural classifier) are clearly stated early, with a logical flow from method to experiments and conclusion. Figures, tables and examples are reported as effective and the writing quality is good, making the approach easy to follow. Minor presentation gaps remain: hyperparameters are not reported and code availability is not mentioned, and the brief mention of an \"Oracle\" is a bit under-explained in the summary, which slightly reduces reproducibility clarity.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early; the introduction, method, experiments and conclusion follow a logical flow and the writing quality is good. Figures, tables and examples are reported as effective, and related work coverage is adequate. Presentation shortcomings: hyperparameters are not reported and code availability is not mentioned, which hinders reproducibility and makes some experimental details opaque; the description of the multi-stage pipeline (including hand-crafted rules and rescoring) would benefit from clearer per-component explanations/ablation to match the claimed modularity."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions (decoupling translation and morphology generation; the new neural classifier) are clearly stated early, with a logical flow from method to experiments and conclusion. Figures, tables and examples are reported as effective and the writing quality is good, making the approach easy to follow. Minor presentation gaps remain: hyperparameters are not reported and code availability is not mentioned, and the brief mention of an \"Oracle\" is a bit under-explained in the summary, which slightly reduces reproducibility clarity."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper is largely engineering-focused, applying known deep components in a pragmatic pipeline for morphology post-processing rather than proposing a new theoretical formulation. The work nevertheless provides a useful task-specific decomposition and a non-trivial hybrid architecture that yields measurable MT gains, so it is more than pure repetition but not a major conceptual advance. Given these trade-offs, a middle score reflects moderate originality supported by empirical impact but limited methodological novelty.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper largely combines an existing engineering idea (decoupling translation and morphology post-processing) with a composed neural classifier (embedding\u2192CNN\u2192RNN\u2192sigmoid/softmax) rather than introducing a principled new model or formulation. From the summary, the architecture is a non-trivial engineering blend but appears to be a straightforward application of well-known components without theoretical motivation, per-component identifiability analyses, or rigorous ablations that would justify novelty. The reliance on rescoring and hand-crafted rules further suggests limited methodological innovation beyond empirical tuning for Chinese\u2192Spanish morphology."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper advances a notable, pragmatic decomposition \u2014 translate into a morphologically simplified target then generate full forms \u2014 applied to the Chinese\u2192Spanish setting; while pipeline decoupling has precedents, framing it for gender/number recovery with measurable MT gains is a useful new perspective. The proposed hybrid deep architecture (embeddings\u2192CNN\u2192RNN\u2192sigmoid/softmax) for morphology classification is a non-trivial, task-tailored technique that is clearly distinguished from prior SVM/CNN/LSTM baselines. Reported high accuracies and up-to-0.7 METEOR improvement support that this is more than an incremental engineering tweak, though it is not a radical theoretical departure from existing MT or morphological-generation work."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper offers useful empirical evidence across multiple corpora and strong baseline comparisons, supporting the core claim that decoupling translation and morphology helps. However, both correctly note missing hyperparameters, code, and principled ablation/sensitivity studies (and limited failure-case analysis), which weakens reproducibility and mechanistic insight. Given the solid empirical contribution but important methodological gaps, a middle score of 3/5 is appropriate.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "While the paper evaluates the proposed pipeline across several corpora (UN, TAUS, Bible, BTEC) and compares to reasonable baselines (SVM, Random Forest, CNN, LSTM, Moses), it fails to provide the principled ablation/sensitivity analyses I expect: there is no per-component study isolating embeddings, CNN, RNN or output-layer choices, nor reported hyperparameters. The use of hand-crafted post-processing rules and an n-gram rescoring step is not theoretically justified or empirically dissected, and reproducibility is hampered by missing training details and no code. The authors do state scope limitations (number and gender) but do not present detailed failure-case analyses, so overall experimental depth is shallow relative to the claims."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper provides solid empirical evidence across multiple corpora (UN, TAUS, Bible, BTEC), compares to sensible baselines (SVMs, Random Forests, CNN/LSTM, Moses) and reports up to +0.7 METEOR and very high classification accuracies\u2014supporting the main claim that decoupling translation and morphology helps. However, important analysis is missing: there are no reported hyperparameters or code for reproducibility, and I see no detailed ablation or sensitivity studies isolating the contribution of the CNN\u2192RNN architecture, the n-best rescoring, or the hand-crafted rules. Related work coverage is said to be adequate and the limitation to number/gender is acknowledged, but failure cases and negative results are not deeply analyzed. From a practical MT standpoint this is a useful empirical paper but it needs better reproducibility details and more controlled ablations to be fully convincing."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper evaluates against a broad and relevant set of baselines across multiple corpora and metrics, supporting a generally fair empirical comparison. However, the lack of per-component ablations, missing hyperparameter/code release, and use of rescoring and hand-crafted rules limit the completeness and reproducibility of the comparisons, so while the empirical evaluation is strong it is not fully comprehensive.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper does compare to a range of reasonable baselines (SVMs, Random Forests, CNNs, LSTMs and a Moses baseline) on multiple corpora, which is appropriate. However, from the provided summary there is no evidence of per-component ablation or theoretical justification for the proposed embedding+CNN+RNN pipeline, and it is unclear whether prior methods that perform similarly are explicitly acknowledged; the reliance on rescoring and hand-crafted rules also weakens claims of a fair end-to-end comparison. Related work coverage is said to be adequate, but the lack of detailed ablations and hyperparameter reporting prevents a higher score for comprehensive, principled comparison."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against a broad set of relevant baselines (SVMs, Random Forests, CNNs, LSTMs and a Moses phrase-based MT baseline) on the same corpora (UN, TAUS, Bible, BTEC) using METEOR and classification accuracy, which supports fair empirical comparison. It clearly demonstrates gains (up to 0.7 METEOR and high accuracy for gender/number) and explains the pipeline differences, and related work coverage is described as adequate. Minor omissions remain (no code, hyperparameters not reported, and limited discussion of when prior methods might perform comparably), so the comparisons are strong but not fully comprehensive."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses an important practical MT problem and demonstrates measurable, reproducible gains with a useful, language\u2011independent pipeline and strong classifier performance. Concerns about limited theoretical motivation, lack of ablation/hyperparameter analysis, and some hand\u2011crafted rules constrain its transformative impact but do not outweigh its clear applied value; for that reason a slightly above\u2011mid impact score is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014morphology generation for Chinese\u2192Spanish MT\u2014and demonstrates measurable gains (up to 0.7 METEOR and high classification accuracies) using a decoupled pipeline and a novel embedding+CNN+RNN classifier. However, from a theory-first perspective the work reads as an empirically-driven engineering solution: the new architecture lacks theoretical motivation or identifiability analyses, hyperparameters and per-component ablations are not reported, and hand-crafted rules undermine end-to-end generality. These factors limit its transformative potential, though the modular approach and reported improvements make it a useful, moderate-impact contribution that could spur more principled follow-ups and extensions beyond number/gender."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles an important, practical MT problem\u2014morphology generation for Chinese\u2192Spanish\u2014using a pragmatic decomposition (translate into a simplified target then generate morphology) and shows measurable end-to-end gains (up to +0.7 METEOR) with very high classification accuracies (>98% gender, >93% number). The proposed neural classifier and rescoring pipeline are engineering\u2011useful and appear language\u2011independent, making them likely to be adopted or extended in applied MT systems. While the METEOR gains are modest, the clear, reproducible pipeline and strong classification performance make this a solid contribution that will influence practitioners and spur follow\u2011on work."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses a core MT problem and uses appropriate methods and evaluations, with demonstrable gains and strong classification results. Remaining concerns about limited scope (only number/gender), reliance on a pipelined system, and incomplete reproducibility (missing hyperparameters/code/ablations) are valid but do not outweigh its overall fit for a top venue; hence a moderately strong score is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper addresses an NLP/MT problem (morphology generation) that is clearly within top-tier venue scope and uses modern neural architectures and standard MT metrics, so the topic and audience are appropriate. However, from the provided summary the contribution is empirically narrow (Chinese\u2192Spanish, only number/gender), relies on a pipelined system with hand-crafted rules and no reported hyperparameters or code, and lacks theoretical motivation/ablation for its novel CNN+RNN classifier \u2014 factors that make it a borderline fit for a premier conference that expects broader generality, principled justification, and rigorous per-component analysis."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses a core MT problem (morphology generation) with a practical pipeline that decouples translation and morphology and demonstrates measurable gains (up to 0.7 METEOR) and very high classification accuracies (>98% gender, >93% number), comparing against sensible baselines (SVM, RF, CNN, LSTM, Moses) on multiple corpora (UN, TAUS, Bible, BTEC). The methodology and evaluation are appropriate for a top NLP/ML venue and the language\u2011independence claim is relevant to the community. Minor scope and reproducibility concerns (focus limited to number/gender; hyperparameters/code not reported) prevent a perfect score but overall this is a good fit."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the empirical results credibly support the main claim (measurable MT gains and strong classification numbers) but both note important methodological shortcomings: missing ablations and hyperparameter details, limited language/corpus coverage, lack of statistical significance reporting, and reliance on hand-crafted post-processing. These gaps undermine the paper\u2019s broader claims and prevent full confidence in which components drive improvements, so a middle score reflecting sound empirical evidence but important methodological weaknesses is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its main claims and provides empirical evidence (up to 0.7 METEOR gain and reported >98% gender / >93% number classification) against reasonable baselines (SVM, RF, CNN, LSTM, Moses). However, from a theoretical/principled standpoint it lacks formal motivation or derivation for the novel embedding+CNN+RNN architecture, and crucially there are no per-component ablations (embedding vs CNN vs RNN vs output) or hyperparameter reporting to identify which parts drive gains. The use of post-hoc hand-crafted rules and an n-best rescoring pipeline further breaks end-to-end justification, and evaluation is confined to a single language pair, weakening the claimed language-independence. These issues raise methodological concerns but do not outright invalidate the empirical results."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s main claim\u2014that decoupling translation and morphology generation and using the proposed neural classifier yields measurable MT gains\u2014is supported by experiments (up to 0.7 METEOR improvement) and direct comparisons against SVMs, Random Forests and neural baselines. The core algorithmic pieces appear technically sound and evaluated across multiple corpora, but reporting gaps (no hyperparameters, no mention of statistical significance tests, no released code) and the broad language-independence claim are not fully substantiated by the summary. Minor methodological omissions (rescoring/hand-crafted rules not fully ablated) prevent a top score, but the evidence presented is convincing enough to support the main conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Decoupling translation and morphology generation improves handling of morphological differences between Chinese and Spanish by translating into a morphologically simplified target and then generating full forms.",
+      "A new neural-network based classification architecture (embedding + convolutional + recurrent + sigmoid/softmax layers) for predicting number and gender outperforms standard methods on morphology generation.",
+      "The proposed morphology generation module is language-independent and generalizable, and yields up to 0.7 METEOR improvement in Chinese-to-Spanish translation, with classification accuracies reported >98% for gender and >93% for number."
+    ],
+    "methodology": "Translate Chinese to a morphologically simplified Spanish (neutralized number and gender), then apply a morphology generation module that selects features from source/target, classifies number and gender using a deep neural architecture (embedding -> CNN -> RNN -> sigmoid/softmax), rescoring n-best outputs with an n-gram language model and applying hand-crafted rules to produce full forms.",
+    "datasets": [
+      "United Nations Corpus (UN)",
+      "TAUS corpus",
+      "Bible corpus",
+      "BTEC (Basic Traveller Expressions Corpus)"
+    ],
+    "baselines": [
+      "Support Vector Machines (SVM) with various kernels",
+      "Random Forests",
+      "Convolutional neural networks",
+      "LSTM neural networks",
+      "Standard phrase-based MT (Moses)"
+    ],
+    "metrics": [
+      "METEOR",
+      "classification accuracy (percentage)",
+      "Oracle (mentioned)"
+    ],
+    "limitations": [
+      "Work focuses only on simplification in number and gender; scope of classification is limited to these morphological features and further simplification/extension is left for future work."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "Machine Translation - morphology generation (Chinese-to-Spanish)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior NLP/ML researcher with a PhD in theoretical machine learning and a track record of work on model interpretability and formal guarantees in sequence modeling.",
+      "traits": [
+        "Penalises papers that lack formal or empirical ablation/identifiability analyses for each major architectural choice (expects per-component ablation: embedding, CNN, RNN, output layer).",
+        "Requires theoretical motivation or derivation for novel architectures or non-standard pipelines and will deduct points if a model is presented as a black box without justification.",
+        "Distrusts claims supported only by narrow-scope empirical gains; will downscore papers that rely on small test sets or single-language experiments to argue generality.",
+        "Penalises reliance on hand-crafted rules or pipelines that break end-to-end differentiability unless strong justification and error analysis are provided."
+      ],
+      "reviewing_style": "Focuses on whether the paper provides principled understanding and decomposition of contributions; gives higher scores to papers with clear theory/ablation and lower scores for empirical-only black-box claims."
+    },
+    "reviewer_b": {
+      "name": "Applied MT Enthusiast",
+      "background": "Experienced machine translation researcher and engineer with multiple deployed MT systems; focuses on practical gains, robustness across languages, and novel problem formulations that improve end-user results.",
+      "traits": [
+        "Rewards demonstrated, reproducible empirical improvements in standard MT metrics (e.g., METEOR, BLEU) and will give bonus credit for measurable improvements >=0.3 METEOR on real test sets.",
+        "Favors novel and pragmatic task decompositions (e.g., decoupling translation and morphology generation) and will upscore papers that propose clearly useful pipeline changes even if some components use heuristics.",
+        "Values strong experimental evidence of language-independence (e.g., high classification accuracies and experiments showing transferability) and will reward papers with >90% per-class accuracy claims if backed by adequate test sets.",
+        "Forgives some lack of theoretical analysis if the system includes sensible engineering (feature selection, rescoring, n-best reranking) and comprehensive evaluation and error analysis."
+      ],
+      "reviewing_style": "Pragmatic reviewer who emphasizes real-world impact and validated empirical gains; tends to accept pipeline innovations that demonstrably improve translation quality and are well-evaluated."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

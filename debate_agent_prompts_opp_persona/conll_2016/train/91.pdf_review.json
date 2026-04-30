@@ -1,0 +1,193 @@
+{
+  "CLARITY": 4,
+  "APPROPRIATENESS": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 3,
+  "REPLICABILITY": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized and readable: the introduction, methods (pruning schemes and retraining), experiments (WMT'14 EN-DE, baseline comparisons, BLEU/perplexity) and conclusion follow a logical flow and the main contributions are stated early. Notation and hyperparameters are reported and related work is adequately covered, which helps reproducibility and clarity. Presentation could be improved by clearer/explicit discussion of figures/tables and inclusion of illustrative examples of masks or sparsity patterns; these elements were not emphasized in the summary. Overall the writing is good but not exceptional\u2014minor presentation refinements would make it a pleasure to read. | B(4): Overall the paper is well organized and communicates its goals and methodology clearly: main contributions are stated early, experiments (WMT'14 En-De, BLEU and perplexity) and retraining schedules/hyperparameters are reported, and related work is adequately covered. Notation and method descriptions are clear enough to reproduce the magnitude-based pruning and three pruning schemes, and the writing quality is noted as good. The presentation could be improved with more explicit mention of figures/tables and release of code to aid reproducibility, but these are minor given the paper\u2019s pragmatic focus and thorough experimental reporting.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized and readable: the introduction, methods (pruning schemes and retraining), experiments (WMT'14 EN-DE, baseline comparisons, BLEU/perplexity) and conclusion follow a logical flow and the main contributions are stated early. Notation and hyperparameters are reported and related work is adequately covered, which helps reproducibility and clarity. Presentation could be improved by clearer/explicit discussion of figures/tables and inclusion of illustrative examples of masks or sparsity patterns; these elements were not emphasized in the summary. Overall the writing is good but not exceptional\u2014minor presentation refinements would make it a pleasure to read."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and communicates its goals and methodology clearly: main contributions are stated early, experiments (WMT'14 En-De, BLEU and perplexity) and retraining schedules/hyperparameters are reported, and related work is adequately covered. Notation and method descriptions are clear enough to reproduce the magnitude-based pruning and three pruning schemes, and the writing quality is noted as good. The presentation could be improved with more explicit mention of figures/tables and release of code to aid reproducibility, but these are minor given the paper\u2019s pragmatic focus and thorough experimental reporting."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses a relevant, practical problem and provides realistic, reproducible experiments on WMT\u201914 En\u2013De with standard metrics. I rate it a 4 because it makes a meaningful empirical contribution for the community and is a good fit for the venue, but it is held back by limited ablations and missing comparisons/iterative pruning and theoretical analysis that would be needed for a top-tier score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The topic \u2014 compressing state-of-the-art NMT models via magnitude-based pruning \u2014 is relevant to top NLP/ML venues, and the paper uses standard evaluation (BLEU, perplexity) on a realistic WMT'14 En-De setup. However, from a theory-purist perspective the work is largely empirical on a single language pair, lacks theoretical/complexity or approximation guarantees, omits important comparative methods (e.g., Optimal Brain Damage/Surgeon) and iterative pruning experiments, and provides only limited ablations. These limitations make the paper borderline for a top conference: interesting and useful to the community but missing the theoretical depth and broader controlled comparisons I expect for a strong acceptance. "
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit: it targets a core ML/NLP problem (model compression) applied to a realistic, high-impact system (state-of-the-art 200M-parameter LSTM NMT evaluated on WMT'14 En-De with BLEU and perplexity). The methodology and evaluations match community standards (comparisons to Luong et al. baseline and Han et al. magnitude pruning, reported hyperparameters, and practical retraining experiments showing 40\u201380% compression with minimal loss). From an engineering and reproducibility perspective it speaks to the venue\u2019s audience \u2014 practical compression techniques for production-scale models \u2014 even though it notes sensible limitations (no iterative pruning/speedup implementation), which are appropriate for future work."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper delivers a practically important and actionable empirical contribution showing substantial parameter reduction with limited BLEU loss on a strong WMT'14 En\u2192De benchmark, and that extending magnitude pruning to LSTMs is useful for practitioners. Concerns about limited scope (single language pair/model family), lack of iterative pruning and broader comparisons, and missing runtime/speedup results constrain theoretical novelty and transformative impact, but the clear practical gains warrant a moderately high impact score of 4.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014compressing large LSTM-based NMT models\u2014and provides convincing empirical evidence on a strong benchmark (WMT'14 En\u2192De) that magnitude pruning can remove 40%\u201380% of parameters with limited or recoverable BLEU loss. However, from a theory-focused perspective the contribution is mainly empirical engineering: it lacks formal guarantees, iterative pruning comparisons, and experiments beyond a single language pair and model family, which limits its transformative potential. The result is a useful, moderate-impact contribution likely to be built upon by practitioners interested in NMT compression but unlikely to substantially change theoretical understanding or broadly redirect research agendas."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles a practically important problem \u2014 compressing large LSTM-based NMT models for real-world deployment \u2014 and demonstrates compelling empirical gains (40% pruning with little loss; 80% with retraining that recovers or improves BLEU) on a realistic WMT'14 En\u2013De system. The finding that global (class\u2011blind) magnitude pruning outperforms other schemes for this architecture and the extension of magnitude pruning to recurrent LSTMs make the results directly actionable for practitioners seeking model-size reductions. Impact is tempered because the work does not demonstrate runtime/latency benefits from sparse computation, lacks iterative pruning experiments and wider method comparisons, and code/speedup details are not provided, so it\u2019s strong and practically useful but not fully transformative."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper provides solid, pragmatic experiments showing magnitude pruning and retraining on a production-scale WMT'14 En\u2192De LSTM model with useful ablations (pruning schemes and retraining effects), but is limited in scope (single dataset/architecture), lacks comparisons to classic pruning methods (OBD/OBS) and iterative pruning schedules, and does not demonstrate runtime speedups. Given the strong empirical contribution within its stated setting but incomplete sensitivity analyses and missing baselines, a score slightly above average reflects substantive value tempered by these important gaps.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experiments show that magnitude pruning works on a large LSTM NMT model and include comparisons of three pruning schemes plus retraining on WMT'14 En-De, but evaluation is limited to a single dataset/model size and lacks comparisons to classical methods (Optimal Brain Damage/Surgeon) or iterative prune\u2013retrain schedules. Key ablations are present (class-blind vs class-uniform vs class-distribution) but important sensitivity analyses (e.g., different model sizes, language pairs, pruning iterations) and practical exploitation of sparsity for speedups are missing. Given these gaps, the empirical support is adequate but incomplete for the broad claims made."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The experiments are solid and pragmatically focused: they evaluate magnitude pruning on a production-scale WMT'14 En\u2192De LSTM NMT model, compare three pruning schemes (class-blind/uniform/distribution), report perplexity and BLEU, and show retraining can recover performance up to 80% sparsity. Ablations are present for pruning-scheme choice and retraining effects, but the study is limited to one dataset/architecture, lacks iterative pruning experiments and comparisons to classic methods (OBD/OBS), and does not demonstrate runtime/speedup benefits. Related work coverage and discussion of limitations are adequate, and hyperparameters/masking/retraining schedules are reported, but code/reproducibility artifacts and broader sensitivity analyses are missing\u2014overall a thorough empirical paper with a few practical gaps."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper makes reasonable, practical comparisons to a relevant magnitude-pruning baseline and a strong NMT baseline on WMT'14 En\u2013De using BLEU and perplexity, so the core empirical comparison is fair. However, they also concur the evaluation is incomplete\u2014missing important competing pruning methods (e.g., Optimal Brain Damage/Surgeon), iterative prune-and-retrain variants, and broader language/ablation studies\u2014so the comparison is not comprehensive. Given these omissions and the narrow scope, a middle-but-conservative score of 3 best reflects fair but incomplete empirical comparison.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper includes direct comparisons to a relevant magnitude-pruning baseline (Han et al., 2015b) and to a published NMT model (Luong et al., 2015a), and uses the same dataset and metrics (WMT'14 En\u2013De, perplexity and BLEU), which makes the core empirical comparisons reasonable. However, it omits important competing pruning approaches (e.g., Optimal Brain Damage/Surgeon) and does not implement iterative prune-and-retrain variants of prior work, limiting the completeness of the comparison. The authors acknowledge some of these omissions and limitations, but the empirical study is narrowly focused on a single language pair and lacks broader or more rigorous baseline coverage that a theory-focused reader would expect. Overall the comparisons are fair but incomplete."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares its magnitude-pruning results against the relevant prior magnitude-based work (Han et al. 2015b) and against a state-of-the-art attention NMT baseline on the same WMT'14 En-De data with BLEU/perplexity, which is exactly the practical, real-world comparison I value. However, it omits direct empirical comparisons to other established pruning/second-order methods (e.g., Optimal Brain Damage/Surgeon) and does not implement iterative prune\u2013retrain schedules from prior work, both of which are important for establishing whether the claimed gains are method-specific or generic. Overall the comparisons are fair and useful but missing a couple of key baselines and ablations that would make the evaluation comprehensive."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the experimental results on WMT\u201914 En\u2192De convincingly support the paper\u2019s main claims about magnitude-based pruning and retraining, and that the methodology is applied correctly. They also concur that the work omits iterative pruning/OBD-style comparisons, formal analysis, and demonstrations of practical speedups, which are important but do not invalidate the experimental findings. Given solid empirical support with some notable but non-fatal gaps, a score of 4 reflects the paper\u2019s technical soundness with room for improvement.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides clear experimental evidence on WMT'14 En-De that magnitude-based pruning yields substantial parameter reduction (40% with little loss; 80% recoverable with retraining) and compares three pruning schemes, so core empirical claims are supported. However, from a theoretical perspective there is no formal analysis, runtime/complexity or approximation guarantees, and the authors omit iterative pruning, comparisons to classic methods (Optimal Brain Damage/Surgeon), and exploitation of sparsity for speedups \u2014 all noted in their limitations. Methodologically the experiments rely on a single language pair and model size, lack statistical testing, and thus do not fully rule out dataset- or model-specific effects. Given these strengths and gaps, the technical evidence is valid but incomplete, warranting a moderate score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and convincingly supported by experiments on a realistic WMT\u201914 En\u2192De setup showing 40% pruning with little loss and recovery/superior performance after retraining at 80% sparsity; hyperparameters are reported and sensible baselines (Luong et al. NMT and magnitude pruning prior work) are used. There are no mathematical derivations to check and the pruning/retraining methodology is described and applied correctly, but the study omits iterative pruning/retraining (as in Han et al.) and lacks comparisons to OBD/OBD-Style methods or demonstrations of practical speedups/sparse kernels. These are practical omissions rather than technical flaws, so the work is technically sound with minor evidence gaps that do not overturn the main conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper mainly applies an existing magnitude-based pruning method to LSTM NMT and provides useful empirical findings (e.g., class-blind vs class-uniform) but offers limited methodological novelty or theoretical analysis. Because the work delivers a practical, systematic evaluation in a new application domain\u2014which is a modest but valuable contribution\u2014I assign a middling originality score of 3 to reflect its incremental yet informative nature.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper applies well-known magnitude-based pruning (Han et al.) to a recurrent multi-layer LSTM NMT model and shows empirical compression on WMT'14 En-De; this is largely an application of existing methods rather than a new algorithmic idea. While the authors claim first to extend magnitude pruning to LSTM-based NMT and identify that class-blind pruning works best for their architecture, there is no theoretical analysis, new pruning methodology, or iterative/principled extension (and they explicitly omit iterative pruning and comparisons to classical methods). From a theory-focused perspective this is an incremental engineering adaptation with limited conceptual novelty that would not surprise experts in model compression."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "This paper largely adapts an existing magnitude-based pruning technique (Han et al., 2015b) to a new application domain (deep multi-layer LSTM NMT) and demonstrates practical compression/accuracy tradeoffs on WMT'14 En-De. Claiming the first systematic application to recurrent LSTM NMT is a useful empirical contribution, and the class-blind vs class-uniform empirical finding is informative, but the core method is not new and retraining follows established practice. Given limited methodological novelty (no new pruning algorithm, no iterative pruning/OBD comparisons) I view this as an incremental but practically valuable contribution rather than a fundamentally new idea."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "REPLICABILITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper reports key hyperparameters, model configuration, datasets, and metrics which enable core reproducibility, but they also note important missing details such as preprocessing, exact training/pruning schedules, seed/control of randomness, and lack of released code. These gaps make faithful, bit\u2011exact replication difficult but do not prevent an engineering-focused reimplementation of the main results. Given this, I rate replicability as largely adequate with some practical omissions, so a score of 4 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper reports hyperparameters and model configuration and uses public datasets (WMT'14 En-De, newstest2014) and standard metrics (perplexity, BLEU), which aids reproducibility. However, the summary lacks a clear description of the data preprocessing pipeline and precise training schedule/details for pruning/retraining (e.g., exact learning rate annealing, number of epochs, seed/control of randomness), and code is not provided\u2014making faithful reimplementation nontrivial. Additionally, some methodological choices (no iterative pruning, missing implementation specifics for masks/sparse updates) are noted as limitations rather than fully specified procedures, so reproducing exact results would be only partially possible."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper reports hyperparameters and training schedules (hyperparameters reported: True) and uses public datasets (WMT'14 EN-DE, newstest2014) with standard metrics (perplexity and BLEU), so core experiments are largely reproducible. However, code is not provided and the summary does not describe the data preprocessing pipeline or low-level implementation details for masking/sparse training, which are important for exact replication. Given these minor but practical gaps (no code release, preprocessing unspecified), the work is mostly reproducible but missing a few details that engineering-focused reimplementers would need."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Magnitude-based weight pruning can effectively compress state-of-the-art NMT models.",
+      "An NMT model with over 200 million parameters can be pruned by 40% with very little performance loss on WMT'14 English-German.",
+      "With retraining, an 80%-pruned model can recover and even surpass the original performance.",
+      "Class-blind pruning (pruning globally by magnitude) outperforms class-uniform and class-distribution pruning schemes for this NMT architecture.",
+      "This work extends magnitude-based pruning to recurrent LSTM-based NMT models and is the first to do so (as claimed)."
+    ],
+    "methodology": "Apply magnitude-based pruning to different weight classes of a deep multi-layer LSTM NMT model using three schemes (class-blind, class-uniform, class-distribution), maintain masks for pruned weights, and retrain the sparse networks with a reduced learning rate and adjusted training schedule.",
+    "datasets": [
+      "WMT'14 English-German",
+      "newstest2014"
+    ],
+    "baselines": [
+      "Magnitude-based pruning approach of Han et al. (2015b)",
+      "The provided attention-based English-German NMT baseline from Luong et al. (2015a)"
+    ],
+    "metrics": [
+      "perplexity",
+      "BLEU"
+    ],
+    "limitations": [
+      "Did not implement iterative pruning and retraining as in Han et al. (2015b); this is suggested as future work.",
+      "Did not exploit sparsity for speedups (e.g., sparse matrix representations and multiplications).",
+      "Did not perform a comparative study against other pruning methods such as Optimal Brain Damage/Surgeon."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - neural machine translation; model compression/pruning",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior researcher with a PhD in machine learning theory and a decade of publication in theoretical ML and optimization for deep networks.",
+      "traits": [
+        "Penalizes empirical-only papers that lack formal analysis or theoretical justification of methods (subtracts points if no runtime/complexity or approximation guarantees are provided).",
+        "Demands clear novelty over prior work: deducts points if the main idea is a straightforward application of existing methods to a new architecture without new conceptual insights or proofs.",
+        "Requires rigorous controlled baselines/ablations for claims about methods (penalizes if fewer than 3 orthogonal baseline methods or missing ablations for key design choices).",
+        "Skeptical of empirical claims that rely on a single dataset/configuration (will downscore if results are demonstrated on only one language pair or one model size)."
+      ],
+      "reviewing_style": "Critical and conservative: emphasizes theoretical contribution, formal justification, and thorough controlled comparisons; likely to give low scores to papers that are mainly empirical engineering without new theory."
+    },
+    "reviewer_b": {
+      "name": "Practical Systems Empiricist",
+      "background": "Senior NLP/ML engineer and applied researcher focused on model compression, production deployment of NMT systems, and empirical evaluation at scale.",
+      "traits": [
+        "Rewards strong empirical demonstrations of practical impact (gives upweight when a method reduces model size or latency with minimal performance loss on realistic benchmarks).",
+        "Values reproducibility and engineering rigor: awards points if code, masks, hyperparameters, and training schedules are clearly described or released.",
+        "Favors simple, computationally cheap methods that work reliably (will score higher for methods that are easy to implement and integrate into existing pipelines, even if not theoretically novel).",
+        "Prefers broad applicability evidence: gives higher score if experiments include large-scale, state-of-the-art models and realistic datasets (punishes if experiments are only toy-scale)."
+      ],
+      "reviewing_style": "Pragmatic and pro-empiricism: prioritizes clear, convincing empirical results demonstrating real-world benefits and engineering usability; likely to give high scores for strong compression/accuracy tradeoffs and thorough experimental details."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 7,
+    "total_dimensions": 8,
+    "debate_rate": 0.875
+  }
+}

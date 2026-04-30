@@ -1,0 +1,185 @@
+{
+  "ORIGINALITY": 3,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "APPROPRIATENESS": 4,
+  "SUBSTANCE": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "IMPACT": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper contributes a systematic, implementation-level generalization of Skip-Gram, CBOW and GloVe to arbitrary context collections and a careful empirical comparison of context types (linear vs dependency) and representations (bound vs unbound), which is a useful methodological perspective and engineering contribution (extended word2vecPM toolkit, parsed Wikipedia experiments). However, many core ingredients\u2014using dependency contexts for embeddings, variants of SG/CBOW objective adaptations, and prior toolkits like word2vecf\u2014are already present in the literature, so the work is more an insightful empirical and engineering extension than a fundamentally new idea. The clear framing and cross-task evaluation provide informative evidence, but the advance is incremental rather than paradigm-shifting for an expert reader. | B(3): The paper does not introduce a radically new model class but provides a useful, non-trivial generalization of Skip-Gram/CBOW/GloVe to arbitrary context collections and a systematic empirical study of bound vs. unbound representations and dependency vs. linear contexts. This framing and thorough evaluation across intrinsic and extrinsic tasks is a meaningful methodological contribution and clearly differentiated from prior toolkits (e.g., word2vec/word2vecf) rather than purely reusing existing recipes. However, the core modeling ideas are incremental rather than groundbreaking, so the novelty is moderate rather than high. From a practical systems-oriented perspective it informs experts but would not surprise them as a wholly new direction.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper contributes a systematic, implementation-level generalization of Skip-Gram, CBOW and GloVe to arbitrary context collections and a careful empirical comparison of context types (linear vs dependency) and representations (bound vs unbound), which is a useful methodological perspective and engineering contribution (extended word2vecPM toolkit, parsed Wikipedia experiments). However, many core ingredients\u2014using dependency contexts for embeddings, variants of SG/CBOW objective adaptations, and prior toolkits like word2vecf\u2014are already present in the literature, so the work is more an insightful empirical and engineering extension than a fundamentally new idea. The clear framing and cross-task evaluation provide informative evidence, but the advance is incremental rather than paradigm-shifting for an expert reader."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper does not introduce a radically new model class but provides a useful, non-trivial generalization of Skip-Gram/CBOW/GloVe to arbitrary context collections and a systematic empirical study of bound vs. unbound representations and dependency vs. linear contexts. This framing and thorough evaluation across intrinsic and extrinsic tasks is a meaningful methodological contribution and clearly differentiated from prior toolkits (e.g., word2vec/word2vecf) rather than purely reusing existing recipes. However, the core modeling ideas are incremental rather than groundbreaking, so the novelty is moderate rather than high. From a practical systems-oriented perspective it informs experts but would not surprise them as a wholly new direction."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is well organized and the experimental pipeline (generalizing Skip\u2011Gram/CBOW/GloVe to arbitrary context types and representations) and main contributions are stated early and carried through to the conclusion. Notation appears consistent and hyperparameters/limitations are reported, and figures/tables and examples support the comparisons across context types and representations. Writing quality is generally good, though a few methodological choices (e.g. pruning thresholds, parser preprocessing) and the mapping between intrinsic gains and downstream results could be explained with slightly more clarity to help readers judge scope and confounds. | B(4): The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early, focusing on context representations and a generalized toolkit for Skip-Gram/CBOW/GloVe. Notation and methodology are reported consistently (training details, hyperparameters) and the writing quality is described as good, with clear caveats about intrinsic vs. extrinsic evaluation. Tables/figures and examples appear informative for comparing context types/representations, though a couple minor presentation refinements (e.g., explicit mention of code release) could further improve reproducibility clarity.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is well organized and the experimental pipeline (generalizing Skip\u2011Gram/CBOW/GloVe to arbitrary context types and representations) and main contributions are stated early and carried through to the conclusion. Notation appears consistent and hyperparameters/limitations are reported, and figures/tables and examples support the comparisons across context types and representations. Writing quality is generally good, though a few methodological choices (e.g. pruning thresholds, parser preprocessing) and the mapping between intrinsic gains and downstream results could be explained with slightly more clarity to help readers judge scope and confounds."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early, focusing on context representations and a generalized toolkit for Skip-Gram/CBOW/GloVe. Notation and methodology are reported consistently (training details, hyperparameters) and the writing quality is described as good, with clear caveats about intrinsic vs. extrinsic evaluation. Tables/figures and examples appear informative for comparing context types/representations, though a couple minor presentation refinements (e.g., explicit mention of code release) could further improve reproducibility clarity."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper presents a comprehensive, systematic empirical comparison across relevant baselines, datasets, and evaluation metrics, making it a valuable practical contribution. I dock one point because Reviewer A correctly notes missing controls (no statistical significance testing, no multiple restarts, and no ablation of parser choice/noise), which weakens confidence in the claimed differences; addressing these would make the comparisons fully convincing.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against appropriate, recent baselines (generalized Skip-Gram/CBOW, GloVe, word2vec/word2vecf) using the same corpus (Wikipedia) and shared evaluation metrics across intrinsic and extrinsic tasks, and related work coverage is reported as adequate. However, from a theory-focused perspective there are important omissions: I see no mention of statistical testing or multiple random restarts for embedding training (a required control for representation experiments), and the use of a single off-the-shelf parser (Stanford CoreNLP) introduces a potential confound that is not ablated or quantified. The authors do acknowledge limitations about intrinsic vs. extrinsic transfer and do not overclaim supremacy of specific algorithms, but the comparisons would be more convincing with formal significance testing and parser/noise sensitivity analyses."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "Comprehensive, systematic comparisons are presented: the paper evaluates generalized Skip-Gram/CBOW and GloVe variants against reference word2vec/word2vecf implementations across the same Wiki training data and identical intrinsic/extrinsic metrics (similarity partitions, analogies, POS/chunking/NER). The authors explicitly examine when dependency vs. linear contexts and bound vs. unbound representations outperform baselines and report when prior setups are competitive, and related work coverage is described as adequate. From a practical reproducibility/evaluation standpoint this reads as a fair and thorough empirical comparison across the most relevant prior methods."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses a core, timely problem and provides systematic empirical comparisons that are relevant to the NLP/ML community. I assign a 4 because, while the work is a strong and useful empirical contribution with practical systems relevance, methodological concerns (lack of statistical testing/multiple restarts and potential confounds like parser effects) limit the strength of its causal claims and keep it from a top score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper addresses a core NLP/representation-learning topic (word embedding context choices) and provides a useful algorithmic generalization and systematic empirical comparison across intrinsic and downstream tasks, which is well within the remit of top NLP/ML venues. From my formalist perspective, however, the contribution leans heavily empirical with no reported statistical testing or multiple random restarts and no ablation of the off-the-shelf Stanford CoreNLP parser as a potential confound, which weakens causal claims about context effects. Given these methodological gaps the work is a good but not perfect fit for a top-tier conference: valuable and relevant, but would benefit from stronger controlled analyses to meet the highest standards."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP/ML venue: it tackles a core representation-learning question with broad relevance (how context type and representation affect embeddings), targets the community that uses embeddings for downstream NLP, and delivers systematic empirical comparisons across intrinsic and extrinsic tasks (similarity, analogy, POS/chunking/NER) using standard datasets. The methodological rigor (generalizing Skip-Gram/CBOW/GloVe, parsed Wikipedia training, clear hyperparameters) and practical systems focus (extending a word2vecPM toolkit to accept arbitrary contexts) align with the empirical and reproducibility expectations of the venue, and the positioning relative to prior work is appropriate. The only minor concern is that public code release isn\u2019t explicitly mentioned in the summary, but this does not detract from its topical fit or audience relevance."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers recognize this is a solid, practically useful empirical study with broad, well-motivated comparisons and sensible training details. They also agree on important gaps: lack of sensitivity analyses/statistical testing, potential confounds (e.g. parser effects), and no clear code/model release or some reproducibility-affecting choices. Given the strong experimental contribution but significant reproducibility and ablation shortcomings, a moderate score of 3 best reflects the paper\u2019s value while flagging these limitations.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper runs a broad set of controlled comparisons across context types (linear vs dependency), representations (bound vs unbound), and multiple embedding algorithms on both intrinsic and downstream tasks, which is good coverage for the core claims. However, from the summary there is no sign of essential sensitivity analyses demanded by a theory-focused evaluation: no multiple random restarts or statistical significance testing of embedding runs, and no ablation quantifying the effect of the Stanford CoreNLP parser (a clear confound for dependency contexts). Related work is reported as adequate and some limitations are acknowledged, but code availability is not mentioned and reproduction relies only on reported hyperparameters and a pruning choice, leaving important reproducibility and causal-control gaps unaddressed."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper delivers a systematic, practically-oriented empirical study: it generalizes SG/CBOW/GloVe to arbitrary context types, evaluates bound vs. unbound representations, and compares linear vs. dependency contexts across both intrinsic (similarity/analogy) and extrinsic (POS, chunking, NER) tasks on standard datasets with reported hyperparameters. The authors also acknowledge limits (intrinsic-to-extrinsic transfer) and report sensible training details (including pruning), but I note missing items that would raise confidence further: no mention of code/model release, limited sensitivity analyses (e.g., statistical significance, corpus size or frequency-threshold ablations), and some reproducibility-relevant choices (pruning >=100) could materially affect results. Overall the experiments are solid and practically useful, but a few additional ablations and public artifacts would make the study fully comprehensive."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper states clear claims and provides broad, systematic empirical evaluation and plausible mathematical generalizations. However, both note methodological gaps\u2014absence of statistical significance testing and random restarts, potential confounds from parser choices and aggressive frequency pruning, and limited reproducibility\u2014that weaken confidence in the claimed causal conclusions. Given solid empirical scope but these important evaluation and analysis omissions, a conservative mid\u2011range score is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its main claims and supports them with systematic experiments across intrinsic and extrinsic tasks and reasonable baselines (GSG/GBOW/GloVe, word2vec/word2vecf) on parsed Wikipedia and standard evaluation sets. However, from the summary there is no evidence of multiple random restarts or statistical significance testing for embedding comparisons, and no ablation or analysis of the Stanford CoreNLP parser as a potential confound\u2014both are methodological gaps I weight heavily. The mathematical generalization of SG/CBOW/GloVe to arbitrary context types appears plausible and complete in summary, but the experimental methodology lacks the controlled analyses (parser/noise ablation, significance tests) needed to fully justify the paper\u2019s broader causal claims about context representation effects."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and are supported by a broad, systematic empirical evaluation across intrinsic and extrinsic tasks using reasonable baselines (word2vec/word2vecf, GloVe) and standard datasets (WordSim, Google analogies, CoNLL POS/Chunking/NER). The methodological setup appears sound\u2014generalizing Skip\u2011Gram/CBOW/GloVe to arbitrary context types, reporting hyperparameters, and parsing Wikipedia for training\u2014though the summary does not indicate released code or statistical significance testing and notes a potentially strong pruning choice (discarding tokens/contexts with <100 occurrences) that could affect results. Mathematical generalizations are plausibly correct from the description and no formal proofs were required; overall the conclusions are justified by the presented experiments, with only minor concerns about reproducibility and some unreported significance analyses."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper provides a systematic, practical empirical study that yields actionable findings about context types and representations for embeddings, making it a useful contribution for practitioners. Deductions for missing formal explanations, statistical rigor (e.g., significance testing and random restarts), and uncertainty about code release limit its theoretical impact and reproducibility, but the breadth and direct applicability of the results justify a slightly above-midpoint score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "This is a well-scoped, empirical investigation that systematically generalizes Skip-Gram/CBOW/GloVe to arbitrary context types and representations and shows that bound vs. unbound encodings can matter as much as linear vs. dependency contexts \u2014 a useful contribution for researchers selecting embedding setups. However, from my theory-focused perspective the paper lacks formal explanation of why these effects arise and (as reported) gives no indication of statistical testing, multiple random restarts, or ablations for the parser-based preprocessing, which limits how strongly practitioners should change their priors. The work opens clear follow-up directions (theory to explain phenomena, robustness to parser noise, and more rigorous significance analyses) but is unlikely on its own to be field-transformative beyond guiding more careful empirical choices."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles an important practical question\u2014how context type and representation affect word embeddings\u2014and does so with a broad, systematic empirical comparison (generalized SG/CBOW/GloVe, multiple context types, bound vs unbound) and evaluations on standard intrinsic and extrinsic tasks (WordSim, analogies, POS, chunking, NER). The findings (dependency-bound better for functional similarity and downstream sequence-labeling, linear-unbound better for topical relatedness) are directly actionable for researchers and practitioners choosing or training embeddings and are likely to change implementation choices. By providing a generalized toolkit and extensive evaluations, it opens realistic follow-up work on context engineering and representation choices, though it is not entirely transformative without clear public release of code/models to maximize adoption."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Context representation (bound vs. unbound) has a large effect on learned embeddings and often matters as much or more than the choice of context type (linear vs. dependency).",
+      "Dependency-based (syntactic) contexts with bound representations better capture functional similarity, while linear (bag-of-words) contexts with unbound representations better capture topical/relatedness similarity.",
+      "When used as inputs to sequence-labeling downstream tasks (POS, chunking, NER), dependency-based contexts and bound representations tend to perform better than linear/unbound setups.",
+      "The authors provide a generalization of Skip-Gram, CBOW and GloVe to accept arbitrary context types/representations and evaluate these variants systematically."
+    ],
+    "methodology": "They generalize Skip-Gram (GSG), CBOW (GBOW) and GloVe to accept arbitrary context collections (P, M, M), implement these in an extended word2vecPM toolkit, train embeddings on English Wikipedia parsed with Stanford CoreNLP, and evaluate different context types (BOW window sizes and dependency-based) and representations (bound vs unbound) across intrinsic and extrinsic tasks.",
+    "datasets": [
+      "English Wikipedia (training corpus)",
+      "WordSim353 (similarity and relatedness partitions)",
+      "Google analogy dataset (semantic and syntactic partitions)",
+      "CoNLL 2000 (POS and Chunking)",
+      "CoNLL 2003 (NER)"
+    ],
+    "baselines": [
+      "Continuous Skip-Gram / CSG (generalized Skip-Gram)",
+      "Continuous Bag-of-Words / CBOW (generalized GBOW)",
+      "GloVe",
+      "word2vec / word2vecf (reference implementations)"
+    ],
+    "metrics": [
+      "Spearman's correlation (for word similarity)",
+      "cosine similarity (used to compute similarity)",
+      "accuracy (for analogy tasks)",
+      "3CosMul (analogy scoring function used)",
+      "F1 score (for chunking and NER)",
+      "accuracy (for POS tagging)"
+    ],
+    "limitations": [
+      "Intrinsic evaluations (word similarity/analogy) do not necessarily transfer to downstream task performance, so intrinsic gains may not imply extrinsic improvements.",
+      "The paper does not aim to compare the overall superiority of embedding algorithms (GSG, GBOW, GloVe) against each other; the focus is on context types/representations.",
+      "Words and contexts with fewer than 100 occurrences in collection P were ignored, which is a corpus/pruning restriction stated in training details."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - word embeddings / representation learning",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory-Focused Formalist",
+      "background": "Senior researcher in computational linguistics with a PhD in formal semantics and several theory-heavy publications on representation learning and compositionality.",
+      "traits": [
+        "Penalises papers that present primarily empirical comparisons without accompanying formal analysis or theoretical explanation of why results occur",
+        "Requires explicit statistical testing and multiple random restarts for embedding experiments; deducts points if only single-run results or no significance testing are reported",
+        "Counts use of an off-the-shelf preprocessing pipeline (e.g., parser) as a potential confound and penalises papers that do not ablate or quantify parser/noise effects",
+        "Demands clear, narrow claims tightly matched to the evidence; downgrades papers that make broad causal claims from correlational experiments"
+      ],
+      "reviewing_style": "I focus on whether a paper provides principled explanations and rigorous controlled evidence for its claims; empirical breadth alone is insufficient without theory or careful causal analysis."
+    },
+    "reviewer_b": {
+      "name": "Practical Empiricalist / Systems-Oriented NLPer",
+      "background": "Experienced applied NLP researcher and senior engineer with many papers on representation learning and practical systems; strong track record producing reproducible toolkits and benchmark evaluations.",
+      "traits": [
+        "Rewards broad, systematic empirical evaluations across intrinsic and extrinsic tasks and will up-score papers that compare many realistic baselines",
+        "Gives extra credit for releasing code, trained models, and practical toolkits that enable reproducibility and downstream use",
+        "Values demonstration of practical downstream gains (POS, NER, chunking) and will be generous when experiments show consistent task-level improvements",
+        "Prefers pragmatism over formal novelty and is willing to accept empirical discoveries and engineering generalizations as meaningful contributions"
+      ],
+      "reviewing_style": "I judge papers mainly on empirical rigor, reproducibility, practical usefulness, and whether the work advances the community's toolkit and understanding through systematic benchmarks."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 5,
+    "total_dimensions": 7,
+    "debate_rate": 0.714
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "CLARITY": 3,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper directly addresses a core NLP/ML topic\u2014evaluation of word embeddings\u2014proposing a methodological shift (data efficiency and simple supervised tasks) that is highly relevant to representation learning and transfer learning communities. It uses standard benchmarks and models (SimLex999, WordRep, SST, GloVe variants, cosine/3COSADD/3COSMUL, SVM/CNN/etc.) and presents empirical analyses (linear vs non-linear, rank stability) that the top venues routinely publish. The framing and experiments engage the right audience and critique existing evaluation practice, so the paper is well positioned for a top-tier NLP/ML conference."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important and practical gap in embedding evaluation by proposing data-efficiency and simple supervised-task protocols and demonstrating their value (e.g. \"Measuring data efficiency is crucial\" and experiments showing rank changes and task-dependent orderings). Empirical findings\u2014such as nonlinear encoding of similarity/analogy and the differing behavior of GloVe100 vs GloVe300\u2014challenge reliance on standard unsupervised metrics (cosine/analogy) and would likely change how researchers evaluate and choose embeddings. The methodology opens clear follow-on work (designing data-efficient embeddings and supervised evaluation suites) and is broadly applicable to representation learning beyond just word vectors. Overall this is a strong-impact, widely usable contribution to evaluation practice."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall the paper is reasonably well organized (intro, experiments, conclusions are present) and the main contribution is stated early \u2014 e.g. the proposal to focus evaluation on \"data efficiency and simple supervised tasks\" (intro). However, presentation suffers from formatting and repetition issues (dataset lists repeated, garbled fragments like \"ccos(~v, ~v3)ccos(...)\", and inline footnote artifacts), and there are sporadic typos and grammatical problems (e.g. \"practictioners\" in \u00a73.6). Notation is mostly defined (the regression model for analogy is explicitly given) but some formulas and references to figures/tables are unclear or corrupted, making parts of the paper harder to follow."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper runs a broad empirical evaluation across 15 datasets spanning similarity, analogy, sentence and single-word tasks and compares linear vs non-linear models and data-efficiency by varying training set size (reports like mean absolute rank change \u22480.6, sd 0.2), which supports the main claims. It includes sensitivity-style analyses (dataset-size curves, model-type comparisons, fallback models) and discusses practical limitations (overfitting on MSR/Google, heavy computation for the regression NN, task-dependent ordering/no universal embedding). Related work is cited widely (Arora, Levy, Hill, Faruqui, etc.). Reproducibility is aided by stating datasets/models and that scripts are available online, but the paper omits some low-level experimental details and systematic ablations/hyperparameter reports, so a small gap remains."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper advances a clear, actionable perspective on embedding evaluation by foregrounding data-efficiency (learning curves over varying training sizes) and simple supervised probes, rather than just unsupervised cosine/analogy metrics (see Sec.3.5\u20133.6 and Conclusions). It also proposes concrete methodological additions (e.g. regression neural net for analogy tasks initialized to 3COSADD) and empirically shows non-linear encoding differences (GloVe100 vs GloVe300), which meaningfully differentiates it from prior cosine/unsupervised benchmarks. The contribution is a notable and practical re-framing of evaluation (informative to experts) but is methodological/empirical rather than a fundamentally new algorithmic advance, so novelty is moderate\u2013high rather than groundbreaking."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against a wide set of appropriate baselines (GloVe 100/300, HPCA, PDC/HDC, morphological and NMT embeddings, skip\u2011gram variants) and includes standard unsupervised baselines for analogy/similarity (cosine, 3COSADD, 3COSMUL) as described in Sections 3.1 and the Appendix. Comparisons appear fair: the same datasets are used across methods, hyperparameters are chosen via cross\u2011validation, WordRep is split to avoid shared words, and constant/model fallbacks are included to avoid overfitting. The authors explicitly acknowledge prior results (e.g. Gao et al. on WordRep, Hill et al. on NMT embeddings) and report when supervised models change the ranking, and they analyze differences such as data efficiency and linear vs non\u2011linear behavior (Sections 3.5\u20133.6). Relevant competing approaches are cited and discussed throughout, supporting a comprehensive and fair comparison."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper clearly states its main claims and supports them with broad empirical evaluation across many datasets and models (Sections 3.1, 3.5\u20133.6) and uses sensible controls (linear vs nonlinear baselines, cross-validation and disjoint analogy splits). The proposed regression analogue model and its initialization to 3COSADD is mathematically sound (Appendix), although there is a technical inconsistency in the prediction step where they state choosing the word that \"minimizes \u27e8v, v\u03024\u27e9\" (it should be maximized), and the unit-norm assumption for embeddings is imposed rather than ensured for pretrained vectors. The experimental methodology is generally appropriate but lacks reporting of statistical significance tests and some dataset/split/detailing (so some claims, e.g. rank-change interpretation and the reported mean rank shifts, are under-supported). Overall the technical work is solid with minor issues that do not invalidate the main conclusions."
+    }
+  }
+}

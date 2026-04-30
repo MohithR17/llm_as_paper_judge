@@ -1,0 +1,177 @@
+{
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 5,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper introduces a clearly new technical mechanism (the Soft-KB lookup producing a differentiable posterior over KB entities) and uses it to enable end-to-end RL training of both neural belief trackers and dialogue policy \u2014 a notable departure from prior hard-symbolic lookup approaches. This is more than an engineering tweak: it changes the interface between belief tracking and policy learning and is evaluated against No-KB and Hard-KB baselines on multiple Movies-KB splits. However, the core idea is a focused extension of existing KB-query and RL dialogue work rather than a broad theoretical advance, and the approach hinges on a strong independence assumption and simulated-user evaluation, which temper how surprising it would be to experts.  | B(4): The paper proposes a notable and practical new component \u2014 the Soft-KB lookup that replaces brittle hard symbolic queries with a posterior distribution over KB entities, enabling end-to-end differentiable training of belief trackers and a neural policy. This is a clear methodological departure from prior Hard-KB approaches and facilitates direct RL training from user rewards, which is valuable and non-trivial for deployed InfoBots. The independence assumption across slots and the limited handling of new entities temper the novelty somewhat (engineering and modelling shortcuts), so I view it as notable but not a radical theoretical breakthrough. Overall, the idea would likely inform practitioners and advance the design of end-to-end KB-access dialogue agents.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper introduces a clearly new technical mechanism (the Soft-KB lookup producing a differentiable posterior over KB entities) and uses it to enable end-to-end RL training of both neural belief trackers and dialogue policy \u2014 a notable departure from prior hard-symbolic lookup approaches. This is more than an engineering tweak: it changes the interface between belief tracking and policy learning and is evaluated against No-KB and Hard-KB baselines on multiple Movies-KB splits. However, the core idea is a focused extension of existing KB-query and RL dialogue work rather than a broad theoretical advance, and the approach hinges on a strong independence assumption and simulated-user evaluation, which temper how surprising it would be to experts. "
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a notable and practical new component \u2014 the Soft-KB lookup that replaces brittle hard symbolic queries with a posterior distribution over KB entities, enabling end-to-end differentiable training of belief trackers and a neural policy. This is a clear methodological departure from prior Hard-KB approaches and facilitates direct RL training from user rewards, which is valuable and non-trivial for deployed InfoBots. The independence assumption across slots and the limited handling of new entities temper the novelty somewhat (engineering and modelling shortcuts), so I view it as notable but not a radical theoretical breakthrough. Overall, the idea would likely inform practitioners and advance the design of end-to-end KB-access dialogue agents."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the Soft-KB lookup is a useful, practical advance that enables end-to-end differentiable interaction with structured KBs and shows clear empirical gains over baselines. They also both note meaningful limitations\u2014strong independence assumptions across slots, limited handling of unseen entities/relations, and reliance on simulated users\u2014so while the work is likely to be adopted and opens promising directions, it requires further validation and robustness analysis before being considered a higher-impact contribution.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem (end-to-end RL for KB-driven dialogue) and introduces the Soft-KB lookup that enables differentiable interaction with the KB and end-to-end training, which is a useful methodological advance. However, the heavy reliance on simulated users (no human evaluation) and the strong independence assumption used to compute the Soft-KB posterior limit immediate real-world impact; these modeling assumptions lack formal justification or robustness analysis in the summary. Overall the work opens promising directions for neural KB interactions but is best seen as a moderate-impact contribution that requires follow-up validation and theoretical/empirical robustness checks before it will strongly shift practice."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles an important, practical problem\u2014end-to-end differentiable interaction with structured KBs in dialogue\u2014by introducing a Soft-KB lookup that enables training both belief trackers and policies with RL and showing consistent reward/success improvements over No-KB and Hard-KB baselines on realistic Movies-KB splits. The approach is simple and practical, lowers engineering barriers for neural InfoBots and is likely to be adopted and extended, though its impact is somewhat constrained by the strong independence assumption across slots and limited handling of new entities/relations at test time."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper compares against sensible, recent baselines on the same Movies-KB splits using consistent metrics and includes useful ablations that clarify the Soft-KB impact, so overall comparisons are fair and informative. I rate this a 4 because, while the empirical comparisons and ablations are strong and practically relevant, the lack of any human-user evaluation or robustness checks is a notable limitation that prevents the comparisons from being fully conclusive.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper evaluates against sensible and recent baselines (No-KB, Hard-KB, rule-based agents, and neural RL agents) on the same Movies-KB splits and uses consistent metrics (reward, success rate, rank), so comparisons are largely fair and differences between Soft-KB and baselines are reported. However, the evaluation relies solely on simulated users (no human study), which I penalize given its centrality to dialogue performance; this weakens empirical validation of the comparisons. While related work coverage is described as adequate and authors acknowledge when priors perform similarly or have limitations, the lack of any real-user or robustness checks leaves important comparative gaps."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against a broad set of sensible baselines (No-KB, Hard-KB, rule-based hand-crafted agents, and hand-crafted belief + neural policy) on the same Movies-KB splits using consistent metrics (reward, success rate, rank). The authors perform useful ablations (No/Hard/Soft-KB) that clarify the impact of the Soft-KB and enable end-to-end training, and related work coverage is adequate. It would have been stronger if the paper explicitly discussed cases where prior methods match or outperform their approach and if any additional strong neural baselines were included, but overall the comparisons are fair and practically relevant."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the experiments are solid across multiple Movies-KB scales, include useful ablations and baselines, and report hyperparameters, but they both note the lack of real-user evaluations and limited robustness checks (notably the independence assumption in the Soft-KB posterior). Given the overall strength of the empirical evidence despite these practical gaps, a slightly positive rating is appropriate; I assign a 4 to reflect strong experimental support tempered by the missing human evaluation and additional robustness analyses.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experiments are reasonably thorough in that they evaluate No-KB/Hard-KB/Soft-KB and rule vs neural baselines across four Movies-KB splits and report rewards/success metrics, but they rely solely on simulated users and no human study (I penalize this). Ablations compare the key variants but the paper lacks formal or empirical robustness checks for the core independence assumption in the Soft-KB posterior and limited sensitivity analyses beyond reported hyperparameters. Related work and limitations are discussed, and hyperparameters are reported, but code/reproducibility artifacts aren\u2019t mentioned, so overall the empirical evidence is adequate yet missing important robustness and human-evaluation components."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents solid experiments across multiple Movies-KB scales and compares No-KB, Hard-KB, and Soft-KB variants plus rule and neural baselines, supporting the main claims about Soft-KB improving reward and success. It includes ablations (hand-crafted vs neural trackers, end-to-end RL training) and reports hyperparameters, but lacks real-user evaluations and broader LU/architecture alternatives; the authors note key limitations (independence assumption, LU shortcomings). Related work appears adequately covered and reproducibility is reasonable though code release is not mentioned, so overall the empirical evaluation is strong with a few practical gaps."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper addresses an important problem and makes a substantive, well-evaluated methodological contribution (Soft-KB) that fits top NLP/ML venues. Reviewer A\u2019s concerns about the independence assumption and lack of human evaluation are valid limitations, but they do not outweigh the strong empirical demonstration, baselines, and ablation studies presented; therefore the work is appropriate for a top conference with those caveats noted.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper addresses a core NLP/ML venue topic\u2014end-to-end RL for task-oriented dialogue with a novel Soft-KB differentiable lookup and neural belief+policy trained from user feedback\u2014and uses appropriate baselines and metrics on multiple Movies-KB splits. However, from my theory-first perspective it relies on a strong independence assumption when forming the KB posterior and evaluates only with simulated users (no human study or formal robustness/ablation of that assumption), which are notable gaps for a top conference. Overall it is a good fit but would be stronger with empirical robustness checks or theoretical justification for the key modelling choices."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit for a top NLP/ML venue: it tackles a core dialogue problem (KB-backed information access) with a novel, practical architectural change (Soft-KB lookup) that enables end-to-end differentiable RL training and removes brittle symbolic interfaces. The work evaluates across multiple realistic KB scales (Movies-KB splits), compares to strong baselines (No-KB, Hard-KB, rule-based and neural policies) and provides ablations (Soft/Hard/No-KB), which aligns with empirical standards I value. While it acknowledges modeling limitations (independence assumptions, LU shortcomings), the methodological contribution and evaluation rigor make it highly relevant to both NLP and ML audiences interested in practical RL for dialogue."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper\u2019s main claim is empirically supported and the mathematical formulation appears correct, but it rests on a strong per\u2011slot independence assumption and lacks human evaluation and statistical robustness checks. These are important limitations but do not undermine the core correctness of the approach; they suggest reduced generality rather than fatal flaws. Given the convincing empirical support and minor reporting/theoretical gaps, a score of 4 is appropriate.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states and empirically supports the central claim that a Soft\u2011KB lookup enables end\u2011to\u2011end differentiable training and improves RL policies over Hard\u2011KB and No\u2011KB baselines on Movies\u2011KB splits. However, the Soft\u2011KB derivation hinges on a strong per\u2011slot independence assumption that is acknowledged but not theoretically analyzed or ablated, and no human user evaluation is provided (only simulated users), which I penalize given my emphasis on real\u2011world robustness. Experimental methodology includes reasonable baselines and multiple dataset sizes, but the summary does not report statistical tests or robustness checks for key modelling choices, leaving some conclusions insufficiently supported."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims (introducing a differentiable Soft-KB lookup and enabling end-to-end RL training) and supports them with experiments across multiple Movies-KB splits and reasonable baselines (No-KB, Hard-KB, rule-based and neural policies) showing improved reward and success. The mathematical formulation is simple and appears correct, but it relies on a strong per-slot independence assumption that the authors acknowledge and which could limit generality. Experimental methodology is broadly sound (multiple splits and ablations), though no mention of statistical significance or robustness checks is noted in the summary. Overall the results justify the conclusions, with only minor concerns about modeling assumptions and reporting detail."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "CLARITY": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper is well organized, with consistent notation, clear probabilistic definitions, and effective figures/tables that make the Soft-KB idea and comparisons easy to follow. Reviewer A\u2019s point about more explicit caveating of the independence assumption and minor omissions are valid but do not substantially detract from overall clarity, so a top score is warranted.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized with a clear flow from introduction through method, experiments, and conclusion; the main contributions (Soft-KB lookup and end-to-end RL training) are stated early and repeatedly. Notation for per-slot beliefs and the Soft-KB posterior is presented and appears consistent, and figures/tables/examples effectively support the experiments across Movies-KB splits. Writing quality is good, though the paper could more explicitly flag the impact of the strong independence assumption on clarity (a brief ablation or clearer caveat placement would help readers). Minor omissions (e.g., explicit code availability and absence of human evaluation) are noted but do not substantially harm presentation quality."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "The paper is well-organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (Soft-KB lookup enabling end-to-end RL). Notation and probabilistic definitions for the Soft-KB posterior and belief trackers are consistently presented, and figures/tables/examples effectively illustrate the No-KB / Hard-KB / Soft-KB comparisons across multiple Movies-KB splits. Writing quality is good with clear discussion of limitations and experimental setup (hyperparameters, baselines, metrics), making the presentation a pleasure to read from a practical RL/dialogue engineering perspective."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce a Soft-KB lookup that produces a posterior distribution over KB entities instead of issuing hard symbolic queries, enabling differentiable interaction with the KB.",
+      "Show that using the Soft-KB lookup improves learned dialogue policies (higher task success and reward) and enables end-to-end training of both language understanding (belief trackers) and dialogue policy with reinforcement learning.",
+      "Present a fully neural end-to-end KB-InfoBot (neural belief tracker + neural policy) trained from user feedback and evaluate variants (No-KB, Hard-KB, Soft-KB) across simulated Movies-KB splits."
+    ],
+    "methodology": "Maintain per-slot belief distributions ptj(v) and probabilities qtj that the user knows a slot value, compute a Soft-KB posterior over entities by combining slot posteriors under an independence assumption, and train dialogue policies (GRU-based) with REINFORCE, optionally training belief trackers end-to-end by treating the sampled KB results as part of the policy.",
+    "datasets": [
+      "Movies-KB (constructed via IMDBPy) with four splits: Small, Medium, Large, X-Large"
+    ],
+    "baselines": [
+      "No-KB (entropy-only input)",
+      "Hard-KB lookup (prior work style)",
+      "Hand-crafted belief tracker + hand-crafted policy (Rule agents)",
+      "Hand-crafted belief tracker + neural policy (RL agents)"
+    ],
+    "metrics": [
+      "reward (episode return)",
+      "task success rate (target in top-R results)",
+      "rank-based reward of returned target"
+    ],
+    "limitations": [
+      "Assumes column (slot) values are independently distributed across slots (strong assumption).",
+      "Does not handle new entities or relations at test time.",
+      "Authors note current LU / belief tracker architecture has shortcomings and suggest need for better LU architecture and pretraining in future work."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Dialogue systems / Reinforcement learning for information access (KB-InfoBot)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory-first Methodologist",
+      "background": "Senior researcher in machine learning with a focus on formal guarantees and principled model assumptions; experience reviewing RL and structured prediction papers for top ML conferences.",
+      "traits": [
+        "Penalises papers that rely primarily on simulated users without any human evaluation or real-world deployment (deducts points if no human study).",
+        "Penalises papers that make strong independence or modelling assumptions without theoretical justification or empirical ablation (requires explicit analysis of assumption impact).",
+        "Requires at least one formal or empirical robustness check for key components (e.g., sensitivity to hyperparameters, data splits, or noise models).",
+        "Favors papers with clear theoretical contributions or proofs (rewards formal characterization of algorithm properties)."
+      ],
+      "reviewing_style": "Focuses on assumptions, theoretical soundness, and robustness; will downweight empirical-only contributions that lack justification for core modelling choices."
+    },
+    "reviewer_b": {
+      "name": "Practical Deep RL & Dialogue Engineer",
+      "background": "Applied researcher and engineer working on end-to-end neural dialogue systems and reinforcement learning for production assistants; frequently authors empirical papers showing system-level improvements.",
+      "traits": [
+        "Rewards clear empirical improvements on realistic simulation suites and reproducible baselines (gives credit for improved task success/reward over strong baselines).",
+        "Likes novel, simple, and practical architectural changes that enable end-to-end differentiability and training from weak signals (rewards engineering that removes brittle symbolic interfaces).",
+        "Penalises papers that do not compare to reasonable neural baselines, but is generous when the paper includes multiple ablated variants (expects No-KB / Hard-KB / Soft-KB style comparisons).",
+        "Values methods that are likely to transfer to real systems and that reduce engineering complexity (rewards practicality and ease of integration)."
+      ],
+      "reviewing_style": "Prioritizes empirical gains, practical impact, and methodological simplicity; will be favorable when a paper demonstrates robust system improvements and clear ablative analysis."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

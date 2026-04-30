@@ -1,0 +1,77 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "REPLICABILITY": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 the paper addresses an NLP problem (MT Quality Estimation) while making a methodological contribution of probabilistic uncertainty modelling (Gaussian Processes, Warped GPs) and proposing evaluation (NLPD) and decision-theoretic use (asymmetric Bayes estimators). The methods, baselines (SVR, bagging, kernel methods), metrics (NLPD, NLL, MAE, Pearson\u2019s r) and datasets (fr-en, en-de) are appropriate for a top NLP/ML audience. Related work is reported as thorough and the paper uses standard practices (marginal likelihood optimisation, cross-validated predictions), so it is well positioned for a top conference."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical problem\u2014reliable uncertainty estimation in Machine Translation Quality Estimation\u2014and presents evidence that probabilistic Gaussian Process models yield better-calibrated uncertainty than point-estimate methods (evaluated on fr-en and en-de). By promoting Negative Log Predictive Density as an evaluation metric and showing how predictive distributions can be exploited with asymmetric (AL and linex) losses for application-specific risk scenarios, the work is likely to change how researchers and practitioners assess and use QE outputs. These contributions open clear research directions in calibrated probabilistic QE and decision-aware evaluation, and have broader applicability to other NLP tasks that require uncertainty-aware decisions, though limitations (marginal likelihood overfitting, linex instability, QE difficulty) moderate the immediate breadth of impact."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized with a clear flow from introduction through methods (GP and Warped GP setups) to experiments (10-fold cross-validation on fr-en and en-de) and conclusions. The main contributions are stated early and concretely (calibration of GP uncertainty, preference for NLPD, and use of asymmetric loss functions). Notation and methodological details seem consistent and well-defined (hyperparameters are reported and optimization via marginal likelihood is described), and the writing quality is noted as good, though the summary does not detail figures/tables so there may be minor presentation elements to clarify."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper largely applies established probabilistic techniques (Gaussian Processes, Warped GPs, marginal likelihood optimization) to the well-studied task of MT Quality Estimation, which is an incremental application rather than a fundamentally new method. Its emphasis on using Negative Log Predictive Density for model selection and exploiting full predictive distributions with asymmetric Bayes estimators (AL and linex) is a useful and somewhat novel perspective within QE, but these are straightforward applications of existing probabilistic modelling and decision-theoretic ideas. Given the use of standard baselines (SVR, bagging) and common datasets (fr-en, en-de), the contribution is moderately novel and likely to inform practitioners but not surprising to experts."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are reasonably comprehensive: probabilistic (GP and Warped GP) models are compared to SVR, bagging and kernel baselines on fr\u2013en and en\u2013de, evaluated with NLPD/NLL and point metrics (MAE, Pearson r), and the work explores asymmetric decision rules via Bayes estimators on 10-fold CV predictions. The paper reports hyperparameters and explicitly discusses limitations (marginal likelihood/overfitting, linex instability) and related work is described as thorough. However, the experimental scope is limited to only two language pairs and there is no mention of released code, and ablation/sensitivity analyses appear limited beyond the noted linex weight effects\u2014hence solid work with some gaps for full reproducibility and broader validation."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are generally supported: probabilistic GPs (including Warped GPs) are evaluated against reasonable baselines (SVR, bagging, kernel methods) on fr-en and en-de with appropriate probabilistic metrics (NLPD/NLL) and point metrics (MAE, Pearson's r), and the use of Bayes estimators for asymmetric losses is a sound application of the predictive distributions. The methodology (marginal likelihood hyperparameter optimisation, 10-fold cross-validated predictions, and evaluation with NLPD) is appropriate and aligns with the claims about calibration and decision-aware estimation. Minor issues remain: the summary does not report statistical significance testing or code availability, and the authors themselves note marginal likelihood may not detect overfitting; these are limitations but do not undermine the main technical conclusions. Overall the technical approach and evidence are sound, with only modest gaps in experimental reporting. "
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares probabilistic GPs against reasonable baselines (SVR, bagging, kernel methods) on the same QE datasets (fr-en, en-de) using both point and probabilistic metrics (MAE, Pearson r, NLL/NLPD) and 10-fold cross-validated predictions with reported hyperparameters, indicating fair experimental conditions. It also analyses calibration and asymmetric-loss Bayes estimators and reports limitations, and the summary notes thorough related-work coverage. A minor omission is that the summary does not mention comparisons to more recent neural/SOTA QE models or released code, so comparisons appear good but may lack the very latest baselines."
+    },
+    "REPLICABILITY": {
+      "score": 4,
+      "justification": "The paper provides key training details (GP and Warped GP configurations, hyperparameters reported, optimisation via marginal likelihood, and use of 10-fold cross-validation and Bayes estimators) and specifies evaluation metrics (NLL, NLPD, MAE, Pearson's r). However, the data preprocessing pipeline is not described in the summary, datasets are only named (fr-en; en-de) without explicit availability/description, and code is not mentioned. These missing elements are minor but necessary for full reproducibility."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Probabilistic Gaussian Process (GP) models provide better-calibrated uncertainty estimates for Machine Translation Quality Estimation (QE) than point-estimate methods.",
+      "Negative Log Predictive Density (NLPD) is a preferable evaluation metric because it captures information from the full predictive distribution, allowing better model selection than point-estimate metrics alone.",
+      "Predictive distributions from probabilistic models can be exploited with asymmetric loss functions (e.g., asymmetric linear and linex losses) to address application-specific risk scenarios such as pessimistic (avoid underestimates) and optimistic (avoid overestimates) settings."
+    ],
+    "methodology": "The paper applies Gaussian Process regression (including Warped GPs) to QE, optimising hyperparameters via marginal likelihood and evaluating predictive distributions using Negative Log Predictive Density; it further applies Bayes estimators for asymmetric losses (AL and linex) on 10-fold cross-validated predictions without retraining.",
+    "datasets": [
+      "fr-en",
+      "en-de"
+    ],
+    "baselines": [
+      "Support Vector Regression (SVR)",
+      "bagging (bootstrap aggregation)",
+      "kernel methods"
+    ],
+    "metrics": [
+      "Negative Log Likelihood (NLL)",
+      "Negative Log Predictive Density (NLPD)",
+      "Mean Absolute Error (MAE)",
+      "Pearson's r"
+    ],
+    "limitations": [
+      "Negative (log) marginal likelihood does not capture if a model overfits the training data.",
+      "For the linex loss, larger absolute values of the weight w can quickly lead to very large loss scores (i.e., instability for high |w|).",
+      "Machine Translation Quality Estimation is described as a notoriously difficult task (limiting usefulness in real-world environments)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - Machine Translation Quality Estimation",
+    "writing_quality": "good"
+  }
+}

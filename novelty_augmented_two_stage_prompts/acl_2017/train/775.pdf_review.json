@@ -1,0 +1,92 @@
+{
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 4,
+  "SUBSTANCE": 2,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important problem\u2014identifying unseen metaphors in NLP\u2014by introducing a simple, general geometric contextual subspace model that enables zero-shot classification using only individual word vectors. Its empirical claim of achieving F-scores comparable to a fully supervised tensor method and outperforming a semi-supervised variant on the Guti\u00e9rrez et al. (2016) dataset suggests the approach could change how researchers approach metaphor detection without relying on phrase-level training. The method\u2019s simplicity and generality make it likely to be built upon, though evaluation on a single dataset with a limited adjective set and lack of reported code/hyperparameter details temper its immediate transformative potential.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a notably different approach\u2014a per-pair, contextually-generated geometric subspace built from individual word vectors for zero-shot metaphor identification\u2014which is distinct from the supervised tensor methods it compares against (Guti\u00e9rrez et al. 2016). Framing metaphors as ad-hoc, situated phenomena and operationalizing that via on-the-fly subspace projection appears to be a non-trivial methodological departure rather than a straightforward reuse of existing supervised or extraction techniques (e.g., prior work on extracting novel metaphors). Given the available summary, the contribution is clearly differentiated and would likely inform experts, though it builds on well-studied distributional semantics foundations rather than introducing an entirely new problem formulation.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is overall well-written and organized (intro \u2192 method \u2192 experiments \u2192 conclusion) with clear early statement of contributions and thorough related work coverage; writing quality is noted as good. Notation and examples are presented clearly, and figures/tables appear informative. Minor presentation issues include omission of reported hyperparameters and no mention of code availability or stated limitations, which reduce reproducibility and completeness of presentation.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "This work addresses metaphor identification in distributional semantics, a clear NLP/ML topic suitable for top conferences, and targets the right audience (metaphor detection using vector-space methods). The formulation\u2014zero-shot identification via context-specific subspaces built from PMI vectors\u2014and the evaluation on the Guti\u00e9rrez et al. (2016) adjective-noun dataset with comparisons to relevant baselines and F-score reporting follow community standards. Minor concerns (no hyperparameters reported, no code mentioned, and evaluation on a single dataset of 23 adjectives) limit reproducibility and breadth, so it is a good but not perfect fit.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 2,
+      "justification": "The experimental evaluation is narrow: results are reported on a single adjective\u2013noun dataset and compared to a small set of baselines, so claims about general zero-shot performance are under-supported. No ablation or sensitivity analyses are reported (hyperparameters are not given), limiting assessment of which components drive performance and robustness. Related work coverage is said to be thorough and the paper situates itself relative to prior efforts (e.g., work on extracting metaphors from novel data), but failure cases and limitations are not discussed and code/reproducibility details are missing. Overall the paper provides promising results but is shallow on essential analyses and reproducibility.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper's main empirical claim\u2014that a geometric, context-specific subspace model achieves F-scores comparable to a fully supervised tensor method and better than a semi-supervised variant on the Guti\u00e9rrez et al. (2016) AN dataset\u2014is supported by reported experiments and appropriate baselines. However, the summary omits key experimental details (no hyperparameters reported, no code mentioned, no statistical significance testing), and no mathematical derivations or proofs are described to verify the subspace selection rationale. These omissions create gaps in reproducibility and make it difficult to fully validate the zero-shot and generalization claims. Overall the methodology appears plausible but some important evidence and reporting are missing, so the technical soundness is moderate.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to appropriate and recent baselines centered on Guti\u00e9rrez et al. (2016) (supervised and semi-supervised tensor methods) and simple baselines (majority, word2vec cosine) using the same dataset and F-score metric, and explicitly acknowledges when prior methods achieve comparable performance. However, it omits at least one relevant prior work on extracting metaphors from novel data (e.g., the 2013 study noted in the literature context), and the summary provides limited evidence of in-depth analysis of differences in behavior beyond high-level claims (though related work coverage is claimed thorough). Overall the comparisons are good with minor omissions.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a geometric, contextually-generated subspace model that projects each candidate adjective-noun pair into a unique geometric space for metaphor identification.",
+      "The model requires only individual word vectors (not phrase representations), making it suitable for zero-shot identification of unseen metaphors.",
+      "On the Guti\u00e9rrez et al. (2016) adjective-noun dataset, the model achieves F-scores comparable to Guti\u00e9rrez et al.'s fully supervised tensor method and superior to their semi-supervised variant.",
+      "The model is simple and general, and performance improves with larger co-occurrence windows for the underlying distributional vectors."
+    ],
+    "methodology": "Starting from a PMI-based distributional vector space (computed over the December 2014 English Wikipedia dump), the method selects k-dimensional subspaces for each candidate adjective-noun pair based on independent and correlated properties of the two word vectors, projects the pair into that ad-hoc geometry, and classifies metaphoricity using logistic regression on features derived from the resulting subspace.",
+    "datasets": [
+      "Guti\u00e9rrez et al. (2016) adjective-noun dataset (8,592 adjective-noun dyads, 23 adjectives)"
+    ],
+    "baselines": [
+      "Guti\u00e9rrez et al. (2016) supervised tensor method (V1)",
+      "Guti\u00e9rrez et al. (2016) semi-supervised tensor method (V2)",
+      "Majority-class baseline (all-metaphoric)",
+      "Logistic regression on word2vec cosine similarity"
+    ],
+    "metrics": [
+      "F-score"
+    ],
+    "limitations": [],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - metaphor identification / distributional semantics",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 1,
+    "paper_novelty_mean": 0.8838,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

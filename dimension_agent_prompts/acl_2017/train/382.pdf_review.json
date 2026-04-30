@@ -1,0 +1,39 @@
+{
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized with a clear logical flow (Introduction \u2192 background on benchmarks \u2192 creation framework \u2192 experiments \u2192 conclusion) and the main contributions are stated early (intro paragraphs describing the DBPedia-based framework and comparison to Wen et al.). Notation is generally consistent (e.g. S-Model/C-Model/M-Model are defined) though some procedural elements (the ILP) are described informally rather than with full formal notation. Figures/tables and worked examples (Examples 1\u20136) are effective and informative, but the provided text contains minor presentation problems (formatting glitches, duplicated/cut-off lines and footnote artifacts) that slightly reduce readability."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This is squarely within top-tier NLP scope: it addresses data-to-text NLG and micro-planning (lexicalisation, aggregation, referring expression generation) and proposes a corpus-creation framework applied to DBpedia (Sections 1\u20133). The work targets the right audience (NLG/dataset and generation researchers), compares to existing benchmarks (Wen et al. 2016) and prior corpora, and uses standard evaluation practices (corpus statistics, lexical metrics, crowdsourced validation, and a seq2seq baseline with BLEU/perplexity in Section 4). The problem formulation and positioning are appropriate for a major NLP/ML venue that accepts dataset and resource papers."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Yes \u2014 the paper targets a central bottleneck for data-to-text NLG: creating training corpora that support wide-coverage micro-planning and KB verbalisation. It presents a reusable framework (Section 3) combining ILP-based content selection from DBpedia and controlled crowdsourcing, and demonstrates (Section 4) that the resulting DBPNLG corpus is substantially more diverse (e.g. 172 vs 108 attributes, 58 vs 6 input shapes, much lower input\u2011pattern repetition) and linguistically richer (higher CTTR/LS, longer texts) and harder for seq2seq models (higher perplexity/lower BLEU) than the commonly used RNNLG. These properties make the work likely to influence how researchers construct corpora and to enable new work on KB verbalizers, more realistic micro-planning models, and shared evaluation tasks."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper makes a focused, detailed comparison to the most relevant recent crowdsourced baseline (Wen et al., 2016), using multiple data/text metrics (attributes, input patterns/shapes, lexical measures) and a controlled seq2seq experiment with balanced samples and delexicalisation modes. It also cites and explains exclusion of Lebret et al. (2016) and situates other prior benchmarks (domain-specific, SR/AMR, Novikova & Rieser). Minor weaknesses: the neural comparison uses a generic TensorFlow translate implementation rather than Wen et al.\u2019s optimized code and the paper could have included additional generation-model baselines or larger-scale extrinsic evaluations, but overall the comparisons are fair and well analyzed."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper proposes a practical framework that combines KB-driven content selection (category graphs \u2192 property bigram models \u2192 ILP; Sec.3.2) with a staged crowdsourcing pipeline for single-triple verbalizations, merging and validation (Sec.3.3) and applies it to DBpedia to produce DBPNLG and compare it to Wen et al. (Sec.4). This integration and the emphasis on KB verbalisers and deeper input shapes is a meaningful contribution and is clearly differentiated from prior crowdsourced and expert-annotation benchmarks. However, many core techniques are adaptations of prior work (e.g. Perez-Beltrachini et al. for content selection, and existing crowdsourcing practices/Wen et al. for collection), so the novelty is moderate rather than highly original."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated (framework to create DBpedia-derived NLG corpora, resulting dataset DBPNLG is more diverse and harder for seq2seq models) and supported by empirical evidence: Section 3 describes a reproducible content-selection pipeline (category graphs, S/C/M bigram models and an ILP to select subtrees) and crowdsourcing/validation (Sec. 3.3), and Section 4 reports quantitative corpus statistics (attributes, input patterns/shapes, lexical metrics) and neural-model results (perplexity/BLEU) comparing DBPNLG vs RNNLG. Technical concerns are minor: the ILP/objective and some parameter choices (depth-5, 500 entities) are not fully specified, crowdsourcing validation statistics (e.g. inter-annotator agreement) and exact numeric results/tables are not shown in the provided excerpt, and the ML evaluation uses a single seq2seq implementation with no significance testing or multiple runs, so the claim that \"sequence-to-sequence models are not optimal\" is somewhat overgeneralized based on limited experiments. Overall the evidence supports the main conclusions, with these methodological limitations."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper provides a solid empirical comparison using multiple dataset-level metrics (attributes, input patterns/shapes, lexical measures) and a neural baseline (Section 4, tables and seq2seq experiments) that reasonably support the main claim that DBPNLG is more diverse and harder to learn from. However, it lacks ablation or sensitivity analyses of the content-selection choices (e.g. effects of S-/C-/M-models or ILP constraints) and evaluation is limited to six DBpedia categories and a single, lightly-detailed neural setup, which weakens causal attribution and generality. Related work coverage is thorough (Section 2) and limitations/future work are discussed, but reproducibility is only partial (some toolkits and validators are named, yet key ILP details, exact crowdsourcing parameters and full training hyperparameters are not fully specified)."
+    }
+  }
+}

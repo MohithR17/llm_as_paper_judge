@@ -1,0 +1,176 @@
+{
+  "IMPACT": 3,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 4,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 2,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "IMPACT": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper tackles an important practical problem\u2014reducing inference cost of RNNs over long texts\u2014by proposing LSTM-Jump which achieves up to 6x speedups on standard NLP benchmarks (AG News, Rotten Tomatoes, IMDB, CBT) while matching accuracy. However, from a theory-first perspective the reliance on plain REINFORCE for non-differentiable jumps (with acknowledged sampling/scale limitations and overheads) and comparison only to a vanilla LSTM (no heuristic/skipping or hierarchical baselines) limit its persuasiveness and immediate influence. The idea is a useful, pragmatic contribution that can spur follow-up work on more scalable/analytically-grounded adaptive reading policies, but as presented it is moderate rather than transformative. | B(3): This paper tackles an important and practical problem\u2014reducing inference cost for RNNs\u2014by proposing LSTM-Jump and demonstrating substantial wall\u2011clock speedups (up to 6x) while maintaining or improving accuracy on realistic benchmarks (AG News, RT, IMDB, CBT). From a deployability perspective the reported throughput gains are compelling, but reliance on REINFORCE for discrete jump decisions, reported instability for large jump spaces (>25) and overheads for small models limit immediate broad adoption. The work is a useful, pragmatic contribution that will likely inspire follow\u2011on engineering and research on adaptive skipping, but it stops short of being transformative without simpler/robust training alternatives or broader empirical validation (e.g., open code, more hardware/runtime detail).",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014reducing inference cost of RNNs over long texts\u2014by proposing LSTM-Jump which achieves up to 6x speedups on standard NLP benchmarks (AG News, Rotten Tomatoes, IMDB, CBT) while matching accuracy. However, from a theory-first perspective the reliance on plain REINFORCE for non-differentiable jumps (with acknowledged sampling/scale limitations and overheads) and comparison only to a vanilla LSTM (no heuristic/skipping or hierarchical baselines) limit its persuasiveness and immediate influence. The idea is a useful, pragmatic contribution that can spur follow-up work on more scalable/analytically-grounded adaptive reading policies, but as presented it is moderate rather than transformative."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "This paper tackles an important and practical problem\u2014reducing inference cost for RNNs\u2014by proposing LSTM-Jump and demonstrating substantial wall\u2011clock speedups (up to 6x) while maintaining or improving accuracy on realistic benchmarks (AG News, RT, IMDB, CBT). From a deployability perspective the reported throughput gains are compelling, but reliance on REINFORCE for discrete jump decisions, reported instability for large jump spaces (>25) and overheads for small models limit immediate broad adoption. The work is a useful, pragmatic contribution that will likely inspire follow\u2011on engineering and research on adaptive skipping, but it stops short of being transformative without simpler/robust training alternatives or broader empirical validation (e.g., open code, more hardware/runtime detail)."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized and the main contributions (LSTM-Jump architecture and REINFORCE-trained jump policy) are stated early and followed by experiments on standard datasets (AG News, Rotten Tomatoes, IMDB, CBT). Notation for the jumping mechanism (read R tokens, jump over 1..K, sample \u03ba) is presented clearly in the summary, and related work and hyperparameters are reported. Writing is adequate but not polished\u2014figures/tables and some methodological choices (e.g., REINFORCE variance/implementation details) could be presented more effectively to remove remaining ambiguity. | B(4): The paper is well-organized (intro\u2192method\u2192experiments\u2192conclusion) and states the main contributions early \u2014 introducing LSTM-Jump, the REINFORCE-trained discrete jump policy, and claimed up-to-6x speedups. Notation and methodological descriptions appear consistent and the experiments report accuracy, speedup, datasets, baselines, and hyperparameters, which supports reproducibility for deployment-focused readers like me. Figures/tables and examples are described as effective, and related work coverage is thorough, though the writing is only \"adequate\" in places and could better highlight engineering/runtime details (batching, sampling overhead) that matter for real-world speed measurements.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized and the main contributions (LSTM-Jump architecture and REINFORCE-trained jump policy) are stated early and followed by experiments on standard datasets (AG News, Rotten Tomatoes, IMDB, CBT). Notation for the jumping mechanism (read R tokens, jump over 1..K, sample \u03ba) is presented clearly in the summary, and related work and hyperparameters are reported. Writing is adequate but not polished\u2014figures/tables and some methodological choices (e.g., REINFORCE variance/implementation details) could be presented more effectively to remove remaining ambiguity."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well-organized (intro\u2192method\u2192experiments\u2192conclusion) and states the main contributions early \u2014 introducing LSTM-Jump, the REINFORCE-trained discrete jump policy, and claimed up-to-6x speedups. Notation and methodological descriptions appear consistent and the experiments report accuracy, speedup, datasets, baselines, and hyperparameters, which supports reproducibility for deployment-focused readers like me. Figures/tables and examples are described as effective, and related work coverage is thorough, though the writing is only \"adequate\" in places and could better highlight engineering/runtime details (batching, sampling overhead) that matter for real-world speed measurements."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the topic and experiments are well within top\u2011tier NLP/ML scope and that the empirical results are relevant to an audience interested in efficient sequence models. I docked one point because the paper lacks stronger comparative baselines and deeper analysis of the REINFORCE training (variance reduction/complexity), but its practical focus and demonstrated speedups make it appropriate for the venue.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The topic\u2014adaptive skipping in RNNs for NLP and QA\u2014is squarely within top-tier NLP/ML scope and the datasets (AG News, RT, IMDB, CBT) and metrics (accuracy, speedup) are standard. However, from a theory-first perspective the reliance on REINFORCE without reported variance-reduction/complexity analysis and the absence of strong baselines beyond a vanilla LSTM (no fixed-skip heuristics, hierarchical RNNs, or attention-based shortcuts) weaken its fit. The paper is relevant to the venue\u2019s audience but is borderline because it lacks the theoretical/empirical rigor (bounds or richer baselines/ablations) that top conferences typically expect."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This work falls squarely within top NLP/ML venue scope: adaptive computation for sequence models is a core topic and the paper targets an audience interested in efficient inference. It reports practical wall\u2011clock speedups (up to 6\u00d7), accuracy on realistic benchmarks (AG News, Rotten Tomatoes, IMDB, CBT), and hyperparameter/runtime details \u2014 all traits I value as a deployability\u2011oriented reviewer. I slightly dock because comparisons are limited to a vanilla LSTM (stronger baselines and code release would improve reproducibility), but overall the problem, methods (REINFORCE for jump decisions), and evaluations are appropriate for a top conference."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the empirical evaluation across multiple datasets is convincing and demonstrates substantial speedups, but both note important shortcomings: lack of stronger adaptive baselines, limited ablations/sensitivity analyses, and insufficient theoretical or reproducibility detail (code/runtime variance). Given the solid experimental results but these notable gaps, a slightly positive assessment is warranted, so I assign a 4 to reflect useful empirical contribution tempered by missing comparisons and analysis.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides a reasonable set of empirical evaluations across multiple datasets (AG News, Rotten Tomatoes, IMDB, CBT) and reports accuracy and wall-clock speedups up to 6x, which supports the main claims at a surface level. However, from a theory-first perspective it fails to provide variance reduction or sample complexity analysis for the REINFORCE-trained discrete jump policy and offers no formal or amortized complexity guarantees for claimed speedups. The experimental comparisons are weak: only a vanilla sequential LSTM baseline is included (fewer than the 3 strong baselines I expect, e.g., fixed-interval skipping or hierarchical/attention baselines), and there are limited ablations isolating architectural choices versus training tricks. Reproducibility is partially supported by reported hyperparameters but code is not mentioned, and the discussion of limitations acknowledges some issues (policy gradient difficulty, overheads) but does not mitigate them with theoretical or methodological remedies."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper evaluates LSTM-Jump on multiple realistic benchmarks (AG News, Rotten Tomatoes, IMDB, CBT) and reports substantial speedups (up to 6x) with maintained or improved accuracy, which supports the main efficiency claim. However, comparisons are restricted to a vanilla LSTM baseline (no other adaptive or strong hierarchical baselines) and the summary does not mention detailed runtime/batching/hardware measurements or wall-clock throughput variance\u2014important for deployability claims. The authors explicitly discuss limitations of the REINFORCE training and sampling issues, and hyperparameters are reported, but ablation/sensitivity studies (e.g., jump-size K, R, variance across runs) are not described. Overall the experiments are solid and persuasive across datasets but miss some key baselines and deeper sensitivity/reproducibility analyses, so I rate it a 4."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the work is an incremental combination of known components (LSTM + policy gradient) rather than a radically new formulation, but also that the concrete LSTM-Jump design and empirical demonstration of substantial wall\u2011clock speedups on real NLP datasets represent a useful, pragmatic contribution. I rate it a 4 because the idea is not fundamentally novel yet provides a clear, well\u2011evaluated systems-oriented advance; the score reflects the practical value despite valid concerns about limited baselines and RL drawbacks.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper proposes a concrete mechanism (LSTM-Jump) that learns discrete skip/jump decisions in an LSTM trained end-to-end with REINFORCE, which is a clear practical contribution compared to a vanilla sequential LSTM. However, the core idea\u2014adaptive skipping in sequence models with a learned discrete policy\u2014is an incremental combination of known components (LSTM + policy gradient) rather than a fundamentally new formulation, especially given the admitted drawbacks of REINFORCE (sampling difficulty for >25 locations, no variance-reduction or complexity guarantees). The work also compares primarily to a single baseline (vanilla LSTM) and lacks stronger heuristic or learned baselines, which reduces the perceived novelty and differentiation from prior adaptive-computation efforts that I would expect an expert to find surprising."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clear new application of discrete jump decisions in an LSTM \u2014 trained end-to-end with REINFORCE to skip text and achieve practical speedups up to 6x \u2014 which is a notable and useful twist on adaptive computation. While the high-level goal (read less, compute less) and policy-gradient training are composed from existing ideas, the concrete LSTM-Jump design and empirical demonstration of wall\u2011clock speedups on realistic NLP datasets (AG News, Rotten Tomatoes, IMDB, CBT) differentiate it from prior work. From a systems-oriented perspective this is a notable, pragmatic contribution rather than a purely theoretical novelty, so I judge it as more than incremental but not a radical new paradigm."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 2,
+      "justification": "Both reviewers agree the paper only compares against a vanilla LSTM and lacks stronger, relevant baselines (fixed-skip heuristics, hierarchical/pooled RNNs, and recent adaptive/skip/attention methods), undermining claims about speed\u2013accuracy tradeoffs. While the authors analyze behavior and discuss related work, the omission of these comparative and ablative baselines is a substantive weakness, so a low score is warranted.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper only compares LSTM-Jump to a vanilla sequential LSTM across several datasets (AG News, Rotten Tomatoes, IMDB, CBT), which is inadequate: it omits strong and relevant baselines such as fixed-interval skipping heuristics, hierarchical/pooled RNNs, and recent learned-skip or attention-based short-circuiting methods. Because the method relies on REINFORCE for discrete jumps (a point the authors themselves note), I expect comparisons to other adaptive-computation approaches and simple heuristic/ablative baselines to isolate the benefit of learned jumping; their absence makes the empirical claims about speed/accuracy tradeoffs unconvincing. The paper does discuss related work thoroughly, but the experimental comparisons are insufficiently comprehensive or controlled to validate claimed advantages."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper reports accuracy and wall-clock speedups on standard datasets and compares against a vanilla sequential LSTM using the same data and metrics, so comparisons are fair in that narrow sense. However, it only evaluates against the basic LSTM baseline rather than other contemporary adaptive/efficient inference methods (e.g., recent adaptive computation, hard-attention/skip models, or stronger classification/QA architectures), which are important for demonstrating practical speed\u2013accuracy tradeoffs. The authors do acknowledge limitations of policy-gradient training and discuss related work thoroughly, and they analyze differences in behavior, but the lack of stronger or alternative efficiency baselines weakens the empirical comparison."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the central empirical claim is plausible and supported by experiments across multiple datasets, but they also concur that methodological and theoretical gaps remain (limited baselines, lack of variance-reduction/complexity analysis, and reproducibility details). Given these shared concerns about the narrow comparisons, training instability with REINFORCE, and missing formal guarantees, a cautious mid-level score is warranted: the work is promising but not yet fully convincing on soundness/correctness.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper's main empirical claim (up to 6x speedups with comparable accuracy) is supported by experiments on several datasets, but the evaluation is limited to a single baseline (vanilla LSTM) rather than the 3+ strong baselines I expect (e.g., fixed-interval skipping, hierarchical RNNs, attention short-circuiting). The use of REINFORCE to train discrete jumps is noted but no variance-reduction techniques, sample-complexity analysis, or formal bounds on amortized/worst-case computational complexity are provided, leaving the claimed speedups insufficiently justified beyond wall-clock numbers. Mathematical treatment appears lightweight (no corrective proofs) and there are unsupported assumptions about scalability to large jump spaces (>25 locations) that are only empirically asserted. Overall the contribution is promising but has methodological gaps that prevent a higher technical score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The core claim\u2014that an LSTM augmented with a learned jumping policy trained via REINFORCE can achieve up to ~6\u00d7 wall-clock speedups while maintaining accuracy\u2014is supported by experiments across AG News, Rotten Tomatoes, IMDB and CBT and is conceptually consistent with the method description. Mathematical treatment is appropriate (policy gradient for discrete jumps) and the paper transparently notes training limitations (variance of REINFORCE, difficulty with large discrete action spaces). However, the experimental methodology is somewhat narrow: comparisons are only against a vanilla sequential LSTM (no stronger or heuristic baselines), statistical significance/repeatability details and code release are not mentioned, and some runtime-overhead caveats for small models suggest the speedup claims could be workload-dependent. Overall the results are plausible and mainly supported, but a few missing controls and reproducibility details prevent a perfect technical score."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes LSTM-Jump, an LSTM-based model that learns to skip/jump over parts of input text to read non-sequentially.",
+      "Trains the discrete jumping policy using policy gradient (REINFORCE) to allow end-to-end learning of jump decisions.",
+      "Demonstrates that LSTM-Jump can be up to 6x faster than a standard sequential LSTM while maintaining equal or better accuracy on benchmark tasks."
+    ],
+    "methodology": "An LSTM reads a fixed number R of tokens, computes a softmax over jump sizes 1..K, samples a jump \u03ba to skip forward, and repeats until stopping criteria; the non-differentiable jump decisions are trained with the REINFORCE policy gradient algorithm.",
+    "datasets": [
+      "AG News (AG\u2019s news corpus, subset from Zhang et al. 2015)",
+      "Rotten Tomatoes",
+      "IMDB (Maas et al., 2011)",
+      "Children's Book Test (CBT) (Hill et al., 2015)"
+    ],
+    "baselines": [
+      "vanilla LSTM (sequential LSTM)"
+    ],
+    "metrics": [
+      "accuracy",
+      "speedup (efficiency)"
+    ],
+    "limitations": [
+      "Requires training discrete jump policy with policy gradient, which is noted as a disadvantage compared to some adaptive computation methods.",
+      "Sampling from a discrete jumping distribution can be difficult for large numbers of discrete locations (cited difficulty learning policies over >25 locations).",
+      "For models with small embeddings/hidden sizes, overhead from computing and sampling the jump softmax can reduce speedup benefits."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - adaptive recurrent neural networks for text classification and question answering",
+    "writing_quality": "adequate"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory-first Skeptic",
+      "background": "Senior researcher in machine learning theory and sequence models with multiple publications on provable guarantees for RNNs and adaptive computation.",
+      "traits": [
+        "penalizes papers that introduce non-differentiable decision mechanisms trained with REINFORCE without providing variance reduction techniques or theoretical analysis of sample complexity",
+        "requires formal justification or bounds for claimed speedups (e.g., amortized computational complexity or worst-case guarantees) and will deduct points if only wall-clock or throughput numbers are reported",
+        "subtracts credit if there are fewer than 3 strong baselines including both learned and simple heuristic/ablative baselines (e.g., fixed-interval skipping, hierarchical RNNs, and attention-based short-circuiting)",
+        "downgrades papers that lack ablation studies isolating the contributions of architectural choices versus training tricks (e.g., reward shaping, baseline networks, entropy regularization)"
+      ],
+      "reviewing_style": "I prioritize formal analysis and careful ablation: I reward principled guarantees and penalize empirical claims that lack theoretical or thorough comparative support."
+    },
+    "reviewer_b": {
+      "name": "Pragmatic Systems Advocate",
+      "background": "Applied NLP/ML researcher focused on efficient inference and deployable sequence models for large-scale text classification and QA systems.",
+      "traits": [
+        "rewards papers demonstrating practical wall-clock speedups (e.g., >=2x) with maintained or improved accuracy on realistic benchmarks and will give positive credit for clear throughput/memory measurements",
+        "favors methods that reduce inference cost even if training relies on high-variance reinforcement learning, provided results include stability metrics (e.g., variance over runs) or multiple random restarts",
+        "gives extra credit if the paper includes simple, well-motivated baselines (including heuristics like fixed skipping or truncated reading) and shows consistent wins across multiple datasets and tasks",
+        "values clear engineering details (batching behavior, GPU/CPU settings, tokenization choices) and will penalize only when experiments are irreproducible or missing core runtime details"
+      ],
+      "reviewing_style": "I prioritize empirical effectiveness and deployability: I reward clear, reproducible speed-accuracy tradeoffs and pragmatic solutions that cut computation in real settings."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 5,
+    "total_dimensions": 7,
+    "debate_rate": 0.714
+  }
+}

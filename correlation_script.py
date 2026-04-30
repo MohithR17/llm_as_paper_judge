@@ -2,7 +2,7 @@
 Comprehensive evaluation script.
 
 Evaluates all four approaches against PeerRead ground truth:
-  1. Monolithic baseline     (monolithic_prompts/)
+  1. Single Agent baseline     (single_agent_prompts/)
   2. Dimension agents        (dimension_agent_prompts/)
   3. Two-stage agents        (two_stage_agent_prompts/)
   4. Debate agents           (debate_agent_prompts/)
@@ -62,39 +62,48 @@ def extract_numeric_score(val):
     return None
 
 
-def get_ground_truth_scores(venue, peerread_dir, dimension):
-    """Average human reviewer scores per paper for one dimension."""
+EVAL_SPLITS = ["train", "dev", "test"]
+
+
+def get_ground_truth_scores(venue, peerread_dir, dimension, splits=None):
+    """Average human reviewer scores per paper for one dimension, across all specified splits."""
+    if splits is None:
+        splits = EVAL_SPLITS
     gt_scores = {}
-    reviews_dir = Path(peerread_dir) / venue / "test" / "reviews"
-    if not reviews_dir.exists():
-        return gt_scores
-    for f in reviews_dir.glob("*.json"):
-        with open(f) as fin:
-            data = json.load(fin)
-        scores = [
-            v for r in data.get("reviews", [])
-            if (v := extract_numeric_score(r.get(dimension))) is not None
-        ]
-        if scores:
-            gt_scores[f.stem] = np.mean(scores)
+    for split in splits:
+        reviews_dir = Path(peerread_dir) / venue / split / "reviews"
+        if not reviews_dir.exists():
+            continue
+        for f in reviews_dir.glob("*.json"):
+            with open(f) as fin:
+                data = json.load(fin)
+            scores = [
+                v for r in data.get("reviews", [])
+                if (v := extract_numeric_score(r.get(dimension))) is not None
+            ]
+            if scores:
+                gt_scores[f.stem] = np.mean(scores)
     return gt_scores
 
 
-def get_llm_scores(venue, llm_dir, dimension):
-    """LLM score per paper for one dimension."""
+def get_llm_scores(venue, llm_dir, dimension, splits=None):
+    """LLM score per paper for one dimension, across all specified splits."""
+    if splits is None:
+        splits = EVAL_SPLITS
     llm_scores = {}
-    reviews_dir = Path(llm_dir) / venue / "test"
-    if not reviews_dir.exists():
-        return llm_scores
-    for f in reviews_dir.glob("*_review.json"):
-        paper_id = f.stem.replace(".pdf_review", "")
-        with open(f) as fin:
-            data = json.load(fin)
-        if not isinstance(data, dict):
+    for split in splits:
+        reviews_dir = Path(llm_dir) / venue / split
+        if not reviews_dir.exists():
             continue
-        score = extract_numeric_score(data.get(dimension))
-        if score is not None:
-            llm_scores[paper_id] = score
+        for f in reviews_dir.glob("*_review.json"):
+            paper_id = f.stem.replace(".pdf_review", "")
+            with open(f) as fin:
+                data = json.load(fin)
+            if not isinstance(data, dict):
+                continue
+            score = extract_numeric_score(data.get(dimension))
+            if score is not None:
+                llm_scores[paper_id] = score
     return llm_scores
 
 
@@ -133,32 +142,100 @@ def correlate_dimension(venue, peerread_dir, llm_dir, dimension):
 # Accept / reject prediction
 # ---------------------------------------------------------------------------
 
-def get_ground_truth_decisions(venue, peerread_dir):
+def get_ground_truth_decisions(venue, peerread_dir, splits=None, rec_threshold=3.5):
+    """
+    Returns {paper_id: bool} accept/reject labels.
+
+    ICLR 2017: uses the explicit `accepted` field.
+    ACL 2017 / CoNLL 2016: no binary label file exists, so we threshold the
+      average human RECOMMENDATION score (>= rec_threshold → accept).
+    """
+    if splits is None:
+        splits = EVAL_SPLITS
     decisions = {}
-    reviews_dir = Path(peerread_dir) / venue / "test" / "reviews"
-    if not reviews_dir.exists():
-        return decisions
 
-    if venue == "iclr_2017":
-        for f in reviews_dir.glob("*.json"):
-            data = json.load(open(f))
-            if not isinstance(data, dict):
-                continue
-            acc = data.get("accepted")
-            if acc is not None:
-                decisions[f.stem] = bool(acc)
+    for split in splits:
+        reviews_dir = Path(peerread_dir) / venue / split / "reviews"
+        if not reviews_dir.exists():
+            continue
 
-    elif venue == "acl_2017":
-        accepted_file = Path(peerread_dir) / "acl_accepted.txt"
-        if accepted_file.exists():
-            accepted_titles = set(accepted_file.read_text().splitlines())
+        if venue == "iclr_2017":
             for f in reviews_dir.glob("*.json"):
                 data = json.load(open(f))
                 if not isinstance(data, dict):
                     continue
-                decisions[f.stem] = data.get("title", "") in accepted_titles
+                acc = data.get("accepted")
+                if acc is not None:
+                    decisions[f.stem] = bool(acc)
+
+        else:
+            # Derive accept/reject from average RECOMMENDATION score
+            for f in reviews_dir.glob("*.json"):
+                data = json.load(open(f))
+                if not isinstance(data, dict):
+                    continue
+                scores = [
+                    v for r in data.get("reviews", [])
+                    if (v := extract_numeric_score(r.get("RECOMMENDATION"))) is not None
+                ]
+                if scores:
+                    decisions[f.stem] = (np.mean(scores) >= rec_threshold)
 
     return decisions
+
+
+def _prf1(y_true, y_pred):
+    tp = sum(t == 1 and p == 1 for t, p in zip(y_true, y_pred))
+    fp = sum(t == 0 and p == 1 for t, p in zip(y_true, y_pred))
+    fn = sum(t == 1 and p == 0 for t, p in zip(y_true, y_pred))
+    prec = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    rec  = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    f1   = 2 * prec * rec / (prec + rec) if (prec + rec) > 0 else 0.0
+    acc  = sum(t == p for t, p in zip(y_true, y_pred)) / len(y_true)
+    return acc, prec, rec, f1
+
+
+def get_llm_avg_dim_score(venue, llm_dir, splits=None):
+    """Average of all available dimension scores per paper (used as accept/reject proxy)."""
+    if splits is None:
+        splits = EVAL_SPLITS
+    avg_scores = {}
+    for split in splits:
+        reviews_dir = Path(llm_dir) / venue / split
+        if not reviews_dir.exists():
+            continue
+        for f in reviews_dir.glob("*_review.json"):
+            paper_id = f.stem.replace(".pdf_review", "")
+            data = json.load(open(f))
+            if not isinstance(data, dict):
+                continue
+            scores = [
+                v for k, v in data.items()
+                if not k.startswith("_") and (v2 := extract_numeric_score(v)) is not None
+                for v in [v2]
+            ]
+            if scores:
+                avg_scores[paper_id] = float(np.mean(scores))
+    return avg_scores
+
+
+def evaluate_accept_reject_dims(venue, peerread_dir, llm_dir, llm_threshold=3.5, rec_threshold=3.5):
+    """
+    Predict accept/reject using average LLM dimension score (no RECOMMENDATION required).
+    Ground truth: `accepted` field for ICLR; avg RECOMMENDATION >= rec_threshold for others.
+    """
+    gt_decisions = get_ground_truth_decisions(venue, peerread_dir, rec_threshold=rec_threshold)
+    llm_avg = get_llm_avg_dim_score(venue, llm_dir)
+
+    common = sorted(set(gt_decisions) & set(llm_avg))
+    if len(common) < 2:
+        return None
+
+    y_true = [int(gt_decisions[k]) for k in common]
+    y_pred = [int(llm_avg[k] >= llm_threshold) for k in common]
+
+    acc, prec, rec, f1 = _prf1(y_true, y_pred)
+    return acc, prec, rec, f1, len(common), sum(y_true), y_pred.count(1)
 
 
 def evaluate_accept_reject(venue, peerread_dir, llm_dir, threshold=5):
@@ -173,45 +250,39 @@ def evaluate_accept_reject(venue, peerread_dir, llm_dir, threshold=5):
     y_pred = [int(llm_scores[k] >= threshold) for k in common]
     n = len(common)
 
-    correct = sum(t == p for t, p in zip(y_true, y_pred))
-    accuracy = correct / n
+    acc, prec, rec, f1 = _prf1(y_true, y_pred)
 
-    tp = sum(t == 1 and p == 1 for t, p in zip(y_true, y_pred))
-    fp = sum(t == 0 and p == 1 for t, p in zip(y_true, y_pred))
-    fn = sum(t == 1 and p == 0 for t, p in zip(y_true, y_pred))
-    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-    recall    = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-    f1        = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0
-
-    return accuracy, precision, recall, f1, n, y_true, y_pred, common
+    return acc, prec, rec, f1, n, y_true, y_pred, common
 
 
 # ---------------------------------------------------------------------------
 # Debate-specific stats
 # ---------------------------------------------------------------------------
 
-def evaluate_augmentation_stats(venue, llm_dir):
+def evaluate_augmentation_stats(venue, llm_dir, splits=None):
     """Report lit-survey augmentation coverage for an approach's output directory."""
-    reviews_dir = Path(llm_dir) / venue / "test"
-    if not reviews_dir.exists():
-        return None
-
+    if splits is None:
+        splits = EVAL_SPLITS
     total = surveys_ok = 0
     pool_sizes = []
     augmented_dims_seen = set()
 
-    for f in reviews_dir.glob("*_review.json"):
-        data = json.load(open(f))
-        if not isinstance(data, dict):
+    for split in splits:
+        reviews_dir = Path(llm_dir) / venue / split
+        if not reviews_dir.exists():
             continue
-        stats = data.get("_augmentation_stats")
-        if stats is None:
-            return None  # not a lit-augmented output
-        total += 1
-        if stats.get("survey_found"):
-            surveys_ok += 1
-            pool_sizes.append(stats.get("survey_pool_size", 0))
-        augmented_dims_seen.update(stats.get("augmented_dims", []))
+        for f in reviews_dir.glob("*_review.json"):
+            data = json.load(open(f))
+            if not isinstance(data, dict):
+                continue
+            stats = data.get("_augmentation_stats")
+            if stats is None:
+                return None  # not a lit-augmented output
+            total += 1
+            if stats.get("survey_found"):
+                surveys_ok += 1
+                pool_sizes.append(stats.get("survey_pool_size", 0))
+            augmented_dims_seen.update(stats.get("augmented_dims", []))
 
     if total == 0:
         return None
@@ -225,24 +296,26 @@ def evaluate_augmentation_stats(venue, llm_dir):
     }
 
 
-def evaluate_debate_stats(venue, debate_dir):
+def evaluate_debate_stats(venue, debate_dir, splits=None):
     """Report how often the referee was triggered across all papers in a venue."""
-    reviews_dir = Path(debate_dir) / venue / "test"
-    if not reviews_dir.exists():
-        return None
-
+    if splits is None:
+        splits = EVAL_SPLITS
     total_dims, debated_dims = 0, 0
     paper_debate_rates = []
 
-    for f in reviews_dir.glob("*_review.json"):
-        data = json.load(open(f))
-        if not isinstance(data, dict):
+    for split in splits:
+        reviews_dir = Path(debate_dir) / venue / split
+        if not reviews_dir.exists():
             continue
-        stats = data.get("_debate_stats")
-        if stats:
-            total_dims  += stats.get("total_dimensions", 0)
-            debated_dims += stats.get("dimensions_debated", 0)
-            paper_debate_rates.append(stats.get("debate_rate", 0))
+        for f in reviews_dir.glob("*_review.json"):
+            data = json.load(open(f))
+            if not isinstance(data, dict):
+                continue
+            stats = data.get("_debate_stats")
+            if stats:
+                total_dims  += stats.get("total_dimensions", 0)
+                debated_dims += stats.get("dimensions_debated", 0)
+                paper_debate_rates.append(stats.get("debate_rate", 0))
 
     if total_dims == 0:
         return None
@@ -439,14 +512,114 @@ def print_comparison_table(approach_results: dict, venues):
         print(row)
 
 
-def print_grand_summary(approach_results: dict, venues):
-    """Single table: one row per approach, macro-averaged across all venues and dimensions."""
-    print(f"\n{'#'*72}")
-    print(f"# GRAND SUMMARY  (macro-averaged across all venues & dimensions)")
-    print(f"{'#'*72}")
-    print(f"\n  {'Approach':<28s}  {'Pearson r':>10s}  {'Spearman ρ':>10s}  {'MAE':>6s}  {'Bias':>6s}")
-    print("  " + "-" * 68)
+def print_accept_reject_table(approach_dirs: dict, peerread_dir: str, venues: list,
+                              llm_threshold: float = 3.5, rec_threshold: float = 3.5):
+    """
+    Compare accept/reject prediction across all approaches and venues.
 
+    Decision rule: avg(LLM dimension scores) >= llm_threshold → predict Accept.
+    GT for ICLR: explicit `accepted` field.
+    GT for ACL/CoNLL: avg human RECOMMENDATION >= rec_threshold.
+    """
+    print(f"\n{'#'*72}")
+    print(f"# ACCEPT / REJECT PREDICTION")
+    print(f"# LLM rule  : avg(dimension scores) >= {llm_threshold} → Accept")
+    print(f"# GT rule   : ICLR uses `accepted` field; ACL/CoNLL use avg RECOMMENDATION >= {rec_threshold}")
+    print(f"{'#'*72}")
+
+    labels = list(approach_dirs.keys())
+    col_w  = 10
+
+    # accumulate per-approach results across venues for the average row
+    approach_totals: dict[str, list] = {lbl: [] for lbl in labels}
+
+    for venue in venues:
+        print(f"\n  Venue: {venue}")
+        hdr  = f"  {'Approach':<20s}"
+        hdr += f"  {'Accuracy':>{col_w}s}  {'Precision':>{col_w}s}  {'Recall':>{col_w}s}  {'F1':>{col_w}s}  {'n':>4s}  {'GT-acc':>6s}  {'Pred-acc':>8s}"
+        print(hdr)
+        print("  " + "-" * (len(hdr) - 2))
+
+        any_result = False
+        for label, llm_dir in approach_dirs.items():
+            if not Path(llm_dir).exists():
+                print(f"  {label:<20s}  (directory not found)")
+                continue
+            res = evaluate_accept_reject_dims(
+                venue, peerread_dir, llm_dir,
+                llm_threshold=llm_threshold, rec_threshold=rec_threshold,
+            )
+            if res is None:
+                print(f"  {label:<20s}  (no overlapping papers)")
+                continue
+            acc, prec, rec, f1, n, n_gt_acc, n_pred_acc = res
+            approach_totals[label].append((acc, prec, rec, f1, n, n_gt_acc, n_pred_acc))
+            print(
+                f"  {label:<20s}"
+                f"  {acc:{col_w}.3f}  {prec:{col_w}.3f}  {rec:{col_w}.3f}  {f1:{col_w}.3f}"
+                f"  {n:>4d}  {n_gt_acc:>6d}  {n_pred_acc:>8d}"
+            )
+            any_result = True
+        if not any_result:
+            print(f"  (no accept/reject labels available for {venue})")
+
+    # Average across venues
+    print(f"\n  Average across venues")
+    hdr  = f"  {'Approach':<20s}"
+    hdr += f"  {'Accuracy':>{col_w}s}  {'Precision':>{col_w}s}  {'Recall':>{col_w}s}  {'F1':>{col_w}s}  {'n':>4s}  {'GT-acc':>6s}  {'Pred-acc':>8s}"
+    print(hdr)
+    print("  " + "-" * (len(hdr) - 2))
+    for label in labels:
+        rows = approach_totals[label]
+        if not rows:
+            print(f"  {label:<20s}  (no data)")
+            continue
+        avg_acc  = np.mean([r[0] for r in rows])
+        avg_prec = np.mean([r[1] for r in rows])
+        avg_rec  = np.mean([r[2] for r in rows])
+        avg_f1   = np.mean([r[3] for r in rows])
+        tot_n         = sum(r[4] for r in rows)
+        tot_gt_acc    = sum(r[5] for r in rows)
+        tot_pred_acc  = sum(r[6] for r in rows)
+        print(
+            f"  {label:<20s}"
+            f"  {avg_acc:{col_w}.3f}  {avg_prec:{col_w}.3f}  {avg_rec:{col_w}.3f}  {avg_f1:{col_w}.3f}"
+            f"  {tot_n:>4d}  {tot_gt_acc:>6d}  {tot_pred_acc:>8d}"
+        )
+
+
+def print_grand_summary(approach_results: dict, venues):
+    """Per-venue alignment table, then overall macro-average across all venues & dimensions."""
+    print(f"\n{'#'*72}")
+    print(f"# ALIGNMENT SCORES")
+    print(f"{'#'*72}")
+
+    hdr = f"  {'Approach':<28s}  {'Pearson r':>10s}  {'Spearman ρ':>10s}  {'MAE':>6s}  {'Bias':>6s}"
+
+    # Per-venue breakdown (averaged across dimensions within each venue)
+    for venue in venues:
+        print(f"\n  Venue: {venue}  (averaged across dimensions)")
+        print(hdr)
+        print("  " + "-" * 68)
+        for label, venue_results in approach_results.items():
+            results = venue_results.get(venue, [])
+            vp  = [pr  for _, pr, _, _,  _,   _,    _, _ in results]
+            vsp = [sr  for _, _,  _, sr, _,   _,    _, _ in results]
+            vm  = [mae for _, _,  _, _,  _,   mae,  _, _ in results]
+            vb  = [b   for _, _,  _, _,  _,   _,    b, _ in results]
+            if vp:
+                print(
+                    f"  {label:<28s}  {np.mean(vp):+.3f}        "
+                    f"{np.mean(vsp):+.3f}        "
+                    f"{np.mean(vm):5.2f}  {np.mean(vb):+5.2f}"
+                )
+            else:
+                print(f"  {label:<28s}  -- no data")
+
+    # Overall macro-average
+    print(f"\n  Overall  (macro-averaged across all venues & dimensions)")
+    print(hdr)
+    print("  " + "-" * 68)
     for label, venue_results in approach_results.items():
         all_p, all_sp, all_mae, all_bias = [], [], [], []
         for venue, results in venue_results.items():
@@ -472,51 +645,51 @@ def print_grand_summary(approach_results: dict, venues):
 def print_dataset_stats(peerread_dir, venues, approach_dirs):
     """Print a summary of the evaluation dataset before running metrics."""
     print(f"\n{'#'*72}")
-    print(f"# EVALUATION DATASET OVERVIEW")
+    print(f"# EVALUATION DATASET OVERVIEW  (splits: {', '.join(EVAL_SPLITS)})")
     print(f"{'#'*72}")
 
     total_papers = 0
     total_reviews = 0
 
     for venue in venues:
-        papers_dir  = Path(peerread_dir) / venue / "test" / "parsed_pdfs"
-        reviews_dir = Path(peerread_dir) / venue / "test" / "reviews"
-
-        n_papers  = len(list(papers_dir.glob("*.json")))  if papers_dir.exists()  else 0
-        n_reviews = len(list(reviews_dir.glob("*.json"))) if reviews_dir.exists() else 0
-
-        # Count papers that have at least one numeric score for any dimension
-        dims = VENUE_DIMENSIONS.get(venue, [])
+        n_papers = n_reviews = 0
         papers_with_gt = set()
-        if reviews_dir.exists():
-            for f in reviews_dir.glob("*.json"):
-                data = json.load(open(f))
-                for r in data.get("reviews", []):
-                    if any(extract_numeric_score(r.get(d)) is not None for d in dims):
-                        papers_with_gt.add(f.stem)
-                        break
+        dims = VENUE_DIMENSIONS.get(venue, [])
 
-        # Accept/reject labels
+        for split in EVAL_SPLITS:
+            papers_dir  = Path(peerread_dir) / venue / split / "parsed_pdfs"
+            reviews_dir = Path(peerread_dir) / venue / split / "reviews"
+            n_papers  += len(list(papers_dir.glob("*.json")))  if papers_dir.exists()  else 0
+            n_reviews += len(list(reviews_dir.glob("*.json"))) if reviews_dir.exists() else 0
+            if reviews_dir.exists():
+                for f in reviews_dir.glob("*.json"):
+                    data = json.load(open(f))
+                    for r in data.get("reviews", []):
+                        if any(extract_numeric_score(r.get(d)) is not None for d in dims):
+                            papers_with_gt.add(f.stem)
+                            break
+
         decisions = get_ground_truth_decisions(venue, peerread_dir)
 
-        # Per-approach output counts
         approach_counts = {}
         for label, out_dir in approach_dirs.items():
-            out_path = Path(out_dir) / venue / "test"
-            n = len(list(out_path.glob("*_review.json"))) if out_path.exists() else 0
+            n = sum(
+                len(list((Path(out_dir) / venue / split).glob("*_review.json")))
+                for split in EVAL_SPLITS
+                if (Path(out_dir) / venue / split).exists()
+            )
             approach_counts[label] = n
 
         print(f"\n  Venue : {venue}")
-        print(f"  {'Papers in test split':<35s} {n_papers}")
-        print(f"  {'Review files (human)':<35s} {n_reviews}")
+        print(f"  {'Papers (all splits)':<35s} {n_papers}")
+        print(f"  {'Review files (human, all splits)':<35s} {n_reviews}")
         print(f"  {'Papers with ≥1 numeric GT score':<35s} {len(papers_with_gt)}")
         print(f"  {'Papers with accept/reject label':<35s} {len(decisions)}")
         print(f"  {'Dimensions evaluated':<35s} {', '.join(dims)}")
-        print(f"\n  LLM output coverage:")
+        print(f"\n  LLM output coverage (all splits):")
         for label, count in approach_counts.items():
-            bar = "█" * count + "░" * max(0, n_papers - count)
-            pct = f"{count/n_papers:.0%}" if n_papers else "N/A"
-            print(f"    {label:<18s} {count:>3}/{n_papers}  ({pct})")
+            pct = f"{count/len(papers_with_gt):.0%}" if papers_with_gt else "N/A"
+            print(f"    {label:<18s} {count:>3}/{len(papers_with_gt)}  ({pct})")
 
         total_papers  += n_papers
         total_reviews += n_reviews
@@ -531,12 +704,14 @@ def main():
     venues         = ["acl_2017", "conll_2016", "iclr_2017"]
 
     approach_dirs = {
-        "Monolithic"   : "monolithic_prompts",
+        # "Monolithic"   : "monolithic_prompts",
         "Single-Agent" : "single_agent_prompts",
         "Dim-Agents"   : "dimension_agent_prompts",
         # "Lit-Augmented": "lit_augmented_agent_prompts",
         "Two-Stage"    : "two_stage_agent_prompts",
         "Debate"       : "debate_agent_prompts",
+        # "Debate-with-Novelty": "novelty_augmented_debate_agent_prompts",
+        # "Two-Stage-with-Novelty": "novelty_augmented_two_stage_prompts"
     }
 
     print_dataset_stats(peerread_dir, venues, approach_dirs)
@@ -563,6 +738,8 @@ def main():
         print_comparison_table(approach_results, venues)
 
     print_grand_summary(approach_results, venues)
+
+    print_accept_reject_table(approach_dirs, peerread_dir, venues)
 
     print(f"\n  * = p < 0.05")
 

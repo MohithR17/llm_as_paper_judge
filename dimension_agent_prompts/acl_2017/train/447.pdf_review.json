@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "CLARITY": 3,
+  "IMPACT": 3,
+  "MEANINGFUL_COMPARISON": 5,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "SUBSTANCE": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within top-tier NLP/ML scope: it develops a neural discourse-aware model (recursive RNN with a novel attention mechanism) for text categorization using RST-derived dependency trees and an off-the-shelf DPLP parser (sections 2\u20133). The work targets the right audience by comparing to standard neural baselines (e.g. Yang et al. 2016, hierarchical attention), uses expected methods and evaluation (GloVe, BiLSTM EDUs, grid search, datasets like movie reviews, congressional debates and legislative bills), and is positioned solidly within related NLP discourse and sentiment analysis literature (Related Work, Section 7)."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable, not purely incremental, idea: a recursive neural network built directly on RST-derived discourse dependency trees with relation-specific composition matrices (Eq.1) and a novel, non-normalized attention weighting (Eq.2) motivated by RST\u2019s lack of competition among satellites. It clearly differentiates itself from prior work by automating weighting (vs. Bhatia et al., 2015\u2019s handcrafted schemes) and by using discourse structure rather than the flat hierarchical attention of Yang et al. (2016). The technique is a non-trivial extension of existing recursive/attention methods and would be of interest to experts familiar with discourse-based sentiment and document representation, though it is not a radical departure from current neural architectures."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall organization is reasonable (Background -> Model -> Implementation -> Related Work) and the method is described in a logical order (Sections 2\u20134), with useful figure references (Figure 1/2) that illustrate the RST/dependency transformation. The main contribution is stated (using RST-based recursive networks with a novel attention mechanism) but not highlighted early and only appears explicitly later in the text. Notation and equations are generally consistent (Equations 1\u20132, attention \u03b1, relation-specific W), though a few symbols and inline formulas are hard to read in this extract. Presentation is weakened by many duplicated/garbled passages, LaTeX artifacts, and occasional grammatical/formatting issues that make some paragraphs confusing and require cleanup."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper tackles an important problem\u2014building document representations for text categorization that leverage discourse (RST) structure\u2014by introducing a recursive neural model on discourse dependency trees with relation-specific composition matrices and a novel non-normalized attention (Eq.2) to weight EDUs. This concretely connects discourse parsing (using the DPLP parser) to neural representation learning and shows gains on sentiment and categorization tasks, so it is likely to motivate follow-up work integrating discourse into NLP models. However, its broader impact is limited by dependence on an external RST parser (DPLP is trained on only 347 WSJ articles) and reported sensitivity to treebank size (the method underperforms if the RST treebank is reduced to 25%), which constrains immediate, wide applicability and prevents a transformative influence."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares to appropriate and recent baselines including hierarchical attention networks (Yang et al., 2016), discourse-aware sentiment models (Bhatia et al., 2015; Hogenboom et al., 2015), and strong non-discourse baselines (Yogatama & Smith, 2014), and uses the same public datasets and splits (e.g. Zhang et al., 2015; Yessenalina et al., 2010) and evaluation protocols (ten-fold CV) where applicable. The authors explicitly analyze differences (Sec. 3 contrasts their non-normalized attention with Bahdanau et al. and relates to Bhatia et al.\u2019s handcrafted weighting), and acknowledge when prior work performs comparably or better (they note Yogatama & Smith as best on some corpora and that their method can underperform Yang et al. if RST data is reduced). Overall the comparisons are fair, relevant, and discussed rather than merely listed."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The model and objectives are clearly stated and the mathematical formulation for composition (Eq. 1) and attention (Eq. 2) is generally sensible, but the attention definition is slightly ambiguous (they state an \u201celementwise sigmoid\u201d on e_i^T W_\u03b1 v_j, which should be scalar) indicating a minor notation/precision issue. The experimental protocol appears reasonable (preprocessing, use of DPLP parser, hyperparameter grid search and development/10-fold CV are described), but the excerpt provides no quantitative results or statistical significance tests to verify the claimed empirical gains. There is also an unexamined risk that the DPLP parser \u2014 trained on 347 WSJ articles (mentioned in \u00a74) \u2014 may produce domain-mismatched discourse structures for other corpora; this assumption is acknowledged but not rigorously controlled in the provided text."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper reports experiments on a diverse set of corpora (e.g. Zhang et al. 2015 large dataset, Media Frames Corpus, congressional debates, Pang & Lee movie reviews, legislative bills) and compares to relevant baselines (Yang et al. 2016, Bhatia et al. 2015, Hogenboom et al. 2015), and includes an explicit ablation (FULL vs UNLABELED) to measure the contribution of relation labels. Implementation and training details are reasonably thorough (DyNet, DPLP parser, preprocessing, GloVe use, hyperparameter grid, clipping and dropout) and they report some sensitivity analysis (grid search, note on performance when RST treebank is reduced). However, discussion of failure cases/limitations is minimal (only a brief note about underperforming with reduced RST data), and some reproduction details remain unspecified in the excerpt (e.g., exact chosen hyperparameters per dataset, batch size, number of epochs, random seeds)."
+    }
+  }
+}

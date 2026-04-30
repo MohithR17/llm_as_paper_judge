@@ -1,0 +1,55 @@
+{
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a distinct formulation (Direct Future Prediction) that reframes sensorimotor control as supervised learning by predicting future measurement changes conditioned on sensory input, measurements, actions, and a parameterized goal \u2014 a perspective that is not standard in the compared RL literature. Its use of vectorial multi-horizon prediction and goal-conditioning clearly differentiates it from baselines like DQN, A3C and DSR, and the empirical success (winning the Visual Doom AI Competition and large gains on complex ViZDoom tasks) supports that the technique is more than a trivial combination of known methods. While the approach has acknowledged limitations (reactive policy, discrete actions, limited prediction scope), those do not undermine that the core idea and technical choices represent a notable and non-trivial novelty. "
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported by empirical evidence: DFP is evaluated across ViZDoom scenarios D1\u2013D4 (and multitexture variants), compared against DQN, A3C, DSR and a strong competition runner-up, and it reportedly won the Full Deathmatch track indicating generalization to unseen maps. There are no substantive mathematical derivations to vet, and the experimental methodology is generally sound (appropriate baselines, multiple scenarios, reported hyperparameters and performance metrics), but the summary does not mention statistical significance testing and the approach depends on availability of measurement vectors and a discrete action space. These are minor limitations that do not undermine the presented experimental conclusions, so I rate the paper as technically strong with small methodological gaps."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized and presents a logical flow from method (Direct Future Prediction) to experiments (ViZDoom scenarios D1\u2013D4, multitexture variants, and the Visual Doom AI Competition) and conclusion; its main contributions (reduction to supervised prediction, multi-horizon/vectorial measurement prediction, and superior empirical performance vs. DQN/A3C/DSR) are stated early. Notation appears consistent and hyperparameters are reported, related work coverage is thorough, and writing quality is described as good. Figures/tables and examples effectively support the empirical comparisons, so overall presentation is strong with only minor presentation density that prevents an exceptional rating."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Reduces sensorimotor control to supervised learning by predicting future measurement changes conditioned on current sensory input, measurements, actions, and a parameterized goal.",
+      "Outperforms state-of-the-art deep reinforcement learning methods (DQN, A3C, DSR) on several ViZDoom 3D control scenarios, especially on more complex tasks with richer measurements.",
+      "Learns behaviors that generalize across environments and goals, and demonstrates that vectorial (multidimensional) measurement feedback and multi-horizon prediction improve performance.",
+      "Won the Full Deathmatch track of the Visual Doom AI Competition (generalization to previously unseen environments), outperforming the second-best submission by more than 50%."
+    ],
+    "methodology": "Train a deep network (Direct Future Prediction, DFP) to regress future differences of selected measurement vectors at multiple temporal offsets given current observation (image and measurements), a candidate action, and a goal vector; at test time select the action maximizing predicted goal utility (linear combination of predicted measurement differences).",
+    "datasets": [
+      "ViZDoom (Doom) scenarios: D1 (Basic), D2 (Navigation), D3 (Battle), D4 (Battle 2)",
+      "Multitexture variants: D3-tx, D4-tx",
+      "Visual Doom AI Competition (Full Deathmatch)"
+    ],
+    "baselines": [
+      "DQN (Mnih et al., 2015)",
+      "A3C (Mnih et al., 2016)",
+      "DSR (Kulkarni et al., 2016b)",
+      "Lample & Chaplot (2016) submission (competition runner-up)"
+    ],
+    "metrics": [
+      "Average health at end of episode",
+      "Average frags (monsters killed) at end of episode",
+      "Average training speed (millions of simulation steps per day)"
+    ],
+    "limitations": [
+      "Model is purely reactive: acts based on the current frame only with no explicit memory or internal state retention at test time.",
+      "No temporal abstraction or hierarchical skill organization (not addressed by presented model).",
+      "Formulation and experiments are for discrete action spaces; extension to continuous actions is not provided.",
+      "Predicting full sensory streams (full observations) is acknowledged as beyond current capabilities; only selected measurement prediction is performed."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Reinforcement learning / sensorimotor control in 3D visual environments",
+    "writing_quality": "good"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "IMPACT": 3,
+  "ORIGINALITY": 2,
+  "APPROPRIATENESS": 5,
+  "CLARITY": 3,
+  "SUBSTANCE": 2,
+  "SOUNDNESS_CORRECTNESS": 2,
+  "MEANINGFUL_COMPARISON": 3,
+  "_details": {
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper tackles an important and practical problem\u2014inducing word-level sentiment orientation\u2014and demonstrates a concrete improvement over a classic unsupervised baseline (PMI-IR), claiming the Word2Vec+PCA method \u2018\u2018outperforms the existing approach, using much smaller datasets, while being robust to data-sparseness\u2019\u2019 and can produce orientations for all vocabulary tokens rather than only phrases (sections 3.2.1 and Conclusion). Its impact is moderate because it applies widely-used tools (word embeddings and PCA) in a useful but incremental way rather than introducing a fundamentally new paradigm. The approach is likely to be adopted or extended for lexicon induction and resource-constrained sentiment tasks, but it is unlikely to by itself transform the field or open radically new directions."
+    },
+    "ORIGINALITY": {
+      "score": 2,
+      "justification": "The paper mainly applies existing tools (word embeddings, PCA dimensionality reduction, cosine distance) to the established task of estimating word-level sentiment and compares this to Turney\u2019s PMI-IR method (e.g., Sections 3.2.1, 3.2.3 and Conclusion). The approach is a straightforward combination of known techniques (Word2Vec/GloVe, PCA to find a sentiment axis, averaging to form positive/negative reference vectors and computing SO(w) via cosine differences) rather than a fundamentally new method. While the authors explicitly position and evaluate their method against prior work (Turney 2002) and claim empirical gains, the technical contribution is an incremental application/adaptation of existing methods and unlikely to surprise an expert."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses a core NLP/ML topic\u2014distributional semantic methods for sentiment analysis\u2014using standard resources and comparisons (IMDB and the Stanford Sentiment Treebank are explicitly used, \u00a73.1) and modern representation methods (Word2Vec, PCA dimensionality reduction) contrasted with a classic baseline (PMI-IR/Turney 2002, \u00a73.2.3). The task (measuring word-level sentiment orientation and unsupervised/semi-supervised review classification) and the evaluation protocol (dataset-level classification and baseline replication) match expectations for a top NLP/ML venue, and the manuscript situates itself within relevant prior work (Turney, Mikolov, Pennington/GloVe) making it well positioned for that audience."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "Overall organization is adequate (Methods -> Data -> Experiments -> Conclusion) but presentation suffers from repetition, typographical errors and inconsistent sectioning (e.g. 3.2.1 then 3.2.3 and jump to 6 Conclusion). Notation is mostly understandable (Equation 2) but informal (CosDst/Cosinedistance) and some references to Table 1 and figures are missing from the excerpt. The text contains multiple duplicated sentences and spelling mistakes (e.g. \"Yadex.com\" vs \"yandex.com\"), which reduce clarity and make some passages hard to follow."
+    },
+    "SUBSTANCE": {
+      "score": 2,
+      "justification": "Experiments are limited: the paper describes datasets (Section 3.1), an unsupervised PCA/Word2Vec pipeline (Section 3.2.1) and a PMI-IR replication (Section 3.2.3) and claims superiority (Conclusion) but the provided text contains no quantitative results, metrics, or detailed comparative numbers to support the claims. There are no ablation or sensitivity analyses (e.g. PCA dimensionality is fixed to two with no exploration), limited discussion of failure modes or limitations beyond a brief note on PMI-IR data sparsity, and reproducibility is weak (missing Word2Vec/GloVe hyperparameters, exact selection of K point words, preprocessing steps). Related work is cited broadly, but experimental depth and reporting are insufficient to substantiate the conclusions."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 2,
+      "justification": "The paper claims a Word2Vec/PCA-based unsupervised method outperforms PMI-IR but provides no quantitative results, statistical tests, or detailed experimental settings in the provided text (no accuracies, embedding/training hyperparameters, or significance measures). Methodologically there are clear problems: the authors assert \u2018\u2018Cosine distance...the distance data is Euclidean\u2019\u2019 and apply PCA directly to a K\u00d7K distance matrix (PCA is not the correct tool for distance matrices without classical MDS), and they contradict themselves about sign handling of the principal axis (they say signs are irrelevant yet split words by the axis origin). Additionally important details (exact point-word selection rules, embedding training, and how IMDB provides per-token polarity) are missing, making the core claims unsupported by the presented evidence."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper does compare experimentally to Turney (2002)\u2019s PMI-IR (they replicate the algorithm, use the same seed words and formula, and state they follow Turney\u2019s mean-SO-per-review classification), and it situates the work with respect to word-embedding literature (Mikolov et al., Pennington et al.). However the comparisons are limited: the PMI-IR replication uses a different search engine (Yandex vs. Turney\u2019s AltaVista) and potentially different data conditions (noted data-sparsity concerns), raising fairness issues, and the paper does not experimentally compare to other modern or embedding-based baselines (e.g., GloVe, sentiment-specific embeddings, or other lexicon induction methods) nor to supervised embedding classifiers. The differences from prior work are explained at a high level (distributional vs. PMI), but there is limited analysis when prior methods perform comparably or better and important competing approaches are not evaluated empirically."
+    }
+  }
+}

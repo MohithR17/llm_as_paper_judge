@@ -1,0 +1,175 @@
+{
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "APPROPRIATENESS": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "SUBSTANCE": 3,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early; the encoder\u2013decoder multi-task formulation and explicit language-tagging are conveyed clearly. Notation appears consistent and hyperparameters/datasets are reported, and writing quality is good. However, presentation could be strengthened by clearer exposition of ablation studies (e.g., effect of language tag, parameter tying, conditioning on morphological tags) and more explicit per-language error analyses; these omissions make parts of the experimental narrative harder to follow for a theory-minded reader. | B(4): Overall the paper is well organized and follows a clear structure from introduction through method, experiments, and conclusion, and it states the main contributions early (novel encoder\u2013decoder transfer approach, one-/zero-shot results, and findings about language relatedness). The notation and model formulation are presented consistently and relevant hyperparameters are reported, while figures/tables and experimental examples across 21 language pairs appear informative. Writing quality is good and related work coverage is thorough, though a few minor presentation clarifications (e.g., more explicit pointers to datasets/code and a brief schematic of the multi-task setup) would further improve readability for reproducibility-focused readers like me.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early; the encoder\u2013decoder multi-task formulation and explicit language-tagging are conveyed clearly. Notation appears consistent and hyperparameters/datasets are reported, and writing quality is good. However, presentation could be strengthened by clearer exposition of ablation studies (e.g., effect of language tag, parameter tying, conditioning on morphological tags) and more explicit per-language error analyses; these omissions make parts of the experimental narrative harder to follow for a theory-minded reader."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and follows a clear structure from introduction through method, experiments, and conclusion, and it states the main contributions early (novel encoder\u2013decoder transfer approach, one-/zero-shot results, and findings about language relatedness). The notation and model formulation are presented consistently and relevant hyperparameters are reported, while figures/tables and experimental examples across 21 language pairs appear informative. Writing quality is good and related work coverage is thorough, though a few minor presentation clarifications (e.g., more explicit pointers to datasets/code and a brief schematic of the multi-task setup) would further improve readability for reproducibility-focused readers like me."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses an important practical problem and demonstrates strong empirical gains and reproducibility, but offers limited theoretical insight and transfer is mainly effective between related languages. Given its clear utility for practitioners and likelihood to spur follow-up work despite not fundamentally advancing theory, a score above midpoint is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem (low-resource morphological paradigm completion) and demonstrates substantial empirical gains (up to 58% accuracy) using tied encoder\u2013decoder transfer and language tags, so it will interest practitioners. However, from a theory-focused perspective its impact is limited: claims rest mainly on empirical results without formal analysis of when or why parameter tying yields transfer, and the experimental comparisons appear to lack the diverse, non-neural and analytically motivated baselines and critical ablations I expect. The documented limitation that transfer works mainly between related languages further constrains generality. Overall this is a useful, application-focused contribution likely to spur follow-up work but not to fundamentally change theoretical understanding of cross-lingual morphological learning."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles an important, practical problem\u2014low-resource morphological paradigm completion\u2014and demonstrates strong, empirically validated gains (up to 58% accuracy) across 21 language pairs using a simple, unified encoder\u2013decoder multi-task transfer setup. The work will likely change practitioner behavior by showing one-shot/zero-shot feasibility and by documenting the crucial role of language relatedness; the use of standard datasets (SIGMORPHON/UniMorph) and reported hyperparameters improves reproducibility. While not overturning theoretical understanding, it provides a broadly applicable engineering recipe that will be built upon for multilingual/low-resource morphology, though its impact is constrained by effectiveness mainly among related languages."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses a relevant multilingual NLP problem and targets the right audience with an encoder\u2013decoder approach and empirical evaluation. I score it a 4 because, while the empirical results and experimental scope are strong and appropriate for the venue, the concerns about limited theoretical analysis and somewhat weak baselines merit a reservation short of the top score\u2014suggesting acceptance conditional on stronger comparisons or clearer analysis of transfer mechanisms.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The topic\u2014cross-lingual transfer for morphological paradigm completion using encoder-decoder models\u2014is squarely within mainstream NLP/ML conference scope, and the paper targets the correct audience interested in low-resource morphology. However, from the provided summary I see a heavy empirical focus with limited theoretical analysis of when and why transfer should work, and baselines are weak (only No-transfer and an unrelated-language regularization check such as Arabic) rather than the three competitive baselines I expect (non-neural or analytically motivated methods, other transfer schemes). Given these gaps in theoretical grounding and controlled comparisons the paper is borderline appropriate for a top venue: relevant but missing the rigorous analyses that such venues typically require."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit: it addresses a core multilingual NLP problem (cross-lingual paradigm completion) with a practical neural encoder\u2013decoder approach and large-scale empirical validation across 21 language pairs, reporting substantial gains (up to 58% accuracy). The methodology, multi-task tied-parameter RNN with attention, matches community expectations and evaluations use standard SIGMORPHON/UniMorph resources and sensible baselines (no-transfer and control languages). The work speaks directly to the venue\u2019s audience\u2014demonstrating realistic low-resource and one-/zero-shot transfer scenarios\u2014and only a minor reproducibility concern (code release not mentioned) slightly tempers an otherwise strong fit."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper makes clear claims and presents strong empirical results across many language pairs but share concerns about methodological gaps: incomplete baselines/ablations, a potential regularization confound, and missing statistical significance or released code. Because these issues limit confidence in attributing gains to true linguistic transfer rather than modeling/regularization choices, a middle score is warranted: the experiments are promising and reproducible in broad strokes, but the technical support is incomplete.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents clear claims and provides empirical evidence (up to 58% accuracy gains across 21 language pairs) using a tied encoder\u2013decoder with language tags and conditioning. However, from the summary I see missing theoretical analysis of when one/zero-shot transfer should work, an incomplete set of baselines (no non-neural or analytically motivated comparators and only a no-transfer baseline), and absent critical ablations (e.g., effect of language tag, parameter tying, conditioning, and per-language error analysis). The authors note a regularization confound (Arabic) but do not appear to fully disentangle true linguistic transfer from regularization, so while results are promising the technical support is partial."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper clearly states its main claims and presents extensive empirical evidence (experiments on 21 language pairs, up to 58% accuracy gain) using a sensible encoder\u2013decoder multi-task setup and appropriate baselines (no-transfer, unrelated-language regularizer). There is no indication of nontrivial mathematical derivations to verify, and hyperparameters and datasets are reported, which supports reproducibility. Minor technical concerns remain: I see no mention of statistical significance testing nor of released code, and the authors themselves note a potential regularization confound when using unrelated languages (Arabic), which could affect interpretation of some gains. Overall the experiments are sound and support the main conclusions, but the missing statistical analysis and the regularization vs. true transfer ambiguity prevent a perfect score."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper delivers strong empirical results across many language pairs, reports hyperparameters, and candidly discusses limitations (notably the role of language relatedness). They also concur the analysis lacks key ablations and more systematic sensitivity studies, and reproducibility is only partial since code release is not mentioned. Given the solid empirical contribution but missing controlled analyses and limited reproducibility, a middle-ground score of 3 reflects meaningful results tempered by these notable methodological gaps.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides a substantial empirical evaluation across 21 language pairs and explicitly discusses limitations (relatedness matters, regularization from unrelated languages), and hyperparameters are reported. However, it lacks key ablations and analytical comparisons I would expect: no mention of ablation studies for language tag, parameter tying, or conditioning on morphological tags, and only weak baselines (no non\u2011neural or analytically motivated methods) beyond a no\u2011transfer baseline and an unrelated\u2011language regularizer. Reproducibility is only partially satisfied (datasets cited and hyperparameters reported but code not mentioned), so the experimental evidence supports the claims empirically but misses the theoretical/controlled analyses I require."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents strong empirical evidence across many language pairs (21 pairs) with large accuracy gains (up to 58%) and explores zero-/one-shot settings, which supports the main claims. It compares sensible baselines (no-transfer and an unrelated-language regularizer) and reports hyperparameters, and discusses limitations about language relatedness and regularization effects. However, while related work coverage is thorough and negative results are acknowledged, the analysis lacks broader sensitivity/ablation experiments (e.g., varying amounts of high-resource data, architecture variants, or more systematic probing of transfer vs. regularization), and code release is not mentioned, slightly limiting reproducibility."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper assembles established neural components rather than proposing a fundamentally new model, but they also acknowledge its practical novelty in framing paradigm completion as multi-task seq2seq transfer and providing broad empirical evidence across many language pairs. The work\u2019s clear empirical gains and analysis (e.g., distinguishing regularization from true transfer) make it a solid, non-trivial contribution to multilingual morphological modeling, though somewhat incremental in methodological novelty.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper applies an attention-based encoder\u2013decoder in a multi-task setting with tied parameters and explicit language tags to enable one-/zero-shot paradigm completion \u2014 ideas that are individually well-established (multilingual NMT, neural morphological inflection). Its novelty is primarily in assembling these components for cross-lingual paradigm completion and providing broad empirical evidence across 21 language pairs, rather than introducing a fundamentally new model or theoretical insight. From my perspective, this is a moderate, empirically-focused contribution: it is a useful application and empirical study but largely incremental given prior neural transfer techniques and the absence of new formal analysis of when/why transfer succeeds."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable and practically useful novelty: a unified encoder\u2013decoder RNN with attention that enables one-shot and zero-shot cross-lingual transfer for paradigm completion by tying parameters, prepending language tags, and conditioning on morphological tags. While paradigm completion and cross-lingual transfer have been studied, framing them as multi-task neural seq2seq transfer and demonstrating large empirical gains across 21 language pairs (including SIGMORPHON data and UniMorph-derived sets) is a clear, non-trivial extension beyond prior work. The authors also explicitly distinguish regularization effects from true linguistic transfer, which helps clarify the contribution for multilingual practitioners."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper uses sensible baselines (no-transfer and unrelated-language) and standard datasets/metrics, and correctly analyzes transfer vs regularization; however, they also concur that important competitive recent baselines and non-neural/analytic methods are missing. Because the empirical comparisons are fair but not sufficiently comprehensive to support strong claims of superiority across many language pairs, a mid-level score of 3 reflects solid but incomplete comparison.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper evaluates against a no-transfer baseline and uses an unrelated-language (Arabic) condition to probe regularization, and reports results on standard datasets (SIGMORPHON/UniMorph) with accuracy metrics\u2014so comparisons are partly fair. However, it omits several important competitive baselines (e.g., non-neural/analytically motivated methods and multiple strong recent baselines required to establish gains across 21 language pairs), and I see no indication that prior methods that might match performance are acknowledged. The authors do analyze a regularization vs. true transfer effect and discuss related work thoroughly, but the empirical comparison set is insufficiently comprehensive for strong claims of superiority."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares against a sensible no-transfer baseline and an unrelated-language (Arabic) baseline to isolate transfer vs regularization effects, and uses shared datasets (SIGMORPHON/UniMorph) and accuracy metrics so comparisons appear fair. It explicitly discusses when gains arise from related-language transfer versus regularization and includes thorough related-work coverage. However, it seems to omit comparison to a broader set of recent state-of-the-art cross-lingual or multi-source transfer methods for morphological inflection, so important competitive baselines may be missing. Overall the empirical comparison is strong and fair but not fully comprehensive."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a novel cross-lingual transfer method for paradigm completion using a neural encoder-decoder model.",
+      "Using labeled data from a high-resource language improves performance on low-resource languages (up to 58% higher accuracy in experiments on 21 language pairs).",
+      "Zero-shot and one-shot learning for paradigm completion are possible with the proposed approach.",
+      "The degree of language relatedness strongly influences the ability to transfer morphological knowledge."
+    ],
+    "methodology": "Parameterize a probability model as a single encoder-decoder gated RNN with attention trained in a multi-task setting: tie parameters across a high-resource and a low-resource language, prepend an explicit language tag to inputs, and condition decoding on language and morphological tags to enable cross-lingual transfer.",
+    "datasets": [
+      "SIGMORPHON 2016 (mentioned)",
+      "Portuguese\u2013Spanish and Arabic\u2013Spanish datasets used in experiments (Experiment 1)",
+      "Datasets created from UniMorph / UNIMORPH schema (mentioned via Kirov et al., 2016 and Sylak-Glassman, 2015)"
+    ],
+    "baselines": [
+      "Arabic (used as a baseline language to measure regularization effects)",
+      "No-transfer (training only on target language)"
+    ],
+    "metrics": [
+      "Accuracy"
+    ],
+    "limitations": [
+      "Cross-lingual transfer is viable mainly among related languages; transfer between unrelated languages is ineffective.",
+      "A regularization effect (e.g., from an unrelated language like Arabic) can improve performance without true linguistic transfer, potentially confounding interpretation of gains."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - morphological paradigm completion / cross-lingual transfer",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory-Focused Skeptic",
+      "background": "Associate professor in computational linguistics with a track record of work on formal models of morphology and learning theory for NLP.",
+      "traits": [
+        "penalizes papers that present mainly empirical results without formal justification or theoretical analysis of when/why the method should work",
+        "requires at least three competitive baselines including non-neural or analytically motivated methods; will deduct points if baselines are missing or weak",
+        "penalizes papers that omit critical ablations (e.g., effect of language tag, parameter tying, and conditioning on morphological tags) and detailed error analysis per language",
+        "expects explicit discussion (or proof) of generalization properties for one-shot/zero-shot transfer and will score lower if absent"
+      ],
+      "reviewing_style": "Prioritizes formal understanding and controlled ablations; skeptical of empirical-only contributions and will lower scores when theoretical grounding and necessary comparisons are missing."
+    },
+    "reviewer_b": {
+      "name": "Empirical Multilingual Practitioner",
+      "background": "Senior researcher in multilingual NLP and speech, with extensive experience building and evaluating cross-lingual and low-resource systems for many languages.",
+      "traits": [
+        "rewards clear, large-scale empirical validation across many language pairs and values practicality and demonstrated gains in realistic low-resource setups",
+        "favors novel, well-engineered neural approaches that enable few-shot/zero-shot transfer and will give higher scores for strong empirical improvements (e.g., large accuracy gains across many pairs)",
+        "rewards reproducibility and applicability: presence of clear experimental protocol, diverse language coverage, and public code/dataset release increases score",
+        "prefers simple, unified models with minimal feature engineering and will score up if the approach is broadly applicable across language families"
+      ],
+      "reviewing_style": "Focuses on empirical impact and practical applicability; inclined to accept papers that deliver clear, reproducible improvements for low-resource multilingual problems even if theoretical analysis is light."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

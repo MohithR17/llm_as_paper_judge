@@ -1,0 +1,39 @@
+{
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 3,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper assembles a competitive end-to-end open\u2011domain QA pipeline (Document Retriever using TF\u2011IDF + bigram hashing and a 3\u2011layer BiLSTM Document Reader with aligned question embeddings) and applies distant supervision to convert existing QA datasets into paragraph\u2011level training data. These components are largely based on existing techniques (classical IR, BiLSTM readers and aligned embeddings, and DS for supervision) rather than introducing a fundamentally new model; the novelty lies in the integration and application to answering from the full Wikipedia (e.g. Sections 3.1, 4.4, and 5.2). The authors do clearly differentiate their approach from prior Wikipedia\u2011based QA and multi\u2011task work, but the technical contributions are incremental rather than groundbreaking, so the contribution is moderately novel."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims (a TF-IDF+bigram retriever combined with a neural Document Reader can answer open-domain Wikipedia questions) are supported by experiments: the Reader attains 70.0% EM / 79.0% F1 on SQuAD and an ablation study shows feature contributions (Table 5). The paper describes a reasonable distant-supervision procedure to generate training paragraphs and compares to established baselines (e.g., BiDAF, Coattention). However, some methodological details are under-specified in the provided text (e.g. the exact bigram hashing size shown as \u201c224 bins\u201d is ambiguous, numerical results for the retriever vs. Wikipedia Search API are not reported here, and no statistical significance testing is mentioned), and the distant-supervision filtering heuristics can introduce bias/noise that is not fully analyzed. These are minor issues that do not invalidate the main experimental conclusions."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is generally organized into standard sections (e.g., 3 Our System: DrWiki, 3.1 Document Retriever, 4.x knowledge/datasets, 5 Experiments) and follows an intro\u2192method\u2192experiments structure, making the high-level flow easy to follow. Main contributions are stated (e.g., a combined retriever+reader system and multitask/distant-supervision training) but not emphasized very early; the summary toward the end reads like an abstract. Notation is sparse and mostly consistent (the aligned question embedding formula is defined), but figures/tables are inconsistently presented\u2014several tables are referenced (Table 1,2,4) while only Table 5 appears and some URLs/footnotes are inline. Writing is understandable overall but has many presentation problems: duplicated/mangled sentences and repeated citation fragments (e.g., multiple repeated references to CNN/Daily Mail, SQuAD, and DBPedia), stray LaTeX/URL artifacts, and occasional grammatical/formatting glitches that distract the reader."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper provides a broad set of experiments: separate evaluations of the Document Retriever (including comparison to the built-in Wikipedia Search), a strong Document Reader evaluation on SQuAD with architecture and training details (3-layer BiLSTM, Glove embeddings, Adamax, dropout) and end-to-end open-domain tests using multiple datasets (CuratedTREC, WebQuestions, WikiMovies) with a described distant-supervision pipeline. Ablation analysis on paragraph features is reported (Table 5) showing the contribution of aligned and exact-match features. Related work is extensively cited and discussed. However, there is little explicit discussion of failure cases or systematic limitations/negative results, and some reproduction details (e.g., exact training schedules, some DS dataset sizes and certain hyperparameters) are not fully specified, so the experimental analysis is solid but has minor gaps for full reproducibility."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares its Document Reader directly to strong, recent SQuAD baselines (BiDAF, Dynamic Coattention, Multi-Perspective Matching) and reports state-of-the-art results on standard EM/F1 metrics (Section 5.2, Table 4), and it compares its Document Retriever against the built-in ElasticSearch Wikipedia API (Sec. 3.1). It cites and discusses a wide range of relevant prior work (DeepQA, AskMSR, YodaQA, KB-based methods, distant supervision) and provides feature ablations (Table 5), acknowledging when prior methods are comparable. One weakness is that end-to-end comparisons to full open-domain systems are sometimes done against systems using different resources (e.g., YodaQA\u2019s redundant resources vs their Wikipedia-only setup), making those comparisons less directly fair, and a few alternative open-domain baselines/pipeline variants are not fully evaluated."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses open-domain question answering by combining an IR-style Document Retriever and a neural Document Reader (Section 3), which is squarely within top NLP/ML venue topics. It uses community-standard datasets and evaluation protocols (SQuAD, CuratedTREC, WebQuestions, WikiMovies) and reports competitive/state-of-the-art results (Section 5), as well as sensible training strategies like distant supervision and multitask data augmentation (Section 4.4). The work is positioned with respect to prior QA systems (e.g., YodaQA, DeepQA) and modern neural baselines (BiDAF, Dynamic Coattention), indicating the right audience and correct framing for a top-tier conference."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the central problem of open-domain QA using Wikipedia as the sole knowledge source and presents a complete, practical pipeline (Document Retriever + Document Reader). Empirically strong results are reported\u2014Document Retriever \"outperforms the built-in Wikipedia search engine\" and Document Reader achieves 70.0% EM / 79.0% F1 on SQuAD\u2014showing this reading-based approach is highly competitive. The use of distant supervision to train across datasets and the retrieval+reading decomposition open clear follow-on research directions (multitask/DS training, scalable retrieval, end-to-end reading). Given its broad applicability to QA and related IR/NLP tasks and the multiple datasets evaluated, the work is likely to be widely used and built upon, representing a strong-impact contribution (but not claimed here to be fully transformative)."
+    }
+  }
+}

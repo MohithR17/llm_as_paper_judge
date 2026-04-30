@@ -1,0 +1,95 @@
+{
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 3,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses taxonomic IsA extraction and fine-grained instance population, which is squarely within the scope of top NLP/ML venues (information extraction / knowledge induction). Its methodology (learning modifier property profiles, composing evidence, weakly supervised reranker) and empirical evaluation (AUC improvement over a strong Hearst-patterns baseline on reconstructing Wikipedia categories) use methods and evaluation standards expected at such conferences. The paper is positioned appropriately for the venue\u2019s community, compares against a standard baseline, and uses realistic datasets (Wikipedia, ReVerb/OllIE, query logs), making it a good fit.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper compares against a strong, widely-used Hearst-patterns baseline and reports AUC improvements on the Wikipedia reconstruction task, which is an appropriate baseline but narrowly scoped. It does not appear to compare to other relevant and directly related prior approaches (e.g., semantic taxonomy induction and classic hyponym acquisition methods) despite citing related work, so important baselines are missing. The summary does not make clear that experimental conditions and datasets were aligned across alternative methods beyond Hearst patterns, limiting assessment of fairness. Overall the comparisons are meaningful but incomplete relative to the broader literature on IsA/taxonomy induction.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem\u2014populating fine-grained IsA classes (e.g., \u201c1950s American jazz composers\u201d)\u2014which is central to knowledge-base completion and taxonomy induction. Empirical gains (>10 point AUC over a strong Hearst-patterns baseline on Wikipedia category reconstruction) indicate results that could change practitioner approaches to IsA extraction by leveraging modifier composition and noun-compound interpretations. The compositional \u2018property profile\u2019 method and use of large fact repositories/open IE outputs open clear new research directions for multi-modifier class extraction. While some assumptions (e.g., subsective modifiers, frequency-as-importance) limit generality, the approach is likely to be adopted and extended across information-extraction work.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized with a logical flow from problem statement to method and experiments, and the main contributions are stated early (method for composing modifier semantics, property profiles, and >10 point AUC improvement). Notation and methodological descriptions seem clear enough to follow (e.g., property profiles, intersection of modifier scores, logistic reranker), and figures/tables/examples are reported as effective. Minor presentation issues include missing details like hyperparameter reporting and code availability, which slightly reduce reproducibility but do not substantially harm clarity.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable and clearly differentiated approach by compositionally modeling modifier semantics via learned \u2018property profiles\u2019 to populate fine-grained IsA classes (e.g., \u201c1950s American jazz composers\u201d), and claims to be the first to leverage noun-compound interpretations for downstream IsA extraction. While IsA and taxonomy induction have been long-studied (e.g., semantic taxonomy induction from heterogeneous evidence (2006) and early hyponymy acquisition work (1992)), this specific modifier-compositional technique and its application to reconstructing Wikipedia category pages appears to be a non-trivial and novel extension beyond those prior methods. The empirical gains reported (>10 point AUC improvement over Hearst-pattern baselines) and the methodological emphasis on composing modifier profiles support that the contribution would inform experts, though it builds on established IE/taxonomy paradigms rather than overturning them.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments demonstrate a clear empirical win (>10 point AUC gain over a strong Hearst-patterns baseline) on the Wikipedia category reconstruction task, which supports the central claim, but evaluation appears narrowly focused on that dataset and a single baseline. Ablation or sensitivity analyses are not reported in the summary (hyperparameters and code are not provided), so it is unclear how robust the approach is to choices like modifier composition, fact-repository noise, or reranker design. Related work coverage is described as thorough and the paper acknowledges key limitations (assumptions about modifier frequency and subsectivity), but reproducibility details are insufficient. Given existing taxonomy and hyponymy induction literature (e.g., prior works on semantic taxonomy induction and hyponym acquisition), the paper makes a useful contribution but lacks some important experimental and reproducibility analyses.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and empirically supported by a reported >10 point AUC improvement on reconstructing Wikipedia category pages, and the methodology (learning modifier property profiles from a large fact repository and composing evidence across modifiers with a reranker) is coherent and plausible given the described data sources (ReVerb/Ollie extractions, query-log paraphrases). However, the summary indicates limited experimental detail (no hyperparameters, no mention of statistical significance testing) and only a single strong Hearst-patterns baseline is reported, which weakens confidence that the evaluation fully rules out alternative explanations. The authors acknowledge key assumptions (frequency-as-importance and modifier subsectivity), so while there are minor methodological gaps, they do not appear to undermine the main conclusions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Presents a method to populate fine-grained classes (e.g., \u201c1950s American jazz composers\u201d) with instances by composing interpretations of individual modifiers relative to the head.",
+      "Models modifier semantics compositionally via learned \u2018property profiles\u2019 and combines evidence across modifiers to perform IsA extraction without requiring verbatim observation of the full class label.",
+      "Demonstrates empirically a >10 point increase in AUC over a strong Hearst-patterns baseline on the task of reconstructing Wikipedia category pages.",
+      "Claims to be the first attempt to use noun-compound interpretations for downstream IsA relation extraction."
+    ],
+    "methodology": "Learn property profiles for each modifier from a large repository of extracted facts (from ReVerb/OLLIE and query-log-based paraphrases), score candidate instances by matching instance facts to modifier property profiles (\u03c6\u0302), combine modifier scores by intersection for multi-modifier classes, and apply a weakly supervised logistic regression reranker.",
+    "datasets": [
+      "Wikipedia category pages (reconstruction task)",
+      "Query logs (used for paraphrase-based rewrites)",
+      "Fact repository D instantiated from ReVerb and OLLIE extractions",
+      "IsA repository O (used for training/evaluation)"
+    ],
+    "baselines": [
+      "Hearst-patterns based baseline (widely-used Hearst patterns)"
+    ],
+    "metrics": [
+      "AUC"
+    ],
+    "limitations": [
+      "Assumes relations between modifier and head that are discussed more often are more likely to capture important properties (stated as imperfect).",
+      "Assumes modifiers are subsective (acknowledged limitations of this assumption)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "Information extraction / IsA relation extraction / taxonomic knowledge induction",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 2,
+    "paper_novelty_mean": 0.6708,
+    "augmented_dims": [
+      "MEANINGFUL_COMPARISON",
+      "ORIGINALITY",
+      "SUBSTANCE"
+    ],
+    "total_dims": 7
+  }
+}

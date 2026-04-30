@@ -1,0 +1,115 @@
+{
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a clearly articulated architectural innovation \u2014 combining a coattentive encoder with an iterative Highway Maxout dynamic pointing decoder that alternates start/end predictions to escape local maxima \u2014 which is a notable departure from prior Match-LSTM/Pointer and static attention models. The coattention fusion and the dynamic iterative decoding together constitute a non-trivial new technique rather than a trivial combination, and the authors explicitly contrast to related co-attention and pointer approaches. From a theory-purist perspective I note the absence of formal justification for why iteration should reliably recover from wrong modes, but judged purely on novelty the design would surprise and inform experts familiar with existing QA architectures.  | B(4): The paper proposes a distinct architecture combining a coattentive encoder that fuses question and document contexts with a novel iterative dynamic pointing decoder (Highway Maxout Network) that alternates start/end predictions to escape local maxima. These components represent a coherent, non-trivial extension beyond prior Match-LSTM/Pointer and co-attention variants, and the model achieves state-of-the-art single-model and ensemble SQuAD performance. From an empirical QA research perspective this would inform experts, though it is not a radical departure from existing neural attention/pointer paradigms.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a clearly articulated architectural innovation \u2014 combining a coattentive encoder with an iterative Highway Maxout dynamic pointing decoder that alternates start/end predictions to escape local maxima \u2014 which is a notable departure from prior Match-LSTM/Pointer and static attention models. The coattention fusion and the dynamic iterative decoding together constitute a non-trivial new technique rather than a trivial combination, and the authors explicitly contrast to related co-attention and pointer approaches. From a theory-purist perspective I note the absence of formal justification for why iteration should reliably recover from wrong modes, but judged purely on novelty the design would surprise and inform experts familiar with existing QA architectures. "
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a distinct architecture combining a coattentive encoder that fuses question and document contexts with a novel iterative dynamic pointing decoder (Highway Maxout Network) that alternates start/end predictions to escape local maxima. These components represent a coherent, non-trivial extension beyond prior Match-LSTM/Pointer and co-attention variants, and the model achieves state-of-the-art single-model and ensemble SQuAD performance. From an empirical QA research perspective this would inform experts, though it is not a radical departure from existing neural attention/pointer paradigms."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions (coattentive encoder + dynamic pointing decoder) are stated early and described clearly; the writing quality is reported as good and related work and hyperparameters are covered. Notation appears consistent and the methodology (shared LSTMs, coattention, Highway Maxout decoder) is explained, but the presentation could be tightened around decoder failure modes and bimodal error behavior to make limitations and examples more immediately informative. Figures/tables/examples are effective but could better isolate the contributions of individual components (ablation results are mentioned but not summarized here), so a bit more clarity in experimental presentation would make the paper exceptional. | B(4): The paper is well organized with a clear flow from motivation through model design, experiments on SQuAD, and conclusions, and it states the main contributions (DCN architecture and dynamic pointing decoder) early. Notation and methodology are presented clearly enough to follow\u2014shared LSTMs, coattention encoding, and the Highway Maxout dynamic decoder are described and hyperparameters are reported. Figures, tables, and examples (including failure modes like alternating decoder spans and bimodal F1 distribution) are informative, and related work is adequately covered. A few minor presentation issues remain, but overall the writing is good and easy to follow.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions (coattentive encoder + dynamic pointing decoder) are stated early and described clearly; the writing quality is reported as good and related work and hyperparameters are covered. Notation appears consistent and the methodology (shared LSTMs, coattention, Highway Maxout decoder) is explained, but the presentation could be tightened around decoder failure modes and bimodal error behavior to make limitations and examples more immediately informative. Figures/tables/examples are effective but could better isolate the contributions of individual components (ablation results are mentioned but not summarized here), so a bit more clarity in experimental presentation would make the paper exceptional."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized with a clear flow from motivation through model design, experiments on SQuAD, and conclusions, and it states the main contributions (DCN architecture and dynamic pointing decoder) early. Notation and methodology are presented clearly enough to follow\u2014shared LSTMs, coattention encoding, and the Highway Maxout dynamic decoder are described and hyperparameters are reported. Figures, tables, and examples (including failure modes like alternating decoder spans and bimodal F1 distribution) are informative, and related work is adequately covered. A few minor presentation issues remain, but overall the writing is good and easy to follow."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper provides coherent technical description and convincing empirical gains on SQuAD, but also agree on weaknesses: lack of formal theoretical justification, incomplete ablations and diagnostics, missing variance/significance reporting, and decoder failure modes that impact general confidence. Given the solid empirical evidence and clear methodology tempered by these reproducibility and analysis gaps, a score of 4 reflects that the claims are largely supported but not fully airtight.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides empirical evidence (SQuAD single-model and ensemble gains) that supports its main claims about the DCN and the iterative decoder, but it lacks formal theoretical justification for why the dynamic pointing decoder should reliably escape local maxima and no proofs of convergence are given. Experimental methodology is reasonable in baseline selection, yet the summary indicates missing rigorous ablations isolating each core component (coattention, iterative decoder, Highway Maxout) and no reported variance or statistical significance for the gains. There are also reported failure modes (non\u2011convergence, bimodal predictions) that are acknowledged but not formally analyzed, leaving logical gaps about when the method will or will not work."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper makes clear technical claims (coattentive encoder + dynamic iterative pointer decoder) and supports them with empirical results on SQuAD showing single-model and ensemble gains versus reasonable baselines, with hyperparameters reported. Mathematical description appears coherent and the experimental methodology uses standard metrics and baselines, but there are minor reproducibility concerns (code not mentioned) and some admitted decoder failure modes (nonconvergence/alternation, bimodal error distribution) that weaken absolute confidence. Overall the evidence convincingly supports the main conclusions, though more diagnostics, significance testing, and release of code/hyperparameter seeds would strengthen the technical case."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces the Dynamic Coattention Network (DCN), an end-to-end neural architecture for question answering combining a coattentive encoder and a dynamic pointing decoder.",
+      "The DCN's iterative dynamic pointing decoder can recover from initial local maxima (incorrect answer spans) by alternating updates to predicted start and end positions.",
+      "On the SQuAD dataset the single-model DCN achieves state-of-the-art performance (75.9% F1) and an ensemble achieves 80.4% F1, outperforming prior submissions."
+    ],
+    "methodology": "The model encodes question and document with shared LSTMs, computes a coattention encoding fusing question and document contexts, and uses a Highway Maxout Network-based dynamic pointing decoder that iteratively predicts start and end span positions conditioned on previous estimates.",
+    "datasets": [
+      "SQuAD"
+    ],
+    "baselines": [
+      "Wang & Jiang (Match-LSTM + Pointer Network)",
+      "Yu et al. (Dynamic Chunk Reader)",
+      "Kadlec et al.",
+      "Lu et al. (hierarchical co-attention)",
+      "Hermann et al. (AttentiveReader)",
+      "Sordoni et al."
+    ],
+    "metrics": [
+      "Exact Match (EM)",
+      "F1 score"
+    ],
+    "limitations": [
+      "Decoder can fail to converge and alternate between multiple local maxima (example: alternation between similar answer spans).",
+      "Model struggles more on complex \"why\" questions compared to other types.",
+      "Performance degrades for longer answers (harder to predict correct word span).",
+      "Predictions are bimodal: many perfect (100% F1) and a nontrivial fraction of completely wrong (0% F1) answers (16.3% on dev)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - question answering / machine comprehension",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior researcher in machine learning and formal methods with a track record of publishing theoretical analyses of neural architectures and generalization bounds.",
+      "traits": [
+        "Penalises empirical-only papers that lack theoretical justification: deducts points if there is no formal analysis, proof, or clear theoretical motivation for core components.",
+        "Requires rigorous ablations: expects separate ablation for each architectural component (e.g., coattention, iterative decoder, Highway Maxout) and will downgrade if any major component lacks an isolated study.",
+        "Demands statistical significance: penalises results that present single-run metrics without variance estimates or significance testing against baselines.",
+        "Skeptical of complex engineering gains: reduces score when improvements appear to come from added architectural complexity or ensembles without clear attribution of which design choices cause gains."
+      ],
+      "reviewing_style": "Focuses on theoretical grounding and diagnostic empirical analysis; will upvote only when architecture choices are justified formally or through exhaustive, statistically sound ablation."
+    },
+    "reviewer_b": {
+      "name": "Empirical Champion",
+      "background": "Experienced NLP researcher and practitioner specializing in question answering and large-scale empirical evaluation, with several SQuAD and GLUE leaderboard submissions.",
+      "traits": [
+        "Rewards clear empirical improvements: gives credit for strong single-model and ensemble performance on standard benchmarks (e.g., SQuAD) relative to prior art.",
+        "Values novel architectures that are demonstrably effective: awards points when a proposed model introduces a coherent architectural idea (e.g., coattention + iterative decoder) that yields measurable gains.",
+        "Prefers end-to-end differentiable models and reproducibility: increases score if training details are thorough and code or detailed hyperparameters/recipes are provided.",
+        "Accepts limited theory if empirical evidence is comprehensive: will not heavily penalise absence of formal proofs provided empirical evaluation, ablations, and analyses are convincing."
+      ],
+      "reviewing_style": "Emphasizes empirical rigor, novelty in model design, and reproducibility; favors papers that push benchmark performance and provide convincing experimental support."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 1,
+    "total_dimensions": 3,
+    "debate_rate": 0.333
+  }
+}

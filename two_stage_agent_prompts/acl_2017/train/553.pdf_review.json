@@ -1,0 +1,69 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 3,
+  "ORIGINALITY": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses core NLP/ML topics\u2014semantic change detection, cross-context lexical analysis, and embedding comparison\u2014using methods (vector representations, nearest-neighbor based cosine scores) and datasets (COHA) familiar to the community. It compares against established baselines (Hamilton et al. 2016; Kim et al. 2014; Kulkarni et al. 2015), reports hyperparameters, and uses evaluation standards (nearest-neighbor consistency, \u03c6 scores) expected at top venues. The problem formulation and audience (researchers interested in lexical semantics and embedding evaluation) are well aligned, and related work coverage is thorough, making it a strong fit for a top NLP/ML conference."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper proposes a general, alignment-free framework (CCLA) for comparing term meanings across arbitrary context partitions and demonstrates applications to semantic change detection, context-representative term discovery, and embedding stability\u2014tasks of clear importance in NLP. The nearest-neighbor-list cosine scoring that avoids alignment/incremental retraining could change how researchers compare embeddings across contexts and make analyses more robust and broadly applicable. By applying the method to COHA and comparing to established baselines (Hamilton et al., Kim et al., Kulkarni et al.), the work is positioned for adoption and further extension, though noted limitations (stop-word effects, SGNS randomness) temper its immediate universality."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against established semantic-change and embedding baselines (Hamilton et al. 2016; Kim et al. 2014; Kulkarni et al. 2015) and evaluates on a standard corpus (COHA), indicating appropriate baselines. The methodology and differences (e.g., no-alignment nearest-neighbor scoring, \u03c6' subtraction to filter stopwords) are clearly described and related work coverage is noted as thorough. However, the summary does not explicitly state that all baselines were run under identical conditions or metrics, nor whether the paper acknowledges cases where prior methods match or outperform CCLA, so fairness and acknowledgment of comparable prior performance are unclear."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and presents a clear logical flow from method to experiments and conclusions, with its main contributions (CCLA framework and applications) stated early. Notation is consistent and well-defined (e.g., \u03c6 and \u03c6' scoring functions and NN() are described), and the writing quality is reported as good with hyperparameters and related work covered thoroughly. Presentation does have minor clarity issues to address \u2014 the need to subtract \u03c6(C1,C2) to filter stop words and the discussion of randomness/stability suggest some examples or figures could better illustrate these limitations. Overall the paper is well-written with only minor presentation improvements needed."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and appear supported by experiments on COHA with comparisons to established baselines (Hamilton et al., Kim et al., Kulkarni et al.). The proposed scoring method (cosine similarity between top-k nearest-neighbor lists) is simple, mathematically coherent, and the paper explicitly handles a known artifact (stop words) via the \u03c6' subtraction. However, the summary does not report statistical significance testing, code release, or extensive controls for randomness (noting only that randomness may affect SGNS runs), which are minor methodological gaps but do not undermine the core technical conclusions."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper evaluates CCLA across three tasks (diachronic change, comparative lexical analysis, embedding stability) and compares to multiple baselines (Hamilton et al., Kim et al., Kulkarni et al.), which supports the core claims, but experiments appear to use only COHA which limits generality. Ablation/sensitivity analyses are not clearly reported (though hyperparameters are given and randomness/nearest-neighbor stability are discussed), so deeper robustness checks are missing. Related work coverage is described as thorough and some failure modes/limitations (stop-word bias, randomness effects) are acknowledged, but reproducibility is uncertain because code availability is not mentioned despite hyperparameter reporting."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents CCLA, a general framework for comparing term meanings across arbitrary context partitions and introduces a nearest-neighbor-list cosine similarity score that permits comparing embeddings without alignment or incremental retraining \u2014 a clear methodological departure from alignment-based diachronic methods (e.g., Hamilton et al. 2016). It also extends this idea to three distinct tasks (semantic change detection, context-representative word discovery via \u03c6' subtraction, and embedding stability), showing a coherent, general-purpose perspective rather than a narrow incremental tweak. While the use of nearest neighbors builds on existing intuitions, the framing and applications constitute notable novelty and clear differentiation from prior work."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce CCLA, a general framework for cross-context lexical analysis that compares term meanings across arbitrary context partitions of text collections.",
+      "Apply CCLA to three tasks: semantic change detection (diachronic analysis), comparative lexical analysis across contexts (finding context-sensitive/insensitive terms), and comparing word representations (investigating embedding stability).",
+      "Propose a scoring method based on cosine similarity between nearest-neighbor lists of word annotations, which allows comparing embeddings without requiring alignment or incremental retraining across contexts.",
+      "Show that CCLA can be used to identify representative words for a context via a modified score (\u03c6' = \u03c6(C1,CB) \u2212 \u03c6(C1,C2)) and to quantify embedding stability via nearest-neighbor consistency."
+    ],
+    "methodology": "Represent each context Ci with d-dimensional word vectors; for a word w compute \u03c6(w,C1,C2)=cos(NN(w,C1),NN(w,C2)) where NN returns the top-k nearest neighbors based on normalized vectors; use head/tail of \u03a6 to retrieve stable/changed words and define \u03c6'(C1,CB)=\u03c6(C1,CB)\u2212\u03c6(C1,C2) to find context-representative words.",
+    "datasets": [
+      "COHA (Corpus of Historical American English)"
+    ],
+    "baselines": [
+      "Hamilton et al. (2016)",
+      "Kim et al. (2014)",
+      "Kulkarni et al. (2015)"
+    ],
+    "metrics": [
+      "Cosine similarity between nearest-neighbor lists (\u03c6)",
+      "Nearest-neighbor list consistency (embedding stability)"
+    ],
+    "limitations": [
+      "\u03c6(C1,CB) assigns high scores to stop words, requiring subtraction of \u03c6(C1,C2) to filter them when finding representative words.",
+      "Methods that use random sampling (e.g., SGNS) may be affected by randomness; nearest-neighbor stability can vary across runs."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - cross-context lexical analysis (semantic change detection and word embedding comparison)",
+    "writing_quality": "good"
+  }
+}

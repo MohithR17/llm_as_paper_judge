@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "CLARITY": 2,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "SUBSTANCE": 3,
+  "MEANINGFUL_COMPARISON": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes. The paper proposes LSTM-Jump, a method for learning discrete skip/jump decisions in recurrent models (Sec. 2) and evaluates on standard NLP benchmarks (sentiment, IMDB, AG News character-level, CBT Q&A) reporting speed/accuracy tradeoffs (Sec. 3.3). It uses expected ML/NLP tooling (REINFORCE policy gradients, Adam, pre-trained embeddings) and explicitly positions itself against relevant prior work (hard/soft attention, adaptive computation, Neural Turing Machines) in the Related Work (Sec. 4), making it a clear fit for a top-tier NLP/ML venue."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The manuscript contains some clear sections (e.g., the Model Overview explains N, R, K and stopping conditions and the AG dataset experiment gives specific hyperparameters), but overall presentation is poor. The Related Work and other paragraphs contain extensive repetition, duplicated sentences, garbled citations and LaTeX/artifact noise, and many cross-references to missing figures/tables (Figure 1, Table 2, Table 6). Notation is partially defined (d1:p) but references to unseen tables and inconsistent phrasing (e.g., \u201cIn the our experiments\u201d) and frequent copy-paste errors make the paper hard to follow and in need of substantial editing."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014efficient processing of long texts by recurrent networks\u2014by introducing LSTM-Jump that learns discrete jumps and is reported to be \"up to 6 times faster than the standard sequential LSTM, while maintaining the same or even better accuracy.\" Its use of policy gradients to make discrete skipping decisions and demonstrations across tasks (number prediction, sentiment, news classification, Q&A) would likely influence how researchers approach computationally efficient sequence models and hard-attention-style mechanisms. The method also opens clear follow-ups (integration with memory networks, attention, hierarchical structures) and has good potential for adoption in settings needing faster inference on long documents."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes LSTM-Jump, which learns discrete jumping decisions (a jumping softmax sampled for steps 1..K) to skip tokens during a single pass and is trained with policy gradients (Sec. 2.1 and training discussion). The idea is clearly differentiated from prior work in Related Work: unlike visual attention it operates over discrete jumps in text, unlike Graves/Jernite it can set computation to exactly zero by skipping spans, and unlike Shen et al. it targets selective single\u2011pass reading for speed. This is a non\u2011trivial application of RL for adaptive, discrete skipping in RNNs and thus represents notable novelty rather than a purely incremental combination of known techniques."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper states clear technical claims (a discrete-jump LSTM trained with policy gradients that is faster while retaining accuracy) and refers to experiments supporting them (e.g. character-level AG News, Table 6), but the provided excerpt omits important methodological details: the exact reward used for REINFORCE, how the RL objective is combined with supervised loss, and timing/hardware details behind the \"up to 6x faster\" claim. The use of REINFORCE with a learned baseline (bi = w_b h_s + c_b) is standard and sound in principle, but derivations and training dynamics are only sketched rather than fully specified. Experimental methodology appears to compare against a vanilla LSTM, yet the excerpt lacks mention of additional baselines, statistical significance tests, and ablations, so the conclusions are plausible but not fully substantiated by the presented text."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper evaluates LSTM-Jump across a broad set of tasks (number prediction, sentiment analysis, news article classification on AG, IMDB/Rotten Tomatoes, and automatic Q&A) and gives concrete experimental settings for at least the AG character-level task (embeddings, hidden size, R/K/N, batch sizes), supporting the main speed/accuracy claims. However, it lacks systematic ablation or sensitivity analyses for key hyperparameters (K, R, N) and provides only a brief cross-task remark about speedup vs. model size rather than controlled studies; failure modes and negative results are only mentioned anecdotally (e.g., sampling overhead, policy-gradient training cost) without in-depth analysis. Related work coverage is extensive and comparisons are discussed, but reproducibility is incomplete (missing many training details such as explicit learning rate value, epochs, random seeds, full metric/tables referenced but not shown), limiting verification and deeper analysis."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper empirically compares LSTM-Jump primarily against a vanilla LSTM across multiple datasets (Rotten Tomatoes, IMDB, AG News, CBT) and reports speed/accuracy gains (e.g., Table 6), and the LSTM vs LSTM-Jump experiments appear to use the same data and settings. The Related Work cites and discusses many recent and relevant approaches (Mnih et al. 2014; Shen et al. 2016; Graves 2016; Lei et al. 2016; Zaremba & Sutskever 2015) and clearly explains qualitative differences. However, the authors explicitly state they \u201crestrict our comparison between the vanilla LSTM \u2026 and our model,\u201d and do not provide quantitative experimental comparisons to other strong/adaptive or attention-based baselines, making the experimental comparison incomplete despite being fair for the single baseline used."
+    }
+  }
+}

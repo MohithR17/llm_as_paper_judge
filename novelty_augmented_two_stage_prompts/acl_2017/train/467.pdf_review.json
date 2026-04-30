@@ -1,0 +1,105 @@
+{
+  "APPROPRIATENESS": 5,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses cross-lingual/bilingual word embeddings and lexicon induction, a central topic for top-tier NLP/ML venues. It targets the right audience by improving supervision requirements for mapping-based bilingual embeddings and compares against strong prior work (Mikolov et al., Xing et al., Artetxe et al., etc.). The problem formulation, iterative self-learning methodology, and evaluations (bilingual lexicon induction accuracy and cross-lingual word similarity correlations on standard datasets) match community standards. Code release, hyperparameter reporting, and thorough related work further position it well for such conferences.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized and follows a logical flow from method to experiments and conclusion, with main contributions and claims stated early (seed-dictionary self-learning, iterative mapping/induction). Notation and methodology are presented clearly enough to describe the orthogonal mapping and nearest-neighbor induced dictionary, and hyperparameters and code are reported which aids reproducibility. Figures/tables and examples appear effective for the reported evaluations on multiple datasets and baselines, and related work coverage is thorough. Writing is generally adequate with minor presentation issues around efficiency/memory discussions that could be expanded for clarity.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical bottleneck\u2014reducing bilingual supervision for embedding mappings\u2014demonstrating that self-learning works with as little as a 25-word seed or automatically generated numerals and yields comparable or better results than prior dictionary- and parallel-based baselines on lexicon induction and cross-lingual similarity. Its approach is simple, compatible with any dictionary-based mapping technique, and code is available, which makes adoption and reuse likely across NLP work on cross-lingual representations. While not fundamentally overturning the field, it substantially lowers the supervision barrier and should influence how researchers and practitioners build bilingual mappings and inspire follow-up work on low-resource and unsupervised cross-lingual methods.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and supported by experiments across multiple datasets and baselines (e.g., bilingual lexicon induction and cross-lingual word similarity), with code and hyperparameters reported. The core mathematical approach (iterative orthogonal mapping and induced-dictionary bootstrapping) is standard and appears correct and complete for the described method. Experimental methodology is broadly sound with appropriate baselines, but the summary does not mention significance testing and notes practical limitations (runtime, memory) that affect applicability. Overall the technical evidence supports the conclusions, with only minor concerns about reported statistical analyses and scalability details.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper presents a practical iterative self-learning loop for dictionary-based bilingual mapping that reduces required supervision (down to 25-word seeds or numerals) and introduces an implementation detail (vectorized submatrix computation of XWZ^T) to address memory/efficiency\u2014concrete, useful contributions. However, the core idea of learning orthogonal mappings from small dictionaries and inducing dictionaries via nearest neighbors is a well-studied formulation (e.g., prior mapping and bilingual induction work such as [1],[2],[3]), and several contemporaneous papers also target very-low-resource or nearly-unsupervised alignment. Thus the work is a meaningful, non-trivial engineering and empirical advance but largely incremental relative to existing methods.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are broad (multiple datasets, tasks: lexicon induction and cross-lingual similarity) and compare to many relevant baselines (e.g., Mikolov et al., Xing et al., BilBOWA), and the paper demonstrates robustness to very small seeds (25 words, numerals). Reproducibility is strong (code and hyperparameters reported) and limitations are acknowledged (training time, memory when building full similarity matrices). However, the summary does not clearly report thorough ablation studies or sensitivity analyses beyond the small-seed experiments, so some aspects of method behavior and trade-offs (e.g., convergence properties, impact of retrieval choices) appear under-explored compared to closely related works on constrained induction and advanced retrievals (e.g., inverted softmax approaches).",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against a broad set of strong, relevant baselines (Mikolov et al., Xing et al., Zhang et al., Artetxe et al., Lazaridou et al., Luong et al., and BilBOWA) on public datasets with the same evaluation metrics and reports hyperparameters and code, indicating largely fair comparisons. It also acknowledges limitations and situations where prior methods are competitive. A few closely related later/alternative approaches (e.g., offline/inverted-softmax style methods and other 2017 low-resource induction techniques noted in the survey) are not explicitly listed among the baselines, so while comparisons are good and thorough overall, there are minor omissions of some contemporaneous competing methods.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A simple iterative self-learning framework for bilingual embedding mappings can substantially reduce the amount of bilingual supervision required (works with as little as a 25-word seed dictionary or an automatically generated list of numerals).",
+      "The self-learning method can be combined with any dictionary-based mapping technique and iteratively improves mappings by alternating between learning a mapping and inducing a full dictionary until convergence.",
+      "The proposed approach obtains comparable or better results than prior dictionary-based and parallel-corpus-based baselines on bilingual lexicon induction and cross-lingual word similarity, particularly with very small seed dictionaries."
+    ],
+    "methodology": "Iteratively learn an orthogonal linear mapping from source to target embeddings using a seed bilingual dictionary, induce a full bilingual dictionary by nearest-neighbor (dot-product) retrieval in the mapped space, replace the seed with the induced dictionary, and repeat until convergence.",
+    "datasets": [
+      "English-Italian dataset by Dinu et al. (2015) (public)",
+      "Europarl-derived bilingual dictionaries from OPUS (used to create training/test sets)",
+      "SdeWaC (English/Italian corpora)",
+      "Common Crawl corpora (WMT2016)",
+      "RG-65 crosslingual dataset (English-German)",
+      "WordSim-353 crosslingual dataset (English-German and English-Italian)"
+    ],
+    "baselines": [
+      "Mikolov et al. (2013a)",
+      "Xing et al. (2015)",
+      "Zhang et al. (2016)",
+      "Artetxe et al. (2016)",
+      "Lazaridou et al. (2015)",
+      "Luong et al. (2015)",
+      "BilBOWA (Gouws et al., 2015)"
+    ],
+    "metrics": [
+      "accuracy (bilingual lexicon induction)",
+      "correlation (cross-lingual word similarity)"
+    ],
+    "limitations": [
+      "The self-learning loop increases total training time proportional to the number of iterations.",
+      "Memory issues when computing the full similarity matrix X W Z^T for large vocabularies; requires computing submatrices to avoid excessive memory use.",
+      "Efficiency is critical because the induced full dictionary (not just the small seed) must be explicitly built and used from the second iteration onward.",
+      "Coverage problems in some pretrained embeddings make comparisons difficult (noted for some external embeddings)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - bilingual/cross-lingual word embeddings and lexicon induction",
+    "writing_quality": "adequate"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 5,
+    "paper_novelty_mean": 0.4167,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

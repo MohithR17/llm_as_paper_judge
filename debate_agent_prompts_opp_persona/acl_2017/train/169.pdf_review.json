@@ -1,0 +1,176 @@
+{
+  "CLARITY": 4,
+  "APPROPRIATENESS": 4,
+  "SUBSTANCE": 3,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well-organized and the main contributions are stated early (automatic edit extraction plus a rule-based error-typing pipeline) with clear method\u2192experiments\u2192conclusion flow. Notation and descriptions of the alignment and rule-based classifier appear consistent and the writing is generally clear with effective examples/tables reported. Presentation weaknesses: the human-evaluation claim (\u226595% rated Good/Acceptable) is reported for only 200 edits without confidence intervals or significance tests, and the paper omits explicit hyperparameter details\u2014these omissions reduce clarity around the reliability of the reported results. From a theory-purist perspective the exposition is good but would benefit from more explicit uncertainty reporting and an explicit statement of limitations. | B(4): The paper is well organized and presents its dataset-agnostic, rule-based annotation method early, with a clear pipeline (alignment \u2192 edit extraction \u2192 rule-based typing) and reproducible details (uses only automatic POS/lemmas/deps and Hunspell; code released). Figures/tables and examples are reported as effective and writing quality is rated good, making the methods and experimental setup (CoNLL-2014 outputs, FCE test for manual checks) easy to follow. Minor omissions (no hyperparameter reporting and no explicit stated limitations) prevent a top score, but overall clarity and presentation are strong and practitioner-friendly.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well-organized and the main contributions are stated early (automatic edit extraction plus a rule-based error-typing pipeline) with clear method\u2192experiments\u2192conclusion flow. Notation and descriptions of the alignment and rule-based classifier appear consistent and the writing is generally clear with effective examples/tables reported. Presentation weaknesses: the human-evaluation claim (\u226595% rated Good/Acceptable) is reported for only 200 edits without confidence intervals or significance tests, and the paper omits explicit hyperparameter details\u2014these omissions reduce clarity around the reliability of the reported results. From a theory-purist perspective the exposition is good but would benefit from more explicit uncertainty reporting and an explicit statement of limitations."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized and presents its dataset-agnostic, rule-based annotation method early, with a clear pipeline (alignment \u2192 edit extraction \u2192 rule-based typing) and reproducible details (uses only automatic POS/lemmas/deps and Hunspell; code released). Figures/tables and examples are reported as effective and writing quality is rated good, making the methods and experimental setup (CoNLL-2014 outputs, FCE test for manual checks) easy to follow. Minor omissions (no hyperparameter reporting and no explicit stated limitations) prevent a top score, but overall clarity and presentation are strong and practitioner-friendly."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper addresses a relevant GEC evaluation problem, compares to prior work, and validates on CoNLL-2014 with available code, making it a useful, reproducible contribution. I score it 4 because while the rule-based, dataset-agnostic method and human evaluation are valuable and appropriate for the venue, Reviewer A\u2019s concerns about limited statistical analysis, small manual-eval sampling, and lack of learned baselines suggest the empirical validation could be strengthened for a top-tier acceptance.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper addresses a relevant NLP problem (GEC error-type annotation) and targets the right community by comparing to prior alignment and typing work and applying to CoNLL-2014 outputs. However, the contribution is largely a deterministic, rule-based classifier that lacks learned baselines or statistical analyses I would expect for a top venue, and it relies on noisy automatic tagging/parsing without any sensitivity analysis. The manual evaluation is also small (200 edits, 5 annotators) and lacks confidence intervals/significance testing, which fails my threshold for robust validation."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper is an excellent fit: it tackles a practical, evaluation-focused GEC problem with a dataset-agnostic, rule-based method that requires only automatic linguistic markup, matching the venue\u2019s interest in reproducible, widely usable tools. The authors validate on CoNLL-2014 outputs, use standard GEC metrics (F0.5, detection/correction overlap), and provide strong human-eval (\u226595% Good/Acceptable on a held sample), which is precisely the kind of applied contribution valuable to the NLP/ML community. Code availability and comparison to relevant baselines (M2, prior alignment/edit extraction methods) further position the work well for top-tier review."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper presents solid, practical experiments and useful comparisons, and that code release and dataset-agnostic, rule-based design favor reproducibility and adoption. However, they also consistently note important methodological gaps\u2014missing ablation/sensitivity analyses, undocumented hyperparameters, limited manual-evaluation size, and no discussion of failure cases\u2014that weaken confidence in robustness and generality. Given these shortcomings despite otherwise sound work, a midpoint but cautious score is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experiments are adequate in breadth (alignment/edit-extraction comparisons, application to CoNLL-2014 outputs, and a manual check), and the paper does compare to learned baselines (maxent/classifier-based approaches). However, key methodological gaps remain: no ablation or sensitivity analysis of upstream noisy preprocessing (POS/parse/lemmata), no error-sensitivity study showing how automatic annotation errors affect downstream typing, and the manual evaluation is small (200 edits) \u2014 below the 300+ sample size I require for robust percentage claims and lacking confidence intervals/significance tests. Reproducibility is partially supported (code available) but hyperparameters are not reported and the paper omits any discussion of failure cases or limitations, which weakens confidence in the method\u2019s generality."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper provides solid, practical experiments: it applies a dataset-agnostic, rule-based annotator to CoNLL-2014 outputs, compares against prior edit-extraction baselines (Levenshtein, Felice et al.), and reports a focused human evaluation (5 researchers, 200 edits) showing \u226595% Good/Acceptable\u2014supporting the main claim of reliable automatic error-typing. It also makes code available and relies only on automatic linguistic markup, which favors reproducibility and practical adoption. However, there are missing analyses: no reported ablation/sensitivity studies of the rule set or preprocessing choices, hyperparameters are not documented, and the paper does not discuss failure cases or limitations, leaving some important reproducibility and robustness questions unanswered."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "Both reviewers agree the work is a practical, reproducible pipeline that meaningfully advances per-error-type evaluation for GEC by combining linguistically-enhanced alignment with a dataset-agnostic, rule-based typing approach. While the method is largely engineering and incremental relative to learned/statistical alternatives rather than a theoretical breakthrough, its high empirical reliability and utility for practitioners justify a positive but not top-tier originality score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper presents a useful combination\u2014linguistically-enhanced alignment for edit extraction plus a dataset-agnostic, rule-based error-typing classifier that operates on automatically obtained POS/lemmas/dependencies\u2014but this is largely an engineering assembly of prior ideas (e.g., Felice et al. for alignment; Swanson & Yamangil / Xue & Hwa for classifier approaches). The deterministic, rule-based design and reliance on automatic preprocessing reduce conceptual novelty compared to learned/statistical alternatives, and the work appears incremental rather than introducing a fundamentally new formulation or theoretical advance. That said, the focus on fully automatic per-error-type annotation for system outputs is a notable practical refinement that would be of interest to practitioners."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper offers a notable and practically useful novelty: a dataset-agnostic, deterministic rule-based error-typing method that relies only on automatic linguistic markup and edit operations, enabling per-error-type evaluation without costly annotations. While linguistically-enhanced alignments and classifier-based typing exist (e.g., Felice et al., Swanson & Yamangil, Xue & Hwa), this work clearly differentiates itself by providing a reproducible, rule-based pipeline that can be run on system outputs and validated with a high human-acceptability rate (\u226595%). From my applied-systems perspective, the technique is a non-trivial, pragmatic extension of prior alignment and typing work rather than a wholly new theoretical advance, so its novelty is notable but not revolutionary."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper clearly states its claims and provides useful empirical comparisons demonstrating practical effectiveness. They also both flag limitations in the evaluation\u2014chiefly the relatively small manual validation sample and the absence of robustness/error-sensitivity analyses and statistical testing\u2014which should be addressed to increase confidence. Given the solid empirical work and reasonable reliability evidence but remaining methodological gaps, a slightly above-mid (4) score is warranted.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper clearly states its main claims and provides empirical comparisons to existing edit-extraction and typing approaches (Levenshtein, Felice et al., classifier baselines) and applies the method to CoNLL-2014 outputs, which supports moderate confidence in its effectiveness. However, from the summary there is a notable methodological gap: the rule-based classifier depends heavily on noisy automatic linguistic preprocessing (POS, lemmas, parses, Hunspell) yet no error-sensitivity analysis is reported to quantify how upstream noise affects annotation accuracy. The human validation is also underpowered for my standards (5 annotators on 200 edits; I require \u2265300 or explicit confidence intervals/significance testing), so the claimed \u226595% reliability is insufficiently supported. Given these concerns the contribution is promising but lacks the rigorous statistical validation and robustness analysis I expect, so a mid-level score is appropriate."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper\u2019s main claims are clearly stated and largely supported: a dataset-agnostic, rule-based error-typing method using only automatic linguistic markup is implemented and applied to CoNLL-2014 outputs, with comparisons to reasonable baselines (Levenshtein, Felice et al., classifier-based approaches) and standard GEC metrics (F0.5). The human evaluation (5 researchers on 200 edits) reporting \u226595% Good/Acceptable and reported agreement (\u03bafree) provides strong practical evidence for annotation reliability. Minor technical concerns remain: the manual evaluation sample is relatively small and no statistical significance testing or hyperparameter reporting is mentioned, which would strengthen confidence in generality. Overall the experiments and analyses are sound and support the conclusions, with only modest gaps that do not undermine the main contribution."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper fills an important practical gap by providing a lightweight, dataset-agnostic, rule-based method for fine-grained GEC evaluation and that publicly released code makes it readily usable. However, Reviewer A\u2019s concerns about reliance on noisy automatic linguistic markup and a relatively small validation sample limit claims about robustness, preventing a higher rating. Given the clear applied utility and likely adoption but limited novelty and validation, a score of 4 reflects meaningful impact without being a paradigm shift.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important practical need\u2014fine-grained, dataset-agnostic annotation and per-error-type evaluation for GEC systems\u2014which can usefuly inform error analyses and comparisons (applied to CoNLL-2014 outputs and code released). However, the contribution is primarily a deterministic rule-based pipeline that depends on noisy automatic POS/parse/lemmatization without any error-sensitivity analysis, and the human validation is underpowered (200 edits; my reviewer persona requires \u2265300 or reported CIs), which limits confidence in robustness. As a result this is a useful, moderately impactful engineering contribution that enables follow-up work, but it is unlikely to fundamentally change theoretical approaches in GEC without stronger statistical validation and analyses of upstream noise."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles an important practical gap\u2014fine-grained, per-error-type evaluation for GEC systems\u2014using a lightweight, dataset-agnostic rule-based method that relies only on automatic linguistic markup, which makes it immediately usable by practitioners. The high manual acceptability (\u226595% Good/Acceptable on a held sample), linguistically-enhanced alignment, and public code suggest the approach will be widely adopted for system diagnosis and comparison. While not a paradigm shift, it meaningfully changes how researchers and engineers can analyze system strengths/weaknesses without costly annotations and opens clear avenues for tooling and error-type-focused research."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper compares against appropriate, recent baselines on shared datasets and metrics and includes useful human validation, supporting fairly meaningful comparisons. However, Reviewer A\u2019s point about missing statistical significance/confidence reporting and lacking clear statements about when learned/classifier-based methods match or exceed the proposed approach are valid gaps that prevent a full 5; hence a score of 4 reflects largely fair comparisons but some important rigor/details are missing.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against appropriate and recent baselines (Levenshtein-based extraction, Felice et al.'s linguistically-enhanced alignment, maximum-entropy/classifier-based typing work, and uses M2/F0.5 metrics on CoNLL-2014 outputs), and evaluations appear conducted on the same datasets/metrics, so comparisons are largely fair. However, I note omissions that matter to a rigorous comparison: no reported significance testing or confidence intervals for percentages, and the manuscript does not explicitly state when prior learned/classifier-based methods perform as well or better than the proposed deterministic rule-based approach. Overall the empirical comparison is solid but missing a few statistical rigor and explicit acknowledgment details expected for claiming superiority."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "From the provided summary the paper compares to the right prior work for both edit extraction and error typing (Levenshtein-based edits, Swanson & Yamangil classifier approaches, Felice et al.'s linguistically-enhanced alignment, and the M2 scorer) and evaluates on shared CoNLL-2014 system outputs, with an additional human validation on FCE-test. The comparisons appear fair and practical \u2014 same public outputs and standard GEC metrics (F0.5, detection vs. correction overlap) \u2014 and the authors openly report when prior methods are comparable while showing strong human-rated reliability (\u226595% Good/Acceptable), which supports reproducibility and usefulness for practitioners."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces a method to automatically annotate unannotated grammatical error corrections with detailed error type information, enabling per-error-type evaluation of GEC systems.",
+      "Proposes a dataset-agnostic, rule-based error type classifier that uses only automatically obtained linguistic markup (POS, lemmas, stems, dependencies) and edit operations (insert/delete/replace).",
+      "Combines a linguistically-enhanced alignment for edit extraction with the rule-based classifier to annotate system outputs, and applies this to the CoNLL-2014 shared task outputs to produce detailed error-type analyses.",
+      "Human evaluation (5 researchers on 200 edits) found predicted error categories rated as Good or Acceptable in at least 95% of cases, supporting the method's reliability."
+    ],
+    "methodology": "Automatically extract edits between original and corrected sentences using a linguistically-enhanced alignment, then assign error types via a deterministic rule-based classifier that uses automatic POS tags, lemmatization, stemming, dependency parses, token insert/delete/substitute information, and Hunspell for non-word detection.",
+    "datasets": [
+      "CoNLL-2014 shared task system outputs",
+      "FCE-test (used in manual evaluation)"
+    ],
+    "baselines": [
+      "Levenshtein-based edit extraction (Swanson and Yamangil, 2012)",
+      "Maximum entropy / classifier-based error typing (Swanson and Yamangil, Xue and Hwa, 2014)",
+      "Felice et al. (2016) linguistically-enhanced alignment for edit extraction",
+      "M2 Scorer (used for comparison)"
+    ],
+    "metrics": [
+      "F0.5",
+      "F-score",
+      "detection vs correction overlap (recognition-style evaluation)",
+      "\u03bafree (reported for manual evaluation agreement)"
+    ],
+    "limitations": [],
+    "code_available": "yes",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - Grammatical Error Correction (GEC)",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior NLP researcher with a decade of experience in formal modeling of language and statistical learning theory; many publications on evaluation methodology and theoretical guarantees for NLP systems.",
+      "traits": [
+        "Penalises papers that present deterministic or purely rule-based systems without providing learned baselines or statistical analyses (deducts points if no neural/statistical comparison provided).",
+        "Requires human evaluation sample sizes >= 300 or explicit confidence intervals/significance tests for reported percentages (deducts points if only small-sample claims like 200 edits without CIs).",
+        "Penalises reliance on noisy automatic preprocessing (POS/parse/lemmas) without an error-sensitivity analysis showing how upstream noise affects outcomes.",
+        "Values formal definition of error taxonomy and proof of coverage/consistency; deducts points if taxonomy is ad-hoc or not formally justified."
+      ],
+      "reviewing_style": "Critical and exacting: focuses on methodological rigor, formal justification, and statistical validity; will downgrade incremental or engineering-heavy contributions that lack theoretical or comparative grounding."
+    },
+    "reviewer_b": {
+      "name": "Practical Systems Advocate",
+      "background": "Applied NLP researcher and engineer focused on building and evaluating usable GEC tools for education and industry; several papers on error analysis, tooling, and reproducible evaluation.",
+      "traits": [
+        "Rewards dataset-agnostic, rule-based tools that are lightweight and do not require large annotated resources (adds points for methods that enable analysis across datasets).",
+        "Favors reproducibility and practical utility: awards points if the approach uses only automatic linguistic markup and can be run on existing system outputs without extra annotation.",
+        "Trusts focused human evaluation if it shows high precision/acceptability (gives positive credit if human-rated Good/Acceptable >= 90% on a held sample).",
+        "Prefers clear error-type analyses that enable per-error-type system diagnosis; grants extra credit when the contribution directly improves evaluation granularity for practitioners."
+      ],
+      "reviewing_style": "Application-oriented and pragmatic: values tools that are usable, reproducible, and immediately helpful to system builders, even when methods are rule-based rather than novel machine-learned models."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 6,
+    "total_dimensions": 7,
+    "debate_rate": 0.857
+  }
+}

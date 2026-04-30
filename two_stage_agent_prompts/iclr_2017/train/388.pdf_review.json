@@ -1,0 +1,51 @@
+{
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable novel combination: a coattentive encoder fused with a dynamic (iterative) pointing decoder that alternates start/end predictions to recover from local maxima, which is a non-trivial architectural innovation beyond prior Match-LSTM+pointer and dynamic chunk reader baselines. It reports measurable gains attributed to coattention and achieves new SQuAD state-of-the-art, and the authors clearly differentiate their contributions from prior work. The problem (QA on SQuAD) is well-studied, so the contribution is an important methodological advance rather than a fundamentally new problem, placing it below highest originality but above incremental work."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well organized (method, experiments, conclusions) and states its main contributions early (DCN architecture, coattention, dynamic decoder, SQuAD results). Notation and method descriptions seem consistent and well-defined enough to convey the coattentive encoder, iterative decoder, and HMN, and empirical results and baselines (single/ensemble F1, EM) are reported clearly with hyperparameters included. Figures/tables/examples are implied to be effective given the clear quantitative comparisons to prior work and ablations, and the writing quality is described as good, with only minor presentation issues (e.g., some iterative-decoder details and failure modes could be expanded)."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly supported by empirical evidence: the DCN reports strong SQuAD results (75.9% F1 single, 80.4% ensemble) and an ablation showing a 1.9-point F1 drop when replacing the coattention, supporting the coattention claim. There are no formal proofs needed for the architecture and the methodology appears sound\u2014appropriate baselines (Match-LSTM, dynamic chunk reader), SQuAD evaluation with EM/F1, and hyperparameters reported. Minor technical issues remain (no mention of statistical significance testing, and the decoder\u2019s tendency to oscillate and its 4-iteration cap are acknowledged limitations), but these do not undercut the main experimental conclusions."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce the Dynamic Coattention Network (DCN), an end-to-end neural architecture combining a coattentive encoder and a dynamic pointing decoder for question answering.",
+      "The dynamic (iterative) pointing decoder alternates estimating start and end positions of answer spans, enabling the model to recover from initial local maxima corresponding to incorrect answers.",
+      "DCN achieves state-of-the-art results on the SQuAD dataset: single model 75.9% F1 (improving prior 71.0% F1) and ensemble 80.4% F1.",
+      "The coattention mechanism fuses co-dependent representations of question and document and provides measurable gains (replacing it with a simpler attention causes a 1.9 point F1 drop)."
+    ],
+    "methodology": "The model encodes question and document with shared LSTMs, computes a coattention context that fuses question/document interactions, and uses a dynamic decoder that iteratively updates start/end span predictions via an LSTM-driven Highway Maxout Network (HMN).",
+    "datasets": [
+      "SQuAD (Stanford Question Answering Dataset)"
+    ],
+    "baselines": [
+      "Wang & Jiang (2016b) (Match-LSTM + pointer network)",
+      "Yu et al. (2016) (dynamic chunk reader)"
+    ],
+    "metrics": [
+      "Exact Match (EM)",
+      "F1 score"
+    ],
+    "limitations": [
+      "Model can fail to resolve competing local maxima and may alternate between incorrect answers indefinitely in some cases.",
+      "Performance degrades for longer answers (longer answer spans are harder to predict).",
+      "Model struggles more on complex question types such as \"why\" questions.",
+      "Training word embeddings (instead of fixing pretrained GloVe) led to overfitting, so embeddings were kept fixed.",
+      "Decoder uses a maximum of 4 iterations (empirically little improvement after 4) which limits iterative refinement."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - question answering",
+    "writing_quality": "good"
+  }
+}

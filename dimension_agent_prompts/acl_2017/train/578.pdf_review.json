@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "CLARITY": 3,
+  "IMPACT": 4,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is clearly within the scope of top-tier NLP/ML venues: it proposes a neural encoder\u2013decoder, transition-based semantic graph parser (arc-eager variant, pointer networks, hard/soft attention) for MRS/DMRS/EDS and AMR, evaluates on standard datasets (DeepBank, LDC2015E86) using established metrics (EDM, Smatch), and compares to relevant baselines (JAMR, CAMR, etc.). The problem, methods, and evaluation match community expectations for ACL/EMNLP (and would interest ML venues given the neural modeling choices), and the positioning and related-work discussion situate it appropriately within the parsing/semantic representation literature."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is broadly organized in the expected order (introduction, methods including Section 3 linearization and Section 4 encoder\u2013decoder, followed by experiments in Section 5) so the overall flow is present. However presentation suffers from many formatting and editing problems: repeated and garbled sentences and citation fragments throughout the text, LaTeX/artifact tokens (e.g. \u2018seperate\u2019, \u2018automaticallyobtained\u2019, duplicated reference lines), and occasional unclear phrasing (the reentrancy representation and the end-of-span alignment a(e) are poorly explained). Figures and tables are referenced but not cleanly embedded in the excerpt, and notation is only partly consistent (some variables are defined but some terms and their roles are left ambiguous), which makes some sections hard to follow despite an understandable high-level structure."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important problem\u2014producing full-coverage neural parsers for linguistically expressive MRS/DMRS/EDS graphs\u2014and presents the first reported full-coverage semantic graph parser for MRS (explicitly claimed). Its empirical gains (better than attention baselines on MRS and AMR, and an 86.69% Smatch on MRS) and practical speedup (GPU batching an order of magnitude faster than a grammar-based ERG parser) make it likely to influence practitioners choosing representations and parsing approaches. The joint prediction of graphs with alignments, the transition-based arc-eager graph parsing adaptation, and stack-based embedding features open clear new research directions that others can build on. Overall the work is of strong impact though not obviously transformative across all of NLP."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents substantial experiments on DeepBank (EDS/DMRS) and AMR (LDC2015E86) with evaluation (EDM/Smatch), hyperparameters, training details and multiple model variants (arc-eager vs top-down, hard vs soft attention, linearization variants) and comparisons to baselines, which largely support the claims. It also discusses known weaknesses (concept prediction for AMR, alignment noise, ERG coverage ~15%) and reports implementation choices (TensorFlow, pointer networks, JAMR aligner). Missing are explicit, systematic ablation studies isolating all major modeling choices (e.g. reentrancy recovery heuristics, lemma-dictionary effects) and deeper error analysis; some implementation heuristics are underspecified for full reproducibility."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper claims and demonstrates a novel application: \u201cthe first full-coverage semantic graph parser for Minimal Recursion Semantics (MRS)\u201d and an incremental neural parser that predicts semantic graphs jointly with token alignments (sec. 3 and abstract). Key elements\u2014an arc-eager variant for graph parsing, stack-based embedding features enabling batched static-graph processing, and joint alignment via pointer networks\u2014represent a non-trivial integration and adaptation beyond prior work (sec. 4, pointer network description, arc-eager discussion). However, most core components (encoder\u2013decoder, attention/pointer networks, arc-eager ideas, linearization strategies) are adaptations of existing techniques (cited throughout), so the contribution is a notable and well-differentiated engineering/architectural advance rather than a wholly new algorithmic paradigm."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper clearly states its modeling approach (e.g. the decomposition p(t,a|e) and the pointer-network alignment logits uij = v^T tanh(...)) and provides experiments on appropriate datasets (DeepBank for MRS/DMRS/EDS and LDC2015E86 for AMR) using standard metrics (EDM and Smatch) with reasonable baselines (JAMR, CAMR, etc.), supporting the main empirical claims. Mathematical descriptions are concise and appear correct for the model presented, and training/configuration details are reported. Minor technical concerns remain: the handling of reentrancies is admitted to be potentially lossy and recovered heuristically, the paper does not report statistical significance for comparisons, and the speed/\u2018\u2018order of magnitude faster\u2019\u2019 claim is asserted without timing data in the provided text. These issues are noteworthy but do not undermine the main experimental conclusions."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to appropriate and recent baselines for AMR (JAMR, CAMR (Wang et al. 2016), Damonte et al. 2016, Peng et al. 2016/2017, Barzdins & Gosko 2016) and evaluates on standard datasets (LDC2015E86 for AMR, DeepBank for MRS) with Smatch and EDM metrics. It explicitly notes when prior systems perform better (e.g. CAMR) and explains likely causes (use of external resources, concept prediction weakness, alignment noise), and discusses differences between its models and baselines (linearizations, attention vs hard alignment). Minor issues remain: some compared systems use extra resources (acknowledged) so conditions are not strictly identical, and full-coverage prior MRS baselines are limited, but these are discussed (Toutanova et al. 2005; Zhang et al. 2014)."
+    }
+  }
+}

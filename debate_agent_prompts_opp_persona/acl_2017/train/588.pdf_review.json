@@ -1,0 +1,176 @@
+{
+  "IMPACT": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "APPROPRIATENESS": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper defines a concrete task (rare entity prediction) and provides empirical evidence that external lexical definitions materially improve performance, which is a useful empirical finding for practitioners. However, the core modeling advance (a hierarchical LSTM on top of a double encoder) is an incremental architectural modification without theoretical grounding, and the observation that simple embedding-average baselines nearly match context-only encoders suggests limited practical surprise. Thus the contribution is a moderate, empirically useful step that may steer follow-up work on lexical resources and aggregation methods but is unlikely to fundamentally change how the community models entity prediction. | B(3): This paper targets a practical gap\u2014predicting rare entities using document context and lexical definitions\u2014and demonstrates with Wikilinks that incorporating external lexical knowledge yields substantial gains, a useful empirical finding for practitioners. The proposed HIERENC architecture is a pragmatic, interpretable augmentation (temporal LSTM over context embeddings) and the observation that simple embedding-average baselines compete closely is valuable for deployment choices. While the contribution provides actionable evidence and modest methodological guidance, it is incremental rather than transformative and is most likely to influence applied systems and follow-up work rather than redefine the field.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper defines a concrete task (rare entity prediction) and provides empirical evidence that external lexical definitions materially improve performance, which is a useful empirical finding for practitioners. However, the core modeling advance (a hierarchical LSTM on top of a double encoder) is an incremental architectural modification without theoretical grounding, and the observation that simple embedding-average baselines nearly match context-only encoders suggests limited practical surprise. Thus the contribution is a moderate, empirically useful step that may steer follow-up work on lexical resources and aggregation methods but is unlikely to fundamentally change how the community models entity prediction."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "This paper targets a practical gap\u2014predicting rare entities using document context and lexical definitions\u2014and demonstrates with Wikilinks that incorporating external lexical knowledge yields substantial gains, a useful empirical finding for practitioners. The proposed HIERENC architecture is a pragmatic, interpretable augmentation (temporal LSTM over context embeddings) and the observation that simple embedding-average baselines compete closely is valuable for deployment choices. While the contribution provides actionable evidence and modest methodological guidance, it is incremental rather than transformative and is most likely to influence applied systems and follow-up work rather than redefine the field."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper evaluates against a sensible set of baselines (context encoder, embedding-average, double encoder) on the same Wikilinks data and uses consistent metrics (Accuracy/Recall@1), and it explicitly acknowledges that simple embedding-average baselines perform nearly as well as context-only encoders. However, from the summary I see no comparison to more expressive aggregation or recent sequence/attention-based baselines (e.g., attention pooling or transformer-style context models), which is a notable omission given the claimed contribution of hierarchical temporal aggregation. Overall the comparisons are fair and related work is discussed thoroughly, but the experimental suite lacks a few strong, modern alternatives that would be necessary to be comprehensive. | B(4): The paper evaluates its HIERENC model against sensible baselines (context-only encoder, double encoder, and a simple embedding-average) on the same Wikilinks data and uses consistent metrics (Accuracy/Recall@1), and it explicitly acknowledges when the simple embedding-average matches context-only performance. The authors analyze differences (impact of context window size, rationale for averaging vs. attention) and report hyperparameters, suggesting fair experimental conditions. Given the summary, it appears to cover related work thoroughly but likely omits comparison to more recent or alternative aggregation/attention-based methods that could be strong competitors, so the comparisons are good but not fully comprehensive.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper evaluates against a sensible set of baselines (context encoder, embedding-average, double encoder) on the same Wikilinks data and uses consistent metrics (Accuracy/Recall@1), and it explicitly acknowledges that simple embedding-average baselines perform nearly as well as context-only encoders. However, from the summary I see no comparison to more expressive aggregation or recent sequence/attention-based baselines (e.g., attention pooling or transformer-style context models), which is a notable omission given the claimed contribution of hierarchical temporal aggregation. Overall the comparisons are fair and related work is discussed thoroughly, but the experimental suite lacks a few strong, modern alternatives that would be necessary to be comprehensive."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper evaluates its HIERENC model against sensible baselines (context-only encoder, double encoder, and a simple embedding-average) on the same Wikilinks data and uses consistent metrics (Accuracy/Recall@1), and it explicitly acknowledges when the simple embedding-average matches context-only performance. The authors analyze differences (impact of context window size, rationale for averaging vs. attention) and report hyperparameters, suggesting fair experimental conditions. Given the summary, it appears to cover related work thoroughly but likely omits comparison to more recent or alternative aggregation/attention-based methods that could be strong competitors, so the comparisons are good but not fully comprehensive."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early (task definition, HIERENC model, and empirical findings about lexical resources), which yields a clear narrative from introduction through experiments and conclusion. Notation for the hierarchical double-encoder is generally consistent and the methodological description (context encoder f, temporal LSTM r, scoring function combining hei, ri, and we with W,V,b) is precise enough to reproduce the approach. Figures/tables/examples are reported as effective and the writing quality is good, though a Theory Purist would have appreciated slightly more formalization around the aggregation choice (averaging vs. attention) and clearer discussion of why context-window scaling fails \u2014 these are minor presentation gaps rather than structural problems. | B(4): The paper is overall well organized and follows a clear intro \u2192 method \u2192 experiments \u2192 conclusion flow, and its main contributions (rare entity prediction task, HIERENC model, and findings about lexical definitions) are stated early. Notation appears consistent and hyperparameters and related work are reported, and figures/tables/examples are informative. A few presentation choices could be clarified (e.g., more explicit motivation for averaging contexts rather than attention and a clearer discussion of training-time tradeoffs), but writing quality is good and grammatical clarity is high.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early (task definition, HIERENC model, and empirical findings about lexical resources), which yields a clear narrative from introduction through experiments and conclusion. Notation for the hierarchical double-encoder is generally consistent and the methodological description (context encoder f, temporal LSTM r, scoring function combining hei, ri, and we with W,V,b) is precise enough to reproduce the approach. Figures/tables/examples are reported as effective and the writing quality is good, though a Theory Purist would have appreciated slightly more formalization around the aggregation choice (averaging vs. attention) and clearer discussion of why context-window scaling fails \u2014 these are minor presentation gaps rather than structural problems."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is overall well organized and follows a clear intro \u2192 method \u2192 experiments \u2192 conclusion flow, and its main contributions (rare entity prediction task, HIERENC model, and findings about lexical definitions) are stated early. Notation appears consistent and hyperparameters and related work are reported, and figures/tables/examples are informative. A few presentation choices could be clarified (e.g., more explicit motivation for averaging contexts rather than attention and a clearer discussion of training-time tradeoffs), but writing quality is good and grammatical clarity is high."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper frames a useful realistic task and provides clear empirical analysis, but the methodological contribution is a modest architectural extension rather than a novel technique. Given the informative empirical insights and clear positioning relative to prior work, but limited methodological novelty, a middle score reflects its incremental yet useful contribution to specialists.",
+      "reviewer_a": {
+        "score": 2,
+        "justification": "The paper frames a specific task (\u201crare entity prediction\u201d) and applies a hierarchical temporal LSTM on top of an existing double-encoder, but the core model components (context encoder, entity embeddings, temporal aggregation) are standard and the aggregation choice (simple averaging) is explicitly pragmatic rather than novel. The contribution is therefore mainly an incremental architectural variant and an empirical study showing lexical definitions matter; while the paper clearly positions itself relative to prior work, the techniques do not represent a non-trivial methodological advance that would surprise a specialist."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper frames a specific realistic task (rare entity prediction) and applies external lexical definitions, which is a useful and somewhat novel problem formulation in applied settings. The Hierarchical Double Encoder (adding a temporal LSTM over averaged per-entity context embeddings) is a modest architectural extension rather than a fundamentally new method, and the empirical finding that simple embedding-average baselines perform nearly as well is an informative but unsurprising result. The authors clearly differentiate from prior work and explore practical tradeoffs (context window vs. training time), but overall the contribution reads as an incremental advance that would moderately inform experts rather than surprise them."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper clearly states its claims and provides appropriate empirical comparisons showing benefit from using external lexical definitions, and the mathematical formulation and training objective are sensible. They also concur that the evaluation lacks rigor in statistical significance testing and deeper ablations (e.g., aggregation/attention alternatives) and that some baselines perform nearly as well, leaving room for stronger empirical justification. Given these mostly minor gaps that do not overturn the results, a score of 4 reflects overall methodological soundness with some important but not fatal missing analyses.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper states clear claims and provides experimental comparisons (HierEnc vs. CONTENC, embedding-average, double encoder) on the Wikilinks dataset that support the main empirical points, but the evaluation lacks rigorous statistical testing and extensive ablations (e.g. attention/aggregation alternatives were dismissed without empirical comparison). There are no mathematical proofs to check and the described scoring function is standard and appears consistent, but the admission that simple embedding-average baselines perform nearly as well raises questions about whether the hierarchical temporal LSTM contribution is substantively justified. Overall the methodology is reasonable but incomplete: controls and significance testing are missing and some design decisions (aggregation choice, context window tradeoffs) are not empirically fully explored, so the technical case is suggestive but not fully conclusive."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and empirically supported: experiments on the Wikilinks dataset show models augmented with lexical definitions outperform context-only models, and the hierarchy (HIERENC) design and baselines (CONTENC, embedding-average, double encoder) are appropriate comparisons. Mathematical formulation of the scoring function and architecture is simple and appears correct; training with binary cross-entropy is consistent with the task. However, the summary does not mention statistical significance testing or released code/reproducibility, and the choice to average context embeddings (avoiding attention) is a pragmatic design choice that could leave room for unexplored aggregation effects. Overall the methodology is sound with minor evidence gaps that do not invalidate the main conclusions."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the paper tackles a relevant problem with appropriate dataset, baselines, and empirical evaluation, and that the proposed hierarchical double encoder is practical and of interest to the community. I award a 4 because while the work appears solid and useful for practitioners, the novelty is somewhat incremental and the paper would benefit from deeper analysis (ablations, formal motivation, and stronger statistical rigor) to fully merit the top score.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper addresses a clearly relevant NLP problem (rare entity prediction) on a standard dataset (Wikilinks) using sensible baselines and expected metrics, so the topic and audience are within a top conference\u2019s scope. However, from the provided summary the contribution is primarily an incremental architectural tweak (a temporal LSTM on top of a double encoder) and empirical claims about using lexical definitions, with little theoretical motivation or formal problem framing \u2014 which I (as a theory-focused reviewer) view as a weakness for top-tier venues. Evaluation appears adequate (accuracy/Recall@1, reported hyperparameters, comparisons to embedding-average and double-encoder baselines), but the lack of deeper formalization, ablations probing when and why the model helps, and no mention of code or rigorous statistical testing makes the fit borderline rather than strong."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper addresses a clearly relevant NLP problem\u2014rare entity prediction\u2014using reasonable modeling and empirical evaluation on a large Web dataset (Wikilinks), which fits squarely within top NLP/ML conference scope. The task formulation and proposed Hierarchical Double Encoder are practical and aimed at the community interested in knowledge-enhanced language understanding; experiments (including baselines like embedding-average and CONTENC) and reported hyperparameters meet the venue's empirical expectations. The work is well positioned for readers focused on memory/knowledge integration and pragmatic reading-comprehension applications, and the observed insights about lexical definitions and context-window tradeoffs offer useful, reproducible takeaways for practitioners."
+      },
+      "score_delta": 2,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Both reviewers agree the experimental work is solid, compares sensible baselines, and documents hyperparameters while acknowledging clear findings and discussed limitations (e.g., data sparsity). They also concur that the work is somewhat incremental and would benefit from additional analyses (statistical significance, alternative aggregation mechanisms) and a code release to improve reproducibility; however, the existing experiments and ablations are sufficient to merit a positive assessment. For these reasons I award a 4.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper provides reasonable experimental coverage: it compares against sensible baselines (context-only, embedding-average, double encoder), studies larger context windows, and reports hyperparameters, and it discusses data-sparsity failure modes. However, from the summary important analyses are missing or underdeveloped by my standards: there are no reported statistical significance tests, no exploration of alternative aggregation mechanisms (e.g., attention vs. averaging) beyond a rationale to avoid added complexity, and no code release noted which hinders exact reproducibility. Related work appears thorough, but the empirical work is primarily incremental (a temporal LSTM on top of existing encoders) and would benefit from deeper ablations and sensitivity analyses to fully support the claims."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the experimental work is solid and pragmatic: the paper compares reasonable baselines (context-only, embedding-average, double encoder) and introduces HIERENC, and reports concrete findings about the strong value of lexical definitions and the limited benefit of larger context windows. Ablative/sensitivity analyses are present (baseline comparisons and context-window scaling), and limitations such as data sparsity for very rare entities are explicitly discussed. Related work coverage is reported as thorough, and hyperparameters are provided, but reproducibility is somewhat weakened by no mention of released code and the aggregation choice (averaging) is not deeply explored with alternative learned strategies\u2014hence a score of 4."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce the task of rare entity prediction, where models predict missing entities in web documents using document context and lexical resources.",
+      "Propose a Hierarchical Double Encoder (HIERENC) that adds a temporal LSTM on top of a double encoder to incorporate information from other contexts in a document.",
+      "Show that models using external lexical knowledge (entity lexical definitions) perform significantly better at rare entity prediction than models that do not.",
+      "Observe that simple embedding-average baselines perform nearly as well as a context-only encoder, indicating the high value of lexical definitions; and that increasing context window size yields little performance gain while increasing training time."
+    ],
+    "methodology": "Use a double-encoder architecture with a context encoder f producing per-entity context embeddings, average those embeddings to form inputs to a higher-level temporal LSTM (r) over contexts; at each timestep combine context embedding hei and temporal embedding ri with entity embedding we and parameters W,V,b in a sigmoid scoring function to rank candidate entities.",
+    "datasets": [
+      "Wikilinks"
+    ],
+    "baselines": [
+      "CONTENC (context encoder)",
+      "Embedding average baseline",
+      "Double encoder"
+    ],
+    "metrics": [
+      "Accuracy (equivalent to Recall@1)",
+      "Binary cross-entropy (training objective)"
+    ],
+    "limitations": [
+      "Data sparsity for rare entities leads to poor learning for very infrequent entities (example: Larnaca vs. frequent Istanbul).",
+      "Increasing the context window size has little positive impact on results but drastically increases training time.",
+      "Averaging of context-entity embeddings is used instead of more complex aggregation (attention/policies) to avoid added learning complexity."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - rare entity prediction / reading comprehension with external knowledge",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theory Purist",
+      "background": "Senior researcher with a PhD in Machine Learning focused on theoretical foundations of representation learning and sequence models; long-standing program committee member for NeurIPS and ICLR.",
+      "traits": [
+        "Penalizes papers that are primarily empirical without clear theoretical motivation or formal problem statement (low score if no theory/formalism).",
+        "Requires extensive ablation and statistical significance testing for every claimed improvement (low score if missing ablations or only marginal gains).",
+        "Discounts novelty for incremental architectural changes to standard encoders (low score if architecture is a modest extension of known components).",
+        "Penalizes when simple baselines outperform proposed models unless explained (low score if authors do not explain why baselines match/beat models)."
+      ],
+      "reviewing_style": "Focuses on principled foundations, demands formalization and deep analysis, and is strict about experimental rigor and interpretability."
+    },
+    "reviewer_b": {
+      "name": "Pragmatic Empiricist",
+      "background": "Applied NLP scientist with experience deploying reading-comprehension and entity-linking systems in industry; frequent reviewer for ACL/EMNLP and organizer of shared tasks on knowledge-enhanced NLP.",
+      "traits": [
+        "Rewards clear, well-motivated new task formulations that address realistic gaps (high score if task is practical and well-motivated).",
+        "Favors strong empirical evidence and reproducible experiments demonstrating utility of external resources (high score if experiments show consistent practical gains).",
+        "Values simple, interpretable baselines and strengths-of-simple-methods findings (gives credit if paper shows simple baselines work well and analyzes why).",
+        "Is tolerant of modest architectural innovations when they yield clear application benefits and insights (higher score for pragmatic improvements even if incremental)."
+      ],
+      "reviewing_style": "Prioritizes clear problem definitions, solid empirical evidence, and practical impact, willing to accept modest architectural novelty if the work meaningfully advances applied capability."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 4,
+    "total_dimensions": 7,
+    "debate_rate": 0.571
+  }
+}

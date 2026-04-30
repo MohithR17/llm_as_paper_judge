@@ -1,0 +1,190 @@
+{
+  "CLARITY": 4,
+  "REPLICABILITY": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "IMPACT": 3,
+  "APPROPRIATENESS": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (TBuckets variants and claims of outperforming prior coherence measures). Notation and hyperparameter reporting appear consistent, and figures/tables/examples are described as effective; related work coverage and writing quality are good. Minor clarity issues remain: the lack of stated code release and some domain-specific similarity choices (Genomics) and the one clustering parameter (Max Dist) could be more explicitly discussed, so I judge the presentation as strong but with small areas for improvement. | B(4): The paper is well organized with a logical flow from introduction through method to experiments and conclusion, and its main contributions (TBuckets variants and their empirical gains) are stated early. Notation appears consistent and the methodology (three bucket construction techniques, use of GloVe embeddings, weighting schemes) is clearly presented, with hyperparameters reported. Figures, tables, and examples are described as effective and the writing quality is good, though a couple of presentation details (e.g., explicit mention of code availability and slightly more clarity on domain-specific similarity choices) could be made clearer for readers replicating the work.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early (TBuckets variants and claims of outperforming prior coherence measures). Notation and hyperparameter reporting appear consistent, and figures/tables/examples are described as effective; related work coverage and writing quality are good. Minor clarity issues remain: the lack of stated code release and some domain-specific similarity choices (Genomics) and the one clustering parameter (Max Dist) could be more explicitly discussed, so I judge the presentation as strong but with small areas for improvement."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized with a logical flow from introduction through method to experiments and conclusion, and its main contributions (TBuckets variants and their empirical gains) are stated early. Notation appears consistent and the methodology (three bucket construction techniques, use of GloVe embeddings, weighting schemes) is clearly presented, with hyperparameters reported. Figures, tables, and examples are described as effective and the writing quality is good, though a couple of presentation details (e.g., explicit mention of code availability and slightly more clarity on domain-specific similarity choices) could be made clearer for readers replicating the work."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "REPLICABILITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper provides many of the key implementation details needed to reproduce the method (300\u2011dim GloVe embeddings, explicit description of three bucket construction techniques, weighting scheme, and Pearson r as the evaluation metric), and uses public datasets (20NG, NYT, Genomics). However, important practical details are missing or unclear from the summary: the preprocessing pipeline and dataset splits are not fully specified, the agglomerative clustering merge threshold (\u201cMax Dist\u201d) appears as a required parameter but its selection procedure is not given, and code/seeds are not reported. Given these minor but impactful gaps, reproduction seems feasible with some effort but not fully turnkey. | B(4): The paper reports key modeling choices (300-d GloVe embeddings), describes the three TBuckets procedures (clustering, SVD, SVD-Reorg) and notes hyperparameters (e.g., Max Dist for TBuckets-Clustering) and uses Pearson r as the evaluation metric; datasets (20NG, NYT, Genomics) are standard/public. However code is not mentioned and the summary does not confirm that preprocessing steps and all implementation-level details (exact SVD reorganization procedure, any tokenization/stopword handling, or other engineering choices) are fully specified. Given these facts, reproduction looks straightforward but would likely require clarifying minor implementation/preprocessing details.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper provides many of the key implementation details needed to reproduce the method (300\u2011dim GloVe embeddings, explicit description of three bucket construction techniques, weighting scheme, and Pearson r as the evaluation metric), and uses public datasets (20NG, NYT, Genomics). However, important practical details are missing or unclear from the summary: the preprocessing pipeline and dataset splits are not fully specified, the agglomerative clustering merge threshold (\u201cMax Dist\u201d) appears as a required parameter but its selection procedure is not given, and code/seeds are not reported. Given these minor but impactful gaps, reproduction seems feasible with some effort but not fully turnkey."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper reports key modeling choices (300-d GloVe embeddings), describes the three TBuckets procedures (clustering, SVD, SVD-Reorg) and notes hyperparameters (e.g., Max Dist for TBuckets-Clustering) and uses Pearson r as the evaluation metric; datasets (20NG, NYT, Genomics) are standard/public. However code is not mentioned and the summary does not confirm that preprocessing steps and all implementation-level details (exact SVD reorganization procedure, any tokenization/stopword handling, or other engineering choices) are fully specified. Given these facts, reproduction looks straightforward but would likely require clarifying minor implementation/preprocessing details."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper presents a distinct perspective\u2014measuring topic quality via thematic \"word buckets\" formed from pre-trained GloVe embeddings and SVD/clustering\u2014which is not the standard formulation used by prior coherence measures. While the building blocks (word embeddings, agglomerative clustering, SVD) are familiar, the TBuckets family (especially TBuckets-SVD-Reorg) re-purposes these tools into a novel, parameter-light metric and is clearly differentiated from coherence work cited (Roder et al. 2015). The approach is a non-trivial, practically useful extension rather than a simple rehash, so it would likely inform experts, though it does not introduce fundamentally new algorithmic primitives beyond combining known techniques. | B(4): The paper proposes a clearly new perspective\u2014measuring topic quality by grouping topic words into thematic \"buckets\" (via clustering and SVD) rather than relying on pairwise co-occurrence or average embedding similarity, and introduces SVD-based TBuckets variants that are effectively parameter-free. This differentiates it from prior coherence measures (e.g., R\u00f6der et al.) and is a non-trivial technical extension because it leverages linear-algebraic structure (largest singular values/eigenvector similarity) to score topics. The fact that TBuckets-SVD-Reorg outperforms reported state-of-the-art on two of three datasets and is evaluated for downstream weak supervision further supports that the idea would be informative to experts, even if it builds on known embedding and clustering tools rather than inventing entirely new algorithms.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper presents a distinct perspective\u2014measuring topic quality via thematic \"word buckets\" formed from pre-trained GloVe embeddings and SVD/clustering\u2014which is not the standard formulation used by prior coherence measures. While the building blocks (word embeddings, agglomerative clustering, SVD) are familiar, the TBuckets family (especially TBuckets-SVD-Reorg) re-purposes these tools into a novel, parameter-light metric and is clearly differentiated from coherence work cited (Roder et al. 2015). The approach is a non-trivial, practically useful extension rather than a simple rehash, so it would likely inform experts, though it does not introduce fundamentally new algorithmic primitives beyond combining known techniques."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper proposes a clearly new perspective\u2014measuring topic quality by grouping topic words into thematic \"buckets\" (via clustering and SVD) rather than relying on pairwise co-occurrence or average embedding similarity, and introduces SVD-based TBuckets variants that are effectively parameter-free. This differentiates it from prior coherence measures (e.g., R\u00f6der et al.) and is a non-trivial technical extension because it leverages linear-algebraic structure (largest singular values/eigenvector similarity) to score topics. The fact that TBuckets-SVD-Reorg outperforms reported state-of-the-art on two of three datasets and is evaluated for downstream weak supervision further supports that the idea would be informative to experts, even if it builds on known embedding and clustering tools rather than inventing entirely new algorithms."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper states clear, testable claims (TBuckets variants, especially TBuckets-SVD-Reorg, beat prior coherence measures on 2/3 datasets) and supports them with empirical evaluations using Pearson r on standard corpora and reports hyperparameters; the SVD variants being parameter-free is plausible and noted. However, from the summary I see shortcomings in experimental rigor: baselines appear to be taken from reported numbers rather than re-run under matched settings, no mention of statistical significance or confidence intervals, limited ablation/sensitivity analyses (e.g., effect of embedding choice or bucket construction), and code/seeds are not indicated which hampers reproducibility. These are important but addressable issues that do not currently undermine the main empirical claims, hence a score of 4. | B(4): The paper's main claims are generally supported by empirical evidence: TBuckets variants (notably TBuckets-SVD-Reorg) outperform the reported coherence baselines on 2 of 3 datasets and the method is largely parameter-free for SVD variants. There are minor technical concerns: the summary does not mention statistical significance testing, code release or detailed controls (e.g., embedding selection effects) and the method underperforms on the Genomics set which highlights an unsupported assumption about off-the-shelf embeddings. No mathematical derivations appear necessary or problematic, so overall the experiments support the conclusions but some methodological details and domain-dependence caveats remain.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper states clear, testable claims (TBuckets variants, especially TBuckets-SVD-Reorg, beat prior coherence measures on 2/3 datasets) and supports them with empirical evaluations using Pearson r on standard corpora and reports hyperparameters; the SVD variants being parameter-free is plausible and noted. However, from the summary I see shortcomings in experimental rigor: baselines appear to be taken from reported numbers rather than re-run under matched settings, no mention of statistical significance or confidence intervals, limited ablation/sensitivity analyses (e.g., effect of embedding choice or bucket construction), and code/seeds are not indicated which hampers reproducibility. These are important but addressable issues that do not currently undermine the main empirical claims, hence a score of 4."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are generally supported by empirical evidence: TBuckets variants (notably TBuckets-SVD-Reorg) outperform the reported coherence baselines on 2 of 3 datasets and the method is largely parameter-free for SVD variants. There are minor technical concerns: the summary does not mention statistical significance testing, code release or detailed controls (e.g., embedding selection effects) and the method underperforms on the Genomics set which highlights an unsupported assumption about off-the-shelf embeddings. No mathematical derivations appear necessary or problematic, so overall the experiments support the conclusions but some methodological details and domain-dependence caveats remain."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper targets an important practical problem\u2014automatic topic quality measurement\u2014and proposes a novel bucket-based approach (TBuckets) that shows empirical gains over reported state-of-the-art coherences on 2 of 3 datasets and offers parameter-free SVD variants that simplify usage. From an experimental-methodology perspective the contribution is useful: it provides an interpretable alternative and demonstrates downstream utility for weakly supervised classification. However, the improvements are dataset-dependent (fails on Genomics), reliance on GloVe similarity limits domain generality, and absence of code/reproducibility details (per summary) restrain immediate uptake, so the work is moderately impactful rather than field-changing. | B(3): The paper tackles an important practical problem\u2014evaluating topic quality\u2014and proposes TBuckets, which shows empirical gains over prior coherence measures on 2 of 3 datasets (NYT and 20NG) and offers parameter-free SVD variants that simplify use. Its demonstrated utility for a downstream use case (weakly supervised text classification) increases practical relevance and suggests adoption potential. However, improvements are dataset-dependent (weaker on Genomics) and the approach does not yet appear transformative across domains, so its impact is moderate rather than field-changing.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper targets an important practical problem\u2014automatic topic quality measurement\u2014and proposes a novel bucket-based approach (TBuckets) that shows empirical gains over reported state-of-the-art coherences on 2 of 3 datasets and offers parameter-free SVD variants that simplify usage. From an experimental-methodology perspective the contribution is useful: it provides an interpretable alternative and demonstrates downstream utility for weakly supervised classification. However, the improvements are dataset-dependent (fails on Genomics), reliance on GloVe similarity limits domain generality, and absence of code/reproducibility details (per summary) restrain immediate uptake, so the work is moderately impactful rather than field-changing."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014evaluating topic quality\u2014and proposes TBuckets, which shows empirical gains over prior coherence measures on 2 of 3 datasets (NYT and 20NG) and offers parameter-free SVD variants that simplify use. Its demonstrated utility for a downstream use case (weakly supervised text classification) increases practical relevance and suggests adoption potential. However, improvements are dataset-dependent (weaker on Genomics) and the approach does not yet appear transformative across domains, so its impact is moderate rather than field-changing."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): This paper addresses an NLP/ML problem (topic coherence measurement) that is squarely within top-tier venue scope and targets the right audience (topic-modeling and evaluation researchers). The formulation is appropriate and the experiments compare against established coherence measures on standard datasets (20NG, NYT, Genomics) using Pearson r, and the method claims practical advantages (parameter-free SVD variants). My main concerns for full top-tier fit are experimental/reproducibility rigor: code release is not mentioned, and it is unclear whether baselines were re-evaluated under matched settings or whether variance/significance across runs was reported\u2014issues that should be addressed but do not preclude acceptance. | B(5): This paper addresses a core NLP/ML topic\u2014measuring topic quality\u2014and proposes a novel, practically oriented method (TBuckets with SVD variants) that advances prior coherence measures while being largely parameter-free. Evaluation uses standard datasets (20NG, NYT, Genomics), compares to established baselines (R\u00f6der et al. 2015) with expected metrics (Pearson r), and demonstrates downstream utility (weakly supervised classification), making it relevant to the venue's audience. The coverage of related work and reported limitations (domain-specific similarity issues for Genomics, one parameter for clustering variant) show appropriate positioning and scope for a top-tier conference.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper addresses an NLP/ML problem (topic coherence measurement) that is squarely within top-tier venue scope and targets the right audience (topic-modeling and evaluation researchers). The formulation is appropriate and the experiments compare against established coherence measures on standard datasets (20NG, NYT, Genomics) using Pearson r, and the method claims practical advantages (parameter-free SVD variants). My main concerns for full top-tier fit are experimental/reproducibility rigor: code release is not mentioned, and it is unclear whether baselines were re-evaluated under matched settings or whether variance/significance across runs was reported\u2014issues that should be addressed but do not preclude acceptance."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper addresses a core NLP/ML topic\u2014measuring topic quality\u2014and proposes a novel, practically oriented method (TBuckets with SVD variants) that advances prior coherence measures while being largely parameter-free. Evaluation uses standard datasets (20NG, NYT, Genomics), compares to established baselines (R\u00f6der et al. 2015) with expected metrics (Pearson r), and demonstrates downstream utility (weakly supervised classification), making it relevant to the venue's audience. The coverage of related work and reported limitations (domain-specific similarity issues for Genomics, one parameter for clustering variant) show appropriate positioning and scope for a top-tier conference."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The experiments provide reasonable coverage (three datasets, comparison to reported state-of-the-art, evaluation by Pearson r) and the paper evaluates multiple TBuckets variants including a parameter-free SVD approach that achieves better correlation on 2/3 datasets. However, the summary does not report thorough ablation or sensitivity analyses isolating contributions (e.g., effects of embedding choice, bucket-size heuristics, or parameter sweeps for clustering), and code availability is not mentioned which weakens reproducibility despite reported hyperparameters. Related work appears well covered and the paper candidly notes a domain limitation (Genomics) but more rigorous statistical reporting and released code/seeded experiments are needed to fully support the claims. | B(4): The experiments cover three datasets (20NG, NYT, Genomics) and show TBuckets variants (notably TBuckets-SVD-Reorg) outperforming reported coherence baselines on two of three corpora, and the paper also evaluates downstream weakly-supervised classification\u2014supporting practical utility. Ablations compare three bucket methods (Clustering, SVD, SVD-Reorg) and report hyperparameters, but sensitivity analysis (e.g., to embedding choice or clustering Max Dist) and more failure-mode experiments on domain-specific embeddings are limited. Related work appears thoroughly discussed (R\u00f6der et al. baselines) and limitations about domain-specific similarity are acknowledged, yet code availability is not mentioned which modestly reduces reproducibility despite reported settings (GloVe 300d). Overall the empirical evaluation is solid with minor gaps in sensitivity and domain robustness analyses.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experiments provide reasonable coverage (three datasets, comparison to reported state-of-the-art, evaluation by Pearson r) and the paper evaluates multiple TBuckets variants including a parameter-free SVD approach that achieves better correlation on 2/3 datasets. However, the summary does not report thorough ablation or sensitivity analyses isolating contributions (e.g., effects of embedding choice, bucket-size heuristics, or parameter sweeps for clustering), and code availability is not mentioned which weakens reproducibility despite reported hyperparameters. Related work appears well covered and the paper candidly notes a domain limitation (Genomics) but more rigorous statistical reporting and released code/seeded experiments are needed to fully support the claims."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The experiments cover three datasets (20NG, NYT, Genomics) and show TBuckets variants (notably TBuckets-SVD-Reorg) outperforming reported coherence baselines on two of three corpora, and the paper also evaluates downstream weakly-supervised classification\u2014supporting practical utility. Ablations compare three bucket methods (Clustering, SVD, SVD-Reorg) and report hyperparameters, but sensitivity analysis (e.g., to embedding choice or clustering Max Dist) and more failure-mode experiments on domain-specific embeddings are limited. Related work appears thoroughly discussed (R\u00f6der et al. baselines) and limitations about domain-specific similarity are acknowledged, yet code availability is not mentioned which modestly reduces reproducibility despite reported settings (GloVe 300d). Overall the empirical evaluation is solid with minor gaps in sensitivity and domain robustness analyses."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against established, state-of-the-art coherence measures (R\u00f6der et al., 2015) on the same datasets (20NG, NYT, Genomics) using the same evaluation metric (Pearson r), and reports per-dataset outcomes (TBuckets wins on 2/3). The authors also acknowledge when prior methods perform better (Genomics) and provide thorough related-work discussion and hyperparameter reporting. My primary reservations are that the summary does not state whether baselines were reimplemented and run under the exact same preprocessing and experimental pipeline (risking reliance on reported numbers), and code release is not mentioned\u2014both important for reproducible, strictly fair comparisons. Overall the empirical comparison is strong but missing minor reproducibility/implementation assurances. | B(4): The paper compares TBuckets against the reported state-of-the-art coherence measures from Roder et al. (2015) on the same datasets (20NG, NYT, Genomics) using Pearson r, and it transparently reports hyperparameters and dataset-level results (TBuckets wins on 2/3 datasets). It also acknowledges when prior methods perform similarly or worse and discusses limitations (domain-specific similarity for Genomics) and clustering hyperparameters. As a specialist, I note a minor omission: relying primarily on the 2015 benchmark means more recent embedding-based coherence measures may not have been included, but overall the comparisons are fair, well-documented, and relevant.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against established, state-of-the-art coherence measures (R\u00f6der et al., 2015) on the same datasets (20NG, NYT, Genomics) using the same evaluation metric (Pearson r), and reports per-dataset outcomes (TBuckets wins on 2/3). The authors also acknowledge when prior methods perform better (Genomics) and provide thorough related-work discussion and hyperparameter reporting. My primary reservations are that the summary does not state whether baselines were reimplemented and run under the exact same preprocessing and experimental pipeline (risking reliance on reported numbers), and code release is not mentioned\u2014both important for reproducible, strictly fair comparisons. Overall the empirical comparison is strong but missing minor reproducibility/implementation assurances."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares TBuckets against the reported state-of-the-art coherence measures from Roder et al. (2015) on the same datasets (20NG, NYT, Genomics) using Pearson r, and it transparently reports hyperparameters and dataset-level results (TBuckets wins on 2/3 datasets). It also acknowledges when prior methods perform similarly or worse and discusses limitations (domain-specific similarity for Genomics) and clustering hyperparameters. As a specialist, I note a minor omission: relying primarily on the 2015 benchmark means more recent embedding-based coherence measures may not have been included, but overall the comparisons are fair, well-documented, and relevant."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes TBuckets, a novel approach that measures LDA topic quality by grouping topic words into thematic buckets.",
+      "TBuckets (especially TBuckets-SVD-Reorg) outperforms the reported state-of-the-art coherence measures on 2 of 3 evaluated datasets (NYT and 20NG).",
+      "SVD-based TBuckets techniques are parameter-free, simplifying usage compared to prior methods that require parameter tuning.",
+      "TBuckets is useful for downstream tasks such as weakly supervised text classification."
+    ],
+    "methodology": "Represent topic words using pre-trained 300-dimensional GloVe word embeddings and form \"buckets\" of words via three techniques\u2014agglomerative clustering (TBuckets-Clustering), singular value decomposition (TBuckets-SVD), and SVD with reorganization (TBuckets-SVD-Reorg)\u2014then compute topic coherence from properties of the largest bucket (size, LDA order-weighted sum, eigenvector similarity) and (for SVD variants) weight scores by the square of the largest singular value.",
+    "datasets": [
+      "20 NewsGroups (20NG)",
+      "New York Times (NYT)",
+      "Genomics"
+    ],
+    "baselines": [
+      "state-of-the-art coherence measures as reported by Roder et al. (2015)"
+    ],
+    "metrics": [
+      "Pearson's r correlation coefficient"
+    ],
+    "limitations": [
+      "Current word similarity computation may be suboptimal for specific domains (e.g., Genomics) and the authors plan to devise better domain-suitable similarity measures.",
+      "TBuckets-Clustering requires one parameter (Max Dist) for merging in agglomerative clustering."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - topic quality / topic coherence / topic modelling",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Experimental Methodologist",
+      "background": "Senior ML researcher and engineer with extensive experience designing and evaluating evaluation metrics and reproducible experiments in NLP and ML. Has led benchmark evaluations and implemented many topic-modeling and embedding-based systems.",
+      "traits": [
+        "Insists on strong, well-specified baselines and fair experimental comparisons (including parameter sweeps and matched settings).",
+        "Evaluates statistical rigor: looks for appropriate significance tests, confidence intervals, and variance reporting across runs/datasets.",
+        "Values ablation studies and sensitivity analyses that isolate the contributions of individual components (e.g., embeddings, bucket construction, weighting schemes).",
+        "Checks reproducibility: expects precise hyperparameter descriptions, dataset splits, preprocessing steps, and public release of code and seeds."
+      ],
+      "reviewing_style": "Focuses on whether the experiments convincingly support the claims and whether the method is specified and evaluated in a way that others can reproduce and build on it."
+    },
+    "reviewer_b": {
+      "name": "Topic Modeling & Applications Expert",
+      "background": "Senior NLP researcher specializing in topic modeling, semantic coherence evaluation, and applications of topic representations to downstream tasks such as weak supervision and document classification.",
+      "traits": [
+        "Assesses novelty relative to prior work on topic coherence and embedding-based coherence measures, and how the proposed idea advances the literature.",
+        "Values real-world relevance and applicability: inspects downstream task evaluations and whether the metric aligns with human judgments or practical needs.",
+        "Looks for theoretical or conceptual clarity: how well the method connects to intuitions about topicality, coherence, and interpretability.",
+        "Pays attention to limitations and scope: notices dataset choices, language/embedding coverage, and potential failure modes in various domains."
+      ],
+      "reviewing_style": "Emphasizes the paper's contribution to the field, its novelty and practical impact, and whether the proposed measure meaningfully improves topic evaluation and downstream use."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 8,
+    "debate_rate": 0.0
+  }
+}

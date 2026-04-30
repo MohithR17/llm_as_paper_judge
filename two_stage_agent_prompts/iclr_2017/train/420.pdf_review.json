@@ -1,0 +1,54 @@
+{
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a concrete architectural novelty (splitting each output vector into key, value, and predict parts for memory-augmented attention) that is distinct from prior memory-augmented language models, and it clearly differentiates this contribution from earlier RM/HORNN/reader models. Its empirical finding\u2014that attentive models primarily exploit a very short window (\u22485 recent outputs)\u2014and the resulting simple N-gram RNN (concatenating recent output representations) provide a surprising and non-trivial perspective that challenges assumptions about long-range attention utility. Given these novel design and empirical insights (evaluated on Wikipedia and CBT and compared against relevant baselines) the contribution is notable rather than merely incremental, though it does not claim state-of-the-art overall."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a clear progression from method (key-value(-predict) attention and N-gram RNN) to experiments (Wikipedia and CBT) and conclusion, and the main contributions are stated early. Notation and experimental details appear consistent and sufficiently reported (e.g., hyperparameters, baselines, and evaluation metrics like perplexity and accuracy). Related work coverage is thorough and the writing quality is described as good, so figures/tables and examples likely support the claims, though the summary does not detail every visual. Overall, presentation is strong with only minor presentation issues implied."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and supported by experiments on the Wikipedia corpus and CBT with appropriate baselines (vanilla LSTM, reimplemented RM, HORNNs, and reading-comprehension baselines) and reported hyperparameters. There are no complex mathematical derivations to check and the proposed mechanisms (key-value(-predict) attention and N-gram RNN) are evaluated empirically; the analysis that attention concentrates on the ~5 most recent outputs is plausible and backed by experiments. The experimental methodology appears sound overall, but the summary does not mention statistical significance testing or released code, which are minor gaps for reproducibility. Given the acknowledged limitations (no SOTA on CBT, small gains for some token types) the conclusions are reasonable and supported by the presented results."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce a key-value-predict attention mechanism that separates output vectors into key, value, and predict parts for memory-augmented neural language models.",
+      "Show that the proposed key-value(-predict) attention outperforms previous memory-augmented neural language models on a Wikipedia corpus and the Children\u2019s Book Test (CBT).",
+      "Demonstrate that attentive models mainly utilize a short memory (about the five most recent outputs) and that a much simpler N-gram RNN using concatenation of recent output representations is on par with more complex attentive models."
+    ],
+    "methodology": "Extend LSTM language models with differentiable memory by (a) splitting each output vector into key, value, and predict parts for attention (key-value and key-value-predict attention) and (b) proposing an N-gram RNN that concatenates previous output representations to predict the next token.",
+    "datasets": [
+      "Wikipedia corpus (7500 articles, split into train/dev/test)",
+      "Children\u2019s Book Test (CBT)"
+    ],
+    "baselines": [
+      "vanilla LSTM",
+      "Recurrent-Memory Model (Tran et al., 2016) reimplemented as RM(+tM-g)",
+      "Higher-Order RNNs (HORNNs)",
+      "AS Reader",
+      "QANN",
+      "GA Reader",
+      "EpiReader"
+    ],
+    "metrics": [
+      "Perplexity",
+      "Accuracy (reported for CBT subsets e.g., verbs and prepositions)"
+    ],
+    "limitations": [
+      "All attentive models mainly utilize only the most recent history (about five previous representations).",
+      "Attentive neural language models fail to exploit long-range dependencies effectively; training them to leverage long-range context is difficult.",
+      "Models do not achieve state-of-the-art on CBT and show only small improvements for some token types (e.g., verbs, prepositions)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - neural language modeling (attention / memory-augmented models)",
+    "writing_quality": "good"
+  }
+}

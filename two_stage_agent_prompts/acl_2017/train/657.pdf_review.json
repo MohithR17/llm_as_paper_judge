@@ -1,0 +1,67 @@
+{
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 3,
+  "IMPACT": 3,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "APPROPRIATENESS": 4,
+  "MEANINGFUL_COMPARISON": 3,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a clearly new test-time interpretability procedure\u2014querying an LSTM with crafted stimuli and tracking sequential per-token class probability changes\u2014which is not a standard approach in prior interpretability work. It also applies this method to a novel problem domain (first reported exploration of justifications in values-affirmation essays) and differentiates its contributions by comparing to an SVM baseline and correlating token-level effects. The noted context-dependence limitation suggests the technique is useful but not yet a fully general interpretability solution, supporting a notable (but not revolutionary) level of novelty."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments are adequate to demonstrate the proposed interpretability method (LSTM trained on 6,224 essays with comparison to an SVM and evaluation via Pearson correlations on token-level signals), but they lack important supporting analyses: no ablation studies or sensitivity analyses are reported and hyperparameters and code are not provided, limiting reproducibility. Related work coverage and some limitations (context-dependence of token probability changes; inability to link justifications to intervention effectiveness) are discussed, but failure cases and deeper probing of the method\u2019s robustness are missing. Overall the paper provides a reasonable initial empirical validation but is missing key experiments and details needed for stronger support of its claims."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses an important problem\u2014interpreting neural networks and probing student justifications in values-affirmation essays\u2014by introducing a novel test-time LSTM-querying method that yields sequential per-token class probability changes. It applies this method to a sizable dataset (6224 essays from 1233 middle-school students) and produces the first reported analysis of justifications in this context, finding modest support for gendered self-construal hypotheses. However, results are limited by context-dependent probability changes, lack of connection to intervention effectiveness, and only modest empirical support, so the likely impact is useful and generative but not field-changing."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "Based on the summary, the paper is well organized (clear progression from method to experiments to conclusion) and its main contributions are stated early (novel test-time LSTM querying method and application to essay justifications). Writing quality is reported as good and related work coverage adequate, suggesting notation and exposition are generally clear. Minor presentation issues remain: hyperparameters are not reported and code availability is not mentioned, and some methodological nuances (e.g., context dependence requiring averaging) could use more explicit treatment."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper\u2019s central claims are provisionally supported: an LSTM was trained to classify gender and instruction on a sizable essay dataset and reportedly outperformed an SVM baseline, and the test-time stimulus/querying method produced per-token probability shifts used for interpretation. However, important methodological/reporting gaps weaken the technical case \u2014 hyperparameters are not reported, code is not mentioned, evaluation relies on Pearson correlations and averaging to handle context dependence without reported statistical tests, and the interpretation claims hinge on a context-dependent signal that may be fragile. These issues do not fatally invalidate the contribution but raise concerns about reproducibility and the strength of the interpretive conclusions."
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "The paper addresses neural network interpretability for written text using an LSTM and crafted stimuli, which is squarely within the scope of top NLP/ML venues focused on model analysis and explainability. It targets the right audience by evaluating per-token probability shifts and comparing to an SVM baseline with Pearson correlations, and the dataset of student essays is a valid NLP application domain. However, missing details such as hyperparameter reporting and unspecified code availability pose reproducibility concerns expected at top-tier conferences, so fit is strong but not perfect."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "The paper reports a comparison to an SVM baseline using the same values-affirmation essay dataset and evaluates token-level correspondence via Pearson correlation, and notes the LSTM outperforms the SVM. However, only a single (relatively simple) baseline is reported and modern alternative classifiers or established interpretability methods are not compared, so important baselines and competing approaches appear missing. Overall the comparisons are present but incomplete."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces a novel method for interpreting neural networks by querying an LSTM at test time with carefully constructed stimuli and observing sequential per-token class probability changes.",
+      "Trains an LSTM to recognize student gender and writing instruction (treatment vs control) on values-affirmation essays and interprets its behavior.",
+      "Shows the LSTM model outperforms a baseline SVM classifier (baseline comparison reported).",
+      "Model interpretations provide modest support for the hypothesis that male versus female students emphasize independence versus interdependence in their justifications.",
+      "This is the first instance reported of exploring the justifications in values-affirmation essays, finding evidence consistent with gendered self-construal theories."
+    ],
+    "methodology": "Train an LSTM to classify gender and writing instructions on values-affirmation essays, adjust it at test time to emit sequential class probabilities per token, and query it with crafted stimuli sentences to map output probability shifts to input features of theoretical interest.",
+    "datasets": [
+      "Values-affirmation essays from 8 cohorts of middle school students (6224 essays written by 1233 students; 3315 essays by female students, 2909 by male students)"
+    ],
+    "baselines": [
+      "SVM"
+    ],
+    "metrics": [
+      "Pearson correlation (between SVM token coefficients and LSTM average token probability changes)"
+    ],
+    "limitations": [
+      "LSTM probability change is context dependent, so each token can be associated with multiple probability changes requiring averaging.",
+      "The study does not disentangle the degree to which the observed justification patterns influence the effectiveness of the intervention on academic outcomes (not addressed; suggested for future work)."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - neural network interpretability (educational/psychology application)",
+    "writing_quality": "good"
+  }
+}

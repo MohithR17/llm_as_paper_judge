@@ -1,0 +1,78 @@
+{
+  "IMPACT": 3,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "_details": {
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses an important problem\u2014joint content selection and discourse relation prediction in meeting dialogues\u2014and demonstrates concrete gains over SVM baselines on AMI and ICSI corpora as well as improved consistency-of-understanding (COU) prediction versus prior state-of-the-art. The latent-discourse variant that avoids requiring discourse annotations and the joint feature design make this a practically useful contribution that should influence researchers working on dialogue summarization and discourse modeling. However, reliance on given discourse tree structures and the evaluation being limited to meeting corpora constrain its generality, so the impact is likely useful but not transformative."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "Experiments are reasonably comprehensive: evaluation on multiple meeting corpora (AMI and ICSI), comparisons to several baselines (SVMs, HMM work, CENTROID/LONGEST DA baselines), and an application to COU prediction where their features give significant improvement. The paper includes important variants (joint vs separate learning/inference, and a latent-discourse version) which cover key ablations and robustness to missing discourse labels. Related work coverage is described as thorough and several limitations are acknowledged (need for discourse annotations, assumption that discourse tree structures are given). However, reproducibility is weakened by missing details such as hyperparameter settings and no mention of released code, so some minor gaps remain."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a joint log-linear model that simultaneously performs phrase-based content selection and discourse-relation prediction, plus a latent-discourse variant to avoid requiring discourse annotations \u2014 a clear methodological novelty relative to prior separate-classifier and HMM-based approaches (e.g., Kim and Shah 2016). The use of joint content\u2013discourse feature interactions, SampleRank-based training, and alternating inference (message-passing + ILP) constitutes a non-trivial extension of existing techniques. Empirical gains on AMI/ICSI and improved COU prediction further differentiate the contribution from baselines. Overall this is a notable, clearly differentiated advance rather than a purely incremental combination of known methods."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within the scope of a top NLP/ML venue: it tackles discourse analysis and content selection for meeting/dialogue summarization using standard corpora (AMI and ICSI) and problems of clear interest to the community. The joint log-linear modeling approach and its latent-discourse variant address a practical modeling challenge (lack of discourse annotations) and are formulated at the level expected for the venue. Evaluation uses appropriate baselines (SVMs, prior work including Kim and Shah 2016), standard metrics (accuracy, F1, ROUGE) and demonstrates utility for a downstream task (consistency of understanding), indicating it targets the right audience and uses community-appropriate methods and standards."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper\u2019s main claims (a joint log-linear model and a latent-discourse variant) are clearly stated and appear supported by experiments showing improvements over SVM-based baselines on phrase selection and discourse prediction on AMI and ICSI, and by improved COU prediction vs. Kim and Shah (2016). The methodology (SampleRank training, alternating inference with message-passing and ILP) is sound and appropriate baselines and metrics (Accuracy, F1, ROUGE) are used. Minor concerns remain: the model assumes the discourse-attachment tree is given at train/test time and hyperparameter choices/statistical significance of results are not reported in the summary, which could affect reproducibility and real-world applicability."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized, moving logically from the joint model and learning/inference methods to experiments on AMI and ICSI and concluding with analysis. The main contributions are stated early (joint model, latent-discourse variant, improved results) and the methodology description suggests notation is consistent and well-defined. Evaluation setup, metrics, and baselines are comprehensive, and the writing quality is reported as good. Minor presentation issues remain: hyperparameters are not reported and code availability is not mentioned, and the strong assumption that discourse trees are given could be highlighted more clearly."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against a broad set of appropriate baselines (SVM-based phrase classifiers, n-gram SVM, Separate-Learn, Joint learning variants, Kim and Shah 2016 HMM approach, and simple heuristics like LONGEST/CENTROID DA) on the same meeting corpora (AMI and ICSI) using standard metrics (Accuracy, F1, ROUGE). Comparisons appear fair and thorough, and the authors explicitly benchmark against prior state-of-the-art (Kim and Shah, 2016) and analyze a latent-discourse variant to address annotation gaps; related work coverage is reported as thorough. Based on the provided summary, the experimental comparisons are comprehensive and appropriate."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A joint log-linear model is proposed to simultaneously perform phrase-based content selection and discourse relation prediction in meeting dialogues, leveraging interactions between content and discourse features.",
+      "A variation of the model treats discourse relations as latent variables to avoid requiring discourse annotations during training.",
+      "The joint learning and joint inference approach outperforms SVM-based baselines on phrase selection and discourse relation prediction on meeting corpora (AMI and ICSI).",
+      "Features derived from the joint model significantly improve prediction of consistency of understanding (COU) compared to prior state-of-the-art (Kim and Shah, 2016)."
+    ],
+    "methodology": "A log-linear joint model with content-only, discourse-only, and joint content-discourse feature functions is trained (using a SampleRank-based algorithm) and inferred via an alternating optimization procedure (message-passing for discourse and ILP for phrase selection); a latent-discourse variant marginalizes over discourse labels.",
+    "datasets": [
+      "AMI corpus (AMI-FULL, AMI-SUB)",
+      "ICSI corpus (ICSI-FULL)"
+    ],
+    "baselines": [
+      "SVM-based classifiers for phrase selection",
+      "Separate-Learn (separate classifiers without joint features)",
+      "Joint learning with separate inference",
+      "n-gram SVM (unigrams and bigrams)",
+      "Kim and Shah (2016) (HMM with discourse and head gesture features)",
+      "LONGEST DA baseline",
+      "CENTROID DA baseline",
+      "Majority class baseline",
+      "Random baseline"
+    ],
+    "metrics": [
+      "Accuracy",
+      "F1",
+      "ROUGE (including ROUGE-SU4 F1)"
+    ],
+    "limitations": [
+      "Acquiring labeled training data for discourse relations is time-consuming (motivating the latent-discourse variant).",
+      "Automatic discourse parsing in dialogues remains challenging.",
+      "The model assumes the attachment (discourse tree) structure between discourse units is given during training and testing, which may not always be available."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - discourse analysis and content selection for meeting/dialogue summarization",
+    "writing_quality": "good"
+  }
+}

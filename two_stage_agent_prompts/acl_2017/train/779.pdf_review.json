@@ -1,0 +1,76 @@
+{
+  "SUBSTANCE": 4,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 5,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "_details": {
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents comprehensive experiments across multiple datasets (Europarl, WMT, Exzy, Newstest) and strong baselines (pivot, transfer, multilingual, standard NMT), reporting consistent BLEU gains (e.g. +3.0 BLEU and larger gains in low-resource settings). It includes method-level ablations (sentence- vs word-level teaching, beam/greedy/sampling approximations) and reports KL and BLEU tradeoffs, and it explicitly discusses limitations such as beam-search time complexity and approximation issues for JSENT/JWORD. However, important reproducibility details are missing (no hyperparameters or code mentioned) and sensitivity analyses could be deeper, so the work is solid but has minor gaps."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well-organized with a clear intro\u2192method\u2192experiments\u2192conclusion flow and the main contributions (teacher\u2013student framework and sentence/word-level objectives) are stated early. Notation and methods are presented clearly and the writing quality is described as good with thorough related-work coverage. Minor presentation issues reduce clarity slightly: hyperparameters are not reported, figures/tables effectiveness is not mentioned, and some proposed metrics (JSENT/JWORD) are acknowledged as only approximated, which makes precise measurement harder to follow."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses a core NLP/ML topic\u2014zero-resource neural machine translation\u2014by proposing a teacher-student framework (teacher: pivot->target; student: source->target) and novel sentence- and word-level objectives, which is squarely within top conference scope. It uses standard datasets (Europarl, WMT, Exzy/newstest) and evaluation (BLEU) and compares against appropriate baselines (pivot, multilingual, transfer, standard NMT), reporting substantial gains (e.g., +3.0 BLEU and up to +5.63 BLEU in low-data settings). The problem formulation, methods, and positioning are appropriate for the venue\u2019s audience and research community, making this a strong fit."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against appropriate and recent baselines including pivot-based (Cheng et al., 2016), multilingual/multi-way NMT (Firat et al., 2016b), transfer learning (Zoph et al., 2016), standard MLE NMT and random baselines, and evaluates on shared datasets (Europarl, WMT, Exzy, newstest) using BLEU. Comparisons appear fair and conducted under the same evaluation metric and data conditions, with quantitative wins reported (e.g., +3.0 BLEU over pivot, +5.63 over pivot in low-resource setting) and acknowledgment of cases where other methods are comparable; the paper also analyzes differences between sentence- and word-level teaching and discusses limitations of the approximations. Related work coverage is described as thorough, so the most relevant competing approaches are cited and discussed."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important and practical problem of zero-resource NMT by proposing a teacher-student framework that trains a source-to-target model using a pivot-to-target teacher and source-pivot data. Empirically the method yields meaningful gains (\u2248+3.0 BLEU over a pivot baseline and in some cases exceeding standard NMT trained on comparable-size source-target data, and +5.63 BLEU vs pivot in low-resource settings), suggesting it would change practice for low-resource translation. The introduction of sentence- and word-level (JWORD) teaching objectives offers a clear methodological direction for follow-up work and is likely to be built upon, although noted computational and approximation limitations temper claims of transformative impact."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and supported by empirical evidence (reported ~+3.0 BLEU improvements and wins over pivot/transfer baselines on multiple datasets), and the proposed KL-based sentence- and word-level objectives are conceptually sound. However, the paper relies on approximations for JSENT/JWORD and does not report hyperparameters, code, or statistical significance testing, which weakens the strength of empirical claims and reproducibility. Overall the methodology and comparisons to appropriate baselines are solid, so only minor technical/reporting issues remain."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a new teacher\u2013student framework for zero-resource NMT that trains a source\u2192target student using a pivot\u2192target teacher and source\u2013pivot parallel data, which is a distinct perspective beyond prior pivot/multilingual/transfer approaches. It introduces concrete technical novelties (sentence-level teaching approximations and a word-level KL objective JWORD) and demonstrates empirical gains (+3.0 BLEU) over strong baselines. The contributions are clearly differentiated from prior work and represent a non-trivial, useful extension rather than a simple combination of existing methods, so the novelty is notable though not revolutionary."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Propose a teacher-student framework to train a source-to-target NMT model in a zero-resource scenario by using a pre-trained pivot-to-target model as the teacher and a source-pivot parallel corpus to train the student.",
+      "Introduce both sentence-level and word-level teaching objectives (including a word-level KL-based objective JWORD) to align student and teacher distributions.",
+      "Demonstrate that the proposed methods significantly improve over a baseline pivot-based model by +3.0 BLEU across various language pairs, with the word-sampling word-level method performing best.",
+      "Show that the proposed method can sometimes slightly outperform a standard NMT trained with comparable-size source-target parallel data and can outperform pivot and transfer baselines in low source-to-pivot data settings (e.g., +5.63 BLEU over pivot and +0.56 BLEU over transfer in a reported case)."
+    ],
+    "methodology": "Train a pivot-to-target 'teacher' model on pivot-target parallel data, then train a source-to-target 'student' model on a source-pivot parallel corpus by minimizing divergence between teacher and student distributions either at the sentence level (mode/beam/greedy approximations) or at the word level via an expected per-word KL objective.",
+    "datasets": [
+      "Europarl",
+      "WMT",
+      "Aligned trilingual development set from shared task 2006 (Exzy)",
+      "Newstest2012/Newstest2013 (WMT evaluation sets mentioned)"
+    ],
+    "baselines": [
+      "Pivot-based method (Cheng et al., 2016)",
+      "Multilingual/multi-way NMT (Firat et al., 2016b)",
+      "Standard NMT trained by MLE",
+      "Transfer learning method (Zoph et al., 2016)",
+      "Randomly initialized NMT (Prandom) used for KL comparison"
+    ],
+    "metrics": [
+      "BLEU (case-insensitive, computed by multi-bleu)",
+      "Average KL divergence (approximations of JSENT and JWORD)"
+    ],
+    "limitations": [
+      "Beam-search based sentence-level teaching improves quality but increases time complexity linearly with beam size.",
+      "Sampling-based word-level approximation yields higher KL divergence (poorer distribution match) though it introduces more target-side diversity, making it hard to determine which effect dominates.",
+      "JSENT and JWORD are difficult to measure directly and are approximated.",
+      "Further evaluation (e.g., of low-resource extensions) is left for future work."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - neural machine translation (zero-resource NMT)",
+    "writing_quality": "good"
+  }
+}

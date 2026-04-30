@@ -1,0 +1,39 @@
+{
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "APPROPRIATENESS": 5,
+  "CLARITY": 3,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important, practical problem\u2014scaling dialogue-state tracking without hand-crafted SLU or semantic dictionaries\u2014by proposing the Neural Belief Tracker that reasons over pre-trained word vectors and context (e.g. system request/confirm acts). The authors show (on DSTC2 and WOZ 2.0) that NBT matches state-of-the-art models that rely on hand-crafted lexicons and outperforms them when lexicons are absent, and that semantically-specialised Paragram-SL999 vectors yield substantial gains (especially for noisy ASR). These results are likely to change how researchers approach joint SLU/DST and to be widely built upon, opening direction for representation-driven DST, though broader implications outside task-oriented SDS are moderate."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a notable novel approach: a Neural Belief Tracker that reasons directly over pre-trained word vectors to compose utterance and context representations, explicitly avoiding delexicalisation and hand-crafted semantic lexicons (stated in the abstract and motivation). It introduces concrete context-gating similarity measures (dr and dc, Eqs. 9\u201310) to capture two- and three-way interactions between utterance, candidate slot/value and recent system acts, which is a non-trivial modelling innovation for DST. The authors explicitly differentiate their method from prior delexicalisation-based and RNN/CNN-based joint SLU/DST models (e.g. Henderson et al., Wen et al.) and demonstrate matching/outperforming those that rely on lexicons. While building on known components (pre-trained embeddings, CNNs), their integrated, lexicon-free formulation for belief tracking is a clear and informative contribution rather than a mere reapplication of existing techniques."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper presents clear, implementable model equations (Eq.9\u201310) for context gating and provides experiments on two standard datasets (DSTC2 and WOZ 2.0) with appropriate baselines (delexicalisation models and the RNN/CNN WOZ model). The mathematical parts are simple and correct, and the experimental setup (train/val/test splits, metrics, use of ASR hypotheses) is appropriate. Minor gaps include limited detail on statistical testing and some hyperparameter/implementation specifics (they claim significance for Paragram gains but do not show test details in the provided text), but these do not undermine the main technical claims."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes \u2014 this is squarely within top-tier NLP/ML scope: dialogue state tracking is a core NLP task and the paper proposes Neural Belief Tracker models (NBT-DNN, NBT-CNN) that reason over pre-trained vectors and dialogue context. The problem formulation (binary decisions per slot-value, context gating for request/confirm acts) and use of standard datasets (DSTC2, WOZ 2.0) and metrics (joint goal accuracy, requests) match community expectations. Evaluation compares against established baselines (delexicalisation-based models, Wen et al. 2017) and explores embedding variants, showing the kinds of empirical analysis expected at top venues, and the paper cites and positions itself relative to relevant DST/SLU work (Henderson et al., DSTC)."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper follows a logical organization (intro \u2192 method \u2192 experiments \u2192 results) and states the main contribution (the Neural Belief Tracker) early on, e.g. the opening paragraph describing NBT. However, notation and some formulas are presented ambiguously (eqs. (9)\u2013(10) use cs\u00b7tq and r in ways that make operator precedence and dimensions unclear). Figures/tables are referenced (Table 2) but not shown in the provided text, and the manuscript contains many duplicated lines, LaTeX artifacts and fragmented phrases (e.g. \u201cseman4The NBT-DNN...\u201d and repeated paragraphs), which hurt readability and introduce grammatical/formatting issues."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates on two complementary datasets (DSTC2 and an expanded WOZ 2.0) and compares NBT-DNN/NBT-CNN against strong delexicalisation baselines (with and without semantic dictionaries), using standard metrics (joint goal accuracy, requests), which supports the main claims. It includes sensitivity/ablation-style analysis over input word vector spaces (Table 2) and reports training details like optimizer (Adam) and that pre-trained vectors were kept fixed. However, more targeted ablations (e.g. disabling the context gating/confirm-request module or full component-wise analysis) are not shown in the provided text, and explicit discussion of failure cases/limitations is minimal; some implementation/hyperparameter details needed for full reproducibility are also not present."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares NBT to appropriate, recent baselines (the delexicalisation-based Henderson et al. 2014 model for DSTC2 and the Wen et al. 2017 model for WOZ 2.0) and evaluates on the same datasets and metrics (DSTC2 and WOZ 2.0; joint goal accuracy and requests). Comparisons are presented under comparable conditions (including baseline variants with/without task-specific semantic dictionaries) and the authors explicitly state when prior methods are matched or outperformed (e.g. \u201cmatching the performance of state-of-the-art models which rely on hand-crafted semantic lexicons and outperforming them when such lexicons are not provided\u201d). The paper also analyzes differences (importance of pre-trained/paragram vectors, delexicalisation limitations, context modelling) and cites a broad set of relevant prior work throughout."
+    }
+  }
+}

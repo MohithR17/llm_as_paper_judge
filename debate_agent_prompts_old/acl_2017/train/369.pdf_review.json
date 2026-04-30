@@ -1,0 +1,157 @@
+{
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 3,
+  "IMPACT": 3,
+  "SUBSTANCE": 4,
+  "APPROPRIATENESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper's main claims are clearly stated and supported by experimental evidence: it reports high classification accuracies (>98% gender, >93% number), an end-to-end MT improvement (up to 0.7 METEOR), and comparisons against reasonable baselines (Moses, SVMs, RFs, CNN, LSTM) on multiple corpora. There are no mathematical derivations to critique, and the experimental setup appears sound, though the summary does not mention statistical significance testing. A remaining weakness is the broad claim of language-independence/generalizability of the morphology module, which is not fully justified by experiments limited to Chinese\u2192Spanish and a narrow simplification (number/gender). | B(4): The main claims (decoupling translation and morphology, a neural classifier architecture, and strong classification and MT gains) are supported by experiments across multiple corpora and comparisons to reasonable baselines (Moses, SVMs, RF, CNN, LSTM) with reported hyperparameters and high reported accuracies. However, there is no mention of statistical significance testing for the reported METEOR gains, the language-independence/generalizability claim is weak given evaluation only on Chinese\u2192Spanish and the approach relies on Freeling and hand-crafted rules, and no mathematical derivations were required or provided. These are minor methodological limitations that do not overturn the main experimental findings.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and supported by experimental evidence: it reports high classification accuracies (>98% gender, >93% number), an end-to-end MT improvement (up to 0.7 METEOR), and comparisons against reasonable baselines (Moses, SVMs, RFs, CNN, LSTM) on multiple corpora. There are no mathematical derivations to critique, and the experimental setup appears sound, though the summary does not mention statistical significance testing. A remaining weakness is the broad claim of language-independence/generalizability of the morphology module, which is not fully justified by experiments limited to Chinese\u2192Spanish and a narrow simplification (number/gender)."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The main claims (decoupling translation and morphology, a neural classifier architecture, and strong classification and MT gains) are supported by experiments across multiple corpora and comparisons to reasonable baselines (Moses, SVMs, RF, CNN, LSTM) with reported hyperparameters and high reported accuracies. However, there is no mention of statistical significance testing for the reported METEOR gains, the language-independence/generalizability claim is weak given evaluation only on Chinese\u2192Spanish and the approach relies on Freeling and hand-crafted rules, and no mathematical derivations were required or provided. These are minor methodological limitations that do not overturn the main experimental findings."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper applies a known two-step strategy (translate to a morphologically simplified target then postprocess) and uses standard neural components (embeddings, convolutional layer, LSTM, sigmoid/softmax) assembled into a classifier, so the core idea is an incremental application rather than a fundamentally new paradigm. The specific architecture and strong empirical results (98% gender, 93% number accuracy, up to +0.7 METEOR) offer a useful, well-differentiated engineering contribution and some methodological novelty in combining layers and rescoring. The work is clearly differentiated from baselines (SVMs, RFs, CNN, LSTM) but largely composes existing techniques for a targeted morphology-generation task, so it is moderately novel rather than highly original. | B(3): The paper applies a reasonable and practical idea\u2014decoupling translation and morphology via translation to a morphologically simplified target followed by a neural classifier for number and gender\u2014and proposes a classifier architecture combining embeddings, convolutional and recurrent layers. However, the architectural components (embedding + CNN + LSTM + sigmoid/softmax) are standard building blocks and the overall two-step simplification+postprocessing approach is a moderate extension of prior post-processing/morphology-generation work rather than a radical new paradigm. The clear language-independence claim and strong empirical results are useful, but the contribution appears incremental rather than highly novel.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper applies a known two-step strategy (translate to a morphologically simplified target then postprocess) and uses standard neural components (embeddings, convolutional layer, LSTM, sigmoid/softmax) assembled into a classifier, so the core idea is an incremental application rather than a fundamentally new paradigm. The specific architecture and strong empirical results (98% gender, 93% number accuracy, up to +0.7 METEOR) offer a useful, well-differentiated engineering contribution and some methodological novelty in combining layers and rescoring. The work is clearly differentiated from baselines (SVMs, RFs, CNN, LSTM) but largely composes existing techniques for a targeted morphology-generation task, so it is moderately novel rather than highly original."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper applies a reasonable and practical idea\u2014decoupling translation and morphology via translation to a morphologically simplified target followed by a neural classifier for number and gender\u2014and proposes a classifier architecture combining embeddings, convolutional and recurrent layers. However, the architectural components (embedding + CNN + LSTM + sigmoid/softmax) are standard building blocks and the overall two-step simplification+postprocessing approach is a moderate extension of prior post-processing/morphology-generation work rather than a radical new paradigm. The clear language-independence claim and strong empirical results are useful, but the contribution appears incremental rather than highly novel."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper addresses an important practical problem\u2014generating target morphology in MT\u2014by proposing a decoupling approach (translate to morphologically simplified Spanish then generate number/gender) and a neural classification architecture that achieves very high accuracy (>98% gender, >93% number). The demonstrated end-to-end MT gain is modest (up to 0.7 METEOR), and the method currently targets only number and gender with fallbacks for unseen words, which limits immediate practical impact. However, the claimed language-independence of the morphology module and the strong classification results suggest useful and extendable directions that other researchers could build on, yielding moderate impact overall. | B(3): The paper tackles an important practical problem\u2014recovering target morphology in MT\u2014by decoupling translation and morphological generation and proposing a novel neural classifier that achieves very high accuracy (98% gender, 93% number). The reported end-to-end gain is modest (up to 0.7 METEOR) but demonstrates that post-processing morphology with a language-independent module can improve output quality and is easily generalizable to other simplification schemes. However, the scope is limited to number and gender only and relies on dictionary fallbacks for unknown words, which constrains broader applicability. Overall, the work is a useful, buildable contribution that opens further research directions but is not yet transformative.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper addresses an important practical problem\u2014generating target morphology in MT\u2014by proposing a decoupling approach (translate to morphologically simplified Spanish then generate number/gender) and a neural classification architecture that achieves very high accuracy (>98% gender, >93% number). The demonstrated end-to-end MT gain is modest (up to 0.7 METEOR), and the method currently targets only number and gender with fallbacks for unseen words, which limits immediate practical impact. However, the claimed language-independence of the morphology module and the strong classification results suggest useful and extendable directions that other researchers could build on, yielding moderate impact overall."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper tackles an important practical problem\u2014recovering target morphology in MT\u2014by decoupling translation and morphological generation and proposing a novel neural classifier that achieves very high accuracy (98% gender, 93% number). The reported end-to-end gain is modest (up to 0.7 METEOR) but demonstrates that post-processing morphology with a language-independent module can improve output quality and is easily generalizable to other simplification schemes. However, the scope is limited to number and gender only and relies on dictionary fallbacks for unknown words, which constrains broader applicability. Overall, the work is a useful, buildable contribution that opens further research directions but is not yet transformative."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The experiments are fairly comprehensive: the authors evaluate on multiple corpora (UN, TAUS, Bible, BTEC), compare against several baselines (Moses, SVM variants, Random Forests, CNN, LSTM), report hyperparameters, and show strong classification accuracy and up to 0.7 METEOR gain. Related work coverage is described as adequate and limitations (focus on number/gender, fallback for unknown words) are explicitly discussed. However, the summary does not indicate explicit ablation or sensitivity analyses isolating the contribution of each modelling component (e.g., embedding vs. convolution vs. LSTM, or the impact of LM rescoring and hand rules), and code is not mentioned which limits full reproducibility\u2014hence a solid but not perfect score. | B(4): The paper presents solid experimental coverage: multiple corpora (UN, TAUS, Bible, BTEC), strong baselines (Moses, SVMs, Random Forests, CNN, LSTM), and metrics for both classification (accuracy) and end-to-end MT (METEOR), with hyperparameters reported. The authors also discuss limitations (scope limited to number/gender, dictionary fallbacks) and include rescoring and hand-crafted rules, showing practical awareness of failure modes. However, the work appears to lack explicit ablation or sensitivity analyses isolating the contribution of each component (e.g., rescoring, rules, architecture choices), and code availability is not reported, limiting exact reproducibility.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The experiments are fairly comprehensive: the authors evaluate on multiple corpora (UN, TAUS, Bible, BTEC), compare against several baselines (Moses, SVM variants, Random Forests, CNN, LSTM), report hyperparameters, and show strong classification accuracy and up to 0.7 METEOR gain. Related work coverage is described as adequate and limitations (focus on number/gender, fallback for unknown words) are explicitly discussed. However, the summary does not indicate explicit ablation or sensitivity analyses isolating the contribution of each modelling component (e.g., embedding vs. convolution vs. LSTM, or the impact of LM rescoring and hand rules), and code is not mentioned which limits full reproducibility\u2014hence a solid but not perfect score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents solid experimental coverage: multiple corpora (UN, TAUS, Bible, BTEC), strong baselines (Moses, SVMs, Random Forests, CNN, LSTM), and metrics for both classification (accuracy) and end-to-end MT (METEOR), with hyperparameters reported. The authors also discuss limitations (scope limited to number/gender, dictionary fallbacks) and include rescoring and hand-crafted rules, showing practical awareness of failure modes. However, the work appears to lack explicit ablation or sensitivity analyses isolating the contribution of each component (e.g., rescoring, rules, architecture choices), and code availability is not reported, limiting exact reproducibility."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Yes \u2014 the paper addresses a core MT/NLP problem (morphology generation for MT) and proposes a deep-learning based post-processing architecture that is directly relevant to top-tier NLP/ML audiences (Chinese\u2192Spanish morphology decoupling, embedding+CNN+LSTM classifier). The methodology and evaluation use community-accepted resources and practices (UN/TAUS/Bible/BTEC corpora, Moses baseline, multiple ML baselines, METEOR, and reported hyperparameters). Minor scope concerns \u2014 the work focuses only on number and gender and reports fallback behavior for OOVs \u2014 which may limit generality but does not remove its relevance to the venue. | B(5): This paper sits squarely in the NLP/ML conference scope: it addresses machine translation and morphological generation using a neural-network-based approach (embedding + convolutional + recurrent layers) and a decoupled translation + morphology pipeline. It targets the right audience by combining MT system engineering (phrase-based Moses baseline) with deep learning classifiers and standard evaluation (METEOR, classification accuracy) on well-known corpora (UN, TAUS, Bible, BTEC). The problem formulation (post-editing/simplification of morphology for translation) and the claimed language-independent morphology module are directly relevant to current MT and morphology research communities. Methods, baselines, datasets, and metrics are appropriate for a top-tier venue.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Yes \u2014 the paper addresses a core MT/NLP problem (morphology generation for MT) and proposes a deep-learning based post-processing architecture that is directly relevant to top-tier NLP/ML audiences (Chinese\u2192Spanish morphology decoupling, embedding+CNN+LSTM classifier). The methodology and evaluation use community-accepted resources and practices (UN/TAUS/Bible/BTEC corpora, Moses baseline, multiple ML baselines, METEOR, and reported hyperparameters). Minor scope concerns \u2014 the work focuses only on number and gender and reports fallback behavior for OOVs \u2014 which may limit generality but does not remove its relevance to the venue."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper sits squarely in the NLP/ML conference scope: it addresses machine translation and morphological generation using a neural-network-based approach (embedding + convolutional + recurrent layers) and a decoupled translation + morphology pipeline. It targets the right audience by combining MT system engineering (phrase-based Moses baseline) with deep learning classifiers and standard evaluation (METEOR, classification accuracy) on well-known corpora (UN, TAUS, Bible, BTEC). The problem formulation (post-editing/simplification of morphology for translation) and the claimed language-independent morphology module are directly relevant to current MT and morphology research communities. Methods, baselines, datasets, and metrics are appropriate for a top-tier venue."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares against appropriate baselines for both MT and classification (phrase\u2011based Moses for translation; SVMs, Random Forests, CNN and LSTM for the morphology classifiers) and evaluates on multiple corpora with the same metrics (METEOR and classification accuracy), reporting hyperparameters. Differences between the proposed decoupling + neural classifier approach and the baselines are analyzed, and related work coverage is noted as adequate. A minor omission is that the summary does not mention comparison to modern neural MT baselines (end\u2011to\u2011end neural models), which would be a useful additional reference. | B(4): The paper compares to a broad set of baselines (phrase-based Moses MT plus several classifiers: SVMs, Random Forests, CNN, LSTM) and evaluates using the same datasets (UN, TAUS, Bible, BTEC) and metrics (METEOR, classification accuracy), supporting fair comparisons. The methodology and differences (decoupling translation and morphology generation, neural classifier architecture, rescoring with n-gram LM and rules) are described and contrasted with the baselines, and related work coverage is noted as adequate. Minor omissions remain: the summary does not indicate explicit acknowledgement when prior methods perform comparably or better, nor mention of comparison with recent end-to-end neural MT baselines, so the comparisons are strong but not fully comprehensive.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares against appropriate baselines for both MT and classification (phrase\u2011based Moses for translation; SVMs, Random Forests, CNN and LSTM for the morphology classifiers) and evaluates on multiple corpora with the same metrics (METEOR and classification accuracy), reporting hyperparameters. Differences between the proposed decoupling + neural classifier approach and the baselines are analyzed, and related work coverage is noted as adequate. A minor omission is that the summary does not mention comparison to modern neural MT baselines (end\u2011to\u2011end neural models), which would be a useful additional reference."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares to a broad set of baselines (phrase-based Moses MT plus several classifiers: SVMs, Random Forests, CNN, LSTM) and evaluates using the same datasets (UN, TAUS, Bible, BTEC) and metrics (METEOR, classification accuracy), supporting fair comparisons. The methodology and differences (decoupling translation and morphology generation, neural classifier architecture, rescoring with n-gram LM and rules) are described and contrasted with the baselines, and related work coverage is noted as adequate. Minor omissions remain: the summary does not indicate explicit acknowledgement when prior methods perform comparably or better, nor mention of comparison with recent end-to-end neural MT baselines, so the comparisons are strong but not fully comprehensive."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper appears well-organized with a clear flow from problem setup to methodology (translate to a morphologically simplified target then neural morphology generation), experiments (multiple corpora, baselines, metrics) and conclusions/limitations. The main contributions are stated early and explicitly (decoupling translation and morphology generation; a new embedding+CNN+LSTM classifier), and hyperparameters and baselines are reported, which supports reproducible presentation. Notation is reported as consistent (hyperparameters and architecture detailed) and the writing quality is noted as good; results are presented with clear metrics and comparisons, so figures/tables/examples are likely informative even though the summary does not enumerate them in detail. | B(4): The paper is well organized and the pipeline (translate to simplified Spanish then generate morphology) and experiments (datasets, baselines, metrics) are clearly presented, with the main contributions (decoupling translation/morphology and the neural classifier architecture) stated early. Notation and method descriptions appear consistent and sufficiently detailed (hyperparameters are reported), and related work coverage is adequate. Figures/tables/examples are implied to support the results (classification accuracies and METEOR improvements are reported), but there remain minor presentation issues preventing a top score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper appears well-organized with a clear flow from problem setup to methodology (translate to a morphologically simplified target then neural morphology generation), experiments (multiple corpora, baselines, metrics) and conclusions/limitations. The main contributions are stated early and explicitly (decoupling translation and morphology generation; a new embedding+CNN+LSTM classifier), and hyperparameters and baselines are reported, which supports reproducible presentation. Notation is reported as consistent (hyperparameters and architecture detailed) and the writing quality is noted as good; results are presented with clear metrics and comparisons, so figures/tables/examples are likely informative even though the summary does not enumerate them in detail."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well organized and the pipeline (translate to simplified Spanish then generate morphology) and experiments (datasets, baselines, metrics) are clearly presented, with the main contributions (decoupling translation/morphology and the neural classifier architecture) stated early. Notation and method descriptions appear consistent and sufficiently detailed (hyperparameters are reported), and related work coverage is adequate. Figures/tables/examples are implied to support the results (classification accuracies and METEOR improvements are reported), but there remain minor presentation issues preventing a top score."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Decouple translation and morphological generation by first translating to a morphologically simplified target (number and gender removed) and then generating full morphology in a postprocessing step.",
+      "Propose a new neural-network-based classification architecture (embedding + convolutional + recurrent layers, ending with sigmoid and softmax) to predict number and gender for morphology generation.",
+      "Achieve high classification performance (over 98% accuracy for gender, over 93% accuracy for number) and an overall translation improvement of up to 0.7 METEOR compared to the baseline.",
+      "The morphology generation module is language-independent and easily generalizable to other simplification schemes."
+    ],
+    "methodology": "Translate Chinese to a morphologically simplified Spanish (removing number and gender), then use a deep-learning classifier (embedding layer, convolutional layer, recurrent/LSTM layer, sigmoid/softmax output) with rescoring via an n-gram language model and hand-crafted rules to generate full-form Spanish.",
+    "datasets": [
+      "United Nations Corpus (UN)",
+      "TAUS corpus",
+      "Bible corpus",
+      "BTEC (Basic Traveller Expressions Corpus)"
+    ],
+    "baselines": [
+      "Phrase-based Moses MT baseline",
+      "SVM (linear, quadratic, sigmoid kernels)",
+      "Random Forests",
+      "Convolutional Neural Network",
+      "LSTM Neural Network"
+    ],
+    "metrics": [
+      "METEOR",
+      "Classification accuracy (%)"
+    ],
+    "limitations": [
+      "Method focuses only on simplification in number and gender (does not address other morphological categories).",
+      "If a word is not found in the Freeling dictionary, the system falls back to using the lemma as translation (noted to occur mainly for cities or demonyms).",
+      "Authors state further work is needed to further simplify morphology and extend the scope of the classification."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - Machine Translation (Chinese-to-Spanish; morphology generation)",
+    "writing_quality": "good"
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "IMPACT": 4,
+  "ORIGINALITY": 3,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "CLARITY": 3,
+  "SUBSTANCE": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important practical problem for OIE\u2014overly specific and noisy extractions\u2014by systematically minimizing triples and moving polarity, modality, attribution and quantities into annotations (Sec. 5), which directly improves usability for downstream tasks like KB extension and QA. Empirical results show MinIE produces much shorter extractions while achieving competitive or higher precision and recall than prior systems (Sec. 7.3), and the multi-mode design (Safe/Frequency/Collocations/Aggressive) plus planned release of code/datasets increases likelihood of adoption. The work opens clear follow-ups (better collocation dictionaries, richer factuality modeling) and provides a generally applicable approach that other OIE systems can integrate, so it has strong impact short of being transformative."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper does not introduce a wholly new problem\u2014OIE is well-studied\u2014and explicitly builds on ClausIE while reusing ideas from prior work (e.g., OLLIE\u2019s annotations, Stanford OIE\u2019s aggressive minimization, and nested/minimal facts from CSDIE/NestIE). Its contribution is a systematic, practical pipeline that rewrites extractions to remove polarity, modality, attribution and quantities and emits factuality annotations, plus multiple minimization modes (MinIE-S/F/C/A) and use of implicit extractions\u2014an inventive combination and engineering of existing ideas rather than a fundamentally new method. This yields moderate novelty (a useful, differentiated extension) but is largely an incremental advance over prior OIE systems."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This is squarely within top-tier NLP (information extraction) scope: it proposes an OIE system (MinIE) built on ClausIE and addresses minimizing/annotating extractions (Secs. 3\u20136). The intended audience (IE/KB and NLP researchers) is correct and the paper cites and compares to core prior work (ReVerb, OLLIE, Stanford OIE, Saur\u00ed & Pustejovsky) showing proper positioning. The problem formulation is standard for the venue (surface subject-relation-object triples with factuality annotations) and the methods/evaluation follow expected practices (comparisons to ClausIE/OLLIE/Stanford OIE, experiments on NYT and Wikipedia, precision/recall/annotation protocol; Sec. 7). Overall the contribution, experimental setup, and references indicate a strong fit for a top NLP/ML conference."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper clearly states its main claims and presents experiments comparing MinIE variants to reasonable baselines (ClausIE, OLLIE, Stanford OIE) on NYT/Wiki data (Secs. 7.1, 7.3) and discusses error sources (Sec. 7.4). However, the experimental methodology has notable weaknesses: MinIE\u2011F\u2019s dictionary is built on the entire NYT corpus (Sec. 7.1), which risks training/test leakage for the NYT evaluation split, the labeled evaluations use only small samples (200 sentences) with no annotator agreement or statistical significance testing reported, and \u2018\u2018recall\u2019\u2019 and redundancy metrics are defined in an ad\u2011hoc way without gold\u2011standard coverage. There are no mathematical proofs to check. These issues do not necessarily invalidate the results but leave important gaps in experimental support, so the paper is technically plausible but not fully convincing."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is generally well-organized (Overview \u2192 Input Extractions \u2192 Basic Minimization \u2192 Modes \u2192 Experimental Study) and states the main idea early (e.g., the paragraph beginning \u201cIn this paper, we explore\u2026\u201d describing MinIE). Notation is consistent and defined for clause types (SV, SVO, etc.) and factuality labels (polarity, CT/PS). However, the provided text contains numerous repeated/fractured passages and missing inline figures/tables (references to Fig.1, Tab.1/2/4) which hampers readability, and a few grammatical/formatting glitches in the extract that make some sections hard to follow."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper runs multiple controlled experiments (NYT-10k, NYT-200, Wiki-200), compares MinIE modes (S, F, C, A) to several baselines (ClausIE, OLLIE, Stanford OIE), and reports precision/recall, extraction length and redundancy (Sections 7.1 and 7.3), so empirical coverage is adequate. However, there are limited ablations/sensitivity analyses: the different modes give a coarse ablation but the paper lacks per-component ablation isolating polarity/modality/attribution/quantity effects. Related work is discussed widely (ReVerb, OLLIE, NestIE, Sauri\u0301 et al.), and failures/limitations (parser/NER errors, collocation gaps, small attribution samples) are explicitly discussed (Sec. 7.4). Reproducibility is helped by the promise to release code/data but many implementation details (lexicon/dictionary contents, thresholds, annotation agreement) are not given in the excerpt, limiting exact replication."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper evaluates MinIE against relevant OIE baselines (ClausIE, OLLIE, Stanford OIE), uses the same NYT and Wiki datasets previously used for ClausIE/NestIE, and reports standard metrics (recall, factual and attribution precision, extraction length, redundancy). The authors discuss fairness issues (e.g., adapting ClausIE to a CoreNLP version and not running MinIE-F on Wiki because it was NYT-trained) and analyze why MinIE variants differ from baselines and where errors arise. A minor omission is that some recent systems (e.g., NestIE) are discussed but not included in the empirical comparison."
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "CLARITY": 2,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Yes. The paper tackles multi\u2011sense word representation learning using a novel deep reinforcement learning formulation (sense selection as an MDP, Sec. 3.1\u20133.2 and a Q\u2011learning/reward\u2011passing scheme Sec. 3.2.1), which is squarely within NLP/representation learning and ML research. It evaluates on standard benchmarks (SCWS, synonym selection, Sec. 4) and compares to relevant prior work (Neelakantan et al., Bartunov et al., Li & Jurafsky, Qiu et al.), and presents non\u2011parametric sense discovery and ablations\u2014matching the methods and evaluation standards expected at top NLP/ML venues."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has a clear high-level structure (related work \u2192 model \u2192 experiments) but suffers from serious presentation problems: large blocks of duplicated text, truncated/fragmented sentences, and typographical errors (e.g. \u201cemnbeddings\u201d) that disrupt flow. Notation is introduced but used inconsistently (mixing logCo and Co, occasional missing equation parts and unclear variable roles for P,Q,U,V), and figures/tables are referenced but not cleanly presented in the excerpt. Overall the organization is salvageable but the manuscript needs substantial editing to remove repetitions, fix grammar/typos, and make notation and figures/tables consistent and complete."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important problem of word sense ambiguity by proposing a reinforcement-learning framework that jointly trains a sense selection module and a pure sense representation module (\u2018\u2018DRL\u2011Sense\u2019\u2019; sense selection and representation modules learned together). Its key technical claims\u2014novel reward\u2011passing for Q\u2011learning, linear\u2011time decoding for sense selection, and a non\u2011parametric mechanism for automatically deciding per\u2011word sense counts\u2014could change how researchers approach multi\u2011sense embedding learning and were shown to give state\u2011of\u2011the\u2011art contextual similarity results and performance comparable to word2vec using much less training data. The modular RL formulation and non\u2011parametric discovery open clear new directions likely to be built upon and have broader implications for downstream NLP systems that rely on contextualized word representations."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper applies reinforcement learning to multi-sense embedding learning in a way not covered by the cited prior work: it formulates sense selection as an MDP (Sec. 3.1), uses a policy/Q-learning hybrid with a novel reward-passing procedure to jointly train a sense-selection module and a pure sense-representation module (Sec. 3.2\u20133.2.2), and proposes a neural non\u2011parametric mechanism to discover per\u2011word sense counts (Sec. 3). These contributions are clearly differentiated from clustering/EM/CRP and WordNet\u2011based approaches cited (Reisinger & Mooney 2010; Neelakantan et al. 2014; Li & Jurafsky 2015; Bartunov et al. 2016; Qiu et al. 2016). While the work combines existing components (CBOW/skip\u2011gram, negative sampling, dropout) with RL, the specific RL formulation and linear\u2011time, joint training design represent a notable and non\u2011trivial novelty rather than a minor incremental change."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper evaluates DRL-Sense on standard quantitative benchmarks (SCWS for contextual similarity and three synonym-selection sets) and provides qualitative analysis (k-NN, t-SNE) and non\u2011parametric sense counts (Sec. 4.2, 4.4), supporting its main claims. Ablations and sensitivity tests are reported in the supplementary experiments (removing non\u2011parametric, exploration and prior components; varying embedding dims), demonstrating component-wise contribution. Related work is broad and fair (Sec. 2), but the paper does not explicitly discuss failure cases or broader limitations beyond the exploration issue, and some implementation specifics (e.g., full non\u2011parametric induction procedure, training epochs/batches, and equation (1) details) are incomplete for exact reproduction. Overall the experimental coverage is solid with minor gaps in negative-result discussion and a few reproducibility details."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against a comprehensive set of relevant baselines (clustering methods Huang et al. 2012, Neelakantan et al. 2014; EM methods Tian et al. 2014, Qiu et al. 2016, Bartunov et al. 2016; CRP Li & Jurafsky 2015) and also evaluates on standard benchmarks (SCWS, synonym selection) using established metrics (AvgSimC/MaxSimC). The authors explicitly state and largely control for fair conditions (\"all approaches are trained on the same corpus except Li and Jurafsky (2015) and Qiu et al. (2016) used more recent Wikipedia dumps\") and report embedding sizes and comparable settings. They acknowledge when prior methods perform similarly (e.g., noting Qiu et al. attain high AvgSimC and claiming complementary strengths) and provide clear analyses of differences (computational cost/exponential vs linear sense selection, pure sense-level learning, need for external resources vs corpus-only). Overall the comparisons are thorough, fair, and well discussed."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper presents a coherent formulation and provides empirical comparisons, but there are several technical gaps and under-specified components. The policy-gradient derivation (appendix) is algebraically correct, yet the paper over-claims that using L=log Co (\u22640) makes policy gradients invalid \u2014 this is not a fundamental mathematical failure of REINFORCE (a baseline or reward-shift would address sign issues); the argument is therefore incomplete. The proposed \u2018\u2018Q-learning / reward-passing\u2019\u2019 approach is only partially specified (no Q-update/target mechanism, and Eq.4 reduces to fitting q to Co via cross-entropy, i.e. supervised regression rather than a full RL algorithm), and the non\u2011parametric sense-discovery mechanism is described only at a high level so reproducibility and correctness of that claim are unclear. Experimental methodology compares to appropriate baselines on SCWS, and ablations are reported, but reported numbers/tables in the provided text are incomplete and no statistical significance is reported, so the strong claims (state-of-the-art, comparable to word2vec on 1/100 data) are not fully substantiated."
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "CLARITY": 2,
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses a core NLP problem (dependency parsing) and proposes a novel non-monotonic transition system for the non-projective Covington parser, which is squarely within the scope of top NLP/ML conferences (see: \u201cnon-projective Covington parser\u201d and \u201cA Full Non-Monotonic Transition System\u2026\u201d). It develops a dynamic oracle (albeit approximate) and evaluates on standard benchmarks (CoNLL-X and CoNLL-XI across multiple languages), using established experimental methodology and comparisons to prior work (G\u00f3mez-Rodr\u00edguez & Fern\u00e1ndez\u2011Gonz\u00e1lez, Honnibal et al.), so the methods and evaluation meet venue expectations. The paper is explicitly positioned relative to the parsing literature and claims empirical gains over monotonic oracles, making it appropriate and relevant to the venue\u2019s research community."
+    },
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper contains the required sections (introduction, method, experiments) and states the contributions, but presentation is marred by heavy repetition, duplicated paragraphs/sentences (e.g., multiple repeats of the \"Training with a dynamic oracle...\" and \"Unlike the system...\" passages), formatting artifacts (LaTeX remnants, duplicate section headings like \"1 Non-Projective Covington Transition System\"), and typographical errors (\"can can\", \"potencial\"). Notation is partially defined but the text refers to figures and algorithms (Figure 1/2, Tarjan/Johnson procedures) that are missing here, and some definitions are scattered, making follow-up hard. Overall the organization exists but clarity and polish need substantial editing to remove redundancies, fix grammar, and ensure figures/tables and notation are consistently presented."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the important problem of error propagation in transition-based dependency parsing for non-projective trees by proposing the first fully non-monotonic transition system for the non-projective Covington parser and an approximate dynamic oracle (claims: \u201cTo our knowledge, the presented system is the first nonmonotonic parser that can produce non-projective dependency analyses\u201d and \u201cour dynamic oracle is approximate...\u201d). Empirically it outperforms the monotonic variant on a majority of CoNLL-X/XI datasets, indicating practical value for diverse languages. The approach meaningfully broadens what non-monotonic repairs can do (repairing any direction and exploiting revisitable words) and suggests clear follow-ups (tighter loss approximations, neural integration), so it should influence future work in transition-based and non-projective parsing even if not transformative across all NLP subfields."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper presents a full non-monotonic transition system built on the non-projective Covington parser and claims to be the first non-monotonic parser capable of producing non-projective dependency analyses (\"To our knowledge, the presented system is the first nonmonotonic parser that can produce non-projective dependency analyses\"). It also proposes a concrete mechanism to enforce acyclicity (remove the previous head z\u2192x when creating x\u2192y would form a cycle) and develops an approximate dynamic oracle to handle the complexity of loss computation. The authors clearly differentiate their work from prior restricted non-monotonic approaches (Honnibal et al.) and from monotonic Covington variants, so the contribution is a non-trivial and notable extension of existing methods."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper reports experiments across many languages (nine CoNLL\u2011X datasets and all CoNLL\u2011XI datasets) and compares static, monotonic dynamic and non\u2011monotonic dynamic oracles, which provides solid empirical support for the central claim that full non\u2011monotonicity helps. It also explicitly discusses algorithmic limitations (the need for approximate loss, use of Tarjan/Johnson algorithms, and analyzing only the first 100,000 transitions due to complexity), and situates the work with respect to prior non\u2011monotonic and Covington research. However, there is limited sensitivity analysis or ablation of approximation variants (beyond mentioning approximate oracles), and reproducibility details (e.g., full training/hyperparameter/feature specifications or code) are not provided in the excerpt, so some important experimental aspects remain under\u2011examined."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper implements and evaluates static, monotonic-dynamic and non-monotonic-dynamic oracles for the same non-projective Covington parser and reports experiments on standard CoNLL-X and CoNLL-XI datasets (\u2018\u2018we implement the static, dynamic monotonic and nonmonotonic oracles \u2026 compare their accuracies on nine datasets from the CoNLL-X \u2026 and all datasets from the CoNLL-XI\u2019\u2019), and explicitly compares to the prior monotonic Covington variant (G\u00f3mez-Rodr\u00edguez and Fern\u00e1ndez-Gonz\u00e1lez, 2015), reporting that the non-monotonic oracle outperforms it on the majority of languages. The comparisons appear fair (same datasets and evaluation) and the paper cites and discusses relevant prior non-monotonic and oracle work (Honnibal et al., Goldberg & Nivre, etc.). Missing are empirical comparisons against other non-monotonic arc-eager implementations or recent neural parsers (mentioned only as future work) and limited discussion of cases where prior methods match or outperform the proposed method."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The core algorithmic modification (allowing arbitrary Left/Right-Arc actions and enforcing single-head/acyclicity by deleting the unique previous head z\u2192x when adding x\u2192y) is internally consistent given the indegree-1 invariant (see paragraphs describing deletion of z\u2192x). However, the paper provides no formal proofs of correctness/termination for the non-monotonic system or of the loss computations under the new semantics, and admits the dynamic oracle is only an approximation because exact loss requires enumerating cycles (references to Johnson (1975) and limiting analysis to the first 100,000 transitions). Experimental claims (improvements on CoNLL-X/XI datasets) are stated but no detailed results/statistical tests are given in the excerpt, so methodological support is incomplete. These gaps justify moderate confidence but leave technical questions unanswered."
+    }
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "IMPACT": 3,
+  "MEANINGFUL_COMPARISON": 3,
+  "CLARITY": 4,
+  "APPROPRIATENESS": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper combines existing elements (entity masking, recursive/event-centered RNN variants, word2vec embeddings, and a cost-weighted cross-entropy) and applies them to the relatively specific task of alliance/opposition extraction from news titles; this is more an application-driven integration than a fundamentally new method. The precision-oriented loss and the particular aggregation/smoothing pipeline for time-series visualization are useful engineering contributions but are straightforward extensions of known practices rather than novel algorithms. The work is clearly differentiated from prior rule-based baselines (TABARI) and adapts models to title-specific issues, which would be informative to practitioners, but would not substantially surprise an expert expecting such adaptations. | B(3): The paper offers a focused, application-driven combination of techniques\u2014event-centered recursive neural network variants applied to news titles, a precision-weighted loss to bias towards high-precision sentence labels, and a log-ratio + smoothing aggregation for time-series of alliance/opposition\u2014that is usefully novel in this specific geopolitical extraction pipeline. However, the components (recursive neural nets for relation/event extraction, cost-sensitive losses, and simple aggregation heuristics) are individually established ideas, so the contribution reads as an incremental, engineering-oriented integration rather than a fundamentally new modeling paradigm. The authors do clearly differentiate from a rule-based baseline (TABARI) and tailor design choices to multi-document aggregation, which would be informative to experts but unlikely to surprise them.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper combines existing elements (entity masking, recursive/event-centered RNN variants, word2vec embeddings, and a cost-weighted cross-entropy) and applies them to the relatively specific task of alliance/opposition extraction from news titles; this is more an application-driven integration than a fundamentally new method. The precision-oriented loss and the particular aggregation/smoothing pipeline for time-series visualization are useful engineering contributions but are straightforward extensions of known practices rather than novel algorithms. The work is clearly differentiated from prior rule-based baselines (TABARI) and adapts models to title-specific issues, which would be informative to practitioners, but would not substantially surprise an expert expecting such adaptations."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper offers a focused, application-driven combination of techniques\u2014event-centered recursive neural network variants applied to news titles, a precision-weighted loss to bias towards high-precision sentence labels, and a log-ratio + smoothing aggregation for time-series of alliance/opposition\u2014that is usefully novel in this specific geopolitical extraction pipeline. However, the components (recursive neural nets for relation/event extraction, cost-sensitive losses, and simple aggregation heuristics) are individually established ideas, so the contribution reads as an incremental, engineering-oriented integration rather than a fundamentally new modeling paradigm. The authors do clearly differentiate from a rule-based baseline (TABARI) and tailor design choices to multi-document aggregation, which would be informative to experts but unlikely to surprise them."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper makes concrete claims and provides experiments showing improved sentence-level classification and a deployed aggregation pipeline, but the evidence is incomplete for strong technical endorsement. Key experimental shortcomings include a small and imbalanced annotated set (5,172 examples, only 453 test relations), comparison to a single baseline (TABARI) without stronger neural or modern baselines, and no reported statistical significance or sensitivity analyses (e.g., for the precision-weight \u03b1 or embedding choices). The aggregation/smoothing evaluation is acknowledged as subjective and tested only on few instances, and code/data release is not mentioned, which together leave reproducibility and some claims under-supported. | B(3): The paper clearly states its claims and presents experiments (comparison to TABARI, precision/recall/accuracy, and a production indexing of 3.3M titles) that provide supporting evidence, but key technical weaknesses remain. Mathematical components are straightforward and need no deep proofs, but the experimental methodology is limited by a relatively small annotated corpus (5,172 instances; test set of 453), lack of reported statistical significance testing, and reliance on a single rule-based baseline. There are also logical gaps around aggregation validity and subjective evaluation of trend plots (small human evaluation), so while the core results are plausible the evidence is insufficient to fully justify broader claims about reliable multi-document aggregation in production settings.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper makes concrete claims and provides experiments showing improved sentence-level classification and a deployed aggregation pipeline, but the evidence is incomplete for strong technical endorsement. Key experimental shortcomings include a small and imbalanced annotated set (5,172 examples, only 453 test relations), comparison to a single baseline (TABARI) without stronger neural or modern baselines, and no reported statistical significance or sensitivity analyses (e.g., for the precision-weight \u03b1 or embedding choices). The aggregation/smoothing evaluation is acknowledged as subjective and tested only on few instances, and code/data release is not mentioned, which together leave reproducibility and some claims under-supported."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper clearly states its claims and presents experiments (comparison to TABARI, precision/recall/accuracy, and a production indexing of 3.3M titles) that provide supporting evidence, but key technical weaknesses remain. Mathematical components are straightforward and need no deep proofs, but the experimental methodology is limited by a relatively small annotated corpus (5,172 instances; test set of 453), lack of reported statistical significance testing, and reliance on a single rule-based baseline. There are also logical gaps around aggregation validity and subjective evaluation of trend plots (small human evaluation), so while the core results are plausible the evidence is insufficient to fully justify broader claims about reliable multi-document aggregation in production settings."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper tackles an important applied problem\u2014automatically extracting and aggregating international alliance/opposition relations from large news corpora\u2014and demonstrates a production-scale indexing of 3.3M titles, which practitioners will find directly useful. However, from my reproducibility- and research-impact perspective the contribution is more incremental: event-centered recursive models with a precision-weighted loss and temporal smoothing are pragmatic advances but unlikely to fundamentally change how researchers model relations given the narrow setting (titles only), modest annotated data (5,172 pairs; 453 test relations), and limited evaluation of aggregated trends. The work does open practical avenues for multi-document trend visualization and precision-focused losses in downstream aggregation, but broader uptake will depend on clearer releases of code/data and stronger, more general evaluations. | B(3): This paper tackles an important, practitioner-facing problem\u2014extracting and aggregating international alliance/opposition signals from large news title corpora\u2014and delivers a practical pipeline (precision-oriented loss, event-centered recursive networks, log-ratio aggregation, smoothing) applied to 3.3M titles and a production index. The precision bias and transparent aggregation into time-series are useful contributions for analysts who require interpretable, low\u2011false\u2011positive signals. However, reliance on titles only, a modest manually labeled set (5k pairs, 453 test relations), and subjective evaluation of aggregated trends limit immediate generalizability and transformational impact. Overall, the work is a solid, usable contribution likely to be built upon by applied researchers and analysts, but not yet field-changing.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper tackles an important applied problem\u2014automatically extracting and aggregating international alliance/opposition relations from large news corpora\u2014and demonstrates a production-scale indexing of 3.3M titles, which practitioners will find directly useful. However, from my reproducibility- and research-impact perspective the contribution is more incremental: event-centered recursive models with a precision-weighted loss and temporal smoothing are pragmatic advances but unlikely to fundamentally change how researchers model relations given the narrow setting (titles only), modest annotated data (5,172 pairs; 453 test relations), and limited evaluation of aggregated trends. The work does open practical avenues for multi-document trend visualization and precision-focused losses in downstream aggregation, but broader uptake will depend on clearer releases of code/data and stronger, more general evaluations."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "This paper tackles an important, practitioner-facing problem\u2014extracting and aggregating international alliance/opposition signals from large news title corpora\u2014and delivers a practical pipeline (precision-oriented loss, event-centered recursive networks, log-ratio aggregation, smoothing) applied to 3.3M titles and a production index. The precision bias and transparent aggregation into time-series are useful contributions for analysts who require interpretable, low\u2011false\u2011positive signals. However, reliance on titles only, a modest manually labeled set (5k pairs, 453 test relations), and subjective evaluation of aggregated trends limit immediate generalizability and transformational impact. Overall, the work is a solid, usable contribution likely to be built upon by applied researchers and analysts, but not yet field-changing."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper compares to a single rule-based baseline (TABARI) but lacks comparisons to contemporary supervised or neural relation-extraction methods, so key baselines are missing. Comparisons appear to use the same annotated title corpus and standard metrics (precision/recall/accuracy), which supports fairness, but the evaluation does not establish whether prior ML methods perform comparably or better. The manuscript describes its methodological differences (event-centered RNN variants, precision-weighted loss, aggregation) and discusses related work adequately, yet the experimental suite is insufficiently comprehensive to firmly support claims of superiority over state-of-the-art alternatives. | B(3): The paper evaluates against a traditional rule-based baseline (TABARI) and reports precision/recall/accuracy on the same annotated title dataset, which supports fair within-dataset comparisons. However, comparing only to TABARI omits more recent supervised and neural relation/event extraction baselines that would be the most relevant competitors, so the baseline set is incomplete. The authors do analyze their model variants and a precision-oriented loss and report limitations, and related work coverage is described as adequate, but the lack of contemporary learned baselines weakens the comparative claims.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper compares to a single rule-based baseline (TABARI) but lacks comparisons to contemporary supervised or neural relation-extraction methods, so key baselines are missing. Comparisons appear to use the same annotated title corpus and standard metrics (precision/recall/accuracy), which supports fairness, but the evaluation does not establish whether prior ML methods perform comparably or better. The manuscript describes its methodological differences (event-centered RNN variants, precision-weighted loss, aggregation) and discusses related work adequately, yet the experimental suite is insufficiently comprehensive to firmly support claims of superiority over state-of-the-art alternatives."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper evaluates against a traditional rule-based baseline (TABARI) and reports precision/recall/accuracy on the same annotated title dataset, which supports fair within-dataset comparisons. However, comparing only to TABARI omits more recent supervised and neural relation/event extraction baselines that would be the most relevant competitors, so the baseline set is incomplete. The authors do analyze their model variants and a precision-oriented loss and report limitations, and related work coverage is described as adequate, but the lack of contemporary learned baselines weakens the comparative claims."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early and carried through to the experiments and conclusion, which makes the workflow easy to follow. Notation appears consistent and key methodological details (features, loss, smoothing) are defined and hyperparameters reported, aiding reproducibility. Figures/tables and examples (e.g., time-series visualizations and aggregated outputs) are informative, though the writeup admits some subjective evaluation and small-scale human assessment that could be better signposted. Writing quality is generally good with minor presentation issues around the evaluation of aggregated trends that could use clearer framing and more explicit figure/table references. | B(4): Overall the paper is well organized and the main contributions are stated early (event-based recursive RNN variants, a precision-oriented loss, and an aggregation/smoothing pipeline) which aids readability. Notation appears consistent and hyperparameters are reported, and examples of aggregation (log-ratio w(d) and smoothing) are described, though the subjective evaluation of aggregated trends and the titles-only limitation are noted and could use clearer exposition and larger evaluation examples. Figures/tables and writing quality are generally good, with only minor presentation issues in discussing the aggregation evaluation and dataset annotation choices that would benefit from slightly more detail.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early and carried through to the experiments and conclusion, which makes the workflow easy to follow. Notation appears consistent and key methodological details (features, loss, smoothing) are defined and hyperparameters reported, aiding reproducibility. Figures/tables and examples (e.g., time-series visualizations and aggregated outputs) are informative, though the writeup admits some subjective evaluation and small-scale human assessment that could be better signposted. Writing quality is generally good with minor presentation issues around the evaluation of aggregated trends that could use clearer framing and more explicit figure/table references."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early (event-based recursive RNN variants, a precision-oriented loss, and an aggregation/smoothing pipeline) which aids readability. Notation appears consistent and hyperparameters are reported, and examples of aggregation (log-ratio w(d) and smoothing) are described, though the subjective evaluation of aggregated trends and the titles-only limitation are noted and could use clearer exposition and larger evaluation examples. Figures/tables and writing quality are generally good, with only minor presentation issues in discussing the aggregation evaluation and dataset annotation choices that would benefit from slightly more detail."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): This paper addresses a clearly NLP-centered task (relation/event extraction from news titles) and proposes neural architectures, loss variants, and an aggregation pipeline that are of direct interest to a top NLP/ML audience. However, from a reproducibility and evaluation perspective there are concerns\u2014annotations are small (5,172 labelled items, 453-test), only titles are used (parser error risk acknowledged), aggregated trend evaluation is subjective and code is not mentioned\u2014which make the experimental evidence weaker than expected for a top-tier acceptance. Overall the work is well positioned and methodologically relevant but would benefit from stronger, more reproducible empirical validation to be a perfect fit. | B(4): This work sits squarely in the NLP/ML scope: it proposes neural architectures and a precision-weighted loss for relation extraction, compares to the rule-based TABARI baseline, evaluates on a substantial 3.3M-title corpus with a manually annotated test set, and connects extraction to time-series aggregation for geopolitical analysis. The paper is well targeted to the venue\u2019s audience, though the heavy application/visualization emphasis and limited, subjective evaluation of the aggregated trends (and title-only data limitation) make it slightly more applied than some core ML contributions. Overall it aligns well with community standards and would interest researchers working on event/relation extraction and multilingual geopolitical information systems.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper addresses a clearly NLP-centered task (relation/event extraction from news titles) and proposes neural architectures, loss variants, and an aggregation pipeline that are of direct interest to a top NLP/ML audience. However, from a reproducibility and evaluation perspective there are concerns\u2014annotations are small (5,172 labelled items, 453-test), only titles are used (parser error risk acknowledged), aggregated trend evaluation is subjective and code is not mentioned\u2014which make the experimental evidence weaker than expected for a top-tier acceptance. Overall the work is well positioned and methodologically relevant but would benefit from stronger, more reproducible empirical validation to be a perfect fit."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This work sits squarely in the NLP/ML scope: it proposes neural architectures and a precision-weighted loss for relation extraction, compares to the rule-based TABARI baseline, evaluates on a substantial 3.3M-title corpus with a manually annotated test set, and connects extraction to time-series aggregation for geopolitical analysis. The paper is well targeted to the venue\u2019s audience, though the heavy application/visualization emphasis and limited, subjective evaluation of the aggregated trends (and title-only data limitation) make it slightly more applied than some core ML contributions. Overall it aligns well with community standards and would interest researchers working on event/relation extraction and multilingual geopolitical information systems."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(3): The experiments provide a workable evaluation (manual annotations, comparison to TABARI, and a deployed index on 3.3M titles) that support core claims about sentence-level extraction and aggregation, but they lack several controls I would expect for production-level claims. Ablation/sensitivity analyses appear limited \u2014 although model variants (FT, SP, EC) and a precision-weighting \u03b1 are described, there is no reported sensitivity analysis or statistical testing to show robustness to \u03b1, embedding choices, or preprocessing; nor is code made available for exact reproduction. Related work is described adequately and some limitations (titles\u2019 syntactic issues, annotation choices, subjective aggregation evaluation) are acknowledged, but failure analysis and per-class error breakdowns (e.g., confusion matrices, precision/recall by class) are insufficient for assessing reliability in deployment. | B(4): Overall the experiments are solid and generally support the claims: multiple RNN variants (FT, SP, EC) are compared to a rule baseline (TABARI), a precision-oriented loss is evaluated, and the system is applied to a large 3.3M-title corpus with concrete aggregation into time-series. However, important sensitivity analyses are limited \u2014 the reported human evaluation of aggregated trends is small and subjective, and it is unclear how robust results are to choices like the precision-weight \u03b1, smoothing window, or to using full articles rather than titles. Related work appears adequately covered and limitations (titles, explicit labels, subjective aggregation eval) are acknowledged, and most hyperparameters are reported, but some reproducibility details (code/datasets availability, full ablation on smoothing/aggregation choices) are missing.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experiments provide a workable evaluation (manual annotations, comparison to TABARI, and a deployed index on 3.3M titles) that support core claims about sentence-level extraction and aggregation, but they lack several controls I would expect for production-level claims. Ablation/sensitivity analyses appear limited \u2014 although model variants (FT, SP, EC) and a precision-weighting \u03b1 are described, there is no reported sensitivity analysis or statistical testing to show robustness to \u03b1, embedding choices, or preprocessing; nor is code made available for exact reproduction. Related work is described adequately and some limitations (titles\u2019 syntactic issues, annotation choices, subjective aggregation evaluation) are acknowledged, but failure analysis and per-class error breakdowns (e.g., confusion matrices, precision/recall by class) are insufficient for assessing reliability in deployment."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the experiments are solid and generally support the claims: multiple RNN variants (FT, SP, EC) are compared to a rule baseline (TABARI), a precision-oriented loss is evaluated, and the system is applied to a large 3.3M-title corpus with concrete aggregation into time-series. However, important sensitivity analyses are limited \u2014 the reported human evaluation of aggregated trends is small and subjective, and it is unclear how robust results are to choices like the precision-weight \u03b1, smoothing window, or to using full articles rather than titles. Related work appears adequately covered and limitations (titles, explicit labels, subjective aggregation eval) are acknowledged, and most hyperparameters are reported, but some reproducibility details (code/datasets availability, full ablation on smoothing/aggregation choices) are missing."
+      },
+      "score_delta": 1,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "An event-based, recursive neural network approach improves sentence-level identification of alliance and opposition relations between countries in English news titles.",
+      "A precision-oriented cost function biases the model toward higher precision to support reliable multi-document aggregation.",
+      "A relation aggregation and smoothing method transforms sentence-level relations into time-series visualizations to depict geopolitical alliance/opposition trends.",
+      "A production system indexes and retrieves relations from 3.3 million English news titles and allows users to query and inspect sentence evidence behind plotted trends."
+    ],
+    "methodology": "They replace entity mentions with generic tokens and use event-centered recursive neural network variants (FT, SP, EC) with pre-trained word2vec embeddings, augment features (10\u00d7K) and a precision-oriented cross-entropy loss (penalizing false positives by factor \u03b1), then aggregate daily POS/NEG counts into a log ratio w(d) and apply weighted mean smoothing over a temporal window to produce time-series visualizations.",
+    "datasets": [
+      "CIA World Factbook (for country lists)",
+      "DBPedia (linguistic variations)",
+      "Corpus of 3.3 million English news titles (2013\u2013early 2016)",
+      "Manually annotated dataset: 5172 entity-pairs from 2166 titles (labels: NEU 2837, NEG 1473, POS 862)",
+      "Test set of 453 relations"
+    ],
+    "baselines": [
+      "TABARI"
+    ],
+    "metrics": [
+      "precision",
+      "recall",
+      "accuracy"
+    ],
+    "limitations": [
+      "Using only titles: titles follow different syntactic rules and parsers not trained on titles have higher error rates.",
+      "Only explicit relations were annotated as POS/NEG; NEU is much more represented and considered less useful for aggregation.",
+      "Evaluation of aggregated trends is subjective and the human evaluation used a small number of tested instances."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - relation extraction / event extraction for geopolitical alliance/opposition analysis",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Rigorous Reproducer",
+      "background": "Senior ML engineer with 10+ years building and evaluating NLP systems for information extraction and production-scale pipelines; experienced in reproducible research and empirical methodology.",
+      "traits": [
+        "focuses on experimental design: demands clear baselines, ablation studies, and controlled comparisons",
+        "values reproducibility: expects precise hyperparameters, training/validation splits, data preprocessing and code availability",
+        "checks statistical rigor: looks for significance testing, confidence intervals, and sensitivity analyses (e.g., to \u03b1, embedding choices)",
+        "insists on detailed error analysis: wants confusion matrices, per-class precision/recall, and qualitative failure cases",
+        "inspects implementation plausibility for production claims: scalability, indexing pipeline details, and runtime/throughput metrics"
+      ],
+      "reviewing_style": "Evaluates papers through the lens of whether the experiments are sufficient to support the claims, and whether others can reproduce and build on the work."
+    },
+    "reviewer_b": {
+      "name": "Contextual Impact Assessor",
+      "background": "Senior researcher in computational social science and event extraction, with a track record of applying NLP to geopolitics, media analysis, and policy-relevant information systems.",
+      "traits": [
+        "assesses novelty and positioning: compares proposed approach to prior event/relation extraction and aggregation work and looks for substantive advances",
+        "values real-world impact and interpretability: wants clear discussion of use-cases, limitations, and how outputs will be consumed by analysts",
+        "attends to data and societal considerations: notices potential biases in news sources, representativeness, and ethical implications of geopolitical inference",
+        "evaluates aggregation/visualization utility: looks for justification of aggregation choices (log-ratio, smoothing) and whether they faithfully reflect underlying events"
+      ],
+      "reviewing_style": "Judges the contribution by its novelty, practical significance, and whether the paper meaningfully advances the state-of-the-art for geopolitically relevant relation extraction and time-series aggregation."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  }
+}

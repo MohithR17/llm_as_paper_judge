@@ -1,0 +1,109 @@
+{
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is overall well organized and the main contributions are stated early; the method (S3G) is presented with a clear iterative procedure and experiments compare sensible baselines (\u03c0RL, reward regression, oracle). Notation and objectives are described sufficiently for reproducibility (code and hyperparameters are provided), and figures/tables appear informative from the summary. Minor presentation issues remain: the datasets used are not specified in the summary and the discussion of practical issues (e.g., high-variance importance sampling early in training and the reliance on initial-policy samples) could be expanded for clarity. | B(4): From the provided summary the paper is well organized and the main contributions are stated early (introduction of S3G and its two-stage reward/policy loop). Notation and methodological steps are presented clearly enough to follow the iterative algorithm, and experiments (comparisons to \u03c0RL, reward regression, and oracle) along with hyperparameter reporting and released code support reproducibility. Figures/tables are reported as effective and writing quality is good, though the discussion of practical issues (e.g., high-variance importance sampling and reliance on initial roll-outs) could be expanded for clarity in the methods/limitations sections.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is overall well organized and the main contributions are stated early; the method (S3G) is presented with a clear iterative procedure and experiments compare sensible baselines (\u03c0RL, reward regression, oracle). Notation and objectives are described sufficiently for reproducibility (code and hyperparameters are provided), and figures/tables appear informative from the summary. Minor presentation issues remain: the datasets used are not specified in the summary and the discussion of practical issues (e.g., high-variance importance sampling early in training and the reliance on initial-policy samples) could be expanded for clarity."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "From the provided summary the paper is well organized and the main contributions are stated early (introduction of S3G and its two-stage reward/policy loop). Notation and methodological steps are presented clearly enough to follow the iterative algorithm, and experiments (comparisons to \u03c0RL, reward regression, and oracle) along with hyperparameter reporting and released code support reproducibility. Figures/tables are reported as effective and writing quality is good, though the discussion of practical issues (e.g., high-variance importance sampling and reliance on initial roll-outs) could be expanded for clarity in the methods/limitations sections."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper clearly states and empirically supports its main claim that S3G improves generalization from labeled to unlabeled MDPs, comparing against reasonable baselines (\u03c0RL, reward regression, oracle) and providing code and hyperparameters. The mathematical framing (maximum-entropy inverse RL with importance sampling) is plausible from the summary and appears internally consistent, though the summary does not present full proofs. My main methodological concerns are the acknowledged high variance of the importance-sampling estimate and reliance on initial RL-policy samples, plus missing details in the summary about seeds, statistical tests, and dataset sampling that are important for reproducibility; these are minor but worth addressing. Overall the results justify the conclusions but would benefit from more rigorous statistical reporting and ablations probing sensitivity to the IS variance and domain-shift assumptions. | B(4): The paper's main claims are clearly stated and supported by experiments comparing S3G to a labeled-only policy, a supervised reward-regression baseline, and an oracle; code and hyperparameters are provided. The mathematical approach (max-ent inverse RL objective with importance sampling for Z) is standard and appears correctly applied, though no formal proofs are reported in the summary. Experimental methodology is generally sound (appropriate baselines) but statistical testing and dataset details are not described, and the method relies on a strong assumption (labeled and unlabeled MDPs share the same distribution) and on potentially high-variance importance sampling estimates early in training. Overall the results justify the conclusions with minor technical caveats about variance and distributional assumptions that could affect generality.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper clearly states and empirically supports its main claim that S3G improves generalization from labeled to unlabeled MDPs, comparing against reasonable baselines (\u03c0RL, reward regression, oracle) and providing code and hyperparameters. The mathematical framing (maximum-entropy inverse RL with importance sampling) is plausible from the summary and appears internally consistent, though the summary does not present full proofs. My main methodological concerns are the acknowledged high variance of the importance-sampling estimate and reliance on initial RL-policy samples, plus missing details in the summary about seeds, statistical tests, and dataset sampling that are important for reproducibility; these are minor but worth addressing. Overall the results justify the conclusions but would benefit from more rigorous statistical reporting and ablations probing sensitivity to the IS variance and domain-shift assumptions."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are clearly stated and supported by experiments comparing S3G to a labeled-only policy, a supervised reward-regression baseline, and an oracle; code and hyperparameters are provided. The mathematical approach (max-ent inverse RL objective with importance sampling for Z) is standard and appears correctly applied, though no formal proofs are reported in the summary. Experimental methodology is generally sound (appropriate baselines) but statistical testing and dataset details are not described, and the method relies on a strong assumption (labeled and unlabeled MDPs share the same distribution) and on potentially high-variance importance sampling estimates early in training. Overall the results justify the conclusions with minor technical caveats about variance and distributional assumptions that could affect generality."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper proposes a clear, practical formulation and algorithm for semi\u2011supervised reinforcement learning (S3G) that, to my knowledge from the summary, is the first to explicitly leverage unlabeled MDPs by alternating learned reward estimation (via a max\u2011entropy inverse\u2011RL style objective with importance sampling) and policy optimization. This is a notable novelty over standard RL and reward\u2011regression baselines rather than a trivial combination of existing pieces: the use of demonstration rollouts from labeled MDPs to bootstrap reward learning and the iterative unlabeled policy updates represent a non\u2011trivial methodological extension. The authors also clearly differentiate their approach from supervised reward regression and an oracle, and provide code and hyperparameters, which strengthens claims of practical novelty. From an expert\u2019s perspective this would be informative and surprising enough to merit attention, though it is not a radical theoretical departure (hence not a maximal score). | B(4): The paper frames and operationalizes semi-supervised reinforcement learning (S3G), which is not a standard problem formulation in prior RL/IRL work, and proposes a practical algorithm that alternates learned reward fitting (max-ent inverse RL with importance sampling) and policy optimization in unlabeled MDPs. This is a non-trivial combination and extension beyond straightforward reward regression or vanilla IRL\u2014using demonstrations from a policy trained on labeled MDPs and leveraging unlabeled rollouts to fit a reward is a clearly differentiated approach. Given the stated empirical gains (outperforming supervised reward regression and sometimes the oracle via shaping), the contribution would meaningfully inform experts, though it builds on established IRL and entropy-regularized RL foundations rather than introducing radically new theory.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper proposes a clear, practical formulation and algorithm for semi\u2011supervised reinforcement learning (S3G) that, to my knowledge from the summary, is the first to explicitly leverage unlabeled MDPs by alternating learned reward estimation (via a max\u2011entropy inverse\u2011RL style objective with importance sampling) and policy optimization. This is a notable novelty over standard RL and reward\u2011regression baselines rather than a trivial combination of existing pieces: the use of demonstration rollouts from labeled MDPs to bootstrap reward learning and the iterative unlabeled policy updates represent a non\u2011trivial methodological extension. The authors also clearly differentiate their approach from supervised reward regression and an oracle, and provide code and hyperparameters, which strengthens claims of practical novelty. From an expert\u2019s perspective this would be informative and surprising enough to merit attention, though it is not a radical theoretical departure (hence not a maximal score)."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper frames and operationalizes semi-supervised reinforcement learning (S3G), which is not a standard problem formulation in prior RL/IRL work, and proposes a practical algorithm that alternates learned reward fitting (max-ent inverse RL with importance sampling) and policy optimization in unlabeled MDPs. This is a non-trivial combination and extension beyond straightforward reward regression or vanilla IRL\u2014using demonstrations from a policy trained on labeled MDPs and leveraging unlabeled rollouts to fit a reward is a clearly differentiated approach. Given the stated empirical gains (outperforming supervised reward regression and sometimes the oracle via shaping), the contribution would meaningfully inform experts, though it builds on established IRL and entropy-regularized RL foundations rather than introducing radically new theory."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes the first practical algorithm for semi-supervised reinforcement learning (S3G) that enables policy generalization from limited labeled MDPs to a wider set of unlabeled MDPs.",
+      "S3G leverages unlabeled experience by alternately learning a reward function (via an inverse RL-like objective) and optimizing a policy in unlabeled MDPs, using roll-outs from a policy trained in labeled MDPs as demonstrations.",
+      "Empirically, S3G produces policies that generalize better than a policy trained only on labeled MDPs and better than a supervised reward-regression baseline, and in some cases outperforms an oracle due to beneficial learned reward shaping."
+    ],
+    "methodology": "Train an entropy-regularized RL policy in labeled MDPs to produce demonstration roll-outs, then iteratively (1) collect unlabeled-policy roll-outs, (2) fit a parametric reward function by maximizing likelihood of the demonstration roll-outs under a maximum-entropy model (using importance sampling), and (3) update the policy in unlabeled MDPs using the learned reward and entropy regularization.",
+    "datasets": [],
+    "baselines": [
+      "RL policy trained only in labeled MDPs (\u03c0RL)",
+      "Reward regression (supervised fit of reward)",
+      "Oracle policy with access to true reward in all scenarios"
+    ],
+    "metrics": [
+      "Success rate (task completion)",
+      "Sample complexity (number of samples)"
+    ],
+    "limitations": [
+      "Assumes labeled and unlabeled MDPs are sampled from the same underlying distribution (no large, systematic domain shift).",
+      "Importance sampling estimate of the partition function Z can be high variance early in training, so samples from the initial RL policy are relied upon.",
+      "Method is evaluated in simulated MuJoCo tasks; real-robot application is not demonstrated here (authors state it is likely feasible but did not present real-world experiments)."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "Reinforcement Learning - semi-supervised / inverse reinforcement learning",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Reproducible Methods Engineer",
+      "background": "Senior ML engineer with a PhD in reinforcement learning focused on empirical methodology and systems for reproducible experimentation. Has led benchmark suites and open-source implementations for model evaluation in continuous-control domains.",
+      "traits": [
+        "carefully checks experimental design: seeds, hyperparameter search, and statistical significance",
+        "looks for thorough baselines and ablations (including implementation details that could explain gains)",
+        "values reproducibility: requests code, random seeds, compute budgets, and clear training/evaluation protocols",
+        "examines optimization/estimation choices closely (importance sampling, reward parametrization, entropy terms)"
+      ],
+      "reviewing_style": "I emphasize methodological rigor and reproducibility, flagging unclear experimental choices and requesting ablations or controls to validate empirical claims."
+    },
+    "reviewer_b": {
+      "name": "Reinforcement Learning Researcher",
+      "background": "Associate professor working on reward learning, transfer, and inverse reinforcement learning with multiple publications on semi-supervised and imitation learning methods. Regularly reviews papers for top ML venues and writes surveys on generalization in RL.",
+      "traits": [
+        "assesses novelty relative to prior work in semi-/weakly-supervised RL and IRL, noticing conceptual overlaps",
+        "evaluates theoretical motivation and whether proposed approach meaningfully advances generalization/transfer",
+        "looks at empirical scope and real-world relevance: whether tasks, metrics, and claims map to practical problems",
+        "questions limitations and failure modes, and whether observed benefits are due to core idea or incidental design choices"
+      ],
+      "reviewing_style": "I focus on situating contributions within the literature and judging the significance and scope of the advance, highlighting conceptual strengths and potential limitations for impact."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 3,
+    "debate_rate": 0.0
+  }
+}

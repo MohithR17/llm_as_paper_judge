@@ -1,0 +1,95 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "CLARITY": 4,
+  "SUBSTANCE": 3,
+  "ORIGINALITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses a core NLP task (slot filling/sequence tagging) and proposes a neural architecture (K-SAN) that integrates external knowledge via attention \u2014 a topic squarely within top NLP/ML conference scope. It evaluates on a standard benchmark (ATIS) against strong baselines (CRF, RNN, CNN, DCNN, Tree-RNN) using F-measure, reports hyperparameters, and situates itself well in related work, so the problem formulation, methods, and evaluation meet venue expectations. The audience (NLP/ML researchers interested in structured attention and knowledge integration) is appropriate and the positioning is consistent with current community interests.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses an important problem in NLU\u2014incorporating external knowledge into sequence tagging\u2014and proposes a potentially influential mechanism (knowledge-guided structural attention) that is end-to-end, general across knowledge formats, and efficient/parallelizable. Showing improvements on ATIS against multiple strong baselines suggests the approach could change how researchers incorporate structured knowledge as a \u2019teacher\u2019 rather than as static features. However, evaluation appears limited to a single domain (ATIS) and code/ broader validation are not reported, which constrains immediate wide adoption and reduces transformative potential. Overall, the work is a useful, moderately impactful contribution that opens notable follow-up research directions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and supported by experiments on the ATIS slot-filling task comparing to reasonable baselines (CRF, RNN, CNN, DCNN, Tree-RNN), and hyperparameters are reported. However, the claim of generality to different knowledge formats and the efficiency/parallelizability assertion are not shown explicitly in the provided summary (no evidence of experiments across multiple knowledge sources or runtime/complexity analysis). Mathematical content appears minimal and no formal proofs are required; but the summary does not mention statistical significance testing of results. Overall the technical approach is sound with minor gaps in empirical support for some broader claims.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and presents a logical flow from motivation to method to experiments (describing K-SAN, its attention over substructures, and the GRU tagger) and states the main contributions early. Notation and methodological descriptions are clear enough to follow the encoding and attention computations, and experiments (ATIS dataset, baselines, F-measure) are reported with hyperparameters. Related work coverage is thorough and writing quality is good, though there may be minor presentation issues or places where figures/tables could be more explicitly described to aid readers unfamiliar with the specific knowledge formats.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experiments compare K-SAN against reasonable baselines (CRF, RNN, CNN, DCNN, Tree-RNN) on the ATIS slot-filling benchmark and report hyperparameters, which supports the core claim that knowledge-guided attention helps sequence tagging. However, evaluation appears limited to a single dataset (ATIS) and the summary does not mention systematic ablation or sensitivity analyses (e.g., impact of different knowledge sources or attention components), nor are failure cases or broader limitations empirically explored. Related work coverage is described as thorough and the paper situates itself relative to RNN/CRF slot-filling literature (e.g., Mesnil et al. 2015), but reproducibility is only partially supported (hyperparameters given but code not mentioned). These gaps justify a middle rating of 3.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a notable variation\u2014using external structured knowledge as a \u2018teacher\u2019 to produce attention over parsed substructures (e.g., dependency-root-to-leaf paths) and integrating that into an end-to-end slot-filling tagger\u2014which is not simply a straight application of prior RNN/CRF slot-filling work (Mesnil et al., 2015; Tur et al., 2010). Related lines of work exist on RNN-based slot filling and knowledge-guided joint parsing (items [2],[4]), but the explicit mechanism of encoding multiple substructures separately and using knowledge-guided structural attention as supervision appears to be a clear and non-trivial extension beyond those baselines. Given the overlap with contemporaneous knowledge-guided parsing efforts, the contribution is notable but not a radical departure from existing methods, so it represents meaningful but moderate novelty.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against a sensible set of baselines covering classical (CRF) and recent neural approaches (RNN, CNN, DCNN, Tree-RNN) on the standard ATIS data using F-measure, indicating fair experimental conditions. The related work is reported as thorough and the methodological differences (knowledge-guided attention vs. feature-enrichment) are discussed, but the paper omits some closely related contemporaneous SLU/joint intent-slot models and other knowledge-guided parsing work (e.g., several 2016 joint SLU/LM and knowledge-guided parsing papers) that would strengthen coverage. Overall comparisons are solid and fair but miss a few relevant recent baselines, so a score of 4 is appropriate.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces Knowledge-Guided Structural Attention Networks (K-SAN), a neural architecture that uses external/prior knowledge as a teacher to guide attention over sentence substructures for sequence tagging.",
+      "Proposes an end-to-end approach that automatically learns important substructures via an attention mechanism rather than using knowledge only as input features.",
+      "Claims generality to different knowledge formats (e.g., dependency relations, knowledge-graph relations, AMR) and efficiency/parallelizability because substructures are modeled separately."
+    ],
+    "methodology": "K-SAN encodes knowledge-guided substructures (e.g., paths from dependency tree root to leaves) into vectors, computes an attention-weighted sentence representation from these substructures, and feeds this knowledge-guided representation into an RNN (GRU-based) tagger for semantic slot labeling.",
+    "datasets": [
+      "ATIS (benchmark ATIS corpus; training utterances from ATIS-2/3, test from ATIS-3 Nov93/Dec94)"
+    ],
+    "baselines": [
+      "CRF Tagger (Tur et al., 2010)",
+      "RNN Tagger (Mesnil et al., 2015)",
+      "CNN Encoder-Tagger (Kim, 2014)",
+      "DCNN (Ma et al., 2015a)",
+      "Tree-RNN (Tai et al., 2015)"
+    ],
+    "metrics": [
+      "F-measure (on predicted slots)"
+    ],
+    "limitations": [
+      "States that prior feature-enrichment approaches suffer from poor generalization.",
+      "States that prior feature-enrichment approaches suffer from error propagation."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - natural language understanding / slot filling (sequence labeling)",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 7,
+    "paper_novelty_mean": 0.475,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

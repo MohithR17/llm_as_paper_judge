@@ -1,0 +1,76 @@
+{
+  "APPROPRIATENESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "IMPACT": 3,
+  "SUBSTANCE": 4,
+  "CLARITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 3,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 4,
+      "justification": "The paper addresses a clearly NLP/ML research topic\u2014morphology generation for machine translation (Chinese\u2192Spanish)\u2014and proposes a neural classification architecture with standard baselines (SVMs, random forests, CNN/LSTM) and evaluation (classification accuracy, METEOR) on multiple corpora (UN, TAUS, Bible, BTEC), which matches the audience and methods expected at a top venue. It is positioned for the machine translation and morphology communities and uses common evaluation standards, making it relevant to the conference. The work is somewhat applied and narrowly scoped (post-processing morphology generation rather than end-to-end MT), so while highly appropriate, it may be of slightly narrower interest than broader theoretical or multilingual studies \u2014 hence not a perfect 5."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares the proposed classifier against appropriate and recent baselines for the morphology-classification task (SVMs with various kernels, random forests, CNN and LSTM models) and evaluates end-to-end translation against a standard phrase-based MT baseline (Moses) using the same corpora (UN, TAUS, Bible, BTEC) and metrics (classification accuracy, METEOR). The comparisons appear fair and show the proposed neural architecture outperforming the listed standard algorithms on classification. A minor omission is the lack of direct empirical comparison to strong end-to-end neural MT systems for the full translation pipeline (the paper only notes such systems are not state-of-the-art for Chinese\u2013Spanish), which would be a relevant baseline for overall translation quality."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses a relevant problem\u2014morphology generation for Chinese\u2192Spanish\u2014by decoupling translation and morphology and proposing a new neural classifier (embedding\u2192CNN\u2192RNN\u2192sigmoid/softmax) that achieves high classification accuracy (>98% gender, >93% number) and yields up to 0.7 METEOR improvement. These results suggest a practical, outperforming method that practitioners could adopt for similar language pairs. However, the impact is moderate rather than transformative because gains are relatively modest, the work focuses only on number and gender with reliance on postprocessing resources (Freeling dictionary and hand-crafted rules), and generalization beyond this pair or to broader morphology tasks remains uncertain."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper runs extensive experiments across multiple corpora (UN, TAUS, Bible, BTEC) and compares the proposed classifier against a broad set of baselines (SVMs, random forests, CNNs, LSTMs) with reported accuracies and MT gains, which credibly supports the main claims. However, no ablation studies or sensitivity analyses are reported in the summary, and reproducibility is only partially supported (hyperparameters are reported but code is not mentioned and some postprocessing details are hand-crafted). Related work coverage is described as adequate and several limitations/failure modes (e.g., unknown words, scope limits) are discussed, so the evaluation is strong but has minor gaps in analysis and full reproducibility."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and presents a clear logical flow from problem motivation through methodology to experiments and conclusion \u2014 the decoupling of translation and morphology generation and the proposed embedding\u2192convolutional\u2192recurrent\u2192sigmoid/softmax architecture are stated early. Notation and experimental details appear consistent and reproducible (datasets, baselines, metrics, and hyperparameters are reported), and examples of the approach (neutralized target, postprocessing with Freeling and n-gram rescoring) make the method concrete. Figures/tables and examples are implied to be informative given the reported accuracies and corpora, and the writing is generally adequate with only minor presentation issues rather than major ambiguities."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and experimentally supported: the pipeline (translate to simplified Spanish + morphology classifier) was evaluated on multiple corpora (UN, TAUS, Bible, BTEC) against reasonable baselines (SVMs, random forests, CNN, LSTM, Moses) with reported accuracies (>98% gender, >93% number) and MT improvements (up to 0.7 METEOR), and hyperparameters were reported. There are no mathematical derivations to check. Methodology is largely sound (appropriate baselines and multiple datasets), but the summary does not mention statistical significance testing and the end-to-end MT gains are modest; some handling of OOVs relies on heuristics (Freeling fallback), a minor unsupported operational detail. Overall the evidence supports the claims though minor experimental reporting gaps keep it from being technically flawless."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "Translating into a morphologically simplified target then restoring morphology is a known two-stage/factored approach, so the overall problem formulation is not novel. The paper\u2019s main novelty is an applied hybrid neural classifier (embedding\u2192convolutional\u2192recurrent\u2192sigmoid/softmax) and its empirical demonstration outperforming several baselines on Chinese\u2192Spanish morphology prediction. The authors clearly separate the decoupling idea from the classifier and provide comparative results, but the techniques are largely recombinations of existing components and therefore represent an incremental rather than a fundamentally new advance."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Decoupling translation and morphology generation for Chinese-to-Spanish by first translating into a morphologically simplified target (number and gender removed) and then generating full morphology in a postprocessing step.",
+      "Proposing a new deep learning classification architecture (embedding \u2192 convolutional \u2192 recurrent \u2192 sigmoid/softmax) to predict number and gender for morphology generation.",
+      "The proposed neural architecture outperforms standard algorithms (SVMs, random forests, convolutional and LSTM networks) on the classification task.",
+      "Achieved classification accuracies over 98% for gender, over 93% for number, and an overall translation improvement of up to 0.7 METEOR."
+    ],
+    "methodology": "Translate Chinese into a morphologically simplified Spanish (neutralized number and gender), then apply a classifier based on a neural architecture (embedding layer, convolutional layer, recurrent layer, sigmoid/softmax) to predict number and gender, rescore alternatives with an n-gram language model and apply hand-crafted rules and Freeling dictionary/conjugation lookup to produce final full forms.",
+    "datasets": [
+      "United Nations (UN) corpus",
+      "TAUS corpus",
+      "Bible corpus",
+      "BTEC (Basic Traveller Expressions Corpus)"
+    ],
+    "baselines": [
+      "Support Vector Machines (linear/quadratic/sigmoid kernels)",
+      "Random forests",
+      "Convolutional neural networks (CNN)",
+      "LSTM neural networks",
+      "Standard phrase-based MT (Moses)"
+    ],
+    "metrics": [
+      "METEOR",
+      "Classification accuracy (percentage)"
+    ],
+    "limitations": [
+      "Main challenge: number and gender must be predicted after this information has been removed from the translated words (Chinese lacks these inflections).",
+      "When a word is not found in the Freeling dictionary, the system tests inflections by probability and falls back to the lemma if none match (occurs mainly for cities or demonyms).",
+      "Neural end-to-end neural MT approaches have not yet achieved state-of-the-art results for the Chinese\u2013Spanish pair (stated in related work).",
+      "Authors note further work is needed to further simplify morphology and extend the classification scope."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - Machine Translation (Chinese-to-Spanish), morphology generation using deep learning",
+    "writing_quality": "adequate"
+  }
+}

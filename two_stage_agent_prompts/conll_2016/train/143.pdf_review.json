@@ -1,0 +1,87 @@
+{
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 4,
+  "CLARITY": 4,
+  "REPLICABILITY": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles an important, practical problem\u2014scalable multilingual embeddings for many languages using only monolingual corpora and pairwise bilingual dictionaries\u2014by proposing two concrete methods (multiCluster and multiCCA) and training embeddings for 59 languages. It also improves evaluation practice by adapting QVEC to multiQVEC and multiQVEC-CCA (showing better correlation with downstream tasks), and provides an online evaluation portal plus released code/data, which materially lowers barriers for follow-up work. These contributions are likely to be widely adopted and open clear research directions in resource-light multilingual representation learning and evaluation, though they stop short of being wholly transformative."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This work addresses multilingual word representation learning and evaluation\u2014core topics for top-tier NLP/ML venues\u2014by proposing scalable dictionary-based methods (multiCluster and multiCCA) covering 59 languages and comparing to established baselines (multiSkip, translation-invariance MF, bilingual CCA). It also makes a substantive evaluation contribution (multiQVEC and multiQVEC-CCA) that better correlates with downstream tasks and provides an online evaluation portal plus released code and data, matching community expectations for reproducibility and practical impact. The problem formulation, choice of datasets (word-similarity, cross-lingual translation, document classification, parsing), and evaluation standards are appropriate for the venue\u2019s audience. Overall the paper is well positioned within the multilingual representation learning community and fits a top NLP/ML conference."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes genuinely new, practically useful methods (multiCluster, which groups translationally equivalent words into multilingual clusters for training, and multiCCA, which extends CCA-based bilingual projection to a many-language setting) that are clearly differentiated from prior bilingual CCA and translation-invariance baselines. The adaptation and theoretical repair of QVEC into multiQVEC and multiQVEC-CCA is a non-trivial extension addressing known shortcomings, and the large-scale 59-language instantiation plus an evaluation portal and released code further distinguish it from existing work. Overall these are notable and clearly articulated extensions rather than purely incremental reapplications."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well-organized with a clear progression from methods (multiCluster, multiCCA) to experiments and conclusion, and the main contributions (two dictionary-based methods, multiQVEC/multiQVEC-CCA, and an evaluation portal) are stated early. Notation and methodological descriptions seem consistent and well-defined enough to reproduce results (hyperparameters reported, code released), and the experimental tables across diverse datasets and baselines effectively support the claims. Writing quality is described as good, though the discussion of QVEC\u2019s theoretical shortcomings and metric normalization could be slightly dense and may benefit from clearer exposition."
+    },
+    "REPLICABILITY": {
+      "score": 4,
+      "justification": "The paper provides code and explicitly reports hyperparameters and model configurations, and it lists commonly used, publicly available datasets (WordSim, MEN, RW, RCV, UD, etc.), which strongly supports reproducibility. The authors also introduce and discuss evaluation metrics (multiQVEC and multiQVEC-CCA) and their theoretical properties, suggesting evaluation procedures are defined. However, the provided summary does not indicate a clearly described data preprocessing pipeline, and some implementation or training minutiae (e.g., any dataset-specific preprocessing steps) are not mentioned, so a few minor details may be missing for full replication."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper runs comprehensive experiments across 59 languages and evaluates on a wide suite of intrinsic and extrinsic tasks (word similarity, cross-lingual similarity, translation, document classification, parsing), comparing against multiple relevant baselines and showing correlation analyses. It reports hyperparameters, releases code/data, and discusses important limitations (QVEC shortcomings and computational challenges), supporting reproducibility. However, the summary does not mention explicit ablation studies or sensitivity analyses of key design choices (e.g., cluster formation details, projection variants, or hyperparameter sensitivity), which is a notable omission. Related work coverage is described as adequate."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares to several appropriate and recent baselines (multiSkip/Coulmance et al., translation-invariance MF/Gardner et al., bilingual CCA/Faruqui & Dyer) and evaluates on a consistent suite of intrinsic and extrinsic tasks with reported hyperparameters and available code/portal, supporting fair comparisons. It also analyzes a key evaluation issue (QVEC) and proposes multiQVEC-CCA, indicating clear analysis of differences between methods. The summary does not explicitly state whether the authors acknowledge cases where prior methods perform comparably or better, so that aspect is unclear, hence a minor deduction."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's central claims are supported by empirical evidence: two practical dictionary-based methods (multiCluster and multiCCA) are evaluated across many languages (59) and compared to reasonable baselines (multiSkip, translation-invariance MF, bilingual CCA) on multiple intrinsic and extrinsic datasets. The mathematical approach (cluster-ID training and CCA-based linear projections) is standard and appears correct, and the adaptation of QVEC to multiQVEC(-CCA) addresses stated theoretical issues. However, the summary does not report statistical significance testing and notes computational training challenges for the matrix-factorization baseline, which are minor methodological/scale concerns that do not invalidate the main conclusions."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Propose two dictionary-based methods (multiCluster and multiCCA) for estimating massively multilingual word embeddings using only monolingual data and pairwise bilingual dictionaries, and train embeddings for 59 languages.",
+      "Adapt QVEC to multilingual evaluation (multiQVEC) and introduce multiQVEC-CCA to address theoretical shortcomings, showing these intrinsic metrics correlate better with downstream tasks.",
+      "Provide an online evaluation portal that lets researchers upload multilingual embeddings and evaluate them on a suite of intrinsic and extrinsic metrics, and release data and code to facilitate reproducible research."
+    ],
+    "methodology": "They introduce two dictionary-based approaches: multiCluster, which groups translationally equivalent words into multilingual clusters and trains embeddings on cluster-ID sequences from concatenated monolingual corpora; and multiCCA, which trains monolingual embeddings and uses CCA-based linear projections to map other languages into the English embedding space.",
+    "datasets": [
+      "WordSim-353",
+      "MEN",
+      "Stanford Rare Words (RW) / Stanford RW dataset",
+      "en-it MWS353 (cross-lingual subset)",
+      "RCV corpus (newswire)",
+      "Universal Dependencies v1 (subset)",
+      "English supersense annotations",
+      "Danish supersense annotations",
+      "Italian supersense annotations"
+    ],
+    "baselines": [
+      "multiSkip (variant related to Coulmance et al., 2015 and Guo et al., 2016)",
+      "Translation-invariance matrix factorization method (Gardner et al., 2015)",
+      "Bilingual CCA method of Faruqui and Dyer (2014)"
+    ],
+    "metrics": [
+      "multiQVEC",
+      "multiQVEC-CCA (multiQVECCCA)",
+      "QVEC",
+      "QVEC-CCA",
+      "Monolingual word similarity (e.g., WordSim-353, MEN, RW)",
+      "Cross-lingual word similarity",
+      "Word translation accuracy",
+      "Correlation with downstream tasks (document classification / text categorization, dependency parsing)"
+    ],
+    "limitations": [
+      "QVEC is not invariant to linear transformations of embedding bases and produces unnormalized scores that scale with embedding dimensionality.",
+      "Training the translation-invariance matrix factorization embeddings with larger context window sizes is computationally challenging."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - multilingual word embeddings / multilingual representation learning",
+    "writing_quality": "good"
+  }
+}

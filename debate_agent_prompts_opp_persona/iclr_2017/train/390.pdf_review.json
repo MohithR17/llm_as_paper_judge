@@ -1,0 +1,113 @@
+{
+  "CLARITY": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): Overall the paper is well organized and the main contributions are stated early; the method, hierarchical architecture, and experiments (spaceship datasets, baselines, metrics) are presented clearly and writing quality is explicitly noted as good. Notation and definitions appear consistent (critic, controller, manager roles) and figures/tables seem effective for communicating results, with hyperparameters and related work reported thoroughly. Minor presentation issues remain: descriptions of the manager\u2019s entropy regularizer and the mixed-results section for multiple experts could be more precise, and the limitation discussion could more clearly separate empirical constraints from design choices. From a theoretical-reviewer perspective the exposition is strong, but a few clarifications would make the narrative fully unambiguous. | B(4): The paper is well-organized and presents its hierarchical metacontroller idea clearly (intro -> method -> experiments -> conclusion) with main contributions stated early and a thorough related-work section. Notation and methodological components (controller, manager, memory, experts) are described consistently, and experiments (spaceship datasets, baselines, metrics) are reported with hyperparameters, making replication feasible. Figures/tables and examples appear informative and the writing quality is good, though discussion of the multi-expert results and the entropy regularizer\u2019s effect could be clearer to help practitioners understand practical trade-offs. Overall, minor presentation clarifications would make an otherwise strong exposition even more usable for applied researchers like me.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early; the method, hierarchical architecture, and experiments (spaceship datasets, baselines, metrics) are presented clearly and writing quality is explicitly noted as good. Notation and definitions appear consistent (critic, controller, manager roles) and figures/tables seem effective for communicating results, with hyperparameters and related work reported thoroughly. Minor presentation issues remain: descriptions of the manager\u2019s entropy regularizer and the mixed-results section for multiple experts could be more precise, and the limitation discussion could more clearly separate empirical constraints from design choices. From a theoretical-reviewer perspective the exposition is strong, but a few clarifications would make the narrative fully unambiguous."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is well-organized and presents its hierarchical metacontroller idea clearly (intro -> method -> experiments -> conclusion) with main contributions stated early and a thorough related-work section. Notation and methodological components (controller, manager, memory, experts) are described consistently, and experiments (spaceship datasets, baselines, metrics) are reported with hyperparameters, making replication feasible. Figures/tables and examples appear informative and the writing quality is good, though discussion of the multi-expert results and the entropy regularizer\u2019s effect could be clearer to help practitioners understand practical trade-offs. Overall, minor presentation clarifications would make an otherwise strong exposition even more usable for applied researchers like me."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper presents a notable and concrete extension of adaptive computation/metareasoning to imagination-based optimization by learning both when to stop pondering and which predictive expert to consult, a combination that is not standard in prior work. The formulation\u2014trading task loss against explicit computational cost with a learned manager over multiple experts and an IN expert on a physics task\u2014is a non-trivial and clearly differentiated contribution beyond fixed-iteration or reactive baselines. While the high-level idea of adaptive computation is well-studied, applying it to iterative model-based \u2018imagination\u2019 with expert selection is a meaningful and informative advance that would interest experts, though it stops short of introducing new theoretical guarantees. | B(4): The paper presents a notable and practically useful idea: a learned metacontroller that both adaptively decides how many internal simulation (ponder) iterations to run and which predictive expert to consult, trading off task performance and explicit computational cost. Framed as an RL problem for the manager and combined with differentiable training for controller/memory, this is more than a simple rehash of fixed-iteration or purely reactive baselines and demonstrates empirical gains on a challenging physics task using Interaction Networks and true simulators. While elements (imagination-based planning, resource-aware control) have been explored before, the concrete combination of expert selection, adaptive pondering, and cost-aware learning\u2014and its empirical evaluation\u2014represents a clear, non-trivial extension that would inform practitioners building model-based systems.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper presents a notable and concrete extension of adaptive computation/metareasoning to imagination-based optimization by learning both when to stop pondering and which predictive expert to consult, a combination that is not standard in prior work. The formulation\u2014trading task loss against explicit computational cost with a learned manager over multiple experts and an IN expert on a physics task\u2014is a non-trivial and clearly differentiated contribution beyond fixed-iteration or reactive baselines. While the high-level idea of adaptive computation is well-studied, applying it to iterative model-based \u2018imagination\u2019 with expert selection is a meaningful and informative advance that would interest experts, though it stops short of introducing new theoretical guarantees."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable and practically useful idea: a learned metacontroller that both adaptively decides how many internal simulation (ponder) iterations to run and which predictive expert to consult, trading off task performance and explicit computational cost. Framed as an RL problem for the manager and combined with differentiable training for controller/memory, this is more than a simple rehash of fixed-iteration or purely reactive baselines and demonstrates empirical gains on a challenging physics task using Interaction Networks and true simulators. While elements (imagination-based planning, resource-aware control) have been explored before, the concrete combination of expert selection, adaptive pondering, and cost-aware learning\u2014and its empirical evaluation\u2014represents a clear, non-trivial extension that would inform practitioners building model-based systems."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "Both reviewers agree the empirical results reasonably support the core claim that a learned metacontroller can trade off computation and performance and outperform fixed policies, but they also note important empirical and theoretical gaps. In particular, missing theoretical guarantees, limited ablations/diagnostics, potential REINFORCE instability, and lack of broader statistical/runtime analyses weaken confidence in the generality and robustness of the conclusions. Given these concerns, a cautious middle score of 3 reflects that the claims are plausible and empirically supported but not yet fully validated.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The primary experimental claims (adaptive pondering reducing total loss vs. reactive/fixed baselines on the spaceship datasets) are supported by empirical comparisons with sensible baselines, but the paper lacks theoretical guarantees or formal analysis of the metacontroller\u2019s optimization/convergence and provides only limited diagnostic ablations (no evidence of the required \u22653 controlled sensitivity studies) to explain key design choices (manager training via REINFORCE, critic choice, expert selection). Mathematical treatment appears minimal\u2014no proofs or sample-complexity characterization\u2014so theoretical rigor is missing. Overall the conclusions are plausible and largely borne out by experiments, but important gaps (variance of REINFORCE, runtime/FLOPs comparisons, and insufficient ablations) prevent a higher technical score."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's central claims\u2014that a learned metacontroller can adaptively trade off computation and performance and outperform fixed computation policies\u2014are supported by experiments on a challenging physics-based rendezvous task with appropriate baselines (reactive and fixed-iteration iterative agents) and multiple experts (MLP, IN, true simulator). Mathematical framing appears consistent and the training approach (REINFORCE for the manager, backprop for controller/memory) is sensible, though the manager's REINFORCE training and entropy regularizer introduce known instability and the multi-expert case showed mixed results. Experimental methodology is generally sound but limited to fully observed one-shot tasks (no long-horizon evaluation) and the summary does not mention statistical tests or code release. Overall the evidence supports the main conclusions, with only minor empirical scope and stability concerns."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduces a metacontroller that adaptively decides how many internal simulation (ponder) iterations to run and which predictive model (expert) to consult for each iteration, rather than using a fixed computation policy.",
+      "The metacontroller learns to trade off task performance and computational cost, choosing experts based on their reliability and computational cost to minimize total loss (task loss + resource cost).",
+      "When trained with interaction networks (INs) as experts on a challenging physics-based spaceship rendezvous task, the metacontroller adapts computation to task difficulty and achieves lower overall cost than fixed-policy (reactive or fixed-iteration iterative) baselines.",
+      "Presents a neural-network implementation (controller, manager, memory, experts) and frames the manager decision as an RL problem trained with REINFORCE; demonstrates the framework as a way to incorporate imagination-based model evaluations for efficient model-based RL."
+    ],
+    "methodology": "A hierarchical architecture where a controller proposes candidate controls, a pool of experts (e.g., MLP, interaction network, true simulator) provides evaluations, and a learned manager (metacontroller) samples actions to either execute or \u2018ponder\u2019 with a chosen expert; the manager is trained with policy-gradient (REINFORCE) to minimize total loss (task performance loss plus computational cost) while controller and memory are trained via backpropagation through a differentiable critic.",
+    "datasets": [
+      "Spaceship dataset (five variants containing scenes with 1 to 5 planets; 100,000 training scenes and 1,000 testing scenes per variant)"
+    ],
+    "baselines": [
+      "Reactive agent (no pondering)",
+      "Iterative agent (fixed number of ponder steps)",
+      "Iterative agents using different experts: MLP expert, Interaction Network (IN) expert, true simulation expert"
+    ],
+    "metrics": [
+      "Performance loss LP (task loss between goal and resulting state)",
+      "Total loss LT (sum of performance loss and computational resource loss)",
+      "Mean-squared error (MSE) used for training certain components"
+    ],
+    "limitations": [
+      "Experiments are limited to fully observed, one-shot decision-making tasks (continuous contextual bandits) and do not evaluate sequential/long-horizon control.",
+      "Metacontroller with multiple experts showed mixed improvements and difficulty balancing experts step-by-step, partly attributed to an entropy regularizer encouraging non-deterministic manager policies.",
+      "The architecture relies on differentiable experts but does not use their gradient information in the metacontroller; integrating gradient information is noted as future work."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "Reinforcement Learning / Model-based RL / Adaptive Computation",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theoretical Rigourist",
+      "background": "Senior researcher in reinforcement learning with a strong focus on theoretical guarantees and formal analysis of learning algorithms (PhD in ML, multiple theory publications).",
+      "traits": [
+        "Penalizes papers that introduce new algorithms without accompanying theoretical guarantees or analysis (e.g., convergence proofs, regret bounds) \u2014 will deduct points if none presented",
+        "Demands comprehensive ablation and sensitivity analyses for key design choices (e.g., impact of REINFORCE variance, choices of critic, manager architecture) \u2014 deducts points if <3 controlled ablations",
+        "Penalizes empirical studies that do not characterize sample complexity or provide scaling/compute-efficiency analyses (e.g., wall-clock or FLOPs comparisons across methods)",
+        "Rewards clarity in formal problem statement and assumptions; will downgrade if problem/optimization objective and constraints are not precisely defined"
+      ],
+      "reviewing_style": "I focus on whether a paper provides provable or well-characterized properties and rigorous analyses; strong empirical claims require formal backing or thorough diagnostic experiments."
+    },
+    "reviewer_b": {
+      "name": "Practical Systems Enthusiast",
+      "background": "Applied ML researcher and engineer with extensive experience building model-based RL systems and robotics applications, prioritizing practical impact and empirical demonstrations.",
+      "traits": [
+        "Rewards papers that demonstrate clear empirical improvements on challenging, realistic tasks (will upscore if method reduces overall cost or improves performance over strong baselines)",
+        "Favors modular, extensible architectures and techniques that make it easier to integrate models of varying fidelity (will upscore for designs enabling plug-and-play experts)",
+        "Values empirical evidence of adaptive computation and efficiency (e.g., methods that trade off computation and performance) and will penalize methods that are purely theoretical without experiments",
+        "Rewards inclusion of diverse baselines (reactive, fixed-iteration iterative, and oracle) and will upscore if baselines are well-implemented and results show consistent gains"
+      ],
+      "reviewing_style": "I prioritize demonstrated practical gains, clarity of system design, and empirical evidence that a method meaningfully improves efficiency or usability in realistic settings."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 1,
+    "total_dimensions": 3,
+    "debate_rate": 0.333
+  }
+}

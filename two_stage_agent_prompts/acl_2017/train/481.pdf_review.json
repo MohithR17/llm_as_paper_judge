@@ -1,0 +1,70 @@
+{
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 3,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "CLARITY": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper introduces a clearly new dataset and evaluation perspective (FOIL-COCO) that pairs images with minimally altered \u2018foil\u2019 captions and defines three diagnostic tasks (classification, foil detection, foil correction), which is a notable and focused contribution beyond standard captioning/VQA benchmarks. The authors differentiate their work from prior MS-COCO-based efforts by emphasizing single-word foils that force fine-grained image\u2013text reasoning and demonstrating that state-of-the-art LaVi models perform near chance while humans do not. Because the contribution is primarily a dataset and diagnostic task suite rather than novel modeling techniques, it is not a paradigm-shifting method but is a meaningful and well-differentiated advance for evaluation, warranting a high-but-not-top originality score."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Introducing FOIL-COCO\u2014a diagnostic extension of MS-COCO with foil captions and three targeted tasks (caption classification, foil-word detection, foil-word correction)\u2014addresses the important problem of fine-grained visual\u2013text alignment. The finding that state-of-the-art LaVi models (e.g., HieCoAtt, deeper LSTM variants) perform near chance while humans are near-perfect highlights a substantial blind spot in current models and would change how researchers evaluate robustness and semantic grounding. By providing a focused benchmark that rules out language-only solutions, the work opens clear new research directions for model architectures and training objectives and is likely to be adopted as a useful diagnostic dataset, though it is primarily a strong (not necessarily transformative) contribution to the multimodal community."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper introduces FOIL-COCO, defines three diagnostic tasks, and evaluates multiple state-of-the-art LaVi models (e.g., HieCoAtt, Neuraltalk4, deeper LSTM variants), providing evidence that current models perform poorly on these tasks. However, no ablation studies or sensitivity analyses are reported, and important methodological details for reproducibility are missing (hyperparameters and code not mentioned). The authors acknowledge some limitations (T3 correction limited to a candidate set; omission of the Multimodal Compact Bilinear model), indicating gaps in experimental coverage. Overall the experiments are solid and supportive of the main claims but miss some important analyses and complete reproducibility information."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within the scope of top NLP/ML venues: it addresses multimodal language-and-vision problems (VQA/Image Captioning) by introducing FOIL-COCO (an MS-COCO extension) and three diagnostic tasks (caption classification, foil word detection, foil word correction). The work is directly targeted at the LaVi research community, evaluates multiple state-of-the-art models (e.g., HieCoAtt, Neuraltalk4, LSTM baselines) using standard accuracy metrics, and exposes clear failure modes that are of broad interest. Although some practical details (code, hyperparameters, a few model comparisons) are missing, the problem formulation, evaluation approach, and positioning are appropriate for a top-tier venue."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims (dataset construction, diagnostic tasks, and that several state-of-the-art LaVi models perform poorly while humans do well) are supported by targeted experiments across multiple established baselines (e.g., HieCoAtt, Neuraltalk4, deeper LSTM variants) on the FOIL-COCO tasks. There are no mathematical derivations to verify. However, experimental reporting has minor methodological gaps (no hyperparameters reported, limited-answer setup for T3 that constrains correction to a target set, and one notable model family\u2014Multimodal Compact Bilinear pooling\u2014was not evaluated), and no mention of statistical tests; these issues do not fatally undermine the primary conclusions but weaken reproducibility and completeness."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper evaluates a sensible set of contemporary LaVi baselines (e.g., deeper LSTM + norm I, HieCoAtt, Neuraltalk4, MLP+BoW) on the proposed FOIL-COCO tasks using the same dataset and accuracy metric, and it notes limitations (e.g., constrained candidate set for T3). However, a notable recent model (Multimodal Compact Bilinear Pooling, Fukui et al., 2016) was not evaluated and hyperparameters/code are not reported, which are minor but meaningful omissions for completeness and reproducibility. Overall the comparisons are good but not fully comprehensive."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper appears well organized (intro, methodology for FOIL-COCO construction, experiments evaluating multiple baselines, and conclusions) and the main contributions are stated early (introducing FOIL-COCO and three diagnostic tasks). Notation issues are not flagged in the summary and related work coverage is adequate, but presentation omissions\u2014such as missing hyperparameter reporting and no mention of released code\u2014are minor drawbacks. Overall the writing quality is described as adequate, so the manuscript is clear with only small presentation improvements needed."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "We introduce FOIL-COCO, an extension of MS-COCO that associates images with both correct and \u2018foil\u2019 captions (captions that are highly similar to the original but contain a single mistaken word).",
+      "Current state-of-the-art language-and-vision (LaVi) models perform poorly on three diagnostic tasks (caption classification, foil word detection, foil word correction), often close to chance, while humans achieve near-perfect performance.",
+      "Language-only cues are not sufficient to solve FOIL-COCO; the dataset requires fine-grained understanding of the relation between text and image and thus challenges existing state-of-the-art models.",
+      "We evaluate several models (including deeper LSTM + norm I and HieCoAtt) on the proposed tasks and show they fail on FOIL-COCO."
+    ],
+    "methodology": "Construct an FOIL-COCO dataset by generating foil captions (single-word mistakes) from MS-COCO captions and define three tasks\u2014correct vs. foil classification, foil word detection, and foil word correction\u2014to diagnostically evaluate LaVi models; evaluate multiple state-of-the-art VQA/IC models on these tasks.",
+    "datasets": [
+      "FOIL-COCO",
+      "MS-COCO (2014)"
+    ],
+    "baselines": [
+      "deeper LSTM + norm I (Antol et al., 2015; Lu et al., 2015)",
+      "HieCoAtt (Hierarchical Co-Attention, Lu et al., 2016)",
+      "Neuraltalk4 (Fei-Fei, 2015) - used as an IC system",
+      "MLP+BoW (Jabri et al., 2016) - modified variant"
+    ],
+    "metrics": [
+      "accuracy"
+    ],
+    "limitations": [
+      "For foil word correction (T3), models are asked to select the correct word from the target words (a limited set) instead of from the whole dataset vocabulary for computational reasons.",
+      "The Multimodal Compact Bilinear Pooling model (Fukui et al., 2016) was not evaluated against the proposed tasks."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": false,
+    "related_work_coverage": "adequate",
+    "topic_area": "Multimodal (vision and language) \u2014 VQA and Image Captioning",
+    "writing_quality": "adequate"
+  }
+}

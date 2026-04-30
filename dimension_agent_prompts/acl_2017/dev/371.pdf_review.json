@@ -1,0 +1,39 @@
+{
+  "CLARITY": 2,
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 3,
+  "_details": {
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper has a recognizable structure (model, experiments, conclusion) but is poorly organized with extensive repetition and duplicated paragraphs that break the logical flow (many repeated blocks in Related Work and elsewhere). Main contributions are stated but not presented cleanly or early and are repeated in the Conclusion rather than succinctly up front. Notation is inconsistent or unclear in places (e.g. \u2018x?\u2019, inconsistent section numbering, undefined variants like pRNNv), and there are numerous grammatical/typo issues (\u201ccontinues\u201d, \u201cgone to have\u201d, \u201cppl\u201d) that hinder readability. Tables are present but sparsely described and no figures or clear examples are provided to aid understanding."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper proposes pRNNs for language modeling and machine translation, which squarely falls within top NLP/ML venues (it targets core topics: neural architectures, attention, and structured representations). The formulation is appropriate (defines subnetworks P, A, S and equations) and the methods/evaluation use community standards\u2014PTB and FBIS perplexities, NIST test sets for Chinese\u2192English, comparisons to LSTM, RNNsearch and PBSMT/Moses, and BLEU/perplexity metrics. The work is positioned against relevant prior work (Bahdanau et al., Eriguchi et al., phrase-based SMT literature) and therefore addresses the right audience for a top conference."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper targets an important problem\u2014incorporating latent phrasal structure into RNN-based language modeling and MT\u2014by proposing pRNNs that represent candidate phrases and use attention (\u00a72, pRNN design). It reports substantial empirical gains (over 10 perplexity points on PTB and FBIS; Tables 2\u20133) and improved BLEU vs. PBSMT and RNNsearch (\u00a74.3), suggesting the results could change practice. The approach (unsupervised phrase construction, producing forests as a by-product; Discussion) opens clear new directions for unsupervised structure induction and hybrid LM/MT architectures, and is likely to be built upon by researchers integrating explicit structural representations."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The paper proposes pRNN with components P/A/S (eqs.1\u20134) but gives only high-level descriptions without precise architectural or training formulations, so the mathematical specification is incomplete. Experimental claims are partially supported: Tables 2\u20133 show lower perplexities versus baselines, but the stated \u201cover 10 points\u201d gain contradicts Table 2 (LSTM 106.9 \u2192 pRNN 97.6 is \u22489.3 points), and no BLEU table or significance testing is provided for the MT claim. Training/configuration details are inconsistent across sections (e.g. differing dropout settings) and there is no control for parity/tuning between baselines and pRNN, leaving potential methodological confounds. Overall the results are promising but some claims are unsupported or under-specified, requiring more complete model descriptions and rigorous experimental controls."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against reasonable and recent baselines for both LM (KN5, FFNN-LM, RNN, LSTM, genCNN) and MT (PBSMT/Moses and an open-source RNNsearch implementation), reports results on standard datasets (PTB, FBIS, NIST test sets) and uses standard metrics (perplexity, mteval BLEU). However, some baselines are cited via previously reported numbers rather than fully reproduced, the MT comparison lacks deeper ablation/analysis of fair hyperparameter parity, and the paper asserts pRNN strictly outperforms prior work without discussing cases where competitors are comparable, so comparisons are good but not exhaustively analyzed."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper proposes phrasal RNNs (pRNN) that build fixed-length phrase vectors via an RNN pyramid (p = P(xji), Eqns.1\u20132), apply an attention module to produce a weighted phrase summary (p\u0302 = A(h, pk..pl), Eqn.3) and feed that into the sequential RNN (ht = S(ht\u22121, xt, p\u0302), Eqn.4). This is a meaningful, non-trivial integration of existing ideas (RNNs, attention, memory-style addressing) into a phrase-level encoding pipeline and claims unsupervised phrase construction and parallel RNN sequences as novel. However, the paper situates itself among closely related prior work (e.g., Eriguchi et al. 2016 on parse-based encoding, Meng et al. 2015 / Deep Memory Network and prior phrase/hierarchical SMT methods), so the contribution reads as a moderate incremental novelty\u2014not a radical new paradigm but a notable combination and engineering of known techniques."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper evaluates pRNN on standard LM (Penn Treebank, FBIS) and MT (LDC / NIST) datasets and reports concrete perplexity and BLEU improvements (Tables 2\u20133 and MT claims), so experiments are present and relevant. However there are no ablation or sensitivity analyses of key design choices (e.g., how candidate phrases are generated, effect of attention or pyramid layers), and no statistical significance or error/failure analysis beyond a single open question about forest quality. Related work cites many relevant lines (parsing, phrase SMT, NMT) though the coverage is messy/repetitive. Reproducibility is partial (some training/details like dropout, AdaDelta, dims) but crucial architectural and training specifics for pRNN (exact pyramid construction, hyperparameters, table (4) details) are missing."
+    }
+  }
+}

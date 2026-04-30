@@ -1,0 +1,103 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "ORIGINALITY": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper addresses neural semantic parsing and interactive learning for NL-to-SQL, which squarely falls within top-tier NLP/ML conference scope (semantic parsing/NLIDB). The methodology (seq2seq to SQL, data augmentation, iterative user-feedback loop) and evaluations (GEO880, ATIS, live online experiment, execution-based accuracy, comparisons to relevant baselines) use community-expected methods and metrics. The audience (NLP/ML researchers working on semantic parsing, weak supervision, interactive learning) is appropriate and the work is positioned with thorough related work coverage. Minor domain-specific limitations (template utility, noisy feedback) do not affect overall venue fit.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014rapidly bootstrapping semantic parsers for new domains through lightweight user feedback\u2014and demonstrates this in a live three-stage online experiment that learned from scratch to reach 63.51% correct answers. Its demonstration that neural seq2seq models can be adapted to generate full SQL without intermediate representations, combined with schema-based data augmentation and a feedback loop that minimizes annotation effort, is likely to change how practitioners approach NLIDB deployment. The work opens clear research directions around noisy feedback handling and richer template synthesis (noted limitations on feedback noise and template coverage), and its techniques are likely to be adopted and extended by others in the field.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states its main contributions early, including the interactive feedback loop and SQL-generation approach. Notation and methodological details (e.g., hyperparameters) are reported, and related work coverage is thorough, aiding clarity. Figures/tables and examples appear informative and the writing quality is described as good, though some experimental nuances (noisy user feedback and template limitations for multi-entity queries) introduce minor presentation complexity. Overall the paper is clear with only minor presentation issues.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are broad \u2014 evaluation on GEO880 and ATIS plus a live three-stage online deployment \u2014 and compare to several strong baselines, supporting the main claims about bootstrapping and iterative improvement. The paper reports analyses relevant to deployment (annotation effort, feedback error rates, and cases like incomplete aggregation answers) and discusses limitations of schema templates and noisy user feedback; hyperparameters are reported. Some details that would strengthen reproducibility and analysis are missing or limited in the summary (no code release mentioned, and it is unclear how extensive ablation/sensitivity studies are beyond the data-augmentation claim), so the work is solid but with minor gaps.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper combines known components (neural seq2seq parsing, data augmentation, and crowd annotation) into a cohesive, interactive learning loop that directly maps utterances to full SQL and improves via cheap binary user feedback \u2014 an approach that clearly differentiates it from prior semantic-parsing work that relied on intermediate representations or heavy annotation. The use of schema-based template bootstrapping, entity anonymization with incremental numbering, and selective crowd annotation to minimize effort are non-trivial extensions that would inform experts, even though the overall problem (NL-to-SQL parsing and interactive learning) is well-studied. Given these substantive methodological novelties and practical deployment evaluation, the contribution is notably novel rather than purely incremental.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are generally supported by evidence: a live three-stage online experiment demonstrating iterative improvement to 63.51% correct answers, comparisons to reasonable baselines (GUSP, Zettlemoyer & Collins, Dong & Lapata, etc.), and reporting of feedback noise and annotation effort. There are no mathematical derivations to check, and the experimental methodology appears sound (execution-based evaluation, baselines, and reporting of noisy feedback rates). Minor concerns remain about limits of schema-template augmentation (acknowledged by the authors) and lack of code release, but these do not undermine the core technical claims.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against a range of appropriate baselines including classic and recent semantic-parsing systems (e.g., Zettlemoyer & Collins 2007, Dong & Lapata 2016, Jia & Liang 2016 and Poon 2013) and evaluates on standard datasets (GEO880, ATIS) using execution-based accuracy, which supports fair comparison. The live iterative experiment and reported metrics (accuracy, annotation effort, feedback error) provide concrete analysis of differences and practical trade-offs. The authors acknowledge limitations (noisy user feedback, template shortcomings) rather than overstating gains. Minor omissions may exist in the very latest neural semantic-parsing work beyond the cited 2016 papers, preventing a perfect score.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "A feedback-based interactive learning algorithm can rapidly deploy semantic parsers for new domains and improve them over time using binary user feedback and selective crowd annotations.",
+      "Neural sequence-to-sequence models can be adapted to directly map natural language utterances to full SQL queries, removing the need for intermediate meaning representations or database-specific engineering.",
+      "Data augmentation via schema-based templates, entity anonymization, and paraphrasing (PPDB) helps bootstrap performance and reduce annotation effort in early stages.",
+      "A live three-stage online experiment demonstrates the approach can learn a semantic parser from scratch for an academic domain, achieving 63.51% correct answers after iterative training and user feedback."
+    ],
+    "methodology": "Train a neural sequence-to-sequence model to generate SQL from anonymized utterances using synthetic data from schema templates and paraphrases; deploy the model, collect binary correct/incorrect feedback from users, add correct (utterance,query) pairs to training data or obtain crowd-annotated correct queries for incorrect predictions, and iteratively retrain.",
+    "datasets": [
+      "GEO880",
+      "ATIS",
+      "an online academic database (live interactive experiment)"
+    ],
+    "baselines": [
+      "GUSP (Poon, 2013)",
+      "GUSP++ (Poon, 2013)",
+      "Giordani and Moschitti (2012)",
+      "Zettlemoyer and Collins (2007)",
+      "Dong and Lapata (2016)",
+      "Jia and Liang (2016)"
+    ],
+    "metrics": [
+      "Test set accuracy measured by executing predicted SQL and comparing results to gold answers",
+      "Percentage of examples requiring annotation (annotation effort)",
+      "User-reported correctness rates (Correct or Incomplete Result)",
+      "Feedback error rates (percent erroneous user feedback)"
+    ],
+    "limitations": [
+      "User feedback is noisy: 6.1% of correct queries were marked wrong and 6.3% of incorrect queries were marked correct in the live experiment.",
+      "Incomplete data (e.g., for aggregation queries) caused users to mark correct SQL as Wrong instead of Incomplete, leading to redundant annotations.",
+      "Schema templates provide limited benefit in domains with queries involving multiple entity types (e.g., ATIS) since templates generated single-entity questions."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - semantic parsing / natural language interfaces to databases (NLIDB)",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 1,
+    "paper_novelty_mean": 0.7643,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

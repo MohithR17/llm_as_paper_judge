@@ -1,0 +1,39 @@
+{
+  "SOUNDNESS_CORRECTNESS": 4,
+  "ORIGINALITY": 3,
+  "CLARITY": 3,
+  "SUBSTANCE": 3,
+  "IMPACT": 4,
+  "APPROPRIATENESS": 5,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper makes clear empirical claims and supports them with experiments across multiple datasets (Sections 4.1\u20134.2 and 5.1) and a comparison table (Table 2) showing CopyRNN outperforming baselines. The modeling formulation (GRU encoder/decoder, attention, copy mechanism) and training procedure (Adam optimizer, learning rate = 1e-4) are standard and correctly described in Section 3 and 4. However, the paper lacks statistical significance testing and some training/hyperparameter details (e.g. full clipping value, epochs, vocab size) which would strengthen technical validity. There are minor unsupported generalizations (e.g., claims about cross-domain generalization) that are discussed but not thoroughly evaluated."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The main idea \u2014 applying an encoder-decoder with attention plus a copying mechanism to keyphrase generation \u2014 is a sensible application of known techniques (references to Bahdanau et al. 2014, Gu et al. 2016 are explicit). The paper frames keyphrase generation as a generative seq2seq task and assembles components (GRU, attention, copy) that are existing methods, so the contribution is largely an application and integration rather than a fundamentally new method. The creation of a very large training corpus (527k+ papers) and the KP20k test set provide some novelty in scale and evaluation."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is organized into standard sections (method, datasets, experiments) and provides equations for the encoder/decoder and attention (Equations 1\u20134), making the core technical content understandable. However, the excerpt contains repeated and duplicated text blocks, formatting issues, and some incomplete details which reduce readability and cause confusion in places (e.g. repeated paragraphs in Related Work and Baselines). Notation is mostly defined but some implementation specifics are omitted or truncated."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The experimental evaluation covers multiple public datasets and a large new KP20k test set, and compares against several unsupervised and supervised baselines (Section 4.4), which provides substantial empirical evidence. Nevertheless, important analyses are missing: there are no comprehensive ablation studies (e.g. effect of attention vs. copy vs. vocabulary size), limited sensitivity analysis, and only brief discussion of failure cases (one example mentioned). Reproducibility is partially enabled by dataset sizes and optimizer choice but many hyperparameters and training details are not fully specified."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "Keyphrase generation is an important practical task for IR, summarization and indexing, and demonstrating a model that generates absent keyphrases and scales to hundreds of thousands of papers is potentially influential (discussed in Sections 5 and 6). The large training corpus and KP20k testset can enable follow-up work and adoption by practitioners. While not transformative methodologically, the practical gains reported (CopyRNN outperforming baselines by a large margin) suggest notable impact."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The topic (neural keyphrase generation) and methods (seq2seq, attention, copy mechanism) are squarely within the scope of top NLP/ML venues, and the paper uses community-standard datasets, baselines and metrics (precision/recall/F1 with Porter stemming) as described in Sections 4.2\u20134.5. The scale of data and the empirical focus fit the expectations for such conferences."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against a range of established unsupervised (Tf-Idf, TextRank, SingleRank, ExpandRank) and supervised (KEA, Maui) baselines and reports results on multiple datasets (Section 4.4 and 5.1), which supports fair benchmarking. The authors note when baselines perform well and when their model improves (e.g. CopyRNN exceeds best baselines by >20%), but comparisons omit statistical significance testing and do not include newer neural baselines beyond their RNN variant, leaving some relevant comparisons incomplete."
+    }
+  }
+}

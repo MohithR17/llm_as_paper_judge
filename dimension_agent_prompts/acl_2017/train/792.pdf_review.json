@@ -1,0 +1,39 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 3,
+  "ORIGINALITY": 3,
+  "SUBSTANCE": 3,
+  "CLARITY": 3,
+  "SOUNDNESS_CORRECTNESS": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper proposes an LSTM-based model for joint word and sense embeddings (LSTMEmbed and LSTMEmbedSW) and situates itself within representation learning for NLP using bidirectional LSTMs (Sections 3.2\u20133.3). It evaluates on standard benchmarks (WS353, RG65, SimLex999, SimVerb3500, SemEval analogy) and compares against relevant baselines (word2vec, GloVe, SW2V, AutoExtend, SenseEmbed) using sense-annotated corpora (BabelWiki, SemCor), which matches the methods and evaluation norms of top NLP/ML venues (Sections 5\u20136). Given topic, audience, formulation and standard experimental setup, the paper is a strong fit for a top-tier NLP/ML conference."
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses an important problem\u2014representing polysemous words and learning sense-specific embeddings\u2014by using a bidirectional LSTM to predict pretrained word/sense embeddings from context (sec. 3.2) and by proposing a joint word\u2013sense space (LSTMEmbedSW, sec. 3.3). Empirically it yields competitive, sometimes improved results at much lower dimensionality and shows gains when injecting richer pretrained/sense embeddings (sec. 6.2, 6.5), indicating practical usefulness. However, improvements are incremental (the model is \"not competitive\" on analogy tasks, sec. 6.2) and therefore the work is more likely to spur moderate follow-up research (joint BLSTM sense modeling, leveraging richer priors) than to fundamentally change the field."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper combines existing ideas (bidirectional LSTMs for context modeling and sense-annotated corpora) in a novel configuration\u2014training a BiLSTM to predict pretrained target embeddings via cosine similarity (Sec. 3.2, Eq. 5) and proposing a joint word/sense variant that sums and projects word and sense vectors (LSTMEmbedSW, Sec. 3.3, Eq. 6). However, closely related prior work is acknowledged and overlaps substantially (context2vec also uses BiLSTMs for context-word embedding; SW2V, AutoExtend and SENSEMBED already produce joint or sense-aware spaces), so the contribution is a non-trivial but incremental combination/extension of known techniques rather than a fundamentally new paradigm."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper runs a reasonably broad set of experiments (multiple similarity benchmarks including RG65, WS353, MEN, SimLex, SimVerb3500, corpus comparisons in Figure 4, and pretrained-embedding tests in \u00a76.5 and Table 3) and compares against several baselines (SW2V, AutoExtend, SenseEmbed). However, ablation/sensitivity analysis is limited: aside from a window-size sweep (\u00a75.3) and varying pretrained inputs (\u00a76.5) there are no component-wise ablations (e.g. architecture choices, LSTM vs BLSTM, projection in LSTMEmbedSW) or analysis of hyperparameters like learning rate, optimizer, number of epochs (they report only one epoch and batch size) so causes of weaknesses (e.g. poor analogy performance noted in \u00a76.2) are not investigated. Related work coverage is thorough, but failure modes and limitations are only briefly acknowledged (analogy weakness) and many reproduction details are missing (exact training objective/optimization, loss implementation despite stating cosine similarity, and some training/configuration specifics)."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper is organized in a standard way (intro \u2192 model \u2192 experiments \u2192 results) and the main method is described with equations and architecture diagrams referenced (e.g., Sections 3.2\u20133.3), but presentation issues make some parts hard to follow. There are many duplicated/repeated sentences and reference lines (e.g., repeated sentences about LSTMs and word2vec in multiple paragraphs), formatting problems (broken table layout in the results section, Figures referenced but not shown), and typographical errors (\u201cchosing\u201d) that reduce clarity. Notation is mostly introduced (e.g., outLSTMEmbed, emb(si), cosine similarity S(~v1,~v2)) but is inconsistently formatted and occasionally unexplained, and figures/tables are not effectively presented to support the text."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 3,
+      "justification": "The core model is plausible and equations (BLSTM over left/right contexts, concatenation and cosine-based comparison in Eq.5) are reasonable, and comparisons to sensible baselines are reported. However there are technical ambiguities and missing details that weaken the evidence: matrix-shape/notation inconsistencies (Wo dimensions/transposition in Eq.4), unclear training objective/optimization (how cosine similarity is optimized, whether pretrained embeddings emb(si) are fixed or updated), and sparse training details (optimizer, learning rate, only one epoch). The experimental methodology lacks statistical significance testing and some hyperparameter choices (e.g. window=10 because word2vec) are not fully justified, so while results are consistent they are not rigorously validated."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and recent baselines (word2vec, GloVe, SW2V, AutoExtend, SENSEMBED and others) and evaluates on standard datasets (WS353, RG65, MEN, SimLex, SimVerb, analogy tasks). The authors state they trained representations under the same configuration for fair comparison and explicitly acknowledge cases where baselines match or outperform their model (e.g. analogy task, LSTMEmbedSW worse on several sets). They analyze differences at a high level (order-sensitivity of LSTMs, model complexity, effect of richer pretrained embeddings) and cite the main competing approaches. Minor issues remain: some inconsistency in reported embedding dimensionalities across tables and limited in-depth error analysis of why certain baselines outperform on specific tasks."
+    }
+  }
+}

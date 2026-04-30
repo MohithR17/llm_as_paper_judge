@@ -90,7 +90,7 @@ Slot: {slot_name}
 Terms: {terms}
 Slot description: {slot_description}
 
-Generate exactly 4 query variants as a JSON object with a "queries" array:
+Generate exactly 2 query variants as a JSON object with a "queries" array:
 {{
   "queries": [
     {{
@@ -100,20 +100,12 @@ Generate exactly 4 query variants as a JSON object with a "queries" array:
     {{
       "variant": "narrow",
       "text": "<specific query using exact method/dataset/metric names from the terms>"
-    }},
-    {{
-      "variant": "survey",
-      "text": "<query framed to find survey or overview papers on this topic>"
-    }},
-    {{
-      "variant": "benchmark",
-      "text": "<query framed to find evaluation, benchmark, or comparison papers>"
     }}
   ]
 }}
 
 Rules:
-- Each query must be meaningfully different from the others — no paraphrasing the same idea.
+- Each query must be meaningfully different from the other — no paraphrasing the same idea.
 - Prefer short, precise queries (2–6 words). Academic search engines work better with fewer, more targeted terms.
 - Use exact names from the terms list where possible (model names, dataset names, metric names).
 - Do NOT include author names or paper titles.

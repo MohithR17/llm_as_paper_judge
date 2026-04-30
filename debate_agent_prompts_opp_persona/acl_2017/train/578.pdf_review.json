@@ -1,0 +1,180 @@
+{
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SUBSTANCE": 3,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper makes a notable and concrete novelty claim by delivering the first full-coverage neural semantic-graph parser for MRS and by jointly predicting graphs, unlexicalized predicates and token alignments in an incremental transition-based framework (including an arc-eager variant). These contributions clearly differentiate it from prior AMR and grammar-based systems and adapt pointer-network attention and stack-based embeddings to the MRS setting. However, the core techniques are combinations and adaptations of existing neural transition/attention ideas rather than a fundamentally new formalism or algorithmic guarantee, so the contribution is notable but not groundbreaking. | B(4): The paper presents a notable novel combination: a transition-based neural parser that is the first full-coverage neural semantic graph parser for MRS, jointly predicting graph structure, unlexicalized predicates and token alignments with stack-based embeddings and pointer-network attention. These design choices\u2014incremental arc-eager variant, joint alignment prediction, and emphasis on GPU-batched runtime\u2014go beyond straightforward application of existing seq2seq AMR work and meaningfully simplify the pipeline compared to multi-stage systems. While the components (transition systems, pointer networks, stack embeddings) are known, their integration and the full-coverage MRS focus represent a clear, practically relevant advance that would interest practitioners deploying semantic parsers.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper makes a notable and concrete novelty claim by delivering the first full-coverage neural semantic-graph parser for MRS and by jointly predicting graphs, unlexicalized predicates and token alignments in an incremental transition-based framework (including an arc-eager variant). These contributions clearly differentiate it from prior AMR and grammar-based systems and adapt pointer-network attention and stack-based embeddings to the MRS setting. However, the core techniques are combinations and adaptations of existing neural transition/attention ideas rather than a fundamentally new formalism or algorithmic guarantee, so the contribution is notable but not groundbreaking."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper presents a notable novel combination: a transition-based neural parser that is the first full-coverage neural semantic graph parser for MRS, jointly predicting graph structure, unlexicalized predicates and token alignments with stack-based embeddings and pointer-network attention. These design choices\u2014incremental arc-eager variant, joint alignment prediction, and emphasis on GPU-batched runtime\u2014go beyond straightforward application of existing seq2seq AMR work and meaningfully simplify the pipeline compared to multi-stage systems. While the components (transition systems, pointer networks, stack embeddings) are known, their integration and the full-coverage MRS focus represent a clear, practically relevant advance that would interest practitioners deploying semantic parsers."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper tackles an important and under-served problem\u2014full-coverage neural parsing into MRS-style semantic graphs\u2014and demonstrates practical gains (first full-coverage MRS parser, joint predicate/alignment prediction, order-of-magnitude speedup vs. a grammar-based ERG parser and strong Smatch/EDM scores). These results are likely to shift attention toward neural MRS parsing and enable further work on incremental graph decoding and alignment. However, from my theoretical-purist perspective the contribution is weakened by the absence of formal coverage/complexity guarantees and limited analysis of which architectural components are essential (ablation/detail on alignment noise effects is not emphasized), and concept prediction remains a clear weakness, so I judge the impact strong but not transformative. | B(4): This paper addresses an important practical gap by producing the first full-coverage neural MRS semantic-graph parser that jointly predicts graphs, predicates and alignments\u2014an advance likely to change how practitioners build end-to-end semantic parsers for MRS-style formalisms. The demonstrated order-of-magnitude speedup via GPU batch processing and strong empirical results (e.g., 86.69% Smatch and improvements over attention-based baselines on MRS and AMR) make this immediately useful for systems engineering. Limitations in concept prediction and lagging behind AMR models that use extensive external resources temper its reach, but the combination of incremental transition modeling, alignment-aware prediction, and practical runtime gains opens clear new directions and is likely to be built upon.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper tackles an important and under-served problem\u2014full-coverage neural parsing into MRS-style semantic graphs\u2014and demonstrates practical gains (first full-coverage MRS parser, joint predicate/alignment prediction, order-of-magnitude speedup vs. a grammar-based ERG parser and strong Smatch/EDM scores). These results are likely to shift attention toward neural MRS parsing and enable further work on incremental graph decoding and alignment. However, from my theoretical-purist perspective the contribution is weakened by the absence of formal coverage/complexity guarantees and limited analysis of which architectural components are essential (ablation/detail on alignment noise effects is not emphasized), and concept prediction remains a clear weakness, so I judge the impact strong but not transformative."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper addresses an important practical gap by producing the first full-coverage neural MRS semantic-graph parser that jointly predicts graphs, predicates and alignments\u2014an advance likely to change how practitioners build end-to-end semantic parsers for MRS-style formalisms. The demonstrated order-of-magnitude speedup via GPU batch processing and strong empirical results (e.g., 86.69% Smatch and improvements over attention-based baselines on MRS and AMR) make this immediately useful for systems engineering. Limitations in concept prediction and lagging behind AMR models that use extensive external resources temper its reach, but the combination of incremental transition modeling, alignment-aware prediction, and practical runtime gains opens clear new directions and is likely to be built upon."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is overall well organized and clearly written: contributions are stated early, experiments/metrics (EDM, Smatch, concept accuracy) and datasets are described, and related work is thorough. Notation appears consistent and definitions (e.g., arc-eager variant, pointer-network attention, lemma/sense decomposition) are presented with sufficient clarity for a reader to follow the method and results. Figures/tables/examples seem effective and informative given the reported clear experimental comparisons and reported hyperparameters. As a theoretical purist, I note a slight deduction because highly technical portions (transition system details and alignment noise effects) may benefit from a more formal, self-contained specification and ablation-oriented exposition to aid reproducibility and interpretability. | B(4): Overall the paper is well organized and the main contributions are stated early (introduction of an incremental transition-based neural parser for full-coverage MRS), with a clear method\u2192experiments\u2192conclusion flow. Notation appears consistent and hyperparameters are reported; figures, tables and concrete examples (DMRS/EDS and AMR results, EDM/Smatch metrics) are informative for reproducing and comparing performance. Writing quality is good and related work coverage is thorough, though a few sections (e.g., the arc-eager variant\u2019s sensitivity to noisy alignments and the discussion of concept-prediction weaknesses) could benefit from slightly more exposition for practitioners integrating the model. From a deployment perspective the presentation highlights runtime and batching benefits, but the lack of mentioned code release is a minor clarity/replicability gap.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is overall well organized and clearly written: contributions are stated early, experiments/metrics (EDM, Smatch, concept accuracy) and datasets are described, and related work is thorough. Notation appears consistent and definitions (e.g., arc-eager variant, pointer-network attention, lemma/sense decomposition) are presented with sufficient clarity for a reader to follow the method and results. Figures/tables/examples seem effective and informative given the reported clear experimental comparisons and reported hyperparameters. As a theoretical purist, I note a slight deduction because highly technical portions (transition system details and alignment noise effects) may benefit from a more formal, self-contained specification and ablation-oriented exposition to aid reproducibility and interpretability."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper is well organized and the main contributions are stated early (introduction of an incremental transition-based neural parser for full-coverage MRS), with a clear method\u2192experiments\u2192conclusion flow. Notation appears consistent and hyperparameters are reported; figures, tables and concrete examples (DMRS/EDS and AMR results, EDM/Smatch metrics) are informative for reproducing and comparing performance. Writing quality is good and related work coverage is thorough, though a few sections (e.g., the arc-eager variant\u2019s sensitivity to noisy alignments and the discussion of concept-prediction weaknesses) could benefit from slightly more exposition for practitioners integrating the model. From a deployment perspective the presentation highlights runtime and batching benefits, but the lack of mentioned code release is a minor clarity/replicability gap."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares to a broad and appropriate set of baselines (JAMR, CAMR, several seq2seq AMR parsers, a synchronous HRG model and a high-precision grammar-based ERG parser) using standard datasets (DeepBank, LDC2015E86) and metrics (EDM, Smatch), and it explicitly acknowledges when prior methods (SOTA AMR parsers using external resources) outperform it. However, I deduct one point because the summary suggests missing comparisons to the very latest resource-augmented AMR systems and lacks mention of statistical significance testing or detailed error-analysis that would make the empirical contrasts fully convincing from a theoretical/linguistic perspective. | B(4): The paper compares to a broad set of appropriate baselines (JAMR, CAMR, sequence-to-sequence AMR parsers, synchronous grammar models and a high-precision ERG parser) using standard metrics (EDM, Smatch) on the same datasets (DeepBank, LDC2015E86). Comparisons appear fair and the authors explicitly acknowledge where prior methods outperform them (concept prediction and AMR systems that use external syntax/SRL). The paper analyzes differences in model design (incremental transition-based vs. attention baselines, arc-eager tradeoffs) but omits explicit mention of code release and some stronger AMR systems that leverage external resources, which modestly limits reproducibility and completeness.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares to a broad and appropriate set of baselines (JAMR, CAMR, several seq2seq AMR parsers, a synchronous HRG model and a high-precision grammar-based ERG parser) using standard datasets (DeepBank, LDC2015E86) and metrics (EDM, Smatch), and it explicitly acknowledges when prior methods (SOTA AMR parsers using external resources) outperform it. However, I deduct one point because the summary suggests missing comparisons to the very latest resource-augmented AMR systems and lacks mention of statistical significance testing or detailed error-analysis that would make the empirical contrasts fully convincing from a theoretical/linguistic perspective."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper compares to a broad set of appropriate baselines (JAMR, CAMR, sequence-to-sequence AMR parsers, synchronous grammar models and a high-precision ERG parser) using standard metrics (EDM, Smatch) on the same datasets (DeepBank, LDC2015E86). Comparisons appear fair and the authors explicitly acknowledge where prior methods outperform them (concept prediction and AMR systems that use external syntax/SRL). The paper analyzes differences in model design (incremental transition-based vs. attention baselines, arc-eager tradeoffs) but omits explicit mention of code release and some stronger AMR systems that leverage external resources, which modestly limits reproducibility and completeness."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus"
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "Both reviewers agree the paper presents solid experimental comparisons to appropriate baselines, reports standard metrics and runtime benefits, and clearly discusses limitations. However, they also concur that the work lacks sufficient ablation/sensitivity analysis, statistical significance testing, and a clear code/reproducibility release, which are important given the paper\u2019s empirical claims. These shortcomings justify a score below 4 while recognizing the paper\u2019s valuable empirical contributions.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The experiments compare to appropriate baselines on two datasets and report standard metrics (EDM/Smatch) and speedups, which supports the main empirical claims. However, from the summary there is no clear ablation or sensitivity analysis isolating key architectural choices (stack features, pointer attention, lemma/sense decomposition), and no mention of statistical significance\u2014both are important given the paper\u2019s claim of being the first full-coverage neural MRS parser. Related work coverage appears thorough and limitations are discussed (concept prediction weakness, arc-eager sensitivity, ERG coverage), but reproducibility is weakened by no mention of released code, and there are missing formal/linguistic analyses that my theoretical perspective would expect."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "Overall the paper provides a solid experimental evaluation across MRS (DeepBank) and AMR (LDC2015E86), compares to strong baselines (JAMR, CAMR, grammar-based ERG) using appropriate metrics (EDM, Smatch), reports hyperparameters, and demonstrates practical speedups via GPU batching \u2014 all important for deployment-focused readers. It does note key limitations (weaker concept prediction, reliance on ERG-covered sentences, sensitivity to noisy alignments) and includes variant models (arc-eager vs. baseline) though the summary does not emphasize extensive ablation or code release; these omissions and the lack of a broader downstream/deployment evaluation are minor gaps preventing a top score."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "Both reviewers agree the paper addresses a core semantic-graph parsing problem, uses appropriate datasets and metrics, and presents relevant empirical and runtime gains for the community. While Reviewer A rightly notes missing formal guarantees and more detailed ablations would strengthen the contribution, the solid empirical scope, comparisons to strong baselines, and practical speedups make the work highly appropriate for the venue, so I give it the top score.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper addresses a core NLP/ML venue topic\u2014neural semantic graph parsing for MRS/AMR\u2014and evaluates with standard metrics (EDM, Smatch) on relevant corpora (DeepBank, LDC2015E86), so it targets the right audience. From my formalist perspective I have concerns about the absence of explicit formal guarantees of coverage/completeness and the summary does not emphasize ablation analyses isolating key architectural choices (pointer attention, stack embeddings, arc-eager variant), which slightly weakens its fit; nevertheless the empirical scope, comparison to grammar-based and neural baselines, and claimed speed/coverage gains make it a good fit overall."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper squarely fits a top NLP/ML venue: it tackles core semantic-graph parsing problems (MRS/AMR) with a novel transition-based neural approach, evaluates on standard datasets (DeepBank, LDC2015E86) and metrics (EDM, Smatch), and reports practical runtime gains versus a grammar-based parser. From a systems perspective the joint prediction of graphs and alignments, batching/GPU speedups, and thorough baselines address the audience\u2019s interest in deployable, high-throughput semantic parsers. The limitations are honestly stated (concept prediction and reliance on automatic alignments) and the methodology and evaluation meet community standards, making it highly relevant to the venue."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "Both reviewers agree the empirical results solidly support the main claims on DeepBank and AMR, with appropriate baselines and metrics, while noting reproducibility issues (no code release), sensitivity to alignments, and missing formal guarantees or thorough ablation/statistical analyses. Given the sound experimental methodology and clear improvements demonstrated, these practical strengths outweigh the theoretical and reproducibility shortcomings, so I assign a 4; the paper is convincing empirically but falls short of a top score due to the noted gaps.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper's main empirical claims are supported by experiments on DeepBank and AMR benchmarks with appropriate baselines and standard metrics (EDM, Smatch), and limitations are acknowledged. However, there is no formal specification or proofs about coverage/completeness of the transition system, and the summary does not report ablation studies isolating key architectural components (stack features, pointer variants) or statistical significance testing\u2014issues I penalize as a theoretical purist. There are also noted sensitivities (arc-eager to noisy alignments) and missing details such as code release that reduce reproducibility. Overall the work is promising and experimentally grounded but lacks the formal guarantees and thorough controlled analyses I expect, so I rate it a 3."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main claims are well supported by experiments showing state-of-the-art MRS coverage and improved speed versus a grammar-based ERG parser, with thorough baselines on DeepBank and AMR (Smatch/EDM). There are no apparent mathematical derivations to check, and the experimental methodology is sound though the lack of code release and dependence on automatically obtained alignments (which they note can harm the arc-eager variant) slightly weakens reproducibility and robustness. Concept prediction remains a reported weakness and DeepBank coverage limitations mean some evaluation caveats, but overall the conclusions are consistent with the presented results and analyses."
+      },
+      "score_delta": 1,
+      "debate_triggered": true,
+      "resolution_method": "referee"
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a neural encoder-decoder transition-based parser that is the first full-coverage semantic graph parser for Minimal Recursion Semantics (MRS).",
+      "The parser predicts graphs jointly with unlexicalized predicates and token alignments using stack-based embedding features and outperforms attention-based baselines on MRS and on an AMR benchmark.",
+      "GPU batch processing makes the parser an order of magnitude faster than a high-precision grammar-based parser, and the MRS parser achieves an 86.69% Smatch score, argued to make MRS an attractive semantic representation."
+    ],
+    "methodology": "A transition-based neural encoder-decoder parser (including an arc-eager variant) that incrementally predicts semantic graphs and their alignments, using pointer-network-based hard/soft attention, stack-based embeddings, and joint prediction of predicates (with lemma/sense decomposition).",
+    "datasets": [
+      "DeepBank v1.1 (DMRS/EDS from ERG)",
+      "LDC2015E86 (AMR dataset from SemEval 2016)"
+    ],
+    "baselines": [
+      "JAMR (Flanigan et al., 2014)",
+      "CAMR (Wang et al., 2016)",
+      "Sequence-to-sequence AMR parsers (Barzdins and Gosko, 2016; Peng et al., 2017)",
+      "Synchronous Hyperedge Replacement Grammar model (Peng and Gildea, 2016)",
+      "grammar-based ERG parser (high-precision baseline)"
+    ],
+    "metrics": [
+      "Elementary Dependency Matching (EDM) (F1)",
+      "Smatch (F1)",
+      "concept prediction accuracy (reported/computed)"
+    ],
+    "limitations": [
+      "Concept prediction remains a weakness of the model (lower accuracy compared to state-of-the-art AMR parsers).",
+      "Model lags behind state-of-the-art AMR parsers that make extensive use of external resources (e.g., syntax trees, SRL).",
+      "Arc-eager model performance can be harmed by noise in automatically-obtained alignments.",
+      "DeepBank provides parses only for sentences the ERG can analyze, so ~15% of corpus sentences cannot be evaluated."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - semantic graph parsing / semantic parsing",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Theoretical Purist",
+      "background": "Senior researcher in computational semantics and formal grammars with a PhD in theoretical NLP; long experience evaluating formal properties of meaning representations.",
+      "traits": [
+        "penalises papers that lack formal specification or proofs of coverage/completeness for proposed algorithms",
+        "requires clear ablation showing which architectural choices are necessary (will deduct points if key components are not individually evaluated)",
+        "downgrades empirical claims that rely primarily on benchmark scores without error analysis or statistical significance testing",
+        "expects comparison to symbolic or grammar-based baselines on linguistic plausibility and interpretability; will penalise purely numeric speedups absent analysis of trade-offs"
+      ],
+      "reviewing_style": "Prioritises formal clarity, ablation studies, and linguistic interpretability over raw empirical gains; sceptical of papers that present engineering-heavy improvements without theoretical guarantees."
+    },
+    "reviewer_b": {
+      "name": "Practical Systems Advocate",
+      "background": "Industry-affiliated NLP engineer with extensive experience building and deploying semantic parsers and information extraction systems at scale.",
+      "traits": [
+        "rewards papers demonstrating substantial wall-clock speedups or memory improvements with reproducible evaluation (will boost score if code or clear batching strategies are provided)",
+        "values empirical performance and robustness across datasets and will upscore methods that improve end-to-end metrics (Smatch, task throughput) even if theoretical analysis is limited",
+        "favors models that jointly predict structured outputs and alignments when this simplifies pipelines; will penalise approaches that require complex external post-processing",
+        "requires at least one realistic downstream or deployment-oriented evaluation or clear discussion of integration costs; gives extra credit for practical engineering insights"
+      ],
+      "reviewing_style": "Focuses on practical impact, runtime and robustness; supportive of empirical advances that make semantic parsing usable in real systems even if formal guarantees are limited."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 3,
+    "total_dimensions": 7,
+    "debate_rate": 0.429
+  }
+}

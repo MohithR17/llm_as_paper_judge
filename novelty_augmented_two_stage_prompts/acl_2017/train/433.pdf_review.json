@@ -1,0 +1,103 @@
+{
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "IMPACT": 4,
+  "CLARITY": 4,
+  "SUBSTANCE": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This paper is squarely within the scope of a top-tier NLP venue: it introduces a new Singlish dependency treebank, applies contemporary neural parsers (Dozat & Manning biaffine) and bi-LSTM-CRF taggers, and investigates cross-lingual transfer via feature-level neural stacking. The methodology, datasets (UD-Eng, ICE-SIN, Giga/GloVe embeddings), baselines, and evaluation metrics (UAS/LAS, POS accuracy) match community standards, code and hyperparameters are provided, and the work addresses a clear resource and modeling gap for a low-resource, colloquial variety. Given these facts the paper targets the right audience and is positioned appropriately for a top NLP/ML conference.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The contribution combines a new resource (a 1,200-sentence Singlish UD treebank) with an application of feature-level neural stacking to transfer English syntactic knowledge into Singlish models. Creating the Singlish treebank is a clear novel artifact relative to prior UD and Singlish work (e.g., the 2017 UD Singlish effort), but the transfer method is an application/variant of existing cross-lingual and parameter-sharing neural transfer approaches (see prior work on low-resource UD transfer and multi-treebank inductive transfer). Thus the paper is an incremental but useful advance: notable in dataset contribution and empirical demonstration, but not a fundamentally new methodological paradigm.",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "This work addresses the important problem of parsing a low-resource, mixed-language variety (Singlish) by creating a 1,200-sentence UD treebank and demonstrating substantial cross-lingual transfer gains (UAS 84.21%, 36.51% relative error reduction) using feature-level neural stacking from English. The resource plus the demonstrated method are likely to change how researchers approach transfer to creole/colloquial varieties and to be built upon (code released, concrete hyperparameters), opening new directions for dialectal NLP. Limitations from small training data and some annotation choices constrain immediate generality, so impact is strong but not fully transformative.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized with a clear flow from methodology to experiments and conclusion, and the main contributions (treebank creation, parser/tagger, and transfer gains) are stated early. Notation and hyperparameters are reported and related work coverage is adequate, while figures/tables and examples are reported as effective. Writing quality is described as good with grammatical clarity and stated limitations, so only minor presentation issues remain (e.g., some choices such as not using fine-grained POS for English could use brief additional justification).",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper provides substantial empirical evidence: a new 1,200-sentence Singlish UD treebank, POS tagger and biaffine parser adaptations, comparisons to reasonable baselines (English-only, Singlish-only), use of Singlish-specific embeddings, hyperparameters and code release \u2014 supporting the main transfer claims. It reports concrete gains from feature-level neural stacking and analyzes key limitations (limited training data, handling of deleted copula/NP deletion, and issues with feeding English lexical embeddings), and situates itself against prior cross-lingual/low-resource work (e.g. parameter-sharing and transfer approaches in [1],[2],[6]). Missing are deeper ablations/sensitivity analyses (e.g. more systematic probing of which English representations help or per-construction error breakdowns) that would fully characterize when and why transfer succeeds, so the experiments are strong but not exhaustively analytical.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares its neural-stacking transfer approach against sensible baselines: a Singlish-only parser, an English parser applied to Singlish (ENG-on-SIN), and the Dozat & Manning biaffine parser as the base model, using the same Singlish treebank and UAS/LAS metrics. It reports limitations (e.g., limited Singlish data, choice of POS granularity) and analyzes when English lexical embeddings harm performance, and cites related cross-lingual and low-resource transfer literature (e.g., shared multilingual/parameter-sharing and UD Singlish work). However, while related work coverage is described as adequate, the experiments appear to omit comparisons with some closely related transfer paradigms (e.g., multilingual parameter-sharing or multi-task treebank-transfer methods from the cited 2015\u20132016 papers), so the empirical comparison is strong but not fully comprehensive.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The main claims are clearly stated and supported by empirical evidence (creation of a 1,200-sentence Singlish UD treebank, Baseline vs. English-transfer vs. neural-stacking comparisons, reported UAS/LAS and POS gains including the 84.21% UAS and 36.51% relative error reduction). There are no mathematical derivations to check and none appear necessary. The experimental methodology appears sound with appropriate baselines (Singlish-only, English-on-Singlish, biaffine baseline), use of multiple embeddings, and explicit limitations noted, although the summary does not mention statistical significance testing. Overall the results justify the conclusions, with only minor concerns about omitted significance analysis and limited training data acknowledged by the authors.",
+      "survey_injected": false,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Created a Singlish dependency treebank of 1,200 sentences annotated under the Universal Dependencies scheme.",
+      "Trained a Singlish dependency parser based on the Dozat & Manning (2016) biaffine parser and improved it by transferring English syntactic knowledge via feature-level neural stacking.",
+      "Trained a Singlish POS tagger using bi-LSTM-CRF and neural stacking with an English tagger to improve tagging accuracy for downstream parsing.",
+      "Demonstrated substantial gains from English-to-Singlish transfer: neural stacking with Singlish embeddings yields a UAS of 84.21% on Singlish, corresponding to a 36.51% relative error reduction over the baseline."
+    ],
+    "methodology": "Train base English POS tagger (bi-LSTM-CRF) and base dependency parser (Dozat & Manning biaffine model) on UD-Eng; build Singlish POS tagger and Singlish parser by feature-level neural stacking that augments Singlish inputs with representations from the pre-trained English models; use Singlish-specific embeddings (ICE-SIN) and evaluate improvements.",
+    "datasets": [
+      "UD-Eng (Universal Dependencies English)",
+      "Singlish dependency treebank (1,200 sentences)",
+      "ICE-SIN (The Singapore component of the International Corpus of English)",
+      "GloVe6B (English embeddings)",
+      "Giga100M (English embeddings sampled from Gigaword)",
+      "SENNA embeddings (50-dimension)"
+    ],
+    "baselines": [
+      "Base Singlish parser trained only on Singlish treebank (Base-ICE-SIN)",
+      "English parser trained on UD-Eng (ENG-on-SIN)",
+      "Dozat & Manning (2016) biaffine parser as base model"
+    ],
+    "metrics": [
+      "UAS (Unlabelled Attachment Score)",
+      "LAS (Labelled Attachment Score)",
+      "POS tagging accuracy"
+    ],
+    "limitations": [
+      "Singlish training data is limited, causing lower performance when training Singlish-only models (POS tagger struggled due to limited data).",
+      "Deleted copula and deleted noun-phrases (NP deletion) are not recovered in annotation/trees (they are ignored and not recovered).",
+      "They did not use fine-grained POS tags for the English parser, which they state causes differences from some state-of-the-art results.",
+      "Feeding English lexical embeddings to the Singlish parser can undermine performance due to differences in distributed lexical semantics."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - dependency parsing / cross-lingual transfer (Singlish)",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 8,
+    "paper_novelty_mean": 0.5071,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

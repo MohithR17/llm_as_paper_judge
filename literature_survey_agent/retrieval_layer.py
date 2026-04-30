@@ -115,13 +115,27 @@ class SemanticScholarClient:
     async def search(self, query: str, limit: int = 10) -> list[dict]:
         url = f"{self.BASE}/paper/search"
         params = {"query": query, "limit": limit, "fields": self.FIELDS}
-        try:
-            r = await self.client.get(url, params=params, headers=self.headers, timeout=15.0)
-            r.raise_for_status()
-            return r.json().get("data", [])
-        except Exception as exc:
-            print(f"    [S2 error] {query!r}: {exc}")
-            return []
+        max_retries = 4
+        for attempt in range(max_retries):
+            try:
+                r = await self.client.get(url, params=params, headers=self.headers, timeout=15.0)
+                if r.status_code == 429:
+                    wait = 5 * (2 ** attempt)   # 5 → 10 → 20 → 40 s
+                    print(f"    [S2 429] rate limited on {query!r}, retrying in {wait}s…")
+                    await asyncio.sleep(wait)
+                    continue
+                r.raise_for_status()
+                return r.json().get("data", [])
+            except Exception as exc:
+                if "429" in str(exc):
+                    wait = 5 * (2 ** attempt)
+                    print(f"    [S2 429] rate limited on {query!r}, retrying in {wait}s…")
+                    await asyncio.sleep(wait)
+                    continue
+                print(f"    [S2 error] {query!r}: {exc}")
+                return []
+        print(f"    [S2 error] {query!r}: gave up after {max_retries} retries")
+        return []
 
     def to_record(self, raw: dict, query_text: str, query_slot: str,
                   query_variant: str, iteration: int) -> Optional[PaperRecord]:
@@ -160,13 +174,27 @@ class ArxivClient:
             "start": 0,
             "max_results": limit,
         }
-        try:
-            r = await self.client.get(self.BASE, params=params, timeout=15.0)
-            r.raise_for_status()
-            return self._parse_atom(r.text)
-        except Exception as exc:
-            print(f"    [arXiv error] {query!r}: {exc}")
-            return []
+        max_retries = 4
+        for attempt in range(max_retries):
+            try:
+                r = await self.client.get(self.BASE, params=params, timeout=15.0)
+                if r.status_code == 429:
+                    wait = 5 * (2 ** attempt)
+                    print(f"    [arXiv 429] rate limited on {query!r}, retrying in {wait}s…")
+                    await asyncio.sleep(wait)
+                    continue
+                r.raise_for_status()
+                return self._parse_atom(r.text)
+            except Exception as exc:
+                if "429" in str(exc):
+                    wait = 5 * (2 ** attempt)
+                    print(f"    [arXiv 429] rate limited on {query!r}, retrying in {wait}s…")
+                    await asyncio.sleep(wait)
+                    continue
+                print(f"    [arXiv error] {query!r}: {exc}")
+                return []
+        print(f"    [arXiv error] {query!r}: gave up after {max_retries} retries")
+        return []
 
     @staticmethod
     def _parse_atom(xml: str) -> list[dict]:
@@ -227,13 +255,27 @@ class OpenAlexClient:
             "select":       "title,abstract_inverted_index,publication_year,primary_location,authorships,cited_by_count,ids",
             "mailto":       "literature-survey-agent@example.com",  # polite pool
         }
-        try:
-            r = await self.client.get(self.BASE, params=params, timeout=15.0)
-            r.raise_for_status()
-            return r.json().get("results", [])
-        except Exception as exc:
-            print(f"    [OpenAlex error] {query!r}: {exc}")
-            return []
+        max_retries = 4
+        for attempt in range(max_retries):
+            try:
+                r = await self.client.get(self.BASE, params=params, timeout=15.0)
+                if r.status_code == 429:
+                    wait = 5 * (2 ** attempt)
+                    print(f"    [OpenAlex 429] rate limited on {query!r}, retrying in {wait}s…")
+                    await asyncio.sleep(wait)
+                    continue
+                r.raise_for_status()
+                return r.json().get("results", [])
+            except Exception as exc:
+                if "429" in str(exc):
+                    wait = 5 * (2 ** attempt)
+                    print(f"    [OpenAlex 429] rate limited on {query!r}, retrying in {wait}s…")
+                    await asyncio.sleep(wait)
+                    continue
+                print(f"    [OpenAlex error] {query!r}: {exc}")
+                return []
+        print(f"    [OpenAlex error] {query!r}: gave up after {max_retries} retries")
+        return []
 
     def to_record(self, raw: dict, query_text: str, query_slot: str,
                   query_variant: str, iteration: int) -> Optional[PaperRecord]:
@@ -292,18 +334,28 @@ class RetrievalLayer:
         self,
         results_per_query: int = 10,
         s2_api_key: Optional[str] = None,
-        max_concurrent: int = 5,       # cap parallel API calls to be polite
+        max_concurrent: int = 20,        # overall parallel queries
+        s2_max_concurrent: int = 1,      # S2: serialize to stay under 1 req/3s
+        s2_request_delay: float = 5.0,   # seconds between S2 requests
+        arxiv_max_concurrent: int = 8,   # arXiv: fire all queries in one batch
+        arxiv_request_delay: float = 0.3,# seconds between arXiv requests
     ) -> None:
-        self.results_per_query = results_per_query
-        self.s2_api_key        = s2_api_key
-        self.max_concurrent    = max_concurrent
+        self.results_per_query    = results_per_query
+        self.s2_api_key           = s2_api_key
+        self.max_concurrent       = max_concurrent
+        self.s2_max_concurrent    = s2_max_concurrent
+        self.s2_request_delay     = s2_request_delay
+        self.arxiv_max_concurrent = arxiv_max_concurrent
+        self.arxiv_request_delay  = arxiv_request_delay
 
     # ── Public ────────────────────────────────────────────────────────────────
 
     async def retrieve(self, batch: "QueryBatch") -> RetrievalResult:  # noqa: F821
         """Async entry point — call from async code or via retrieve_sync."""
-        # Create semaphore here so it's bound to the current event loop
-        self.semaphore = asyncio.Semaphore(self.max_concurrent)
+        # Semaphores must be created inside the running event loop
+        self.semaphore       = asyncio.Semaphore(self.max_concurrent)
+        self.s2_semaphore    = asyncio.Semaphore(self.s2_max_concurrent)
+        self.arxiv_semaphore = asyncio.Semaphore(self.arxiv_max_concurrent)
         result = RetrievalResult(iteration=batch.iteration)
         registry: dict[str, PaperRecord] = {}   # dedup_key → record
 
@@ -342,7 +394,17 @@ class RetrievalLayer:
 
     def retrieve_sync(self, batch: "QueryBatch") -> RetrievalResult:  # noqa: F821
         """Synchronous wrapper — use when not already inside an event loop."""
-        return asyncio.run(self.retrieve(batch))
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            return loop.run_until_complete(self.retrieve(batch))
+        finally:
+            try:
+                loop.run_until_complete(loop.shutdown_asyncgens())
+                loop.run_until_complete(loop.shutdown_default_executor())
+            finally:
+                loop.close()
+                asyncio.set_event_loop(None)
 
     # ── Private ───────────────────────────────────────────────────────────────
 
@@ -353,12 +415,24 @@ class RetrievalLayer:
         arxiv: ArxivClient,
         openalex: OpenAlexClient,
     ) -> tuple[list[PaperRecord], int]:
-        """Fire all three APIs concurrently for one query under the semaphore."""
+        """
+        Fire all three APIs concurrently for one query.
+        S2 is throttled by its own semaphore; arXiv and OpenAlex run freely.
+        """
+        use_s2 = self.s2_api_key is not None
+        print(f"  → [{query.slot}/{query.variant}] {query.text!r}")
+
+        async def _s2_throttled():
+            async with self.s2_semaphore:
+                await asyncio.sleep(self.s2_request_delay)
+                return await s2.search(query.text, self.results_per_query)
+
+        async def _empty():
+            return []
+
         async with self.semaphore:
-            print(f"  → [{query.slot}/{query.variant}] {query.text!r}")
-            raw_s2, raw_ax, raw_oa = await asyncio.gather(
-                s2.search(query.text,       self.results_per_query),
-                arxiv.search(query.text,    self.results_per_query),
+            raw_s2, raw_oa = await asyncio.gather(
+                _s2_throttled() if use_s2 else _empty(),
                 openalex.search(query.text, self.results_per_query),
             )
 
@@ -371,16 +445,13 @@ class RetrievalLayer:
             r = s2.to_record(raw, **kwargs)
             if r:
                 records.append(r)
-        for raw in raw_ax:
-            r = arxiv.to_record(raw, **kwargs)
-            if r:
-                records.append(r)
         for raw in raw_oa:
             r = openalex.to_record(raw, **kwargs)
             if r:
                 records.append(r)
 
-        return records, 3   # 3 API calls per query
+        n_calls = 2 if use_s2 else 1
+        return records, n_calls
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

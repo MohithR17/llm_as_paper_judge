@@ -1,0 +1,207 @@
+{
+  "ORIGINALITY": 3,
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "CLARITY": 4,
+  "IMPACT": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "[Consensus avg=3] A(3): The paper combines several established components (supertag-factored A* parsing, BiLSTM representations, and biaffine dependency scoring) into a joint model that enables precomputation for efficient A* search; these ideas closely parallel prior work (notably the retrieved A* CCG factored model and Deep Biaffine parsers). While the particular integration (joint tag+dependency factoring with A* and the tri-training extension) appears practically useful and yields empirical gains\u2014especially for head-final Japanese\u2014the core techniques are non-trivial but largely incremental rather than wholly new. From a reproducibility/novelty standpoint this would inform experts about a valuable engineering and modeling combination, but it does not introduce a fundamentally new paradigm beyond the cited prior work. | B(3): The paper combines well-known components (Bi-LSTM representations, biaffine dependency scoring from Dozat & Manning 2016) with an A* CCG parser and factors joint P(supertag,dependency) to keep search tractable. Similar ideas\u2014jointly factoring supertags and dependencies for A* CCG parsing\u2014were already noted in closely related prior work (retrieved item [1]), so the contribution reads as a careful and useful engineering combination and empirical study (not a ground-up methodological breakthrough). The work does clearly differentiate its instantiation (precomputation-friendly scoring, tri-training on dependencies, and cross-linguistic gains on Japanese HEADFINAL structures), which provides moderate novelty and informative insights for parsing researchers, but it is an incremental advance rather than a fundamentally new perspective.",
+      "reviewer_a": {
+        "score": 3,
+        "justification": "The paper combines several established components (supertag-factored A* parsing, BiLSTM representations, and biaffine dependency scoring) into a joint model that enables precomputation for efficient A* search; these ideas closely parallel prior work (notably the retrieved A* CCG factored model and Deep Biaffine parsers). While the particular integration (joint tag+dependency factoring with A* and the tri-training extension) appears practically useful and yields empirical gains\u2014especially for head-final Japanese\u2014the core techniques are non-trivial but largely incremental rather than wholly new. From a reproducibility/novelty standpoint this would inform experts about a valuable engineering and modeling combination, but it does not introduce a fundamentally new paradigm beyond the cited prior work."
+      },
+      "reviewer_b": {
+        "score": 3,
+        "justification": "The paper combines well-known components (Bi-LSTM representations, biaffine dependency scoring from Dozat & Manning 2016) with an A* CCG parser and factors joint P(supertag,dependency) to keep search tractable. Similar ideas\u2014jointly factoring supertags and dependencies for A* CCG parsing\u2014were already noted in closely related prior work (retrieved item [1]), so the contribution reads as a careful and useful engineering combination and empirical study (not a ground-up methodological breakthrough). The work does clearly differentiate its instantiation (precomputation-friendly scoring, tri-training on dependencies, and cross-linguistic gains on Japanese HEADFINAL structures), which provides moderate novelty and informative insights for parsing researchers, but it is an incremental advance rather than a fundamentally new perspective."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "[Consensus avg=5] A(5): This work addresses a central NLP parsing problem (CCG and dependency parsing) and proposes a novel, practically useful A* search model with careful empirical comparison to strong baselines on standard datasets (English and Japanese CCGbank) using expected metrics (F1, UAS). The methodology (factored model with biaffine scoring, precomputation to retain A* tractability) and reported hyperparameters and baselines match top-tier venue expectations, and the topic clearly targets the NLP/ML community interested in structured prediction and parsing. While code release is not mentioned (which would aid reproducibility), the paper otherwise appears well positioned for a top conference audience. | B(5): This paper sits squarely within top-tier NLP/ML venues: it advances parsing formalisms (CCG) by jointly modeling supertags and dependencies with an A* searchable factorization and biaffine scoring, a methodologically solid contribution for the parsing and structured prediction community. The experiments on English and Japanese CCGbanks, clear improvements (notably on Japanese attachment), and attention to linguistic ambiguity and cross-lingual behavior make it relevant to both computational and linguistic audiences. Evaluation protocols, baselines, and error-mode discussion are appropriate for the venue and the work is positioned well relative to prior supertag-only and shift-reduce approaches.",
+      "reviewer_a": {
+        "score": 5,
+        "justification": "This work addresses a central NLP parsing problem (CCG and dependency parsing) and proposes a novel, practically useful A* search model with careful empirical comparison to strong baselines on standard datasets (English and Japanese CCGbank) using expected metrics (F1, UAS). The methodology (factored model with biaffine scoring, precomputation to retain A* tractability) and reported hyperparameters and baselines match top-tier venue expectations, and the topic clearly targets the NLP/ML community interested in structured prediction and parsing. While code release is not mentioned (which would aid reproducibility), the paper otherwise appears well positioned for a top conference audience."
+      },
+      "reviewer_b": {
+        "score": 5,
+        "justification": "This paper sits squarely within top-tier NLP/ML venues: it advances parsing formalisms (CCG) by jointly modeling supertags and dependencies with an A* searchable factorization and biaffine scoring, a methodologically solid contribution for the parsing and structured prediction community. The experiments on English and Japanese CCGbanks, clear improvements (notably on Japanese attachment), and attention to linguistic ambiguity and cross-lingual behavior make it relevant to both computational and linguistic audiences. Evaluation protocols, baselines, and error-mode discussion are appropriate for the venue and the work is positioned well relative to prior supertag-only and shift-reduce approaches."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper provides solid empirical evidence: it compares against strong baselines on English and Japanese CCGbanks, reports multiple evaluation metrics (labeled F1, unlabeled F1, UAS), and includes an analysis extending tri-training to exploit unlabeled data and showing the importance of modeling dependencies (especially for Japanese). It also reports hyperparameters and discusses practical limitations (mismatched rule sets, slower reimplementation), and situates itself relative to closely related work (e.g., biaffine dependency scoring and prior A* supertaggers). However, key reproducibility aids are missing or unclear (no code release mentioned, and it\u2019s unclear whether multiple runs/statistical tests or fine-grained ablations isolating each architectural choice and computational cost/efficiency tradeoffs were performed), so the experimental analysis is strong but not fully comprehensive for strict reproducibility. | B(4): The experiments are solid: cross-lingual evaluation (English and Japanese), comparisons to established baselines (EasySRL, Jigg, neuralccg, etc.), and a tri-training extension demonstrating gains\u2014particularly for Japanese\u2014support the main claims about dependency modeling. The paper reports hyperparameters and discusses concrete limitations (parser rule mismatches, efficiency), and it includes analyses showing the benefit of modeling dependencies (an effective ablation of the supertag-only approach). Related work coverage appears adequate given the close ties to biaffine dependency work (Dozat & Manning) and prior A* supertagging efforts (Lewis et al.). Reproducibility is mostly addressed but weakened by no explicit code release and some implementation-specific mismatches, so while thorough, there remain minor gaps preventing full replication.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper provides solid empirical evidence: it compares against strong baselines on English and Japanese CCGbanks, reports multiple evaluation metrics (labeled F1, unlabeled F1, UAS), and includes an analysis extending tri-training to exploit unlabeled data and showing the importance of modeling dependencies (especially for Japanese). It also reports hyperparameters and discusses practical limitations (mismatched rule sets, slower reimplementation), and situates itself relative to closely related work (e.g., biaffine dependency scoring and prior A* supertaggers). However, key reproducibility aids are missing or unclear (no code release mentioned, and it\u2019s unclear whether multiple runs/statistical tests or fine-grained ablations isolating each architectural choice and computational cost/efficiency tradeoffs were performed), so the experimental analysis is strong but not fully comprehensive for strict reproducibility."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The experiments are solid: cross-lingual evaluation (English and Japanese), comparisons to established baselines (EasySRL, Jigg, neuralccg, etc.), and a tri-training extension demonstrating gains\u2014particularly for Japanese\u2014support the main claims about dependency modeling. The paper reports hyperparameters and discusses concrete limitations (parser rule mismatches, efficiency), and it includes analyses showing the benefit of modeling dependencies (an effective ablation of the supertag-only approach). Related work coverage appears adequate given the close ties to biaffine dependency work (Dozat & Manning) and prior A* supertagging efforts (Lewis et al.). Reproducibility is mostly addressed but weakened by no explicit code release and some implementation-specific mismatches, so while thorough, there remain minor gaps preventing full replication."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper is generally well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the main contributions early, with a clear description of the joint A* CCG parsing model and its precomputation trick. Notation and definitions appear consistent, hyperparameters are reported, and figures/tables effectively present empirical comparisons across English and Japanese. Minor presentation issues remain (e.g., some implementation/grammar mismatches and no mention of released code) but overall the writing is clear and easy to follow from the perspective of reproducible experimental exposition. | B(4): The paper is generally well organized and the main contributions (joint supertag+dependency A* model, precomputation enabling tractable search, and tri-training extension) are stated early and carried through to experiments on English and Japanese. Notation and methodological description appear clear: shared bi-LSTM representations, biaffine scoring, and how local probabilities are precomputed are explicitly described, and experimental tables/reporting are informative. A few presentation rough edges remain (e.g., the discussed mismatch between parser rule sets and CCGbank annotations and the reimplementation speed caveat could use clearer exposition and impact analysis), but overall the writing is good and figures/tables/examples are effective. As a parsing specialist I found the paper readable and focused, with only minor clarifications needed.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper is generally well organized (intro \u2192 method \u2192 experiments \u2192 conclusion) and states the main contributions early, with a clear description of the joint A* CCG parsing model and its precomputation trick. Notation and definitions appear consistent, hyperparameters are reported, and figures/tables effectively present empirical comparisons across English and Japanese. Minor presentation issues remain (e.g., some implementation/grammar mismatches and no mention of released code) but overall the writing is clear and easy to follow from the perspective of reproducible experimental exposition."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper is generally well organized and the main contributions (joint supertag+dependency A* model, precomputation enabling tractable search, and tri-training extension) are stated early and carried through to experiments on English and Japanese. Notation and methodological description appear clear: shared bi-LSTM representations, biaffine scoring, and how local probabilities are precomputed are explicitly described, and experimental tables/reporting are informative. A few presentation rough edges remain (e.g., the discussed mismatch between parser rule sets and CCGbank annotations and the reimplementation speed caveat could use clearer exposition and impact analysis), but overall the writing is good and figures/tables/examples are effective. As a parsing specialist I found the paper readable and focused, with only minor clarifications needed."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): This paper addresses an important problem\u2014efficient, accurate CCG parsing\u2014by introducing a jointly factored A* model that precomputes local supertag and dependency scores and achieves state-of-the-art results on English and Japanese CCGbank. The empirical improvements (notably better dependency attachment for Japanese) and the practical efficiency claim make this approach likely to change how researchers design structured CCG/dependency models and to be adopted or extended in follow-up work. From a reproducibility/engineering standpoint I see clear promise (shared bi-LSTM representations, biaffine scoring, and tri-training on unlabeled data), though wider uptake will depend on releasing code and detailed training/runtime protocols. Overall this is a strong-impact contribution that opens useful directions for joint syntactic modeling. | B(4): This paper tackles an important problem\u2014efficient, globally optimal CCG parsing\u2014by jointly modeling supertags and dependency structure with shared bi-LSTM representations and precomputable local scores that keep A* search tractable. Empirically achieving state-of-the-art results on both English and Japanese, and showing sizable gains for a freer-word-order language, suggests the approach materially changes how we think about resolving residual structural ambiguity beyond pure supertagging. The method and its tri-training extension point to clear follow-ups (cross-lingual and grammar-formalism generalization, better attachment modeling), so it is likely to be built upon by researchers, even if engineering/coverage limitations mean it is not fully transformative.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "This paper addresses an important problem\u2014efficient, accurate CCG parsing\u2014by introducing a jointly factored A* model that precomputes local supertag and dependency scores and achieves state-of-the-art results on English and Japanese CCGbank. The empirical improvements (notably better dependency attachment for Japanese) and the practical efficiency claim make this approach likely to change how researchers design structured CCG/dependency models and to be adopted or extended in follow-up work. From a reproducibility/engineering standpoint I see clear promise (shared bi-LSTM representations, biaffine scoring, and tri-training on unlabeled data), though wider uptake will depend on releasing code and detailed training/runtime protocols. Overall this is a strong-impact contribution that opens useful directions for joint syntactic modeling."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "This paper tackles an important problem\u2014efficient, globally optimal CCG parsing\u2014by jointly modeling supertags and dependency structure with shared bi-LSTM representations and precomputable local scores that keep A* search tractable. Empirically achieving state-of-the-art results on both English and Japanese, and showing sizable gains for a freer-word-order language, suggests the approach materially changes how we think about resolving residual structural ambiguity beyond pure supertagging. The method and its tri-training extension point to clear follow-ups (cross-lingual and grammar-formalism generalization, better attachment modeling), so it is likely to be built upon by researchers, even if engineering/coverage limitations mean it is not fully transformative."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper clearly states and experimentally supports its main claims: a factored A* CCG parser with precomputable supertag and dependency scores and improved empirical results on English and Japanese, including tri-training gains. The mathematical modeling (factored P(tag)\u00b7P(dep) with biaffine scoring) is plausible and consistent with the presented methodology, and comparisons include several strong baselines. However, reproducibility concerns remain (no code release mentioned, limited detail on A* pruning/efficiency and how precomputation scales in practice), and some empirical claims (e.g., tractability and speed trade-offs vs. prior EasySRL) would benefit from more implementation-level analysis or multiple runs for statistical certainty. Overall the technical contribution is sound but minor evidence and reproducibility gaps prevent a flawless rating. | B(4): The paper's main technical claims\u2014that a joint supertag+dependency factorization with shared bi-LSTM representations and biaffine scoring permits precomputation for tractable A* search and yields strong empirical results on English and Japanese\u2014are supported by the described experiments and comparisons to appropriate baselines. The modeling and inference approach is internally consistent (precomputable local scores, A* decoding) and the experiments (including tri-training for unlabeled data) address the key hypotheses, with reported hyperparameters and noted limitations. There are minor practical issues (slower reimplementation of baselines, grammar-rule mismatches preventing some dependency extraction) but no evident theoretical errors; however, full reproducibility details or broader error analysis (attachments diagnostics) would further strengthen the evidence. Overall the technical work appears sound with only minor gaps that do not undermine the main conclusions.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper clearly states and experimentally supports its main claims: a factored A* CCG parser with precomputable supertag and dependency scores and improved empirical results on English and Japanese, including tri-training gains. The mathematical modeling (factored P(tag)\u00b7P(dep) with biaffine scoring) is plausible and consistent with the presented methodology, and comparisons include several strong baselines. However, reproducibility concerns remain (no code release mentioned, limited detail on A* pruning/efficiency and how precomputation scales in practice), and some empirical claims (e.g., tractability and speed trade-offs vs. prior EasySRL) would benefit from more implementation-level analysis or multiple runs for statistical certainty. Overall the technical contribution is sound but minor evidence and reproducibility gaps prevent a flawless rating."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper's main technical claims\u2014that a joint supertag+dependency factorization with shared bi-LSTM representations and biaffine scoring permits precomputation for tractable A* search and yields strong empirical results on English and Japanese\u2014are supported by the described experiments and comparisons to appropriate baselines. The modeling and inference approach is internally consistent (precomputable local scores, A* decoding) and the experiments (including tri-training for unlabeled data) address the key hypotheses, with reported hyperparameters and noted limitations. There are minor practical issues (slower reimplementation of baselines, grammar-rule mismatches preventing some dependency extraction) but no evident theoretical errors; however, full reproducibility details or broader error analysis (attachments diagnostics) would further strengthen the evidence. Overall the technical work appears sound with only minor gaps that do not undermine the main conclusions."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "[Consensus avg=4] A(4): The paper compares to a broad set of strong, relevant baselines (EasySRL / Lewis & Steedman, Noji & Miyao, neuralccg, C&C with LSTM, RBGParser, Dyer et al.) on the same datasets (English and Japanese CCGbank) and standard metrics (labeled/unlabeled F1, UAS), and reports hyperparameters\u2014supporting largely fair comparisons. It explicitly discusses when prior heuristics fail and acknowledges some implementation/coverage limitations (e.g., EasySRL reimplementation speed and grammar mismatch), but it does not mention code release or multiple-run statistical testing and may under-emphasize comparison to closely related biaffine dependency work (Dozat & Manning) despite using similar scorer machinery. Overall the empirical comparisons are strong and appropriate, with only minor omissions in reproducibility and statistical rigor. | B(4): The paper evaluates against a strong set of recent and relevant baselines (EasySRL/Lewis & Steedman, Noji & Miyao\u2019s Jigg, neuralccg, C&C LSTM, RBGParser, Dyer et al.), uses the standard English and Japanese CCGbanks and standard dependency/label F1 and UAS metrics, and adopts comparable conditions (including tri-training extensions). It candidly notes dataset/grammar mismatches that limit dependency extraction and reports where prior heuristics are imperfect, which supports transparency about comparability. However, there is a minor concern about efficiency differences in their EasySRL reimplementation and the grammar mismatch that could impact strict apples-to-apples comparisons; overall the coverage of relevant competing approaches (including biaffine-style dependency scoring predecessors) is solid.",
+      "reviewer_a": {
+        "score": 4,
+        "justification": "The paper compares to a broad set of strong, relevant baselines (EasySRL / Lewis & Steedman, Noji & Miyao, neuralccg, C&C with LSTM, RBGParser, Dyer et al.) on the same datasets (English and Japanese CCGbank) and standard metrics (labeled/unlabeled F1, UAS), and reports hyperparameters\u2014supporting largely fair comparisons. It explicitly discusses when prior heuristics fail and acknowledges some implementation/coverage limitations (e.g., EasySRL reimplementation speed and grammar mismatch), but it does not mention code release or multiple-run statistical testing and may under-emphasize comparison to closely related biaffine dependency work (Dozat & Manning) despite using similar scorer machinery. Overall the empirical comparisons are strong and appropriate, with only minor omissions in reproducibility and statistical rigor."
+      },
+      "reviewer_b": {
+        "score": 4,
+        "justification": "The paper evaluates against a strong set of recent and relevant baselines (EasySRL/Lewis & Steedman, Noji & Miyao\u2019s Jigg, neuralccg, C&C LSTM, RBGParser, Dyer et al.), uses the standard English and Japanese CCGbanks and standard dependency/label F1 and UAS metrics, and adopts comparable conditions (including tri-training extensions). It candidly notes dataset/grammar mismatches that limit dependency extraction and reports where prior heuristics are imperfect, which supports transparency about comparability. However, there is a minor concern about efficiency differences in their EasySRL reimplementation and the grammar mismatch that could impact strict apples-to-apples comparisons; overall the coverage of relevant competing approaches (including biaffine-style dependency scoring predecessors) is solid."
+      },
+      "score_delta": 0,
+      "debate_triggered": false,
+      "resolution_method": "consensus",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Proposes a new A* CCG parsing model that jointly factors the probability of a tree into CCG categories (supertags) and dependency structure, both predicted from shared bi-LSTM representations.",
+      "The factored model allows precomputation of local probabilities (supertag and head distributions), keeping A* search tractable and enabling efficient parsing.",
+      "The proposed model achieves state-of-the-art results on English and Japanese CCG parsing, outperforming several baselines (notably improving dependency attachment for Japanese).",
+      "Extends tri-training to incorporate dependency predictions from unlabeled data and shows the importance of modeling dependencies (especially for languages like Japanese)."
+    ],
+    "methodology": "An A* CCG parser that jointly models P(tag) and P(dep) using shared bi-LSTM hidden vectors; dependency arcs are scored with a biaffine (extended bilinear) transformation and supertag scores use a bilinear/biaffine function incorporating the predicted head representation, enabling precomputation and efficient A* search.",
+    "datasets": [
+      "English CCGbank",
+      "Japanese CCGbank"
+    ],
+    "baselines": [
+      "Lewis and Steedman (2014)/Lewis et al. (2016) supertag-factored model (EasySRL)",
+      "Noji and Miyao (2016) shift-reduce CCG parser (Jigg)",
+      "neuralccg (Lee et al., 2016)",
+      "C&C with LSTM supertagger (Vaswani et al., 2016)",
+      "RBGParser (Lei et al., 2014)",
+      "transition-based lstm-parser (Dyer et al., 2015)"
+    ],
+    "metrics": [
+      "labeled F1 (of extracted CCG semantic dependencies)",
+      "unlabeled F1 (of extracted CCG semantic dependencies)",
+      "unlabeled attachment score (UAS)"
+    ],
+    "limitations": [
+      "Their EasySRL reimplementation is slower than the original supertag-factored implementation, indicating room for efficiency optimization.",
+      "Mismatch between the rule set of their CCG parser and the grammar in English CCGbank prevents extraction of dependencies from some annotated CCG trees.",
+      "Deterministic heuristics (e.g., attach-low) used in prior work are imperfect and cannot handle all situations; simple supertag-only models degrade on Japanese due to remaining structural ambiguity."
+    ],
+    "code_available": "not mentioned",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - CCG parsing / dependency parsing",
+    "writing_quality": "good"
+  },
+  "_personas": {
+    "reviewer_a": {
+      "name": "Methodical Reproducibility Engineer",
+      "background": "Senior ML engineer with a PhD in computational linguistics and five years building and evaluating structured prediction systems for parsing and sequence labeling. Extensive experience implementing research code, running large-scale experiments, and organizing reproducible ML workflows.",
+      "traits": [
+        "Looks for thorough experimental controls: strong baselines, hyperparameter tuning details, and ablation studies that isolate each claimed contribution",
+        "Values reproducibility: requests code release, dataset splits, random seeds, and clear training/inference protocols",
+        "Examines statistical rigor: expects multiple runs or significance testing when gains are small and clear reporting of computational costs",
+        "Checks implementation-level plausibility: whether precomputation claims and A* pruning details hold in practice and whether approximations affect correctness"
+      ],
+      "reviewing_style": "Focuses on the experimental setup and implementation details to assess whether the empirical claims are well supported and reproducible."
+    },
+    "reviewer_b": {
+      "name": "Parsing Systems & Linguistic Impact Scholar",
+      "background": "Established researcher in syntactic parsing and grammar formalisms with a track record of work on CCG, dependency parsing, and multilingual syntactic analysis. Active in shaping parsing benchmarks and evaluating linguistic generalization in models.",
+      "traits": [
+        "Assesses novelty with respect to prior structured parsing work and the significance of jointly modeling supertags and dependencies",
+        "Values linguistic and cross-lingual impact: examines whether the approach addresses language-specific phenomena (e.g., freer word order) and advances understanding beyond engineering gains",
+        "Examines broader applicability: whether the method generalizes to other grammar formalisms or downstream tasks and its theoretical implications",
+        "Pays attention to qualitative analysis: expects diagnostic examples, error analysis (especially on attachments), and discussion of limitations"
+      ],
+      "reviewing_style": "Evaluates the paper in the context of the parsing literature, focusing on novelty, linguistic relevance, and the potential impact on future research directions."
+    }
+  },
+  "_debate_stats": {
+    "dimensions_debated": 0,
+    "total_dimensions": 7,
+    "debate_rate": 0.0
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 2,
+    "paper_novelty_mean": 0.32,
+    "augmented_dims": [
+      "ORIGINALITY",
+      "SUBSTANCE",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

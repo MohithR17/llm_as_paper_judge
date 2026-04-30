@@ -1,0 +1,39 @@
+{
+  "CLARITY": 2,
+  "MEANINGFUL_COMPARISON": 4,
+  "ORIGINALITY": 4,
+  "IMPACT": 4,
+  "SUBSTANCE": 3,
+  "APPROPRIATENESS": 5,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 2,
+      "justification": "The paper\u2019s high-level organization (dataset \u2192 model \u2192 experiments) is present but the text is marred by repeated and fragmented passages and formatting artifacts (e.g., duplicated paragraphs, stray tokens like \u201c3This dataset\u2026\u201d, and \u201cLaTeX with hyperref package\u201d) which disrupt flow. Main contributions are stated, but they are repeated verbatim in places and not cleanly introduced early. Notation is intermittently defined (dc, B) but inconsistently presented across sections; figures/tables are referenced (Figure 3, Tables 4\u20135) yet layout and captions are cluttered and sometimes hard to follow. Overall the writing contains numerous duplications, grammatical glitches, and formatting errors that require substantial editing for clarity."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares its Visual model against a clear baseline Lookup model using the same RNN encoder and shared hyperparameters (dc=128, same batch size, same data splits), and evaluates fusion schemes and low-frequency settings (see experimental configs and Tables 4\u20135). It also discusses and cites relevant prior work (character-level models, subword/byte methods, and Shi et al.\u2019s radical embedding). However, it does not run empirical comparisons to some closely related approaches (e.g., Shi et al.\u2019s radical embedding or subword/byte-based baselines) even though they are discussed, so while comparisons are fair and informative they omit a few important competing baselines."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a distinct and practical idea\u2014rendering characters as images and learning character embeddings via a CNN (\"we first transform each character from its Unicode representation to a rendering of its shape as an image, then calculate a representation of the image using Convolutional Neural Networks\")\u2014which differs from standard lookup/subword/byte approaches. The authors explicitly distinguish their method from prior work (e.g., Shi et al. (2015) \u2018\u2018radical embedding\u2019\u2019) by noting their approach generalizes to any renderable script rather than being Chinese-specific. While the building blocks (CNNs, RNNs, fusion) are existing techniques, applying visual feature learning to character-level compositionality and demonstrating gains on low-frequency characters is a notable and non-trivial extension rather than a mere combination of known methods."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper targets an important problem\u2014representing and handling low-frequency/rare characters in logographic and related scripts\u2014by proposing a general, language-agnostic method (rendering Unicode characters as images and learning CNN-based character embeddings). Experiments on Chinese, Japanese and Korean show the visual model better handles rare characters and transfers across scripts (traditional\u2192simplified Chinese), and fusion with lookup embeddings yields consistent improvements, suggesting the idea is complementary to existing methods. Because the approach is simple, broadly applicable, and introduces a new source of signal (visual shape) for character representation, it is likely to meaningfully influence future work on character-level models and low-resource situations, though it is not clearly transformative on its own."
+    },
+    "SUBSTANCE": {
+      "score": 3,
+      "justification": "The paper provides several targeted experiments (classification across zh/ja/ko, low-frequency character analysis in Table 4, training-size sweeps in Sec.5.3 and fusion comparisons in Table 5, and a traditional\u2192simplified transfer test) and visualization via occlusion sensitivity, which supports core claims. However, there is limited ablation of model components (e.g., CNN architecture choices, embedding dimensionality, training epochs) or sensitivity analyses beyond dataset size and fusion, and only partial discussion of limitations (the unexpected low-resource result is noted but not deeply analyzed). Reproducibility is partially supported (optimizer, learning rate, dc, batch size, input cutoff, toolbox and planned data/scripts release), but essential implementation details of the CNN and training regimen are missing, preventing full replication."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper lies squarely within NLP/ML scope: it proposes learning character embeddings via rendered-character CNNs and evaluates on multilingual (Chinese/Japanese/Korean) classification tasks (sections describing the Visual vs Lookup models, dataset splits, and experiments). It targets the right audience (character-level and low-resource representation learning) and uses standard problem formulation and evaluations (train/validation/test splits, baselines, ablation on training sizes, fusion methods, and qualitative occlusion analysis). The related-work positioning explicitly cites character/radical embeddings and neural baselines, showing appropriate placement in the venue's research community."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's core claims are stated and empirically supported: Table 4 shows the Visual model outperforms the Lookup baseline on low-frequency instances, and Table 5 shows fusion (especially late fusion) improves overall performance, while experimental setup details (Section 5.1: shared RNN/GRU architecture, dc=128, Adam) indicate fair baselines. There are minor methodological gaps \u2014 no reported variance/error bars or statistical significance tests, and potential label noise from the Wikipedia labeling heuristic (assigning the main category by minimal subtree depth) and script-conversion details \u2014 which reduce confidence but do not invalidate the results. Overall the experiments and analyses are sound with only these limited shortcomings."
+    }
+  }
+}

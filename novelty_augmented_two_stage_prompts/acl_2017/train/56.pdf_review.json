@@ -1,0 +1,99 @@
+{
+  "CLARITY": 4,
+  "IMPACT": 3,
+  "SUBSTANCE": 4,
+  "APPROPRIATENESS": 5,
+  "ORIGINALITY": 3,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 4,
+  "_details": {
+    "CLARITY": {
+      "score": 4,
+      "justification": "The summary indicates a clear organization (intro, method extensions, experiments, conclusion) and that the main contributions (introducing ngrams into four methods, memory-efficient matrix construction) are stated early. Notation appears consistent and hyperparameters are reported, and writing quality is described as good. Some presentation shortcomings remain (e.g., mixed results for GloVe/SVD tied to default hyperparameters and unexplored hyperparameter relationships), which suggest minor clarity gaps rather than major issues.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "IMPACT": {
+      "score": 3,
+      "justification": "The paper addresses a relevant problem\u2014improving word representations by incorporating ngram co-occurrence statistics\u2014and demonstrates tangible gains (notably on analogy tasks) across four established methods (SGNS, GloVe, PPMI, SVD). Its novel, memory-efficient ngram co-occurrence matrix construction and released code make the approach practical for moderate hardware, which increases likelihood of adoption. However, improvements are mixed (e.g., limited or negative effects for bi-grams in GloVe/SVD) and several hyperparameter and interaction questions remain unresolved, suggesting the contribution is a useful, incremental advance rather than a field-changing one. Overall, it opens follow-on work but is unlikely by itself to fundamentally shift representation learning practices.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper provides solid empirical support for its main claims: evaluations on six similarity datasets and two standard analogy sets show consistent gains, and variants (e.g., uni-bi) are compared. It includes some negative results (ngram\u2013ngram co-occurrence giving little benefit) and reports hyperparameters and code, aiding reproducibility. However, sensitivity to hyperparameters and broader downstream evaluations are only briefly discussed and not fully explored (authors note GloVe/SVD bi-gram issues and leave hyperparameter relations for future work), and more extensive ablations could strengthen causal claims. Related work coverage is reported as adequate and connections to subword/ngram methods (e.g., Bojanowski et al.) are relevant but could be more deeply compared.",
+      "survey_injected": true,
+      "novelty_injected": false
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The paper addresses core NLP/representation-learning topics (word embeddings) by proposing ngram extensions to widely-used methods (SGNS, GloVe, PPMI, SVD) and evaluates on standard similarity and analogy benchmarks, which is squarely within top-tier NLP/ML scope. Methods, baselines, datasets, metrics, hyperparameter reporting, and code availability align with community expectations, and the discussion of limitations and memory-efficient implementation shows awareness of practical concerns. The work targets the right audience and is positioned appropriately within the representation learning research community.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper presents a systematic application of n-grams into several existing embedding frameworks (SGNS, GloVe, PPMI, SVD) and a memory-efficient method to build ngram co-occurrence matrices, which constitutes a useful engineering extension rather than a fundamentally new paradigm. Prior work (e.g., subword/ngram-enriched embeddings) already explores using subword/ngram information to improve word vectors, so the core idea is incremental; however the cross-method integration, empirical finding that bi-grams notably help analogy tasks, and the proposed matrix-construction trick add non-trivial practical contributions. The manuscript appears to clearly differentiate its contributions and provides empirical evidence, but the novelty is moderate rather than highly original given existing related work (including the retrieved ngram2vec and subword approaches).",
+      "survey_injected": true,
+      "novelty_injected": true
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper's main claims are clearly stated and appear supported by empirical evidence: ngram-augmented variants of SGNS, GloVe, PPMI and SVD show notable gains (especially on analogy tasks) across the reported similarity and analogy benchmarks, with code and hyperparameters provided. The authors acknowledge limitations (increased cost, mixed results for GloVe/SVD with bigrams) and propose a concrete, memory-efficient matrix-construction method, which strengthens technical credibility. However, the summary does not indicate formal mathematical derivations or statistical significance testing of results, and some performance regressions tied to hyperparameter choices are not fully analyzed, leaving room for minor methodological concerns. Overall the work is technically solid with only modest gaps that do not overturn the main conclusions.",
+      "survey_injected": false,
+      "novelty_injected": false
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and recent baselines (SGNS/word2vec, GloVe, PPMI, SVD) using the same datasets and standard similarity/analogy metrics, and reports when adding ngrams yields no benefit or worse results for some methods (GloVe/SVD), indicating fair evaluations. It also analyzes variants (e.g., uni-bi, ngram-ngram) and proposes a memory-efficient matrix construction, showing differences from baselines. However, a closely related line of work on subword/ngram-based embeddings (e.g., \"Enriching Word Vectors with Subword Information\" / FastText) appears relevant but is not clearly evaluated as an experimental baseline, a minor omission from a comprehensive comparison.",
+      "survey_injected": true,
+      "novelty_injected": false
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce ngrams into four word representation methods (SGNS, GloVe, PPMI, and SVD) to leverage ngram co-occurrence statistics.",
+      "Ngram-based models learn improved word representations, showing notable gains especially on analogy tasks.",
+      "Trained ngram embeddings capture semantic meanings and syntactic patterns (useful for antonyms and collocations).",
+      "Propose a novel, memory-efficient method for building ngram co-occurrence matrices, enabling ngram models to run on modest hardware."
+    ],
+    "methodology": "Extend existing representation methods by adding ngrams to the context vocabulary (treating each ngram as a token with its own embedding) and by building ngram co-occurrence matrices; evaluate variants such as 'uni-bi' where center words predict surrounding unigrams and bigrams.",
+    "datasets": [
+      "Six similarity datasets (as in Levy et al., 2015)",
+      "Two analogy datasets (including Google and MSR)"
+    ],
+    "baselines": [
+      "SGNS (Skip-gram with Negative Sampling / word2vec)",
+      "GloVe",
+      "PPMI",
+      "SVD factorization of PPMI"
+    ],
+    "metrics": [
+      "Similarity task: scalar human scores (similarity correlations / comparisons)",
+      "Analogy task: accuracy using additive (add) and multiplicative (mul) evaluation functions"
+    ],
+    "limitations": [
+      "Introducing ngrams increases computational and memory costs (alleviated by proposed matrix-building method).",
+      "Using ngram-ngram co-occurrence yields little improvement but large cost.",
+      "In GloVe and SVD, adding bi-grams sometimes leads to little or worse results\u2014default hyperparameter settings may be responsible and require further exploration.",
+      "Relationships between ngrams and various hyperparameters are not yet explored and remain future work."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "adequate",
+    "topic_area": "NLP - word embeddings / representation learning",
+    "writing_quality": "good"
+  },
+  "_augmentation_stats": {
+    "survey_found": true,
+    "novelty_found": true,
+    "survey_pool_size": 2,
+    "paper_novelty_mean": 0.4321,
+    "augmented_dims": [
+      "SUBSTANCE",
+      "ORIGINALITY",
+      "MEANINGFUL_COMPARISON"
+    ],
+    "total_dims": 7
+  }
+}

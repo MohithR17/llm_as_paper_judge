@@ -1,0 +1,79 @@
+{
+  "IMPACT": 4,
+  "ORIGINALITY": 4,
+  "APPROPRIATENESS": 5,
+  "SUBSTANCE": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "MEANINGFUL_COMPARISON": 5,
+  "CLARITY": 4,
+  "_details": {
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper addresses an important practical problem\u2014learning cross-lingual mappings with extremely small bilingual evidence\u2014and demonstrates a simple iterative self-learning approach that works with as little as a 25-word seed or numeral lists. Its empirical results show it matches or outperforms dictionary- and parallel-corpus-based baselines across bilingual lexicon induction and cross-lingual similarity tasks, which would change how practitioners approach low-resource cross-lingual transfer. The emphasis on scalable implementation details and released code makes the method likely to be widely used and built upon. While impactful and enabling new work (e.g., non-linear mappings, alternative induction methods), it is not obviously transformative across all of NLP, so a strong-but-not-top score is appropriate."
+    },
+    "ORIGINALITY": {
+      "score": 4,
+      "justification": "The paper proposes a notable new twist\u2014a simple iterative self-learning loop that alternates between learning an orthogonal bilingual mapping and inducing a full dictionary from it\u2014which is a clear methodological novelty relative to prior single-shot mapping or dictionary induction approaches. Its demonstrated ability to operate with extremely small bilingual evidence (as little as a 25-word seed or an automatically generated numeral list) and match or beat stronger baselines further differentiates it from existing work. While it reuses established components (analytical orthogonal mapping from Artetxe et al. (2016) and nearest-neighbor induction) and relies on engineering optimizations for scalability, the overall combination and empirical claims represent a meaningful, non-trivial advance rather than a purely incremental tweak."
+    },
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "The work addresses bilingual/cross-lingual word embeddings and lexicon induction, a core topic for top NLP/ML venues, and it targets the right audience interested in cross-lingual representation learning. The formulation (iterative self-learning between orthogonal mapping and dictionary induction) is appropriate and evaluated with standard datasets (Dinu et al., OPUS, RG-65, WordSim-353) and metrics (BLI accuracy, similarity correlation) against strong baselines. The paper also includes practical efficiency engineering and code release, indicating it is well positioned and reproducible for the venue's research community."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The experiments are broad and well-grounded \u2014 multiple datasets (English\u2013Italian, Europarl/OPUS, SdeWaC, Common Crawl) and tasks (bilingual lexicon induction, cross-lingual similarity) with many strong baselines and appropriate metrics are used to support the main claims. Ablation/sensitivity analysis is not explicitly reported in the summary (though hyperparameters are provided and efficiency tricks are discussed), so there is a minor gap there. Related work coverage is described as thorough, limitations and failure modes are explicitly discussed (runtime, memory, linear mapping assumption), and code plus hyperparameters are available, giving good reproducibility. Overall the evaluation is solid with only small omissions in detailed ablation or sensitivity studies."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The summary indicates the main claims are clearly stated and substantiated by experiments on multiple datasets (Dinu et al. 2015 English\u2013Italian, Europarl/OPUS, SdeWaC, Common Crawl) and comparisons to appropriate strong baselines (Mikolov et al., Xing et al., Artetxe et al., etc.), with code and hyperparameters reported. The mathematical approach uses a standard analytical orthogonal mapping (Artetxe et al., 2016) and nearest\u2011neighbor induction with standard normalization steps, so derivations appear correct and complete for the stated method. The experimental methodology is generally sound (multiple datasets, relevant baselines, appropriate metrics), though the summary does not mention statistical significance testing or ablations for some design choices, which is a minor omission. Overall the claims are supported and conclusions are reasonable, with only minor methodological evidence gaps that do not undermine the main results."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 5,
+      "justification": "The paper compares against a comprehensive set of relevant baselines (Mikolov et al. 2013; Xing et al. 2015; Zhang et al. 2016; Artetxe et al. 2016; Lazaridou et al. 2015; Luong et al. 2015; BilBOWA 2015) and evaluates on standard datasets and metrics (bilingual lexicon induction accuracy; cross-lingual similarity correlations on established test sets). Comparisons appear fair: hyperparameters are reported, code is available, and evaluations use the same data/metrics across methods. The paper acknowledges when prior methods match or are outperformed, discusses practical and methodological differences (orthogonal mapping, efficiency techniques, iterative self-learning), and claims thorough related-work coverage."
+    },
+    "CLARITY": {
+      "score": 4,
+      "justification": "The paper is well organized and follows a clear flow from method (iterative self\u2011learning mapping and dictionary induction) to experiments (bilingual lexicon induction, cross\u2011lingual similarity) and conclusion, with the main contributions stated early (robust performance with extremely small seed dictionaries). Notation and methodological description are sufficiently precise to reproduce the approach (analytical orthogonal mapping, dot\u2011product retrieval, normalization), related work coverage is thorough, and practical engineering details (efficiency techniques, memory tradeoffs) and code/hyperparameters are reported. Writing quality is adequate overall, so presentation is strong though not exceptional, hence a 4 rather than a 5."
+    }
+  },
+  "_summary": {
+    "main_claims": [
+      "Introduce a simple self-learning framework that iteratively alternates between learning a bilingual embedding mapping from a seed dictionary and inducing a full bilingual dictionary from that mapping, improving both mapping and dictionary over iterations.",
+      "The proposed method can work with extremely small bilingual evidence (as little as a 25-word seed dictionary or an automatically generated numeral list) and still obtain results comparable to systems using much richer resources.",
+      "In experiments on bilingual lexicon induction and cross-lingual word similarity, the method outperforms or matches previous dictionary-based and parallel-corpus-based baselines in most settings, particularly for small seed dictionaries.",
+      "Practical efficiency techniques (using an analytical orthogonal mapping implementation and vectorized/submatrix computation of the similarity matrix) are critical to make the iterative/self-learning approach feasible."
+    ],
+    "methodology": "An iterative self-learning loop: given source and target embedding matrices and a seed binary dictionary D, learn an orthogonal mapping W (using an analytical implementation following Artetxe et al. (2016)) then induce a full dictionary by nearest-neighbor retrieval using the dot product between mapped source embeddings and target embeddings (after length normalization and mean centering); repeat until convergence.",
+    "datasets": [
+      "English-Italian public dataset by Dinu et al. (2015)",
+      "Europarl-derived dictionaries from OPUS (Tiedemann, 2012)",
+      "SdeWaC (WaCky collection) corpus",
+      "Common Crawl (WMT 2016) corpus",
+      "RG-65 crosslingual dataset (Camacho-Collados et al., 2015)",
+      "WordSim-353 crosslingual dataset (Camacho-Collados et al., 2015)"
+    ],
+    "baselines": [
+      "Mikolov et al. (2013a)",
+      "Xing et al. (2015)",
+      "Zhang et al. (2016)",
+      "Artetxe et al. (2016)",
+      "Lazaridou et al. (2015)",
+      "Luong et al. (2015)",
+      "BilBOWA (Gouws et al., 2015)"
+    ],
+    "metrics": [
+      "accuracy (bilingual lexicon induction)",
+      "correlation (cross-lingual word similarity)"
+    ],
+    "limitations": [
+      "Iterative self-learning increases total training time proportional to the number of iterations.",
+      "Computing the full similarity matrix X W Z^T can be too large to fit in memory for large vocabularies, requiring submatrix computation and additional engineering for efficiency.",
+      "Current method relies on linear/orthogonal mappings; exploring non-linear transformations and alternative dictionary induction methods is left for future work."
+    ],
+    "code_available": "yes",
+    "hyperparams_reported": true,
+    "related_work_coverage": "thorough",
+    "topic_area": "NLP - bilingual/cross-lingual word embeddings and bilingual lexicon induction",
+    "writing_quality": "adequate"
+  }
+}

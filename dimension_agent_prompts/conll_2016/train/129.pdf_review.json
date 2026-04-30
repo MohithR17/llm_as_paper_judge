@@ -1,0 +1,44 @@
+{
+  "APPROPRIATENESS": 5,
+  "IMPACT": 4,
+  "CLARITY": 3,
+  "ORIGINALITY": 3,
+  "REPLICABILITY": 3,
+  "MEANINGFUL_COMPARISON": 4,
+  "SOUNDNESS_CORRECTNESS": 4,
+  "SUBSTANCE": 4,
+  "_details": {
+    "APPROPRIATENESS": {
+      "score": 5,
+      "justification": "This is squarely within top-tier NLP/ML scope: it applies semi-supervised CNNs and word embeddings to data selection for statistical machine translation and domain adaptation (Sections 3, 4, 5). The paper targets the right audience (MT/domain adaptation and NLP ML researchers), presents an appropriate problem formulation (selecting in-domain bilingual sentences with as few as 100 in-domain examples) and uses standard methods/evaluations (BLEU, comparisons to n-gram/RNN LM baselines, multiple language pairs and corpora; claims up to +3.1 BLEU). It is positioned with relevant prior work (Axelrod et al., Duh et al., Johnson & Zhang) and uses evaluation standards expected at top venues."
+    },
+    "IMPACT": {
+      "score": 4,
+      "justification": "The paper tackles the practically important problem of domain adaptation for SMT when only tiny amounts of in-domain data are available and shows clear, actionable gains: experiments on four language directions and social-media domains yield up to +3.1 BLEU and are reported to significantly outperform strong LM-based selection baselines (ngram, rnnlm, comblm). The demonstration that selection models can be trained with as few as ~100 in-domain sentences makes fine-grained and fast adaptation feasible, likely influencing practitioners\u2019 data-selection pipelines. It also suggests follow-up work (e.g., selecting monolingual corpora, online dynamic adaptation) and broader applicability of semi-supervised CNN selection to other NLP adaptation tasks."
+    },
+    "CLARITY": {
+      "score": 3,
+      "justification": "The paper has a generally logical organization (Related Work \u2192 Method \u2192 Experiments \u2192 Conclusion) and the core proposal (semi\u2011supervised CNN for data selection) is stated, but presentation issues hamper readability. The excerpt contains many duplicated sentences and OCR/formatting artifacts (e.g., repeated paragraphs, \u201cGloV e\u201d, \u201cwherem\u201d without spacing) and references to missing items (Table 1, Equation 1) that make following details difficult. Notation is partially defined (wl(x) is explained) but occasionally inconsistent or terse, and figures/tables are referenced but not shown, reducing effectiveness of examples and results."
+    },
+    "ORIGINALITY": {
+      "score": 3,
+      "justification": "The paper applies existing techniques\u2014semi-supervised convolutional neural networks and pre-trained word embeddings (e.g., Johnson & Zhang 2015b; Mikolov et al. 2013)\u2014to the well-studied problem of SMT training-data selection (Moore & Lewis 2010; Axelrod et al. 2011; Duh et al. 2013). Its main novelty is an application/pipeline (classifying source and target separately, summing scores, and demonstrating effectiveness with very small in-domain sets down to ~100 sentences) rather than a fundamentally new model or learning algorithm. The authors clearly position their work against LM-based selection baselines and prior CNN text-classification work, but the techniques are an incremental, domain-adaptation-oriented extension of known methods rather than a major methodological advance."
+    },
+    "REPLICABILITY": {
+      "score": 3,
+      "justification": "The paper gives a clear high-level method (one-hot / semi\u2011supervised CNN, use of word2vec, positive/negative sampling, selection by sum of source+target scores, BLEU and bootstrap significance per Koehn 2004) and cites public data sources (LDC, TED, WMT). However many critical reproducibility details are missing in the provided text: exact CNN hyperparameters (kernel sizes, numbers of filters, embedding dimensionality, pooling specifics), training settings (optimizer, learning rate, batch size, epochs, stopping criteria), preprocessing (tokenization, vocabulary size, OOV handling, truecasing/BPE) and the per-task data splits (Table 1 is referenced but not given). Code is not mentioned, so reimplementation would require nontrivial choices not specified here."
+    },
+    "MEANINGFUL_COMPARISON": {
+      "score": 4,
+      "justification": "The paper compares against appropriate and recent LM-based baselines (ngram/Axelrod et al. 2011, rnnlm and comblm from Duh et al. 2013) and reports BLEU improvements with bootstrap significance testing (Koehn, 2004), claiming wins up to 3.1 BLEU. It also cites and discusses a wide set of prior adaptation methods (Moore & Lewis, Axelrod, mixture/VSM/instance weighting, etc.) and acknowledges that RNNLMs improve over n-gram LMs, but shows their semi-supervised CNN outperforms the LM baselines. However, the paper does not present quantitative comparisons to other non-LM selection/adaptation approaches (e.g. mixture-model, VSM, instance-weighting) despite citing them, so comparisons are strong but not fully comprehensive."
+    },
+    "SOUNDNESS_CORRECTNESS": {
+      "score": 4,
+      "justification": "The paper clearly states its main claim\u2014that a semi\u2011supervised CNN can select in\u2011domain bilingual data for SMT with very small in\u2011domain seeds\u2014and reports experimental support across four language directions with up to +3.1 BLEU and bootstrap significance testing (Koehn, 2004), compared against strong LM\u2011based baselines (ngram, rnnlm, comblm). Mathematical content is minimal (no derivations), so nothing incorrect there. The experimental methodology is largely sound (separate dev/test, validation to pick selection size, established baselines, significance testing), but the provided excerpt omits important details (per\u2011task BLEU numbers, model/hyperparameter settings, variance/repeats, and full description of selection thresholds), and there are mild logical gaps (training classifier on source/target separately and assuming selected pairs are jointly optimal; limited discussion of negative\u2011sampling bias). These are shortcomings but do not undermine the main experimental claims."
+    },
+    "SUBSTANCE": {
+      "score": 4,
+      "justification": "The paper presents solid experiments across four language directions and multiple social-media domains, reports BLEU gains up to 3.1, compares against three strong LM-based baselines (ngram, rnnlm, comblm) and uses bootstrap significance testing, which supports the main claims (sections 5.1, 3). Some useful sensitivity analyses are included (source/target vs. sum scoring, negative-sampling strategies), but detailed ablations of CNN components (e.g. embedding vs. one\u2011hot, architecture/hyperparameter effects) are limited. Related work coverage is thorough and fair, but discussion of failure cases and limitations is minimal and reproduction details (exact model hyperparameters, training recipes, selected sentence counts) are insufficiently specified."
+    }
+  }
+}
